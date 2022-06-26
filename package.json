@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-webpack-plugin": "^2.1.0",
+    "genversion": "^3.0.2",
     "source-map-loader": "^2.0.0",
     "style-loader": "^3.3.1",
     "ts-loader": "^8.0.7",

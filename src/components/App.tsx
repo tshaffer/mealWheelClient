@@ -3,13 +3,18 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Box } from '@mui/material';
-import { uploadFile } from '../controllers/appState';
+import { initializeApp, uploadFile } from '../controllers';
 
 export interface AppProps {
+  onInitializeApp: () => any;
   onUploadFile: (formData: FormData) => any;
 }
 
 const App = (props: AppProps) => {
+
+  React.useEffect(() => {
+    props.onInitializeApp();
+  }, []);
 
   const [selectedFile, setSelectedFile] = React.useState(null);
 
@@ -50,6 +55,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onInitializeApp: initializeApp,
     onUploadFile: uploadFile,
   }, dispatch);
 };
