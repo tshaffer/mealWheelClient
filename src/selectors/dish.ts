@@ -1,6 +1,6 @@
-import { DishesMap, MealWheelState } from '../types';
+import { DishEntity, MealWheelState } from '../types';
 
-export const getDishes = (state: MealWheelState): DishesMap => {
+export const getDishes = (state: MealWheelState): DishEntity[] => {
   return state.dishesState.dishes;
 };
 

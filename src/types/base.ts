@@ -16,7 +16,8 @@ export interface VersionInfo {
 }
 
 export interface DishesState {
-  dishes: DishesMap;
+  // dishes: DishesMap;
+  dishes: DishEntity[];
 }
 
 export interface DishesMap {

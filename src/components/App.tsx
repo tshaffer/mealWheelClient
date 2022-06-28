@@ -3,10 +3,11 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Box } from '@mui/material';
-import { initializeApp, uploadFile } from '../controllers';
+import { generateMenu, initializeApp, uploadFile } from '../controllers';
 
 export interface AppProps {
   onInitializeApp: () => any;
+  onGenerateMenu: () => any;
   onUploadFile: (formData: FormData) => any;
 }
 
@@ -20,6 +21,11 @@ const App = (props: AppProps) => {
 
   const handleFileChangeHandler = (e: any) => {
     setSelectedFile(e.target.files[0]);
+  };
+
+  const handleGenerateMenu = () => {
+    console.log('generateMenu');
+    props.onGenerateMenu();
   };
 
   const handleUploadFile = () => {
@@ -39,6 +45,8 @@ const App = (props: AppProps) => {
         noValidate
         autoComplete='off'
       >
+        <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
+        <br />
         <input type="file" name="file" onChange={handleFileChangeHandler} />
         <br />
         <button type="button" onClick={handleUploadFile}>Upload</button>
@@ -57,6 +65,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onInitializeApp: initializeApp,
     onUploadFile: uploadFile,
+    onGenerateMenu: generateMenu,
   }, dispatch);
 };
 

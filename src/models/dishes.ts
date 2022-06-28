@@ -35,7 +35,7 @@ export const addDish = (
 
 const initialState: DishesState =
 {
-  dishes: {},
+  dishes: [],
 };
 
 export const dishesStateReducer = (
@@ -45,7 +45,8 @@ export const dishesStateReducer = (
   switch (action.type) {
     case ADD_DISH: {
       const newState = cloneDeep(state) as DishesState;
-      newState.dishes[action.payload.id] = action.payload.dish;
+      // newState.dishes[action.payload.id] = action.payload.dish;
+      newState.dishes.push(action.payload.dish);
       return newState;
     }
     default:
