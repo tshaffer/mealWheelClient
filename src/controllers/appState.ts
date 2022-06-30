@@ -15,17 +15,33 @@ export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
 
     const allMainDishIndices: number[] = [];
+    const allSaladIndices: number[] = [];
+    const allSideIndices: number[] = [];
+    const allVegIndices: number[] = [];
+
     const selectedMainDishIndices: number[] = [];
 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
+
     const allDishes: DishEntity[] = mealWheelState.dishesState.dishes;
     allDishes.forEach((dish: DishEntity, index: number) => {
-      if (dish.type === 'main') {
-        allMainDishIndices.push(index);
+      switch (dish.type) {
+        case 'main':
+          allMainDishIndices.push(index);
+          break;
+        case 'salad':
+          allSaladIndices.push(index);
+          break;
+        case 'side':
+          allSideIndices.push(index);
+          break;
+        case 'veg':
+          allVegIndices.push(index);
+          break;
       }
     });
 
-    // select 10 random menu items
+    // select 10 random main dish items
     while (selectedMainDishIndices.length <= 10) {
       const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
       if (!selectedMainDishIndices.includes(mainDishIndex)) {
@@ -35,7 +51,9 @@ export const generateMenu = () => {
 
     for (const selectedMainDishIndex of selectedMainDishIndices) {
       const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
-      console.log(selectedDish);
+      console.log('main: ' + selectedDish.name);
+
+      // if accompaniment to main is required, select it.
       if (selectedDish.requiresOneOf.salad || selectedDish.requiresOneOf.side || selectedDish.requiresOneOf.veg) {
         const possibleAccompaniments: string[] = [];
         if (selectedDish.requiresOneOf.salad) {
@@ -48,10 +66,28 @@ export const generateMenu = () => {
           possibleAccompaniments.push('veg');
         }
         const numPossibleAccompaniments = possibleAccompaniments.length;
-        const accompanimentIndex = Math.floor(Math.random() * numPossibleAccompaniments);
-        const accompanentType: string = possibleAccompaniments[accompanimentIndex];
-        console.log('accompaniment type: ', accompanentType);
+        const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
+        const accompanimentType: string = possibleAccompaniments[accompanimentTypeIndex];
+        console.log('accompaniment type: ', accompanimentType);
 
+        let accompanimentIndex = -1;
+        switch (accompanimentType) {
+          case 'salad': {
+            accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
+            break;
+          }
+          case 'side': {
+            accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
+            break;
+          }
+          case 'veg': {
+            accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
+            break;
+          }
+
+        }
+
+        console.log('accompaniment: ', allDishes[accompanimentIndex].name);
       }
     }
   };
