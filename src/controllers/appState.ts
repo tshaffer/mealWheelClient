@@ -33,10 +33,26 @@ export const generateMenu = () => {
       }
     }
 
-    console.log('selected main dishes');
     for (const selectedMainDishIndex of selectedMainDishIndices) {
       const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
       console.log(selectedDish);
+      if (selectedDish.requiresOneOf.salad || selectedDish.requiresOneOf.side || selectedDish.requiresOneOf.veg) {
+        const possibleAccompaniments: string[] = [];
+        if (selectedDish.requiresOneOf.salad) {
+          possibleAccompaniments.push('salad');
+        }
+        if (selectedDish.requiresOneOf.side) {
+          possibleAccompaniments.push('side');
+        }
+        if (selectedDish.requiresOneOf.veg) {
+          possibleAccompaniments.push('veg');
+        }
+        const numPossibleAccompaniments = possibleAccompaniments.length;
+        const accompanimentIndex = Math.floor(Math.random() * numPossibleAccompaniments);
+        const accompanentType: string = possibleAccompaniments[accompanimentIndex];
+        console.log('accompaniment type: ', accompanentType);
+
+      }
     }
   };
 };
