@@ -27,8 +27,8 @@ export interface DishesState {
 
 export interface MealsState {
   meals: Meal[];
-
 }
+
 export interface Meal {
   mainDishId: string;
   nonMainDishIds: string[];

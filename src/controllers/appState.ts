@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { addMeal } from '../index';
 
-import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../index';
+import { apiUrlFragment, DishEntity, Meal, MealWheelState, serverUrl } from '../types';
 import { loadDishes } from './dish';
 import { getVersions } from './versionInfo';
 
@@ -44,14 +45,21 @@ export const generateMenu = () => {
     // select 10 random main dish items
     while (selectedMainDishIndices.length <= 10) {
       const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
-      if (!selectedMainDishIndices.includes(mainDishIndex)) {
+      if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
         selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
       }
     }
 
+
     for (const selectedMainDishIndex of selectedMainDishIndices) {
+
       const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
       console.log('main: ' + selectedDish.name);
+
+      const meal: Meal = {
+        mainDishId: selectedDish.name,
+        nonMainDishIds: [],
+      };
 
       // if accompaniment to main is required, select it.
       if (selectedDish.requiresOneOf.salad || selectedDish.requiresOneOf.side || selectedDish.requiresOneOf.veg) {
@@ -84,11 +92,13 @@ export const generateMenu = () => {
             accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
             break;
           }
-
         }
 
         console.log('accompaniment: ', allDishes[accompanimentIndex].name);
+        meal.nonMainDishIds.push(allDishes[accompanimentIndex].name);
       }
+
+      dispatch(addMeal(meal.mainDishId, meal.nonMainDishIds));
     }
   };
 };
