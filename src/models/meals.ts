@@ -11,21 +11,14 @@ export const ADD_MEAL = 'ADD_MEAL';
 // Actions
 // ------------------------------------
 
-export interface AddMealPayload {
-  mainDishId: string;
-  nonMainDishIds: string[];
-}
+export type AddMealPayload = Meal;
 
 export const addMeal = (
-  mainDishId: string,
-  nonMainDishIds: string[],
+  meal: Meal,
 ): any => {
   return {
     type: ADD_MEAL,
-    payload: {
-      mainDishId,
-      nonMainDishIds,
-    }
+    payload: meal,
   };
 };
 
@@ -33,7 +26,7 @@ export const addMeal = (
 // Reducer
 // ------------------------------------
 
-const initialState: MealsState = 
+const initialState: MealsState =
 {
   meals: [],
 };
@@ -45,10 +38,7 @@ export const mealsStateReducer = (
   switch (action.type) {
     case ADD_MEAL: {
       const newState = cloneDeep(state) as MealsState;
-      newState.meals.push({
-        mainDishId: action.payload.mainDishId,
-        nonMainDishIds: action.payload.nonMainDishIds,
-      });
+      newState.meals.push(action.payload);
       return newState;
     }
     default:

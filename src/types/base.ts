@@ -1,4 +1,7 @@
-import { DishEntity } from './entities';
+import {
+  DishEntity,
+}
+  from './entities';
 
 export const serverUrl = 'http://localhost:8000';
 // export const serverUrl = 'https://tswordle.herokuapp.com';
@@ -31,5 +34,5 @@ export interface MealsState {
 
 export interface Meal {
   mainDishId: string;
-  nonMainDishIds: string[];
+  accompanimentDishId: string | null;
 }

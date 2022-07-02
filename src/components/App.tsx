@@ -53,26 +53,12 @@ const App = (props: AppProps) => {
     props.onUploadFile(data);
   };
 
-  const renderMealRow = (mealId: string) => {
-
-    let mealInRow: Meal = null;
-
-    const meals: Meal[] = props.meals;
-    for (const meal of meals) {
-      if (mealId === meal.mainDishId) {
-        mealInRow = meal;
-      }
-    }
-
-    if (isNil(mealInRow)) {
-      return null;
-    }
-
+  const renderMealRow = (meal: Meal) => {
     return (
       <MealComponent
-        mealId={mealInRow.mainDishId}
-      >
-      </MealComponent>
+        mainDishId={meal.mainDishId}
+        accompanimentDishId={meal.accompanimentDishId}
+      />
     );
   };
 
@@ -84,32 +70,28 @@ const App = (props: AppProps) => {
     }
 
     const mealRows = props.meals.map((meal: Meal) => {
-      return renderMealRow(meal.mainDishId);
+      return renderMealRow(meal);
     });
 
     return mealRows;
   };
 
+  const mealRows = renderMealRows();
+
   // return (
-  //   <Box sx={{ flexGrow: 1 }}>
+  //   <div>
+  //     <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
+  //     <br />
   //     <Grid container spacing={2}>
-  //       <Grid item xs={8}>
-  //         <Item>xs=8</Item>
-  //       </Grid>
-  //       <Grid item xs={4}>
-  //         <Item>xs=4</Item>
-  //       </Grid>
-  //       <Grid item xs={4}>
-  //         <Item>xs=4</Item>
-  //       </Grid>
-  //       <Grid item xs={8}>
-  //         <Item>xs=8</Item>
-  //       </Grid>
+  //       {mealRows}
   //     </Grid>
-  //   </Box>
+  //     <input type="file" name="file" onChange={handleFileChangeHandler} />
+  //     <br />
+  //     <button type="button" onClick={handleUploadFile}>Upload</button>
+  //     <br />
+  //   </div>
   // );
 
-  const mealRows = renderMealRows();
 
   return (
     <div>
@@ -133,6 +115,26 @@ const App = (props: AppProps) => {
       </Box>
     </div>
   );
+
+  // return (
+  //   <Box sx={{ flexGrow: 1 }}>
+  //     <Grid container spacing={2}>
+  //       <Grid item xs={8}>
+  //         <Item>xs=8</Item>
+  //       </Grid>
+  //       <Grid item xs={4}>
+  //         <Item>xs=4</Item>
+  //       </Grid>
+  //       <Grid item xs={4}>
+  //         <Item>xs=4</Item>
+  //       </Grid>
+  //       <Grid item xs={8}>
+  //         <Item>xs=8</Item>
+  //       </Grid>
+  //     </Grid>
+  //   </Box>
+  // );
+
 };
 
 function mapStateToProps(state: any) {
@@ -150,4 +152,3 @@ const mapDispatchToProps = (dispatch: any) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-

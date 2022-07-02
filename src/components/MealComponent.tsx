@@ -4,25 +4,34 @@ import { connect } from 'react-redux';
 
 import Grid from '@mui/material/Grid';
 
-import { getMeal } from '../selectors';
-import { Meal } from '../types';
+import { DishEntity } from '../types';
+import { getDish } from '../selectors';
+import { isNil } from 'lodash';
 
 export interface MealComponentPropsFromParent {
-  mealId: string;
+  mainDishId: string;
+  accompanimentDishId: string;
 }
 
 export interface MealComponentProps extends MealComponentPropsFromParent {
-  meal: Meal;
+  mainDish: DishEntity;
+  accompanimentDish: DishEntity;
 }
 
 const MealComponent = (props: MealComponentProps) => {
 
   // <p>{props.meal.mainDishId}</p>
+  // <Grid item xs='auto'>
+
+  let row = props.mainDish.name;
+  if (!isNil(props.accompanimentDish)) {
+    row += ' - ' + props.accompanimentDish.name;
+  }
 
   return (
     <div>
-      <Grid item xs='auto'>
-        <p>{props.mealId}</p>
+      <Grid item xs={12}>
+        <p>{row}</p>
       </Grid>
     </div>
   );
@@ -30,7 +39,9 @@ const MealComponent = (props: MealComponentProps) => {
 
 function mapStateToProps(state: any, ownProps: any) {
   return {
-    meal: getMeal(state, ownProps.mealId)
+    // meal: getMeal(state, ownProps.mealId)
+    mainDish: getDish(state, ownProps.mainDishId),
+    accompanimentDish: getDish(state, ownProps.accompanimentDishId),
   };
 }
 

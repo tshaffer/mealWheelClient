@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { isNil } from 'lodash';
 import { addMeal } from '../index';
 
-import { apiUrlFragment, DishEntity, Meal, MealWheelState, serverUrl } from '../types';
+import { apiUrlFragment, DishEntity, DishType, Meal, MealWheelState, RequiredAccompanimentFlags, serverUrl } from '../types';
 import { loadDishes } from './dish';
 import { getVersions } from './versionInfo';
 
@@ -57,48 +58,46 @@ export const generateMenu = () => {
       console.log('main: ' + selectedDish.name);
 
       const meal: Meal = {
-        mainDishId: selectedDish.name,
-        nonMainDishIds: [],
+        mainDishId: selectedDish.id,
+        accompanimentDishId: null,
       };
 
       // if accompaniment to main is required, select it.
-      if (selectedDish.requiresOneOf.salad || selectedDish.requiresOneOf.side || selectedDish.requiresOneOf.veg) {
-        const possibleAccompaniments: string[] = [];
-        if (selectedDish.requiresOneOf.salad) {
-          possibleAccompaniments.push('salad');
+      if (!isNil(selectedDish.accompaniment) && selectedDish.accompaniment !== RequiredAccompanimentFlags.None) {
+        const possibleAccompaniments: DishType[] = [];
+        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Salad) {
+          possibleAccompaniments.push(DishType.Salad);
         }
-        if (selectedDish.requiresOneOf.side) {
-          possibleAccompaniments.push('side');
+        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Side) {
+          possibleAccompaniments.push(DishType.Side);
         }
-        if (selectedDish.requiresOneOf.veg) {
-          possibleAccompaniments.push('veg');
+        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Veg) {
+          possibleAccompaniments.push(DishType.Veg);
         }
         const numPossibleAccompaniments = possibleAccompaniments.length;
         const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
-        const accompanimentType: string = possibleAccompaniments[accompanimentTypeIndex];
-        console.log('accompaniment type: ', accompanimentType);
+        const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
 
         let accompanimentIndex = -1;
         switch (accompanimentType) {
-          case 'salad': {
+          case DishType.Salad: {
             accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
             break;
           }
-          case 'side': {
+          case DishType.Side: {
             accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
             break;
           }
-          case 'veg': {
+          case DishType.Veg: {
             accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
             break;
           }
         }
 
-        console.log('accompaniment: ', allDishes[accompanimentIndex].name);
-        meal.nonMainDishIds.push(allDishes[accompanimentIndex].name);
+        meal.accompanimentDishId = allDishes[accompanimentIndex].id;
       }
 
-      dispatch(addMeal(meal.mainDishId, meal.nonMainDishIds));
+      dispatch(addMeal(meal));
     }
   };
 };

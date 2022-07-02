@@ -12,18 +12,8 @@ export const loadDishes = () => {
         const dishEntities: DishEntity[] = (dishesResponse as any).data;
         // // TEDTODO - add all in a single call
         for (const dishEntity of dishEntities) {
-          dispatch(addDish(dishEntity.name, dishEntity));
+          dispatch(addDish(dishEntity.id, dishEntity));
         }
-
-        // boardEntities.sort((a: DishEntity, b: DishEntity) => {
-        //   return a.startDateTime > b.startDateTime
-        //     ? -1
-        //     : 1;
-        // });
-        // if (boardEntities.length > 0) {
-        //   dispatch(setBoardId(boardEntities[0].id));
-        // }
-
       });
   };
 };
