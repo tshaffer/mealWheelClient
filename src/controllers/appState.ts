@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { isNil } from 'lodash';
-import { addMeal } from '../index';
+import { addMeal, clearMeals } from '../index';
 
 import { apiUrlFragment, DishEntity, DishType, Meal, MealWheelState, RequiredAccompanimentFlags, serverUrl } from '../types';
 import { loadDishes } from './dish';
@@ -16,6 +16,7 @@ export const initializeApp = () => {
 export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
 
+    dispatch(clearMeals());
     const allMainDishIndices: number[] = [];
     const allSaladIndices: number[] = [];
     const allSideIndices: number[] = [];
@@ -51,11 +52,9 @@ export const generateMenu = () => {
       }
     }
 
-
     for (const selectedMainDishIndex of selectedMainDishIndices) {
 
       const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
-      console.log('main: ' + selectedDish.name);
 
       const meal: Meal = {
         mainDishId: selectedDish.id,

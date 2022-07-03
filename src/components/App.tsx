@@ -3,18 +3,8 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
 import { generateMenu, initializeApp, uploadFile } from '../controllers';
 import { Meal } from '../types';
@@ -42,7 +32,6 @@ const App = (props: AppProps) => {
   };
 
   const handleGenerateMenu = () => {
-    console.log('generateMenu');
     props.onGenerateMenu();
   };
 
@@ -87,7 +76,7 @@ const App = (props: AppProps) => {
     if (isNil(mealRows)) {
       return null;
     }
-    
+
     return (
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
@@ -99,90 +88,6 @@ const App = (props: AppProps) => {
 
   const meals = renderMeals();
 
-  // return (
-  //   <div>
-  //     <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
-  //     <br />
-  //     <Grid container spacing={2}>
-  //       {mealRows}
-  //     </Grid>
-  //     <input type="file" name="file" onChange={handleFileChangeHandler} />
-  //     <br />
-  //     <button type="button" onClick={handleUploadFile}>Upload</button>
-  //     <br />
-  //   </div>
-  // );
-
-
-  // return (
-  //   <div>
-  //     <Box
-  //       component='form'
-  //       sx={{
-  //         '& > :not(style)': { m: 1, width: '25ch' },
-  //       }}
-  //       noValidate
-  //       autoComplete='off'
-  //     >
-  //       <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
-  //       <br />
-  //       <Grid container spacing={2}>
-  //         {mealRows}
-  //       </Grid>
-  //       <input type="file" name="file" onChange={handleFileChangeHandler} />
-  //       <br />
-  //       <button type="button" onClick={handleUploadFile}>Upload</button>
-  //       <br />
-  //     </Box>
-  //   </div>
-  // );
-
-  //           {mealRows}
-
-  // return (
-  //   <div>
-  //     <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
-  //     <br />
-  //     <Box sx={{ flexGrow: 1 }}>
-  //       <Grid container spacing={2}>
-  //         <Grid item xs={12}>
-  //           <p>{'pizza'}</p>
-  //         </Grid>
-  //         <Grid item xs={12}>
-  //           <p>{'burrito'}</p>
-  //         </Grid>
-  //         <Grid item xs={8}>
-  //           <Item>xs=8</Item>
-  //         </Grid>
-  //         <Grid item xs={4}>
-  //           <Item>xs=4</Item>
-  //         </Grid>
-  //         <Grid item xs={4}>
-  //           <Item>xs=4</Item>
-  //         </Grid>
-  //         <Grid item xs={8}>
-  //           <Item>xs=8</Item>
-  //         </Grid>
-  //       </Grid>
-  //     </Box>
-  //     <input type="file" name="file" onChange={handleFileChangeHandler} />
-  //     <br />
-  //     <button type="button" onClick={handleUploadFile}>Upload</button>
-  //     <br />
-  //   </div>
-  // );
-
-  // the below looks correct before generating the menu
-  // return (
-  //   <div>
-  //     <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
-  //     <br />
-  //     <input type="file" name="file" onChange={handleFileChangeHandler} />
-  //     <br />
-  //     <button type="button" onClick={handleUploadFile}>Upload</button>
-  //     <br />
-  //   </div>
-  // );
   return (
     <div>
       <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
