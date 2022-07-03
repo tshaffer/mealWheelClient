@@ -36,7 +36,6 @@ const App = (props: AppProps) => {
   };
 
   const handleUploadFile = () => {
-    console.log('uploadFile: ', selectedFile);
     const data = new FormData();
     data.append('file', selectedFile);
     props.onUploadFile(data);
@@ -47,6 +46,7 @@ const App = (props: AppProps) => {
       <MealComponent
         mainDishId={meal.mainDishId}
         accompanimentDishId={meal.accompanimentDishId}
+        key={meal.mainDishId}
       />
     );
   };

@@ -31,9 +31,6 @@ export interface MealComponentProps extends MealComponentPropsFromParent {
 
 const MealComponent = (props: MealComponentProps) => {
 
-  // <p>{props.meal.mainDishId}</p>
-  // <Grid item xs='auto'>
-
   let row = props.mainDish.name;
   if (!isNil(props.accompanimentDish)) {
     row += ' - ' + props.accompanimentDish.name;
@@ -48,7 +45,6 @@ const MealComponent = (props: MealComponentProps) => {
 
 function mapStateToProps(state: any, ownProps: any) {
   return {
-    // meal: getMeal(state, ownProps.mealId)
     mainDish: getDish(state, ownProps.mainDishId),
     accompanimentDish: getDish(state, ownProps.accompanimentDishId),
   };
