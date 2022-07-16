@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { DataGrid, GridColumns, GridRowModel, GridRowsProp } from '@mui/x-data-grid';
 
-import { DishEntity } from '../types';
+import { DishEntity, RequiredAccompanimentFlags } from '../types';
 import { getDishes } from '../selectors';
 
 export interface DishesProps {
@@ -38,6 +38,12 @@ const dishesColumns: GridColumns = [
     headerName: 'Type',
     width: 180,
     editable: true,
+  },
+  {
+    field: 'requiresAccompaniment',
+    headerName: 'Requires accompaniment',
+    width: 180,
+    editable: true,
   }
 ];
 
@@ -49,6 +55,7 @@ const Dishes = (props: DishesProps) => {
         id: dish.id,
         name: dish.name,
         type: dish.type,
+        requiresAccompaniment: dish.accompaniment !== RequiredAccompanimentFlags.None,
       };
       return row;
     });
