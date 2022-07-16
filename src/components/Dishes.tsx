@@ -11,7 +11,10 @@ export interface DishesProps {
   dishes: DishEntity[];
 }
 
-// const mainOption = { value: 'main', label: 'Main' };
+const mainOption = { value: 'main', label: 'Main' };
+const saladOption = { value: 'salad', label: 'Salad' };
+const sideOption = { value: 'side', label: 'Side' };
+const vegOption = { value: 'veg', label: 'Veg' };
 
 const dishesColumns: GridColumns = [
   { field: 'name', headerName: 'Name', width: 240, editable: true },
@@ -19,11 +22,19 @@ const dishesColumns: GridColumns = [
     field: 'type',
     type: 'singleSelect',
     valueOptions: [
-      'main',
-      'salad',
-      'side',
-      'veg',
+      mainOption,
+      saladOption,
+      sideOption,
+      vegOption,
     ],
+    // https://github.com/mui/mui-x/issues/4437
+    valueFormatter: ({ id: rowId, value, field, api }) => {
+      const colDef = api.getColumn(field);
+      const option = colDef.valueOptions.find(
+        ({ value: optionValue }) => value === optionValue
+      );
+      return option.label;
+    },
     headerName: 'Type',
     width: 180,
     editable: true,
@@ -47,7 +58,7 @@ const Dishes = (props: DishesProps) => {
   const rows: GridRowsProp = getRows();
 
   return (
-    <div style={{ height: 300, width: '100%' }}>
+    <div style={{ height: 600, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={dishesColumns}
