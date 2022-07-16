@@ -11,9 +11,23 @@ export interface DishesProps {
   dishes: DishEntity[];
 }
 
+// const mainOption = { value: 'main', label: 'Main' };
+
 const dishesColumns: GridColumns = [
   { field: 'name', headerName: 'Name', width: 240, editable: true },
-  { field: 'type', headerName: 'Type', width: 180, editable: true },
+  {
+    field: 'type',
+    type: 'singleSelect',
+    valueOptions: [
+      'main',
+      'salad',
+      'side',
+      'veg',
+    ],
+    headerName: 'Type',
+    width: 180,
+    editable: true,
+  }
 ];
 
 const Dishes = (props: DishesProps) => {
@@ -23,7 +37,7 @@ const Dishes = (props: DishesProps) => {
       const row: GridRowModel = {
         id: dish.id,
         name: dish.name,
-        type: dish.type.toString(),
+        type: dish.type,
       };
       return row;
     });
