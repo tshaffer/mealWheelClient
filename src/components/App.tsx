@@ -11,6 +11,7 @@ import { Meal } from '../types';
 import { getMeals } from '../selectors';
 import MealComponent from './MealComponent';
 import { isNil } from 'lodash';
+import Dishes from './Dishes';
 
 export interface AppProps {
   meals: Meal[];
@@ -97,6 +98,7 @@ const App = (props: AppProps) => {
       <br />
       <button type="button" onClick={handleUploadFile}>Upload</button>
       <br />
+      <Dishes/>
     </div>
   );
 
