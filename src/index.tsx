@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 
@@ -18,11 +18,12 @@ const divStyle = {
   height: '1080px',
 };
 
-ReactDOM.render(
+const container = document.getElementById('content');
+const root = createRoot(container!);
+root.render(
   <Provider store={store}>
     <div style={divStyle}>
       < App />
     </div>
   </Provider>,
-  document.getElementById('content')
 );
