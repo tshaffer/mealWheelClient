@@ -35,7 +35,7 @@ export interface UpdateDishPayload {
   dish: DishEntity;
 }
 
-export const updateDish = (
+export const updateDishRedux = (
   id: string,
   dish: DishEntity
 ): any => {

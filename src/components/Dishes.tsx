@@ -32,7 +32,7 @@ import {
 
 import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import { getDishes } from '../selectors';
-import { updateDish } from '../models';
+import { updateDish } from '../controllers';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -146,7 +146,7 @@ const Dishes = (props: DishesProps) => {
       accompaniment,
     };
     props.onUpdateDish(updatedRow.id, updatedDish);
-    
+
     return updatedRow;
   };
 

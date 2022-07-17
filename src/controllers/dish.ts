@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { addDish } from '../models';
+import { addDish, updateDishRedux } from '../models';
 
 import { apiUrlFragment, DishEntity, serverUrl } from '../types';
 
@@ -16,5 +16,33 @@ export const loadDishes = () => {
         }
       });
   };
+};
+
+export const updateDish = (
+  id: string,
+  dish: DishEntity
+): any => {
+  return ((dispatch: any): any => {
+
+    const path = serverUrl + apiUrlFragment + 'updateDish';
+
+    const updateDishBody: any = {
+      id,
+      dish,
+    };
+
+    return axios.post(
+      path,
+      updateDishBody
+    ).then((response) => {
+      dispatch(updateDishRedux(id, dish));
+      return;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return;
+    });
+
+  });
 };
 
