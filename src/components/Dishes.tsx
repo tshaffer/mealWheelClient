@@ -32,6 +32,7 @@ import {
 
 import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import { getDishes } from '../selectors';
+import { updateDish } from '../models';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -47,7 +48,7 @@ function EditToolbar(props: EditToolbarProps) {
     const id = randomId();
     setRows((oldRows) => [...oldRows, {
       id,
-      name: 'cereal',
+      name: '',
       type: DishType.Main,
       requiresAccompaniment: RequiredAccompanimentFlags.None,
       side: RequiredAccompanimentFlags.None,
@@ -72,6 +73,7 @@ function EditToolbar(props: EditToolbarProps) {
 
 export interface DishesProps {
   dishes: DishEntity[];
+  onUpdateDish: (id: string, dish: DishEntity) => any;
 }
 
 const mainOption = { value: 'main', label: 'Main' };
@@ -125,6 +127,26 @@ const Dishes = (props: DishesProps) => {
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+
+    // check to see if this is a new dish
+    let accompaniment: RequiredAccompanimentFlags = RequiredAccompanimentFlags.None;
+    if (newRow.side) {
+      accompaniment = accompaniment + RequiredAccompanimentFlags.Side;
+    }
+    if (newRow.salad) {
+      accompaniment = accompaniment + RequiredAccompanimentFlags.Salad;
+    }
+    if (newRow.veg) {
+      accompaniment = accompaniment + RequiredAccompanimentFlags.Veg;
+    }
+    const updatedDish: DishEntity = {
+      id: newRow.id,
+      name: newRow.name,
+      type: newRow.type,
+      accompaniment,
+    };
+    props.onUpdateDish(updatedRow.id, updatedDish);
+    
     return updatedRow;
   };
 
@@ -291,6 +313,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onUpdateDish: updateDish,
   }, dispatch);
 };
 
