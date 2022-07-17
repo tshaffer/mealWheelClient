@@ -129,7 +129,6 @@ const Dishes = (props: DishesProps) => {
   };
 
   const dishesColumns: GridColumns = [
-    { field: 'id', headerName: 'ID', width: 32, editable: false },
     { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
       field: 'type',
