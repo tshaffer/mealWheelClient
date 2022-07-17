@@ -41,10 +41,32 @@ const dishesColumns: GridColumns = [
   },
   {
     field: 'requiresAccompaniment',
+    type: 'boolean',
     headerName: 'Requires accompaniment',
     width: 180,
     editable: true,
-  }
+  },
+  {
+    field: 'side',
+    type: 'boolean',
+    headerName: 'Side',
+    width: 90,
+    editable: true,
+  },
+  {
+    field: 'salad',
+    type: 'boolean',
+    headerName: 'Salad',
+    width: 90,
+    editable: true,
+  },
+  {
+    field: 'veg',
+    type: 'boolean',
+    headerName: 'Veg',
+    width: 90,
+    editable: true,
+  },
 ];
 
 const Dishes = (props: DishesProps) => {
@@ -56,6 +78,9 @@ const Dishes = (props: DishesProps) => {
         name: dish.name,
         type: dish.type,
         requiresAccompaniment: dish.accompaniment !== RequiredAccompanimentFlags.None,
+        side: dish.accompaniment & RequiredAccompanimentFlags.Side,
+        salad: dish.accompaniment & RequiredAccompanimentFlags.Salad,
+        veg: dish.accompaniment & RequiredAccompanimentFlags.Veg,
       };
       return row;
     });
