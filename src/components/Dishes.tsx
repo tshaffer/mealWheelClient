@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { isNil } from 'lodash';
 
 import { DataGrid, GridColumns, GridRowModel, GridRowsProp } from '@mui/x-data-grid';
 
@@ -77,7 +78,7 @@ const Dishes = (props: DishesProps) => {
         id: dish.id,
         name: dish.name,
         type: dish.type,
-        requiresAccompaniment: dish.accompaniment !== RequiredAccompanimentFlags.None,
+        requiresAccompaniment: !isNil(dish.accompaniment) && dish.accompaniment !== RequiredAccompanimentFlags.None,
         side: dish.accompaniment & RequiredAccompanimentFlags.Side,
         salad: dish.accompaniment & RequiredAccompanimentFlags.Salad,
         veg: dish.accompaniment & RequiredAccompanimentFlags.Veg,
