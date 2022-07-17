@@ -260,6 +260,17 @@ const Dishes = (props: DishesProps) => {
       <DataGrid
         rows={rows}
         columns={dishesColumns}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowEditStart={handleRowEditStart}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        components={{
+          Toolbar: EditToolbar,
+        }}
+        componentsProps={{
+          toolbar: { setRows, setRowModesModel },
+        }}
         experimentalFeatures={{ newEditingApi: true }}
       />
     </div>
