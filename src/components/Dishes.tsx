@@ -16,7 +16,6 @@ import {
   GridRowsProp,
   GridRowModesModel,
   GridRowModes,
-  DataGridPro,
   GridColumns,
   GridRowParams,
   MuiEvent,
@@ -28,13 +27,10 @@ import {
 } from '@mui/x-data-grid-pro';
 
 import {
-  randomCreatedDate,
-  randomTraderName,
-  randomUpdatedDate,
   randomId,
 } from '@mui/x-data-grid-generator';
 
-import { DishEntity, RequiredAccompanimentFlags } from '../types';
+import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import { getDishes } from '../selectors';
 
 interface EditToolbarProps {
@@ -49,7 +45,16 @@ function EditToolbar(props: EditToolbarProps) {
 
   const handleClick = () => {
     const id = randomId();
-    setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+    setRows((oldRows) => [...oldRows, {
+      id,
+      name: 'cereal',
+      type: DishType.Main,
+      requiresAccompaniment: RequiredAccompanimentFlags.None,
+      side: RequiredAccompanimentFlags.None,
+      salad: RequiredAccompanimentFlags.None,
+      veg: RequiredAccompanimentFlags.None,
+      isNew: true
+    }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -64,15 +69,6 @@ function EditToolbar(props: EditToolbarProps) {
     </GridToolbarContainer>
   );
 }
-
-
-
-
-
-
-
-
-
 
 export interface DishesProps {
   dishes: DishEntity[];
@@ -256,26 +252,6 @@ const Dishes = (props: DishesProps) => {
   }
 
   return (
-    <div style={{ height: 600, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={dishesColumns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowEditStart={handleRowEditStart}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        components={{
-          Toolbar: EditToolbar,
-        }}
-        componentsProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-        experimentalFeatures={{ newEditingApi: true }}
-      />
-    </div>
-  );
-  return (
     <Box
       sx={{
         height: 500,
@@ -288,7 +264,7 @@ const Dishes = (props: DishesProps) => {
         },
       }}
     >
-      <DataGridPro
+      <DataGrid
         rows={rows}
         columns={dishesColumns}
         editMode="row"
@@ -306,7 +282,6 @@ const Dishes = (props: DishesProps) => {
       />
     </Box>
   );
-
 };
 
 function mapStateToProps(state: any) {
