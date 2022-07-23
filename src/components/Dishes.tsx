@@ -140,6 +140,20 @@ const Dishes = (props: DishesProps) => {
       return;
     }
 
+    // if it's a new dish, check for duplicate dish names.
+    const dishName = newRow.name;
+    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+      const existingDish: DishEntity = rows[rowIndex];
+      if (!existingDish.id.startsWith('newDish')) {
+        if (existingDish.name === dishName) {
+          console.log('Duplicate name with dish: ');
+          console.log(existingDish);
+          Promise.reject(new Error('Error while saving user: duplicate dish name'));
+          return;
+        }
+      }
+    }
+
     const updatedRow = { ...newRow, isNew: false };
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 
