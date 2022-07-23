@@ -2,6 +2,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { isNil } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 import Box from '@mui/material/Box';
 
@@ -44,7 +45,7 @@ function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
 
   const handleAddRow = () => {
-    const id = 'newDish';
+    const id = 'newDish' + uuidv4();
     setRows((oldRows) => [...oldRows, {
       id,
       name: '',
@@ -146,7 +147,7 @@ const Dishes = (props: DishesProps) => {
       type: newRow.type,
       accompaniment,
     };
-    if (newRow.id === 'newDish') {
+    if (newRow.id.startsWith('newDish')) {
       props.onAddDish(dish);
     } else {
       props.onUpdateDish(updatedRow.id, dish);
