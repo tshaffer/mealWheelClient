@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { isNil } from 'lodash';
+
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -6,11 +8,10 @@ import { connect } from 'react-redux';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
-import { generateMenu, initializeApp, uploadFile } from '../controllers';
 import { Meal } from '../types';
+import { generateMenu, initializeApp, uploadFile } from '../controllers';
 import { getMeals } from '../selectors';
 import MealComponent from './MealComponent';
-import { isNil } from 'lodash';
 import Dishes from './Dishes';
 
 export interface AppProps {

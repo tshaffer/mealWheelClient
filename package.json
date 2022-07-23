@@ -24,12 +24,14 @@
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
+    "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
     "@types/node": "^16.11.45",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/uuid": "^8.3.1",
     "case-sensitive-paths-webpack-plugin": "2.3.0",
     "copy-webpack-plugin": "^4.2.3",
     "css-loader": "^6.5.1",

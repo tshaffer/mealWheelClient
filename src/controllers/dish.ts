@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { addDish, updateDishRedux } from '../models';
+import { v4 as uuidv4 } from 'uuid';
+
+import { addDishRedux, updateDishRedux } from '../models';
 
 import { apiUrlFragment, DishEntity, serverUrl } from '../types';
 
@@ -12,11 +14,41 @@ export const loadDishes = () => {
         const dishEntities: DishEntity[] = (dishesResponse as any).data;
         // // TEDTODO - add all in a single call
         for (const dishEntity of dishEntities) {
-          dispatch(addDish(dishEntity.id, dishEntity));
+          dispatch(addDishRedux(dishEntity.id, dishEntity));
         }
       });
   };
 };
+
+export const addDish = (
+  dish: DishEntity
+): any => {
+  return ((dispatch: any): any => {
+
+    const path = serverUrl + apiUrlFragment + 'addDish';
+
+    dish.id = uuidv4();
+
+    const addDishBody: any = {
+      id: dish.id,
+      dish,
+    };
+
+    return axios.post(
+      path,
+      addDishBody
+    ).then((response) => {
+      dispatch(addDishRedux(dish.id, dish));
+      return;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return;
+    });
+
+  });
+};
+
 
 export const updateDish = (
   id: string,

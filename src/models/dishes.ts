@@ -17,7 +17,7 @@ export interface AddDishPayload {
   dish: DishEntity;
 }
 
-export const addDish = (
+export const addDishRedux = (
   id: string,
   dish: DishEntity
 ): any => {

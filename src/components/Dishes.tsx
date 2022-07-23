@@ -26,13 +26,12 @@ import {
   GridRowModel,
 } from '@mui/x-data-grid-pro';
 
-import {
-  randomId,
-} from '@mui/x-data-grid-generator';
-
 import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import { getDishes } from '../selectors';
-import { updateDish } from '../controllers';
+import {
+  addDish,
+  updateDish
+} from '../controllers';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -44,8 +43,8 @@ interface EditToolbarProps {
 function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
 
-  const handleClick = () => {
-    const id = randomId();
+  const handleAddRow = () => {
+    const id = 'newDish';
     setRows((oldRows) => [...oldRows, {
       id,
       name: '',
@@ -64,7 +63,7 @@ function EditToolbar(props: EditToolbarProps) {
 
   return (
     <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+      <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
         Add record
       </Button>
     </GridToolbarContainer>
@@ -73,6 +72,7 @@ function EditToolbar(props: EditToolbarProps) {
 
 export interface DishesProps {
   dishes: DishEntity[];
+  onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
 }
 
@@ -139,13 +139,18 @@ const Dishes = (props: DishesProps) => {
     if (newRow.veg) {
       accompaniment = accompaniment + RequiredAccompanimentFlags.Veg;
     }
-    const updatedDish: DishEntity = {
+
+    const dish: DishEntity = {
       id: newRow.id,
       name: newRow.name,
       type: newRow.type,
       accompaniment,
     };
-    props.onUpdateDish(updatedRow.id, updatedDish);
+    if (newRow.id === 'newDish') {
+      props.onAddDish(dish);
+    } else {
+      props.onUpdateDish(updatedRow.id, dish);
+    }
 
     return updatedRow;
   };
@@ -313,6 +318,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onAddDish: addDish,
     onUpdateDish: updateDish,
   }, dispatch);
 };
