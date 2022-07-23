@@ -33,6 +33,7 @@ import {
   addDish,
   updateDish
 } from '../controllers';
+import { rejects } from 'assert';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -125,11 +126,23 @@ const Dishes = (props: DishesProps) => {
     }
   };
 
+  const handleProcessRowUpdateError = React.useCallback((error: Error) => {
+    console.log('handleProcessRowUpdateError: ', error.message);
+  }, []);
+
+
   const processRowUpdate = (newRow: GridRowModel) => {
+
+    // check for empty name
+    if (newRow.name === '') {
+      console.log('name is empty');
+      Promise.reject(new Error('Error while saving user: name can\'t be empty.'));
+      return;
+    }
+
     const updatedRow = { ...newRow, isNew: false };
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 
-    // check to see if this is a new dish
     let accompaniment: RequiredAccompanimentFlags = RequiredAccompanimentFlags.None;
     if (newRow.side) {
       accompaniment = accompaniment + RequiredAccompanimentFlags.Side;
@@ -299,6 +312,7 @@ const Dishes = (props: DishesProps) => {
         onRowEditStart={handleRowEditStart}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={handleProcessRowUpdateError}
         components={{
           Toolbar: EditToolbar,
         }}
