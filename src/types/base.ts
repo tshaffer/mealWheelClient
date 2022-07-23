@@ -36,3 +36,13 @@ export interface Meal {
   mainDishId: string;
   accompanimentDishId: string | null;
 }
+
+export interface DishRowModel {
+  id: string;
+  name: string,
+  type: string,
+  requiresAccompaniment: boolean;
+  side: number;
+  salad: number;
+  veg: number;
+}

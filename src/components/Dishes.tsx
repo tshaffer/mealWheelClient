@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import Box from '@mui/material/Box';
 
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridCellEditStartParams, GridCellParams } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -27,13 +27,12 @@ import {
   GridRowModel,
 } from '@mui/x-data-grid-pro';
 
-import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
+import { DishEntity, DishRowModel, DishType, RequiredAccompanimentFlags } from '../types';
 import { getDishes } from '../selectors';
 import {
   addDish,
   updateDish
 } from '../controllers';
-import { rejects } from 'assert';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -144,7 +143,7 @@ const Dishes = (props: DishesProps) => {
     const dishName = newRow.name;
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
       const existingDish: DishEntity = rows[rowIndex];
-      if (!existingDish.id.startsWith('newDish')) {
+      if (existingDish.id.startsWith('newDish')) {
         if (existingDish.name === dishName) {
           console.log('Duplicate name with dish: ');
           console.log(existingDish);
@@ -299,6 +298,36 @@ const Dishes = (props: DishesProps) => {
     return rows;
   };
 
+  const getAccompanimentEditEnabled = (dish: DishRowModel): boolean => {
+    if (dish.type !== 'main') {
+      return false;
+    }
+    return dish.requiresAccompaniment;
+  };
+
+  const getIsCellEditable = (params: GridCellParams): boolean => {
+
+    const dishRowModel: DishRowModel = params.row;
+
+    // return value specific to the column field
+    switch (params.field) {
+      case 'id':
+        return true;
+      case 'name':
+        return true;
+      case 'type':
+        return true;
+      case 'requiresAccompaniment':
+        return dishRowModel.type === 'main';
+      case 'side':
+      case 'salad':
+      case 'veg':
+        return getAccompanimentEditEnabled(dishRowModel);
+      default:
+        return true;
+    }
+  };
+
   const newRows: GridRowsProp = getRows();
   if (!rowsRead && newRows.length > 0) {
     setRowsRead(true);
@@ -334,6 +363,7 @@ const Dishes = (props: DishesProps) => {
           toolbar: { setRows, setRowModesModel },
         }}
         experimentalFeatures={{ newEditingApi: true }}
+        isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
       />
     </Box>
   );
