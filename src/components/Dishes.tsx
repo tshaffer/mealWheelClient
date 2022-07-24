@@ -204,6 +204,11 @@ const Dishes = (props: DishesProps) => {
       headerName: 'Type',
       width: 180,
       editable: true,
+      // preProcessEditCellProps: (params) => {
+      //   console.log('preProcessEditCellProps for type field');
+      //   console.log(params);
+      //   return { ...params.props, error: false };
+      // },
     },
     {
       field: 'requiresAccompaniment',
@@ -211,6 +216,11 @@ const Dishes = (props: DishesProps) => {
       headerName: 'Requires accompaniment',
       width: 180,
       editable: true,
+      // preProcessEditCellProps: (params) => {
+      //   console.log('preProcessEditCellProps for type requiresAccompaniment');
+      //   console.log(params);
+      //   return { ...params.props, error: false };
+      // },
     },
     {
       field: 'side',
