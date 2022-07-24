@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import Box from '@mui/material/Box';
 
-import { DataGrid, GridCellEditStartParams, GridCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,6 +26,8 @@ import {
   GridRowId,
   GridRowModel,
 } from '@mui/x-data-grid-pro';
+import Snackbar from '@mui/material/Snackbar';
+import Alert, { AlertProps } from '@mui/material/Alert';
 
 import { DishEntity, DishRowModel, DishType, RequiredAccompanimentFlags } from '../types';
 import { getDishes } from '../selectors';
@@ -89,6 +91,9 @@ const Dishes = (props: DishesProps) => {
   const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+  const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleRowEditStart = (
     params: GridRowParams,
@@ -127,53 +132,54 @@ const Dishes = (props: DishesProps) => {
 
   const handleProcessRowUpdateError = React.useCallback((error: Error) => {
     console.log('handleProcessRowUpdateError: ', error.message);
+    // setSnackbar({ children: error.message, severity: 'error' });
   }, []);
 
 
-  const processRowUpdate = (newRow: GridRowModel) => {
+  const processRowUpdate = (updatedDish: GridRowModel) => {
 
     // check for empty name
-    if (newRow.name === '') {
+    if (updatedDish.name === '') {
       console.log('name is empty');
-      Promise.reject(new Error('Error while saving user: name can\'t be empty.'));
+      // Promise.reject(new Error('Error while saving user: name can\'t be empty.'));
+      setSnackbar({ children: 'Error while saving user: name can\'t be empty.', severity: 'error' });
       return;
     }
 
-    // if it's a new dish, check for duplicate dish names.
-    const dishName = newRow.name;
-    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-      const existingDish: DishEntity = rows[rowIndex];
-      if (existingDish.id.startsWith('newDish')) {
-        if (existingDish.name === dishName) {
-          console.log('Duplicate name with dish: ');
-          console.log(existingDish);
-          Promise.reject(new Error('Error while saving user: duplicate dish name'));
-          return;
-        }
+    // check for duplicate dish names.
+    const updatedDishName = updatedDish.name;
+    for (let dishIndex = 0; dishIndex < rows.length; dishIndex++) {
+      const existingDish: DishEntity = rows[dishIndex];
+      if (updatedDish.id !== existingDish.id && existingDish.name === updatedDishName) {
+        console.log('Duplicate name with dish: ');
+        console.log(existingDish);
+        // Promise.reject(new Error('Error while saving user: duplicate dish name'));
+        setSnackbar({ children: 'Error while saving user: duplicate dish name', severity: 'error' });
+        return;
       }
     }
 
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    const updatedRow = { ...updatedDish, isNew: false };
+    setRows(rows.map((row) => (row.id === updatedDish.id ? updatedRow : row)));
 
     let accompaniment: RequiredAccompanimentFlags = RequiredAccompanimentFlags.None;
-    if (newRow.side) {
+    if (updatedDish.side) {
       accompaniment = accompaniment + RequiredAccompanimentFlags.Side;
     }
-    if (newRow.salad) {
+    if (updatedDish.salad) {
       accompaniment = accompaniment + RequiredAccompanimentFlags.Salad;
     }
-    if (newRow.veg) {
+    if (updatedDish.veg) {
       accompaniment = accompaniment + RequiredAccompanimentFlags.Veg;
     }
 
     const dish: DishEntity = {
-      id: newRow.id,
-      name: newRow.name,
-      type: newRow.type,
+      id: updatedDish.id,
+      name: updatedDish.name,
+      type: updatedDish.type,
       accompaniment,
     };
-    if (newRow.id.startsWith('newDish')) {
+    if (updatedDish.id.startsWith('newDish')) {
       props.onAddDish(dish);
     } else {
       props.onUpdateDish(updatedRow.id, dish);
@@ -204,11 +210,6 @@ const Dishes = (props: DishesProps) => {
       headerName: 'Type',
       width: 180,
       editable: true,
-      // preProcessEditCellProps: (params) => {
-      //   console.log('preProcessEditCellProps for type field');
-      //   console.log(params);
-      //   return { ...params.props, error: false };
-      // },
     },
     {
       field: 'requiresAccompaniment',
@@ -216,11 +217,6 @@ const Dishes = (props: DishesProps) => {
       headerName: 'Requires accompaniment',
       width: 180,
       editable: true,
-      // preProcessEditCellProps: (params) => {
-      //   console.log('preProcessEditCellProps for type requiresAccompaniment');
-      //   console.log(params);
-      //   return { ...params.props, error: false };
-      // },
     },
     {
       field: 'side',
@@ -312,7 +308,7 @@ const Dishes = (props: DishesProps) => {
     if (dish.type !== 'main') {
       return false;
     }
-    return dish.requiresAccompaniment;
+    return dish.requiresAccompaniment === true;
   };
 
   const getIsCellEditable = (params: GridCellParams): boolean => {
@@ -336,6 +332,8 @@ const Dishes = (props: DishesProps) => {
       default:
         return true;
     }
+
+    return true;
   };
 
   const newRows: GridRowsProp = getRows();
@@ -375,6 +373,16 @@ const Dishes = (props: DishesProps) => {
         experimentalFeatures={{ newEditingApi: true }}
         isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
       />
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
+        >
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Box>
   );
 };
