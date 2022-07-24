@@ -356,7 +356,11 @@ const Dishes = (props: DishesProps) => {
       }}
     >
       <DataGrid
-        rows={rows}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: 'name', sort: 'asc' }],
+          },
+        }} rows={rows}
         columns={dishesColumns}
         editMode="row"
         rowModesModel={rowModesModel}
