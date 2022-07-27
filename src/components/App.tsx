@@ -14,6 +14,8 @@ import { getMeals } from '../selectors';
 import MealComponent from './MealComponent';
 import Dishes from './Dishes';
 
+import CalendarTest from './CalendarTest';
+
 export interface AppProps {
   meals: Meal[];
   onInitializeApp: () => any;
@@ -92,16 +94,22 @@ const App = (props: AppProps) => {
 
   return (
     <div>
-      <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
-      <br />
-      {meals}
-      <input type="file" name="file" onChange={handleFileChangeHandler} />
-      <br />
-      <button type="button" onClick={handleUploadFile}>Upload</button>
-      <br />
-      <Dishes />
+      <CalendarTest/>
     </div>
   );
+
+  // return (
+  //   <div>
+  //     <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
+  //     <br />
+  //     {meals}
+  //     <input type="file" name="file" onChange={handleFileChangeHandler} />
+  //     <br />
+  //     <button type="button" onClick={handleUploadFile}>Upload</button>
+  //     <br />
+  //     <Dishes />
+  //   </div>
+  // );
 
 };
 
