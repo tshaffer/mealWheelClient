@@ -99,7 +99,7 @@ const App = (props: AppProps) => {
       <br />
       <button type="button" onClick={handleUploadFile}>Upload</button>
       <br />
-      <Dishes/>
+      <Dishes />
     </div>
   );
 
