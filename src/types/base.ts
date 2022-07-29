@@ -4,15 +4,29 @@ import {
   from './entities';
 
 export const serverUrl = 'http://localhost:8000';
-// export const serverUrl = 'https://tswordle.herokuapp.com';
+// export const serverUrl = 'https://tsmealwheel.herokuapp.com';
 
 export const apiUrlFragment = '/api/v1/';
 
 export interface MealWheelState {
-  versionInfo: VersionInfo;
+  appState: AppState;
   dishesState: DishesState;
   mealsState: MealsState;
+  users: UsersMap;
+  versionInfo: VersionInfo;
 }
+
+export interface AppState {
+  appInitialized: boolean;
+  uiState: UiState;
+  userName: string | null;
+}
+
+export enum UiState {
+  SelectUser = 'SelectUser',
+  Other = 'Other',
+}
+
 
 export interface VersionInfo {
   clientVersion: string;
@@ -46,3 +60,22 @@ export interface DishRowModel {
   salad: number;
   veg: number;
 }
+
+export interface StartupParams {
+  startPage: StartPage,
+}
+
+export enum StartPage {
+  Standard = 'Standard',
+}
+
+export interface User {
+  userName: string;
+  password: string;
+  email: string;
+}
+
+export interface UsersMap {
+  [id: string]: User; // userName
+}
+

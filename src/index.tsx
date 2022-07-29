@@ -1,12 +1,15 @@
 import * as React from 'react';
+// import * as ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import App from './components/App';
 import { rootReducer } from './models';
+
+import Home from './components/Home';
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export const store = createStore(
@@ -20,10 +23,22 @@ const divStyle = {
 
 const container = document.getElementById('content');
 const root = createRoot(container!);
+// root.render(
+//   <Provider store={store}>
+//     <div style={divStyle}>
+//       < App />
+//     </div>
+//   </Provider>,
+// );
+
+const poo = Home;
 root.render(
   <Provider store={store}>
-    <div style={divStyle}>
-      < App />
-    </div>
+    <HashRouter>
+      <Routes>
+        <Route  path='/' element={Home} />
+        <Route  path='/foo' element={<div>pizza</div>} />
+      </Routes>
+    </HashRouter>
   </Provider>,
 );
