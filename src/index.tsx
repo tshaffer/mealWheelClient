@@ -31,13 +31,11 @@ const root = createRoot(container!);
 //   </Provider>,
 // );
 
-const poo = Home;
 root.render(
   <Provider store={store}>
     <HashRouter>
       <Routes>
-        <Route  path='/' element={Home} />
-        <Route  path='/foo' element={<div>pizza</div>} />
+        <Route  path='/' element={<Home/>} />
       </Routes>
     </HashRouter>
   </Provider>,
