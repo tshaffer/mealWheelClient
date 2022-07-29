@@ -58,9 +58,6 @@ function SelectableCalendar({ localizer }: Props) {
       newEvent.end = moment(end).toDate();
       newEvent.title = title;
 
-      // Erroneous code
-      // events.push(newEvent)
-      // setEvents(events)
       setEvents([
         ...events,
         newEvent
