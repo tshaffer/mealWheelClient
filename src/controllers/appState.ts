@@ -23,7 +23,7 @@ import {
 import { getStartPage } from '../selectors';
 
 import { loadDishes } from './dish';
-import { loginPersistentUser } from './user';
+import { loadUsers, loginPersistentUser } from './user';
 import { getVersions } from './versionInfo';
 
 const getStartupParams = () => {
@@ -65,11 +65,12 @@ export const initializeApp = () => {
 
     dispatch(getVersions());
 
-    // const startupParams: StartupParams = dispatch(getStartupParams());
+    const startupParams: StartupParams = dispatch(getStartupParams());
 
     const loadDishesPromise = dispatch(loadDishes());
-    
-    loadDishesPromise
+    const loadUsersPromise = dispatch(loadUsers());
+
+    Promise.all([loadDishesPromise, loadUsersPromise])
       .then(() => {
 
         const loggedInUser = dispatch(loginPersistentUser());
