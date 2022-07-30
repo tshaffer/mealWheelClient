@@ -2,6 +2,7 @@
 
 import { combineReducers } from 'redux';
 import { MealWheelState } from '../types';
+import { appParametersReducer } from './appParameters';
 
 import { appStateReducer } from './appState';
 import { dishesStateReducer } from './dishes';
@@ -13,6 +14,7 @@ import { versionInfoReducer } from './versionInfo';
 // Reducers
 // -----------------------------------------------------------------------
 export const rootReducer = combineReducers<MealWheelState>({
+  appParameters: appParametersReducer,
   appState: appStateReducer,
   dishesState: dishesStateReducer,
   mealsState: mealsStateReducer,

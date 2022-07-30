@@ -10,6 +10,7 @@ import thunkMiddleware from 'redux-thunk';
 import { rootReducer } from './models';
 
 import Home from './components/Home';
+import Login from './components/Login';
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export const store = createStore(
@@ -36,6 +37,7 @@ root.render(
     <HashRouter>
       <Routes>
         <Route  path='/' element={<Home/>} />
+        <Route  path='/login' element={<Login/>} />
       </Routes>
     </HashRouter>
   </Provider>,

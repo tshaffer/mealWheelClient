@@ -19,6 +19,9 @@ import {
   StartupParams,
   UiState
 } from '../types';
+
+import { getStartPage } from '../selectors';
+
 import { loadDishes } from './dish';
 import { loginPersistentUser } from './user';
 import { getVersions } from './versionInfo';
@@ -86,6 +89,21 @@ export const initializeApp = () => {
   };
 };
 
+export const setStartupAppState = () => {
+  return (dispatch: any, getState: any) => {
+    const state: MealWheelState = getState();
+    const startPage: StartPage = getStartPage(state);
+    // if (startPage === StartPage.JoinGame) {
+    //   const startupBoardId = getStartupBoardId(state);
+    //   if (isString(startupBoardId)) {
+    //     dispatch(setUiState(UiState.SelectPuzzleOrBoard));
+    //     dispatch(launchExistingGame(startupBoardId));
+    //     return;
+    //   }
+    // }
+    dispatch(setUiState(UiState.Other));
+  };
+};
 export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
 

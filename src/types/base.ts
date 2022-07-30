@@ -9,6 +9,7 @@ export const serverUrl = 'http://localhost:8000';
 export const apiUrlFragment = '/api/v1/';
 
 export interface MealWheelState {
+  appParameters: AppParameters;
   appState: AppState;
   dishesState: DishesState;
   mealsState: MealsState;
@@ -77,5 +78,10 @@ export interface User {
 
 export interface UsersMap {
   [id: string]: User; // userName
+}
+
+export interface AppParameters {
+  startPage: StartPage;
+  // startupBoardId: string | null;
 }
 

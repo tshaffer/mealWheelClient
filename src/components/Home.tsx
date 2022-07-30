@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { AppState, UiState } from '../types';
 import {
@@ -20,13 +20,7 @@ export interface HomeProps {
   onInitializeApp: () => any;
 }
 
-const Home = () => {
-  return (
-    <div>pizza</div>
-  );
-};
-
-const FlibbetHomeX = (props: HomeProps) => {
+const Home = (props: HomeProps) => {
 
   React.useEffect(() => {
     console.log('Home: ', props.appInitialized);
@@ -47,8 +41,8 @@ const FlibbetHomeX = (props: HomeProps) => {
   }
 
   switch (props.appState.uiState) {
-    // case UiState.SelectUser:
-    //   return <Navigate to='/login' />;
+    case UiState.SelectUser:
+      return <Navigate to='/login' />;
     // case UiState.SelectPuzzleOrBoard:
     //   return <Redirect to='/launcher'/>;
     // case UiState.NewBoardPlay:
