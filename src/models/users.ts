@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { User, UsersMap } from '../types';
+import { UserEntity, UsersMap } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -12,18 +12,18 @@ export const ADD_USER = 'ADD_USER';
 // ------------------------------------
 
 export interface AddUserPayload {
-  userName: string;
-  user: User;
+  id: string;
+  user: UserEntity;
 }
 
 export const addUser = (
-  userName: string,
-  user: User
+  id: string,
+  user: UserEntity
 ): any => {
   return {
     type: ADD_USER,
     payload: {
-      userName,
+      id,
       user,
     },
   };
@@ -42,7 +42,7 @@ export const usersReducer = (
   switch (action.type) {
     case ADD_USER: {
       const newState = cloneDeep(state);
-      newState[action.payload.userName] = action.payload.user;
+      newState[action.payload.id] = action.payload.user;
       return newState;
     }
     default:

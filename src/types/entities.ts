@@ -18,3 +18,10 @@ export interface DishEntity {
   type: DishType;
   accompaniment?: RequiredAccompanimentFlags;
 }
+
+export interface UserEntity {
+  id: string;
+  userName: string;
+  password: string;
+  email: string;
+}

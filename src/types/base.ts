@@ -1,5 +1,5 @@
 import {
-  DishEntity,
+  DishEntity, UserEntity,
 }
   from './entities';
 
@@ -20,7 +20,7 @@ export interface MealWheelState {
 export interface AppState {
   appInitialized: boolean;
   uiState: UiState;
-  userName: string | null;
+  userId: string | null;
 }
 
 export enum UiState {
@@ -70,14 +70,8 @@ export enum StartPage {
   Standard = 'Standard',
 }
 
-export interface User {
-  userName: string;
-  password: string;
-  email: string;
-}
-
 export interface UsersMap {
-  [id: string]: User; // userName
+  [id: string]: UserEntity; // userId
 }
 
 export interface AppParameters {

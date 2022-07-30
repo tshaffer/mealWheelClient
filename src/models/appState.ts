@@ -6,7 +6,7 @@ import { MealWheelModelBaseAction } from './baseAction';
 // ------------------------------------
 export const SET_APP_INITIALIZED = 'SET_APP_INITIALIZED';
 export const SET_UI_STATE = 'SET_UI_STATE';
-export const SET_USER_NAME = 'SET_USER_NAME';
+export const SET_USER_ID = 'SET_USER_ID';
 
 // ------------------------------------
 // Actions
@@ -33,17 +33,17 @@ export const setUiState = (
   };
 };
 
-export interface SetUserNamePayload {
-  userName: string;
+export interface SetUserPayload {
+  id: string;
 }
 
-export const setUserName = (
-  userName: string,
+export const setUser = (
+  id: string,
 ): any => {
   return {
-    type: SET_USER_NAME,
+    type: SET_USER_ID,
     payload: {
-      userName,
+      id,
     },
   };
 };
@@ -55,22 +55,22 @@ export const setUserName = (
 const initialState: AppState = {
   appInitialized: false,
   uiState: UiState.SelectUser,
-  userName: null,
+  userId: null,
 };
 
 export const appStateReducer = (
   state: AppState = initialState,
-  action: MealWheelModelBaseAction<SetUiStatePayload & SetUserNamePayload>
+  action: MealWheelModelBaseAction<SetUiStatePayload & SetUserPayload>
 ): AppState => {
   switch (action.type) {
     case SET_APP_INITIALIZED: {
-      return { ...state, appInitialized: true};
+      return { ...state, appInitialized: true };
     }
     case SET_UI_STATE: {
       return { ...state, uiState: action.payload.uiState };
     }
-    case SET_USER_NAME: {
-      return { ...state, userName: action.payload.userName };
+    case SET_USER_ID: {
+      return { ...state, userId: action.payload.id };
     }
     default:
       return state;

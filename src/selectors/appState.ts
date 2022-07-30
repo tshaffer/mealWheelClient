@@ -12,5 +12,5 @@ export const getAppInitialized = (state: MealWheelState): boolean => {
 };
 
 export const getCurrentUser = (state: MealWheelState): string | null => {
-  return state.appState.userName;
+  return state.appState.userId;
 };

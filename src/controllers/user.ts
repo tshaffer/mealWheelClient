@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { MealWheelState, User, UsersMap } from '../types';
-import { addUser, setUserName } from '../models';
+import { MealWheelState, UserEntity, UsersMap } from '../types';
+import { addUser, setUser } from '../models';
 
 import { apiUrlFragment, serverUrl } from '../index';
 import { isNil, isString } from 'lodash';
@@ -12,33 +12,33 @@ export const loadUsers = () => {
 
     return axios.get(path)
       .then((usersResponse: any) => {
-        const users: User[] = (usersResponse as any).data;
+        const users: UserEntity[] = (usersResponse as any).data;
         // TEDTODO - add all in a single call
         for (const user of users) {
-          dispatch(addUser(user.userName, user));
+          dispatch(addUser(user.id, user));
         }
         // if (users.length > 0) {
 
         //   let selectedUser = '';
 
-        //   // if there's a stored / persistent userName and it matches a user name in the downloaded list of users,
+        //   // if there's a stored / persistent id and it matches a user name in the downloaded list of users,
         //   // bypass the signin screen
-        //   const storedUserName = localStorage.getItem('userName');
-        //   if (isString(storedUserName)) {
-        //     const matchedUser = users.find(o => o.userName === storedUserName);
+        //   const storedUserId = localStorage.getItem('userId');
+        //   if (isString(storedUserId)) {
+        //     const matchedUser = users.find(o => o.id === storedUserId);
 
         //     if (!isNil(matchedUser)) {
-        //       dispatch(setUserName(matchedUser.userName));
+        //       dispatch(setUserId(matchedUser.id));
         //       dispatch(setUiState(UiState.SelectPuzzleOrBoard));
         //       return;
         //     } else {
-        //       selectedUser = users[0].userName;
+        //       selectedUser = users[0].id;
         //     }
 
         //   } else {
-        //     selectedUser = users[0].userName;
+        //     selectedUser = users[0].id;
         //   }
-        //   dispatch(setUserName(selectedUser));
+        //   dispatch(setUserId(selectedUser));
         // }
 
       });
@@ -48,27 +48,27 @@ export const loadUsers = () => {
 export const loginPersistentUser = () => {
   return (dispatch: any, getState: any) => {
 
-    const storedUserName = localStorage.getItem('userName');
-    if (!isString(storedUserName)) {
+    const storedUserId = localStorage.getItem('userId');
+    if (!isString(storedUserId)) {
       return null;
     }
 
     const state: MealWheelState = getState();
     const usersMap: UsersMap = state.users;
-    const users: User[] = [];
-    for (const userName in usersMap) {
-      if (Object.prototype.hasOwnProperty.call(usersMap, userName)) {
-        const user = usersMap[userName];
+    const users: UserEntity[] = [];
+    for (const id in usersMap) {
+      if (Object.prototype.hasOwnProperty.call(usersMap, id)) {
+        const user = usersMap[id];
         users.push(user);
       }
     }
 
-    // if there's a stored / persistent userName and it matches a user name in the downloaded list of users,
+    // if there's a stored / persistent id and it matches a user name in the downloaded list of users,
     // bypass the signin screen
-    const matchedUser = users.find(o => o.userName === storedUserName);
+    const matchedUser = users.find(o => o.id === storedUserId);
 
     if (!isNil(matchedUser)) {
-      dispatch(setUserName(matchedUser.userName));
+      dispatch(setUser(matchedUser.id));
       // dispatch(setUiState(UiState.SelectPuzzleOrBoard));
       return matchedUser;
     }

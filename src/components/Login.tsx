@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
+// import { HashRouter } from 'react-router-dom';
 import { createHashHistory } from 'history';
 
 import Select from 'react-select';
 
-import { AppState, UiState, User, UsersMap } from '../types';
+import { AppState, UiState, UserEntity, UsersMap } from '../types';
 import {
   initializeApp,
   setStartupAppState
 } from '../controllers';
 import { getAppInitialized, getAppState, getUsers } from '../selectors';
-import { setUiState, setUserName } from '../models';
+import { setUiState, setUser } from '../models';
 import { isNil } from 'lodash';
 
 export interface LoginProps {
@@ -20,14 +20,14 @@ export interface LoginProps {
   appState: AppState,
   users: UsersMap;
   onInitializeApp: () => any;
-  onSetUserName: (userName: string) => any;
+  onSetUser: (userId: string) => any;
   onSetUiState: (uiState: UiState) => any;
   onSetStartupAppState: () => any;
 }
 
 const Login = (props: LoginProps) => {
 
-  const [selectedUser, setSelectedUser] = React.useState<User>(null);
+  const [selectedUser, setSelectedUser] = React.useState<UserEntity>(null);
 
   React.useEffect(() => {
     console.log('Login: ', props.appInitialized);
@@ -36,19 +36,19 @@ const Login = (props: LoginProps) => {
     }
   }, [props.appInitialized]);
 
-  const getUsers = (): User[] => {
-    const users: User[] = [];
-    for (const userName in props.users) {
-      if (Object.prototype.hasOwnProperty.call(props.users, userName)) {
-        const user: User = props.users[userName];
+  const getUsers = (): UserEntity[] => {
+    const users: UserEntity[] = [];
+    for (const userId in props.users) {
+      if (Object.prototype.hasOwnProperty.call(props.users, userId)) {
+        const user: UserEntity = props.users[userId];
         users.push(user);
       }
     }
     return users;
   };
 
-  const getUserOptions = (users: User[]) => {
-    const userOptions = users.map((user: User) => {
+  const getUserOptions = (users: UserEntity[]) => {
+    const userOptions = users.map((user: UserEntity) => {
       return {
         value: user,
         label: user.userName,
@@ -69,18 +69,18 @@ const Login = (props: LoginProps) => {
       console.log('Select a user then click on Login');
       return;
     }
-    localStorage.setItem('userName', selectedUser.userName);
-    props.onSetUserName(selectedUser.userName);
+    localStorage.setItem('userId', selectedUser.id);
+    props.onSetUser(selectedUser.id);
     props.onSetStartupAppState();
 
     //joining a game from invitation (onSetStartupAppState) not supported yet
-    const hashHistory = createHashHistory();
-    hashHistory.push('/launcher');
+    // const hashHistory = createHashHistory();
+    // hashHistory.push('/launcher');
   };
 
   const renderSelectUser = () => {
 
-    const users: User[] = getUsers();
+    const users: UserEntity[] = getUsers();
     const userOptions = getUserOptions(users);
 
     return (
@@ -130,7 +130,7 @@ function mapStateToProps(state: any) {
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onInitializeApp: initializeApp,
-    onSetUserName: setUserName,
+    onSetUser: setUser,
     onSetUiState: setUiState,
     onSetStartupAppState: setStartupAppState,
   }, dispatch);
