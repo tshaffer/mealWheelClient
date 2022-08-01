@@ -73,16 +73,17 @@ export const initializeApp = () => {
     Promise.all([loadDishesPromise, loadUsersPromise])
       .then(() => {
 
-        const loggedInUser = dispatch(loginPersistentUser());
+        dispatch(setUiState(UiState.SelectUser));
+        // const loggedInUser = dispatch(loginPersistentUser());
 
-        if (isNil(loggedInUser)) {
-          dispatch(setUiState(UiState.SelectUser));
-          // } else if (startupParams.startPage === StartPage.JoinGame && isString(startupParams.startupBoardId)) {
-          //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
-          //   dispatch(launchExistingGame(startupParams.startupBoardId));
-          // } else {
-          //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
-        }
+        // if (isNil(loggedInUser)) {
+        //   dispatch(setUiState(UiState.SelectUser));
+        //   // } else if (startupParams.startPage === StartPage.JoinGame && isString(startupParams.startupBoardId)) {
+        //   //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
+        //   //   dispatch(launchExistingGame(startupParams.startupBoardId));
+        //   // } else {
+        //   //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
+        // }
 
         dispatch(setAppInitialized());
 

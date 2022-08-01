@@ -23,7 +23,7 @@ export interface HomeProps {
 const Home = (props: HomeProps) => {
 
   React.useEffect(() => {
-    console.log('Home: ', props.appInitialized);
+    console.log('Home: appInitialized = ', props.appInitialized);
     if (!props.appInitialized) {
       props.onInitializeApp();
     }

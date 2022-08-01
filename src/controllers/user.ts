@@ -29,7 +29,7 @@ export const loadUsers = () => {
 
             if (!isNil(matchedUser)) {
               dispatch(setUser(matchedUser.id));
-              dispatch(setUiState(UiState.Other));
+              dispatch(setUiState(UiState.App));
               return;
             } else {
               selectedUser = users[0].id;
@@ -69,7 +69,7 @@ export const loginPersistentUser = () => {
 
     if (!isNil(matchedUser)) {
       dispatch(setUser(matchedUser.id));
-      // dispatch(setUiState(UiState.SelectPuzzleOrBoard));
+      dispatch(setUiState(UiState.App));
       return matchedUser;
     }
 

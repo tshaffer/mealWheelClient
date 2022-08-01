@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import { HashRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { createHashHistory } from 'history';
 
 import Select from 'react-select';
@@ -30,7 +30,7 @@ const Login = (props: LoginProps) => {
   const [selectedUser, setSelectedUser] = React.useState<UserEntity>(null);
 
   React.useEffect(() => {
-    console.log('Login: ', props.appInitialized);
+    console.log('Login: appInitialized = ', props.appInitialized);
     if (!props.appInitialized) {
       props.onInitializeApp();
     }
@@ -74,8 +74,8 @@ const Login = (props: LoginProps) => {
     props.onSetStartupAppState();
 
     //joining a game from invitation (onSetStartupAppState) not supported yet
-    // const hashHistory = createHashHistory();
-    // hashHistory.push('/launcher');
+    const hashHistory = createHashHistory();
+    hashHistory.push('/app');
   };
 
   const renderSelectUser = () => {
@@ -84,24 +84,24 @@ const Login = (props: LoginProps) => {
     const userOptions = getUserOptions(users);
 
     return (
-      // <HashRouter>
-      <div>
-        <p>Select user</p>
-        <Select
-          options={userOptions}
-          onChange={handleUserChange}
-          placeholder={'Select a user'}
-        />
-        <p>
-          <button
-            type="button"
-            onClick={handleLogin}
-          >
-            Login
-          </button>
-        </p>
-      </div>
-      // </HashRouter>
+      <HashRouter>
+        <div>
+          <p>Select user</p>
+          <Select
+            options={userOptions}
+            onChange={handleUserChange}
+            placeholder={'Select a user'}
+          />
+          <p>
+            <button
+              type="button"
+              onClick={handleLogin}
+            >
+              Login
+            </button>
+          </p>
+        </div>
+      </HashRouter>
     );
 
   };

@@ -25,6 +25,7 @@ export interface AppState {
 
 export enum UiState {
   SelectUser = 'SelectUser',
+  App = 'App',
   Other = 'Other',
 }
 
