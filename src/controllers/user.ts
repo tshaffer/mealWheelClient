@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { MealWheelState, UserEntity, UsersMap } from '../types';
-import { addUser, setUser } from '../models';
+import { MealWheelState, UiState, UserEntity, UsersMap } from '../types';
+import { addUser, setUiState, setUser } from '../models';
 
 import { apiUrlFragment, serverUrl } from '../index';
 import { isNil, isString } from 'lodash';
@@ -17,29 +17,29 @@ export const loadUsers = () => {
         for (const user of users) {
           dispatch(addUser(user.id, user));
         }
-        // if (users.length > 0) {
+        if (users.length > 0) {
 
-        //   let selectedUser = '';
+          let selectedUser = '';
 
-        //   // if there's a stored / persistent id and it matches a user name in the downloaded list of users,
-        //   // bypass the signin screen
-        //   const storedUserId = localStorage.getItem('userId');
-        //   if (isString(storedUserId)) {
-        //     const matchedUser = users.find(o => o.id === storedUserId);
+          // if there's a stored / persistent id and it matches a user name in the downloaded list of users,
+          // bypass the signin screen
+          const storedUserId = localStorage.getItem('userId');
+          if (isString(storedUserId)) {
+            const matchedUser = users.find(o => o.id === storedUserId);
 
-        //     if (!isNil(matchedUser)) {
-        //       dispatch(setUserId(matchedUser.id));
-        //       dispatch(setUiState(UiState.SelectPuzzleOrBoard));
-        //       return;
-        //     } else {
-        //       selectedUser = users[0].id;
-        //     }
+            if (!isNil(matchedUser)) {
+              dispatch(setUser(matchedUser.id));
+              dispatch(setUiState(UiState.Other));
+              return;
+            } else {
+              selectedUser = users[0].id;
+            }
 
-        //   } else {
-        //     selectedUser = users[0].id;
-        //   }
-        //   dispatch(setUserId(selectedUser));
-        // }
+          } else {
+            selectedUser = users[0].id;
+          }
+          dispatch(setUser(selectedUser));
+        }
 
       });
   };
