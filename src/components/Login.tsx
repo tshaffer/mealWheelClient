@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
-import { createHashHistory } from 'history';
+import { useNavigate } from 'react-router-dom';
 
 import Select from 'react-select';
 
@@ -35,6 +34,8 @@ const Login = (props: LoginProps) => {
       props.onInitializeApp();
     }
   }, [props.appInitialized]);
+
+  const navigate = useNavigate();
 
   const getUsers = (): UserEntity[] => {
     const users: UserEntity[] = [];
@@ -73,9 +74,7 @@ const Login = (props: LoginProps) => {
     props.onSetUser(selectedUser.id);
     props.onSetStartupAppState();
 
-    //joining a game from invitation (onSetStartupAppState) not supported yet
-    const hashHistory = createHashHistory();
-    hashHistory.push('/app');
+    navigate('/app');
   };
 
   const renderSelectUser = () => {
@@ -84,24 +83,22 @@ const Login = (props: LoginProps) => {
     const userOptions = getUserOptions(users);
 
     return (
-      <HashRouter>
-        <div>
-          <p>Select user</p>
-          <Select
-            options={userOptions}
-            onChange={handleUserChange}
-            placeholder={'Select a user'}
-          />
-          <p>
-            <button
-              type="button"
-              onClick={handleLogin}
-            >
-              Login
-            </button>
-          </p>
-        </div>
-      </HashRouter>
+      <div>
+        <p>Select user</p>
+        <Select
+          options={userOptions}
+          onChange={handleUserChange}
+          placeholder={'Select a user'}
+        />
+        <p>
+          <button
+            type="button"
+            onClick={handleLogin}
+          >
+            Login
+          </button>
+        </p>
+      </div>
     );
 
   };

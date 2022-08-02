@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import * as ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 
@@ -35,12 +35,12 @@ const root = createRoot(container!);
 
 root.render(
   <Provider store={store}>
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/app' element={<App />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   </Provider>,
 );
