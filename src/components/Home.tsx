@@ -43,6 +43,8 @@ const Home = (props: HomeProps) => {
   switch (props.appState.uiState) {
     case UiState.SelectUser:
       return <Navigate to='/login' />;
+    case UiState.Other:
+      return <Navigate to='/app' />;
     // case UiState.SelectPuzzleOrBoard:
     //   return <Redirect to='/launcher'/>;
     // case UiState.NewBoardPlay:

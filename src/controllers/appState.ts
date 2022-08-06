@@ -67,23 +67,27 @@ export const initializeApp = () => {
 
     const startupParams: StartupParams = dispatch(getStartupParams());
 
-    const loadDishesPromise = dispatch(loadDishes());
+    // const loadDishesPromise = dispatch(loadDishes());
     const loadUsersPromise = dispatch(loadUsers());
 
-    Promise.all([loadDishesPromise, loadUsersPromise])
+    // Promise.all([loadDishesPromise, loadUsersPromise])
+    Promise.all([loadUsersPromise])
       .then(() => {
 
         dispatch(setUiState(UiState.SelectUser));
-        // const loggedInUser = dispatch(loginPersistentUser());
+        const loggedInUser = dispatch(loginPersistentUser());
 
-        // if (isNil(loggedInUser)) {
-        //   dispatch(setUiState(UiState.SelectUser));
-        //   // } else if (startupParams.startPage === StartPage.JoinGame && isString(startupParams.startupBoardId)) {
-        //   //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
-        //   //   dispatch(launchExistingGame(startupParams.startupBoardId));
-        //   // } else {
-        //   //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
-        // }
+        if (isNil(loggedInUser)) {
+          dispatch(setUiState(UiState.SelectUser));
+          // } else if (startupParams.startPage === StartPage.JoinGame && isString(startupParams.startupBoardId)) {
+          //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
+          //   dispatch(launchExistingGame(startupParams.startupBoardId));
+          // } else {
+          //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
+        } else {
+          dispatch(loadDishes());
+          dispatch(setUiState(UiState.Other));
+        }
 
         dispatch(setAppInitialized());
 

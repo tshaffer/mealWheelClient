@@ -1,13 +1,18 @@
 import axios from 'axios';
+import { getCurrentUser } from '../selectors';
 import { v4 as uuidv4 } from 'uuid';
 
 import { addDishRedux, updateDishRedux } from '../models';
 
-import { apiUrlFragment, DishEntity, serverUrl } from '../types';
+import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../types';
 
 export const loadDishes = () => {
-  return (dispatch: any) => {
-    const path = serverUrl + apiUrlFragment + 'dishes';
+  return (dispatch: any, getState: any) => {
+
+    const state: MealWheelState = getState();
+    const id = getCurrentUser(state);
+
+    const path = serverUrl + apiUrlFragment + 'dishes?id=' + id;
 
     return axios.get(path)
       .then((dishesResponse: any) => {
