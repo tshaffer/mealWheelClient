@@ -66,12 +66,7 @@ export const initializeApp = () => {
     dispatch(getVersions());
 
     const startupParams: StartupParams = dispatch(getStartupParams());
-
-    // const loadDishesPromise = dispatch(loadDishes());
-    const loadUsersPromise = dispatch(loadUsers());
-
-    // Promise.all([loadDishesPromise, loadUsersPromise])
-    Promise.all([loadUsersPromise])
+    dispatch(loadUsers())
       .then(() => {
 
         dispatch(setUiState(UiState.SelectUser));
@@ -79,11 +74,6 @@ export const initializeApp = () => {
 
         if (isNil(loggedInUser)) {
           dispatch(setUiState(UiState.SelectUser));
-          // } else if (startupParams.startPage === StartPage.JoinGame && isString(startupParams.startupBoardId)) {
-          //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
-          //   dispatch(launchExistingGame(startupParams.startupBoardId));
-          // } else {
-          //   dispatch(setUiState(UiState.SelectPuzzleOrBoard));
         } else {
           dispatch(loadDishes());
           dispatch(setUiState(UiState.Other));
@@ -99,14 +89,6 @@ export const setStartupAppState = () => {
   return (dispatch: any, getState: any) => {
     const state: MealWheelState = getState();
     const startPage: StartPage = getStartPage(state);
-    // if (startPage === StartPage.JoinGame) {
-    //   const startupBoardId = getStartupBoardId(state);
-    //   if (isString(startupBoardId)) {
-    //     dispatch(setUiState(UiState.SelectPuzzleOrBoard));
-    //     dispatch(launchExistingGame(startupBoardId));
-    //     return;
-    //   }
-    // }
     dispatch(setUiState(UiState.Other));
   };
 };

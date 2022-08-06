@@ -25,13 +25,6 @@ const divStyle = {
 
 const container = document.getElementById('content');
 const root = createRoot(container!);
-// root.render(
-//   <Provider store={store}>
-//     <div style={divStyle}>
-//       < App />
-//     </div>
-//   </Provider>,
-// );
 
 root.render(
   <Provider store={store}>
