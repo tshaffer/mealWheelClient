@@ -2,7 +2,6 @@ import axios from 'axios';
 import { isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  addMealRedux,
   clearMeals,
   setAppInitialized,
   setUiState,
@@ -12,7 +11,6 @@ import {
   apiUrlFragment,
   DishEntity,
   DishType,
-  Meal,
   MealEntity,
   MealStatus,
   MealWheelState,
@@ -28,6 +26,7 @@ import { getCurrentUser, getStartPage } from '../selectors';
 import { loadDishes } from './dish';
 import { loadUsers, loginPersistentUser } from './user';
 import { getVersions } from './versionInfo';
+import { addMeal } from './meal';
 
 const getStartupParams = () => {
 
@@ -188,7 +187,7 @@ export const generateMenu = () => {
         status: MealStatus.pending
       };
 
-      dispatch(addMealRedux(mealId, meal));
+      dispatch(addMeal(meal));
 
       mealDate.setTime(mealDate.getTime() + (24*60*60*1000));
     }

@@ -6,7 +6,6 @@ import { addMealRedux } from '../models';
 import {
   apiUrlFragment,
   MealEntity,
-  // MealWheelState,
   serverUrl
 } from '../types';
 
