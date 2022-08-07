@@ -1,5 +1,5 @@
 import {
-  DishEntity, UserEntity,
+  DishEntity, MealEntity, UserEntity,
 }
   from './entities';
 
@@ -45,7 +45,7 @@ export interface DishesState {
 // }
 
 export interface MealsState {
-  meals: Meal[];
+  meals: MealEntity[];
 }
 
 export interface Meal {
@@ -80,3 +80,8 @@ export interface AppParameters {
   // startupBoardId: string | null;
 }
 
+export enum MealStatus {
+  pending = 0,
+  accepted = 1,
+  completed = 2,
+}

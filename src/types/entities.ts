@@ -1,3 +1,5 @@
+import { MealStatus } from './base';
+
 export enum DishType {
   Main = 'main',
   Side = 'side',
@@ -25,3 +27,14 @@ export interface UserEntity {
   password: string;
   email: string;
 }
+
+export interface MealEntity {
+  id: string;
+  userId: string;
+  // mealId: string;
+  mainDishId: string;
+  accompanimentDishId: string | null;
+  dateScheduled: Date;
+  status: MealStatus;
+}
+

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { isNil } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import {
-  addMeal,
+  addMealRedux,
   clearMeals,
   setAppInitialized,
   setUiState,
@@ -12,6 +13,8 @@ import {
   DishEntity,
   DishType,
   Meal,
+  MealEntity,
+  MealStatus,
   MealWheelState,
   RequiredAccompanimentFlags,
   serverUrl,
@@ -20,7 +23,7 @@ import {
   UiState
 } from '../types';
 
-import { getStartPage } from '../selectors';
+import { getCurrentUser, getStartPage } from '../selectors';
 
 import { loadDishes } from './dish';
 import { loadUsers, loginPersistentUser } from './user';
@@ -92,6 +95,7 @@ export const setStartupAppState = () => {
     dispatch(setUiState(UiState.Other));
   };
 };
+
 export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
 
@@ -131,14 +135,13 @@ export const generateMenu = () => {
       }
     }
 
+    const mealDate: Date = new Date();
+
     for (const selectedMainDishIndex of selectedMainDishIndices) {
 
       const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
 
-      const meal: Meal = {
-        mainDishId: selectedDish.id,
-        accompanimentDishId: null,
-      };
+      let accompanimentDishId: string = null;
 
       // if accompaniment to main is required, select it.
       if (!isNil(selectedDish.accompaniment) && selectedDish.accompaniment !== RequiredAccompanimentFlags.None) {
@@ -172,10 +175,22 @@ export const generateMenu = () => {
           }
         }
 
-        meal.accompanimentDishId = allDishes[accompanimentIndex].id;
+        accompanimentDishId = allDishes[accompanimentIndex].id;
       }
 
-      dispatch(addMeal(meal));
+      const mealId = uuidv4();
+      const meal: MealEntity = {
+        id: mealId,
+        userId: getCurrentUser(mealWheelState),
+        mainDishId: selectedDish.id,
+        accompanimentDishId,
+        dateScheduled: mealDate,
+        status: MealStatus.pending
+      };
+
+      dispatch(addMealRedux(mealId, meal));
+
+      mealDate.setTime(mealDate.getTime() + (24*60*60*1000));
     }
   };
 };

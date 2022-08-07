@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { Meal, MealsState } from '../types';
+import { Meal, MealEntity, MealsState } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -12,14 +12,21 @@ export const CLEAR_MEALS = 'CLEAR_MEALS';
 // Actions
 // ------------------------------------
 
-export type AddMealPayload = Meal;
+export interface AddMealPayload {
+  id: string;
+  meal: MealEntity;
+}
 
-export const addMeal = (
-  meal: Meal,
+export const addMealRedux = (
+  id: string,
+  meal: MealEntity
 ): any => {
   return {
     type: ADD_MEAL,
-    payload: meal,
+    payload: {
+      id,
+      meal,
+    }
   };
 };
 
@@ -46,7 +53,7 @@ export const mealsStateReducer = (
   switch (action.type) {
     case ADD_MEAL: {
       const newState = cloneDeep(state) as MealsState;
-      newState.meals.push(action.payload);
+      newState.meals.push(action.payload.meal);
       return newState;
     }
     case CLEAR_MEALS: {
