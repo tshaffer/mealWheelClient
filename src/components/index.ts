@@ -3,3 +3,6 @@ export * from './Dishes';
 export * from './Home';
 export * from './Login';
 export * from './MealComponent';
+export * from './MealSchedule';
+export * from './ToolsAndSettings';
+

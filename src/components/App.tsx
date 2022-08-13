@@ -44,6 +44,9 @@ import {
   getUsers,
   getVersionInfo,
 } from '../selectors';
+import Dishes from './Dishes';
+import MealSchedule from './MealSchedule';
+import ToolsAndSettings from './ToolsAndSettings';
 // import MealComponent from './MealComponent';
 // import Dishes from './Dishes';
 
@@ -63,6 +66,8 @@ export interface AppProps {
 const App = (props: AppProps) => {
 
   const [showAboutModal, setShowAboutModal] = React.useState(false);
+
+  const [selectedTab, setSelectedTab] = React.useState<string>('mealScheduleTabSelect');
 
   // React.useEffect(() => {
   //   props.onInitializeApp();
@@ -85,6 +90,48 @@ const App = (props: AppProps) => {
       minHeight: '105px',
       minWidth: '150px',
     },
+  };
+
+  const unselectedTabContent = {
+    display: 'none',
+    padding: '6px 12px',
+    border: '1px solid #ccc',
+    borderTop: 'none',
+  };
+
+  const selectedTabContent = {
+    display: 'block',
+    padding: '6px 12px',
+    border: '1px solid #ccc',
+    borderTop: 'none',
+  };
+
+  const tab = {
+    overflow: 'hidden',
+    border: '1px solid #ccc',
+    backgroundColor: '#f1f1f1',
+  };
+
+  const tabLinkSelected = {
+    border: 'none',
+    outline: 'none',
+    cursor: 'pointer',
+    padding: '14px 16px',
+    transition: '0.3s',
+    backgroundColor: '#ccc',
+  };
+
+  const tabLinkUnselected = {
+    border: 'none',
+    outline: 'none',
+    cursor: 'pointer',
+    padding: '14px 16px',
+    transition: '0.3s',
+    backgroundColor: 'inherit',
+  };
+
+  const divStyle = {
+    height: '98vh',
   };
 
 
@@ -116,6 +163,9 @@ const App = (props: AppProps) => {
     setShowAboutModal(false);
   };
 
+  function handleSelectTab(evt: any) {
+    setSelectedTab(evt.target.id);
+  }
 
   const renderToolbar = () => {
     return (
@@ -145,7 +195,66 @@ const App = (props: AppProps) => {
     );
   };
 
+  const renderTable = () => {
+
+    let dishesTabStyle;
+    let dishesTabContentStyle;
+    let mealScheduleTabStyle;
+    let mealScheduleTabContentStyle;
+    let settingsTabStyle;
+    let settingsTabContentStyle;
+
+    switch (selectedTab) {
+      case 'newGameTabSelect':
+        dishesTabStyle = tabLinkSelected;
+        dishesTabContentStyle = selectedTabContent;
+        mealScheduleTabStyle = tabLinkUnselected;
+        mealScheduleTabContentStyle = unselectedTabContent;
+        settingsTabStyle = tabLinkUnselected;
+        settingsTabContentStyle = unselectedTabContent;
+        break;
+      default:
+      case 'mealScheduleTabSelect':
+        dishesTabStyle = tabLinkUnselected;
+        dishesTabContentStyle = unselectedTabContent;
+        mealScheduleTabStyle = tabLinkSelected;
+        mealScheduleTabContentStyle = selectedTabContent;
+        settingsTabStyle = tabLinkUnselected;
+        settingsTabContentStyle = unselectedTabContent;
+        break;
+      case 'settingsTabSelect':
+        dishesTabContentStyle = unselectedTabContent;
+        dishesTabStyle = tabLinkUnselected;
+        mealScheduleTabStyle = tabLinkUnselected;
+        mealScheduleTabContentStyle = unselectedTabContent;
+        settingsTabStyle = tabLinkSelected;
+        settingsTabContentStyle = selectedTabContent;
+        break;
+    }
+
+    return (
+      <div>
+        <div style={tab}>
+          <button style={mealScheduleTabStyle} onClick={handleSelectTab} id='mealScheduleTabSelect' >Meal Schedule</button>
+          <button style={dishesTabStyle} onClick={handleSelectTab} id='newGameTabSelect'>Dishes</button>
+          <button style={settingsTabStyle} onClick={handleSelectTab} id='settingsTabSelect' >Tools & Settings</button>
+        </div>
+        <div id='mealScheduleContent' style={mealScheduleTabContentStyle}>
+          <MealSchedule
+          />
+        </div>
+        <div id='newGameContent' style={dishesTabContentStyle}>
+          <Dishes />
+        </div>
+        <div id='settingsContent' style={settingsTabContentStyle}>
+          <ToolsAndSettings />
+        </div>
+      </div>
+    );
+  };
+
   const toolbar = renderToolbar();
+  const table = renderTable();
 
   return (
     <div>
@@ -178,6 +287,7 @@ const App = (props: AppProps) => {
         </ReactModal>
       </div>
       {toolbar}
+      {table}
     </div >
   );
 
