@@ -61,11 +61,11 @@ const MealSchedule = (props: MealScheduleProps) => {
       </Box>
     );
   };
-
+  
   const meals = renderMeals();
 
   return (
-    <div>
+    <div style={{ height: 300, width: '100%' }}>
       {meals}
     </div>
   );
