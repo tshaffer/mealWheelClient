@@ -140,7 +140,7 @@ export const generateMenu = () => {
 
       const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
 
-      let accompanimentDishId: string = null;
+      let accompanimentDishId: string | null = null;
 
       // if accompaniment to main is required, select it.
       if (!isNil(selectedDish.accompaniment) && selectedDish.accompaniment !== RequiredAccompanimentFlags.None) {
@@ -180,7 +180,7 @@ export const generateMenu = () => {
       const mealId = uuidv4();
       const meal: MealEntity = {
         id: mealId,
-        userId: getCurrentUser(mealWheelState),
+        userId: getCurrentUser(mealWheelState) as string,
         mainDishId: selectedDish.id,
         accompanimentDishId,
         dateScheduled: mealDate,

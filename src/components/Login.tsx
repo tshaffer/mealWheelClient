@@ -26,7 +26,7 @@ export interface LoginProps {
 
 const Login = (props: LoginProps) => {
 
-  const [selectedUser, setSelectedUser] = React.useState<UserEntity>(null);
+  const [selectedUser, setSelectedUser] = React.useState<UserEntity | null>(null);
 
   React.useEffect(() => {
     console.log('Login: appInitialized = ', props.appInitialized);

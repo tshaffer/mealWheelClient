@@ -290,14 +290,17 @@ const Dishes = (props: DishesProps) => {
 
   const getRows = () => {
     const rows: GridRowsProp = props.dishes.map((dish: DishEntity) => {
+      const side = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Side;
+      const salad = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Salad;
+      const veg = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Veg;
       const row: GridRowModel = {
         id: dish.id,
         name: dish.name,
         type: dish.type,
         requiresAccompaniment: !isNil(dish.accompaniment) && dish.accompaniment !== RequiredAccompanimentFlags.None,
-        side: dish.accompaniment & RequiredAccompanimentFlags.Side,
-        salad: dish.accompaniment & RequiredAccompanimentFlags.Salad,
-        veg: dish.accompaniment & RequiredAccompanimentFlags.Veg,
+        side,
+        salad,
+        veg,
       };
       return row;
     });

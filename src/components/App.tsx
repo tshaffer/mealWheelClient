@@ -60,7 +60,6 @@ export interface AppProps {
 
   // meals: Meal[];
   // onGenerateMenu: () => any;
-  // onUploadFile: (formData: FormData) => any;
 }
 
 const App = (props: AppProps) => {
@@ -240,8 +239,7 @@ const App = (props: AppProps) => {
           <button style={settingsTabStyle} onClick={handleSelectTab} id='settingsTabSelect' >Tools & Settings</button>
         </div>
         <div id='mealScheduleContent' style={mealScheduleTabContentStyle}>
-          <MealSchedule
-          />
+          <MealSchedule />
         </div>
         <div id='newGameContent' style={dishesTabContentStyle}>
           <Dishes />

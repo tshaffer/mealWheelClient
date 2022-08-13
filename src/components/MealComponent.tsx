@@ -25,12 +25,16 @@ export interface MealComponentPropsFromParent {
 }
 
 export interface MealComponentProps extends MealComponentPropsFromParent {
-  mainDish: DishEntity;
-  accompanimentDish: DishEntity;
+  mainDish: DishEntity | null;
+  accompanimentDish: DishEntity | null;
 }
 
 const MealComponent = (props: MealComponentProps) => {
 
+  if (isNil(props.mainDish)) {
+    return null;
+  }
+  
   let row = props.mainDish.name;
   if (!isNil(props.accompanimentDish)) {
     row += ' - ' + props.accompanimentDish.name;

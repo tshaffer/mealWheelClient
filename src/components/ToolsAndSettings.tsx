@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
   uploadFile,
 } from '../controllers';
+import { isNil } from 'lodash';
 
 export interface ToolsAndSettingsProps {
   onUploadFile: (formData: FormData) => any;
@@ -19,9 +20,11 @@ const ToolsAndSettings = (props: ToolsAndSettingsProps) => {
   };
 
   const handleUploadFile = () => {
-    const data = new FormData();
-    data.append('file', selectedFile);
-    props.onUploadFile(data);
+    if (!isNil(selectedFile)) {
+      const data = new FormData();
+      data.append('file', selectedFile);
+      props.onUploadFile(data);  
+    }
   };
 
   return (

@@ -49,7 +49,8 @@ function SelectableCalendar({ localizer }: Props) {
     }
   ] as CalendarEvent[]);
 
-  const handleSelect = ({ start, end }) => {
+  const handleSelect = (eventStartEnd: any) => {
+    const { start, end } = eventStartEnd;
     const title = window.prompt('New Event name');
 
     if (title) {
