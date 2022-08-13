@@ -17,6 +17,10 @@ export interface MealScheduleProps {
 }
 const MealSchedule = (props: MealScheduleProps) => {
 
+  const handleGenerateMenu = () => {
+    props.onGenerateMenu();
+  };
+
   const renderMealRow = (meal: Meal) => {
     return (
       <MealComponent
@@ -61,11 +65,13 @@ const MealSchedule = (props: MealScheduleProps) => {
       </Box>
     );
   };
-  
+
   const meals = renderMeals();
 
   return (
     <div style={{ height: 300, width: '100%' }}>
+      <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
+      <br />
       {meals}
     </div>
   );
