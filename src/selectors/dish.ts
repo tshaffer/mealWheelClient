@@ -1,4 +1,4 @@
-import { DishEntity, MealWheelState, Meal, MealsState } from '../types';
+import { DishEntity, MealWheelState } from '../types';
 
 export const getDishes = (state: MealWheelState): DishEntity[] => {
   return state.dishesState.dishes;
@@ -13,10 +13,6 @@ export const getDish = (state: MealWheelState, dishId: string) => {
     }
   }
   return null;
-};
-
-export const getMeals = (state: MealWheelState): Meal[] => {
-  return state.mealsState.meals;
 };
 
 // export const getMeal = (state: MealWheelState, mealId: string): Meal | null => {

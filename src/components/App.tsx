@@ -35,7 +35,6 @@ import {
 } from '../models';
 import {
   getAppInitialized,
-  // getMeals,
   getUsers,
   getVersionInfo,
 } from '../selectors';
@@ -229,7 +228,7 @@ const App = (props: AppProps) => {
         <div id='mealScheduleContent' style={mealScheduleTabContentStyle}>
           <MealSchedule />
         </div>
-        <div id='newGameContent' style={dishesTabContentStyle}>
+        <div id='dishesContent' style={dishesTabContentStyle}>
           <Dishes />
         </div>
         <div id='settingsContent' style={settingsTabContentStyle}>
