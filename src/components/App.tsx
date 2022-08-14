@@ -4,6 +4,7 @@ import { isNil } from 'lodash';
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 import ReactModal = require('react-modal');
 
@@ -18,10 +19,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-
-// import { Box } from '@mui/material';
-// import Grid from '@mui/material/Grid';
-
 import {
   Meal,
   UiState,
@@ -30,9 +27,7 @@ import {
 } from '../types';
 
 import {
-  // generateMenu,
   initializeApp,
-  // uploadFile,
 } from '../controllers';
 import {
   setUiState,
@@ -47,8 +42,6 @@ import {
 import Dishes from './Dishes';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
-// import MealComponent from './MealComponent';
-// import Dishes from './Dishes';
 
 export interface AppProps {
   appInitialized: boolean;
@@ -57,26 +50,25 @@ export interface AppProps {
   onInitializeApp: () => any;
   onSetUiState: (uiState: UiState) => any;
   onSetUser: (userId: string) => any;
-
-  // meals: Meal[];
-  // onGenerateMenu: () => any;
 }
 
 const App = (props: AppProps) => {
+
+  const [redirectTarget, setRedirectTarget] = React.useState('');
 
   const [showAboutModal, setShowAboutModal] = React.useState(false);
 
   const [selectedTab, setSelectedTab] = React.useState<string>('mealScheduleTabSelect');
 
-  // React.useEffect(() => {
-  //   props.onInitializeApp();
-  // }, []);
   React.useEffect(() => {
-    console.log('Launcher: ', props.appInitialized);
     if (!props.appInitialized) {
       props.onInitializeApp();
     }
   }, [props.appInitialized]);
+
+  if (redirectTarget === 'login') {
+    return <Navigate to='/login' />;
+  }
 
   const modalStyle = {
     content: {
@@ -129,10 +121,6 @@ const App = (props: AppProps) => {
     backgroundColor: 'inherit',
   };
 
-  const divStyle = {
-    height: '98vh',
-  };
-
 
   const handleSignout = () => {
 
@@ -150,7 +138,7 @@ const App = (props: AppProps) => {
     }
     props.onSetUiState(UiState.SelectUser);
 
-    // setRedirectTarget('login');
+    setRedirectTarget('login');
   };
 
 
@@ -288,87 +276,6 @@ const App = (props: AppProps) => {
       {table}
     </div >
   );
-
-
-
-
-  // const [selectedFile, setSelectedFile] = React.useState(null);
-
-  // const handleFileChangeHandler = (e: any) => {
-  //   setSelectedFile(e.target.files[0]);
-  // };
-
-  // const handleGenerateMenu = () => {
-  //   props.onGenerateMenu();
-  // };
-
-  // const handleUploadFile = () => {
-  //   const data = new FormData();
-  //   data.append('file', selectedFile);
-  //   props.onUploadFile(data);
-  // };
-
-  // const renderMealRow = (meal: Meal) => {
-  //   return (
-  //     <MealComponent
-  //       mainDishId={meal.mainDishId}
-  //       accompanimentDishId={meal.accompanimentDishId}
-  //       key={meal.mainDishId}
-  //     />
-  //   );
-  // };
-
-
-  // const renderMealRows = () => {
-
-  //   if (props.meals.length === 0) {
-  //     return null;
-  //   }
-
-  //   const mealRows = props.meals.map((meal: Meal) => {
-  //     return renderMealRow(meal);
-  //   });
-
-  //   return mealRows;
-  // };
-
-  // const renderMeals = () => {
-
-  //   if (props.meals.length === 0) {
-  //     return null;
-  //   }
-
-  //   const mealRows = renderMealRows();
-
-  //   if (isNil(mealRows)) {
-  //     return null;
-  //   }
-
-  //   return (
-  //     <Box sx={{ flexGrow: 1 }}>
-  //       <Grid container spacing={2}>
-  //         {mealRows}
-  //       </Grid>
-  //     </Box>
-  //   );
-  // };
-
-  // const meals = renderMeals();
-
-  // return (
-  //   <div>
-  //     <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
-  //     <br />
-  //     {meals}
-  //     <input type="file" name="file" onChange={handleFileChangeHandler} />
-  //     <br />
-  //     <button type="button" onClick={handleUploadFile}>Upload</button>
-  //     <br />
-  //     <Dishes />
-  //   </div>
-  // );
-
-
 };
 
 function mapStateToProps(state: any) {
@@ -376,8 +283,6 @@ function mapStateToProps(state: any) {
     appInitialized: getAppInitialized(state),
     users: getUsers(state),
     versionInfo: getVersionInfo(state),
-
-    // meals: getMeals(state),
   };
 }
 
@@ -386,9 +291,6 @@ const mapDispatchToProps = (dispatch: any) => {
     onInitializeApp: initializeApp,
     onSetUser: setUser,
     onSetUiState: setUiState,
-
-    // onUploadFile: uploadFile,
-    // onGenerateMenu: generateMenu,
   }, dispatch);
 };
 
