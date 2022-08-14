@@ -49,16 +49,6 @@ export interface MealScheduleProps {
 }
 
 const MealSchedule = (props: MealScheduleProps) => {
-  // function SelectableCalendar({ localizer }: Props) {
-  // const [events, setEvents] = useState([
-  //   {
-  //     title: 'test',
-  //     allDay: false,
-  //     start,
-  //     end,
-  //     desc: 'test',
-  //   }
-  // ] as CalendarEvent[]);
 
   const [events, setEvents] = useState([] as CalendarEvent[]);
 
@@ -83,9 +73,7 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
 
-    const meals: CalendarEvent[] = [];
-
-    console.log(props.detailedMeals.length);
+    const mealsInSchedule: CalendarEvent[] = [];
 
     for (const detailedMeal of props.detailedMeals) {
       const event: CalendarEvent = {
@@ -95,28 +83,48 @@ const MealSchedule = (props: MealScheduleProps) => {
         end: detailedMeal.dateScheduled,
         desc: 'test',
       };
-      meals.push(event);
+      mealsInSchedule.push(event);
     }
 
     // if (meals.length > 0) {
     //   setEvents(meals);
     // }
 
-    if (meals.length !== 0) {
-      if (events.length !== 22) {
-        console.log('setEvents');
-        console.log(meals);
-        setEvents(meals);
+    // if (mealsInSchedule.length !== 0) {
+    //   if (events.length !== 22) {
+    //     console.log('setEvents');
+    //     console.log(mealsInSchedule);
+    //     setEvents(mealsInSchedule);
+    //   } else {
+    //     console.log('events');
+    //     console.log(events);
+    //   }
+
+    // only invoke setEvents if the events are different than the meals
+    if (mealsInSchedule.length > 0) {
+      if (mealsInSchedule.length !== events.length) {
+        setEvents(mealsInSchedule);
       } else {
-        console.log('events');
-        console.log(events);
+        for (let i = 0; i < mealsInSchedule.length; i++) {
+          const scheduledMeal: CalendarEvent = events[i];
+          const newMeal: CalendarEvent = mealsInSchedule[i];
+          if (!(scheduledMeal.title === newMeal.title &&
+            scheduledMeal.allDay === newMeal.allDay &&
+            scheduledMeal.start === newMeal.start &&
+            scheduledMeal.end === newMeal.end &&
+            scheduledMeal.desc === newMeal.desc
+          )) {
+            setEvents(mealsInSchedule);
+            break;
+          }
+        }
       }
     }
   }
 
-  console.log('render calendar');
-  console.log('events');
-  console.log(events);
+  // console.log('render calendar');
+  // console.log('events');
+  // console.log(events);
 
   return (
     <div style={{ height: '100vh' }}>
