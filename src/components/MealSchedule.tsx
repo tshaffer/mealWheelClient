@@ -9,7 +9,7 @@ const localizer = momentLocalizer(moment);
 
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
 
-interface Props {
+interface SelectableCalendarProps {
   localizer: DateLocalizer;
 }
 
@@ -38,7 +38,8 @@ const start: Date = new Date(now);
 const end: Date = new Date(now);
 end.setDate(end.getDate() + 1);
 
-function SelectableCalendar({ localizer }: Props) {
+const MealSchedule = () => {
+// function SelectableCalendar({ localizer }: Props) {
   // const [events, setEvents] = useState([
   //   {
   //     title: 'test',
@@ -71,7 +72,7 @@ function SelectableCalendar({ localizer }: Props) {
   };
 
   return (
-    <>
+    <div style={{ height: '100vh' }}>
       <div>
         <strong>
           Click an event to see more info, or drag the mouse over the calendar
@@ -91,19 +92,11 @@ function SelectableCalendar({ localizer }: Props) {
         endAccessor='end'
         titleAccessor='title'
       />
-    </>
-  );
-}
-
-
-export default function Availability() {
-
-  return (
-    <div style={{ height: '100vh' }}>
-      <SelectableCalendar localizer={localizer} />
     </div>
   );
-}
+};
+
+export default MealSchedule;
 
 // import * as React from 'react';
 // import { bindActionCreators } from 'redux';
