@@ -7,15 +7,29 @@ import Grid from '@mui/material/Grid';
 
 import { Meal } from '../types';
 import MealComponent from './MealComponent';
-import { getMeals } from '../selectors';
-import { generateMenu } from '../controllers';
+import { getCurrentUser, getMeals } from '../selectors';
+import {
+  generateMenu,
+  loadDishes,
+  loadMeals,
+} from '../controllers';
 import { isNil } from 'lodash';
 
 export interface MealScheduleProps {
+  userId: string;
   meals: Meal[];
+  onLoadMeals: (usrId: string) => any;
   onGenerateMenu: () => any;
 }
+
 const MealSchedule = (props: MealScheduleProps) => {
+
+  React.useEffect(() => {
+    console.log('Meals useEffect: ', props.userId);
+    if (!isNil(props.userId)) {
+      props.onLoadMeals(props.userId);
+    }
+  }, [props.userId]);
 
   const handleGenerateMenu = () => {
     props.onGenerateMenu();
@@ -79,12 +93,14 @@ const MealSchedule = (props: MealScheduleProps) => {
 
 function mapStateToProps(state: any) {
   return {
+    userId: getCurrentUser(state) as string,
     meals: getMeals(state),
   };
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onLoadMeals: loadMeals,
     onGenerateMenu: generateMenu,
   }, dispatch);
 };

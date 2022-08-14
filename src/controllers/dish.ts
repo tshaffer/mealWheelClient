@@ -12,6 +12,8 @@ export const loadDishes = () => {
     const state: MealWheelState = getState();
     const id = getCurrentUser(state);
 
+    console.log('loadDishes, user id: ', id);
+    
     const path = serverUrl + apiUrlFragment + 'dishes?id=' + id;
 
     return axios.get(path)

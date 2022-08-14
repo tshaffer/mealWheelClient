@@ -30,9 +30,13 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 
 import { DishEntity, DishRowModel, DishType, RequiredAccompanimentFlags } from '../types';
-import { getDishes } from '../selectors';
+import {
+  getDishes,
+  getCurrentUser,
+} from '../selectors';
 import {
   addDish,
+  loadDishes,
   updateDish
 } from '../controllers';
 
@@ -74,11 +78,12 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 export interface DishesProps {
+  userId: string;
   dishes: DishEntity[];
+  onLoadDishes: (userId: string) => any;
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
 }
-
 const mainOption = { value: 'main', label: 'Main' };
 const saladOption = { value: 'salad', label: 'Salad' };
 const sideOption = { value: 'side', label: 'Side' };
@@ -92,6 +97,15 @@ const Dishes = (props: DishesProps) => {
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
+
+  React.useEffect(() => {
+    console.log('Dishes useEffect: ', props.userId);
+    if (!isNil(props.userId)) {
+      props.onLoadDishes(props.userId);
+    }
+  }, []);
+
+  console.log('Proceed past useEffect');
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
@@ -345,6 +359,8 @@ const Dishes = (props: DishesProps) => {
     setRows(newRows);
   }
 
+  console.log('Dishes: render');
+
   return (
     <Box
       sx={{
@@ -396,12 +412,14 @@ const Dishes = (props: DishesProps) => {
 
 function mapStateToProps(state: any) {
   return {
+    userId: getCurrentUser(state) as string,
     dishes: getDishes(state),
   };
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onLoadDishes: loadDishes,
     onAddDish: addDish,
     onUpdateDish: updateDish,
   }, dispatch);

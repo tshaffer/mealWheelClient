@@ -1,13 +1,39 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addMealRedux } from '../models';
+import { addMealRedux, clearMeals } from '../models';
+import { getCurrentUser } from '../selectors';
 
 import {
   apiUrlFragment,
   MealEntity,
+  MealWheelState,
   serverUrl
 } from '../types';
+
+
+export const loadMeals = () => {
+  return (dispatch: any, getState: any) => {
+
+    dispatch(clearMeals());
+
+    const state: MealWheelState = getState();
+    const id = getCurrentUser(state);
+
+    console.log('loadMeals, user id: ', id);
+    
+    const path = serverUrl + apiUrlFragment + 'meals?id=' + id;
+
+    return axios.get(path)
+      .then((mealsResponse: any) => {
+        const mealEntities: MealEntity[] = (mealsResponse as any).data;
+        // // TEDTODO - add all in a single call
+        for (const mealEntity of mealEntities) {
+          dispatch(addMealRedux(mealEntity.id, mealEntity));
+        }
+      });
+  };
+};
 
 
 export const addMeal = (
