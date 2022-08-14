@@ -2,7 +2,7 @@ import axios from 'axios';
 import { isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addMealRedux, clearMeals } from '../models';
+import { addMealRedux, addMealsRedux, clearMeals } from '../models';
 import { getCurrentUser } from '../selectors';
 
 import {
@@ -132,10 +132,7 @@ export const loadMeals = () => {
     return axios.get(path)
       .then((mealsResponse: any) => {
         const mealEntities: MealEntity[] = (mealsResponse as any).data;
-        // // TEDTODO - add all in a single call
-        for (const mealEntity of mealEntities) {
-          dispatch(addMealRedux(mealEntity.id, mealEntity));
-        }
+        dispatch(addMealsRedux(mealEntities));
       });
   };
 };

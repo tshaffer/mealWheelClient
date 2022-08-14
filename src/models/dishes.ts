@@ -6,6 +6,7 @@ import { MealWheelModelBaseAction } from './baseAction';
 // Constants
 // ------------------------------------
 export const ADD_DISH = 'ADD_DISH';
+export const ADD_DISHES = 'ADD_DISHES';
 export const UPDATE_DISH = 'UPDATE_DISH';
 
 // ------------------------------------
@@ -26,6 +27,21 @@ export const addDishRedux = (
     payload: {
       id,
       dish,
+    }
+  };
+};
+
+export interface AddDishesPayload {
+  dishes: DishEntity[];
+}
+
+export const addDishesRedux = (
+  dishes: DishEntity[]
+): any => {
+  return {
+    type: ADD_DISHES,
+    payload: {
+      dishes,
     }
   };
 };
@@ -59,13 +75,18 @@ const initialState: DishesState =
 
 export const dishesStateReducer = (
   state: DishesState = initialState,
-  action: MealWheelModelBaseAction<AddDishPayload>
+  action: MealWheelModelBaseAction<AddDishPayload & AddDishesPayload>
 ): DishesState => {
   switch (action.type) {
     case ADD_DISH: {
       const newState = cloneDeep(state) as DishesState;
       // newState.dishes[action.payload.id] = action.payload.dish;
       newState.dishes.push(action.payload.dish);
+      return newState;
+    }
+    case ADD_DISHES: {
+      const newState = cloneDeep(state) as DishesState;
+      newState.dishes = newState.dishes.concat(action.payload.dishes);
       return newState;
     }
     case UPDATE_DISH: {

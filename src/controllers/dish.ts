@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCurrentUser } from '../selectors';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addDishRedux, updateDishRedux } from '../models';
+import { addDishesRedux, addDishRedux, updateDishRedux } from '../models';
 
 import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../types';
 
@@ -19,10 +19,7 @@ export const loadDishes = () => {
     return axios.get(path)
       .then((dishesResponse: any) => {
         const dishEntities: DishEntity[] = (dishesResponse as any).data;
-        // // TEDTODO - add all in a single call
-        for (const dishEntity of dishEntities) {
-          dispatch(addDishRedux(dishEntity.id, dishEntity));
-        }
+        dispatch(addDishesRedux(dishEntities));
       });
   };
 };

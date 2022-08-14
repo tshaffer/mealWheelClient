@@ -6,6 +6,7 @@ import { MealWheelModelBaseAction } from './baseAction';
 // Constants
 // ------------------------------------
 export const ADD_MEAL = 'ADD_MEAL';
+export const ADD_MEALS = 'ADD_MEALS';
 export const CLEAR_MEALS = 'CLEAR_MEALS';
 
 // ------------------------------------
@@ -30,6 +31,22 @@ export const addMealRedux = (
   };
 };
 
+export interface AddMealsPayload {
+  id: string;
+  meals: MealEntity[];
+}
+
+export const addMealsRedux = (
+  meals: MealEntity[]
+): any => {
+  return {
+    type: ADD_MEALS,
+    payload: {
+      meals,
+    }
+  };
+};
+
 export const clearMeals = (
 ): any => {
   return {
@@ -48,12 +65,17 @@ const initialState: MealsState =
 
 export const mealsStateReducer = (
   state: MealsState = initialState,
-  action: MealWheelModelBaseAction<AddMealPayload>
+  action: MealWheelModelBaseAction<AddMealPayload & AddMealsPayload>
 ): MealsState => {
   switch (action.type) {
     case ADD_MEAL: {
       const newState = cloneDeep(state) as MealsState;
       newState.meals.push(action.payload.meal);
+      return newState;
+    }
+    case ADD_MEALS: {
+      const newState = cloneDeep(state) as MealsState;
+      newState.meals = newState.meals.concat(action.payload.meals);
       return newState;
     }
     case CLEAR_MEALS: {
