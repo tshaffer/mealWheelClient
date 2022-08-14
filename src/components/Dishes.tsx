@@ -99,13 +99,11 @@ const Dishes = (props: DishesProps) => {
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
   React.useEffect(() => {
-    console.log('Dishes useEffect: ', props.userId);
     if (!isNil(props.userId)) {
       props.onLoadDishes(props.userId);
     }
   }, []);
 
-  console.log('Proceed past useEffect');
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
@@ -359,7 +357,7 @@ const Dishes = (props: DishesProps) => {
     setRows(newRows);
   }
 
-  console.log('Dishes: render');
+  // console.log('Dishes: render');
 
   return (
     <Box

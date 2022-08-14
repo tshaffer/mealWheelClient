@@ -38,3 +38,12 @@ export interface MealEntity {
   status: MealStatus;
 }
 
+export interface DetailedMealEntity {
+  id: string;
+  userId: string;
+  mainDish: DishEntity;
+  accompanimentDish: DishEntity | null;
+  dateScheduled: Date;
+  status: MealStatus;
+}
+

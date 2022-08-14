@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Calendar, View, DateLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+import { DetailedMealEntity, DishEntity, Meal, MealEntity } from '../types';
+import { loadMeals, generateMenu } from '../controllers';
+import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
+import { isNil } from 'lodash';
+
 const localizer = momentLocalizer(moment);
 
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
-
-interface SelectableCalendarProps {
-  localizer: DateLocalizer;
-}
 
 class CalendarEvent {
   title: string;
@@ -32,14 +35,21 @@ class CalendarEvent {
   }
 }
 
-
 const now: number = Date.now();
 const start: Date = new Date(now);
 const end: Date = new Date(now);
 end.setDate(end.getDate() + 1);
 
-const MealSchedule = () => {
-// function SelectableCalendar({ localizer }: Props) {
+export interface MealScheduleProps {
+  userId: string;
+  meals: MealEntity[];
+  detailedMeals: DetailedMealEntity[];
+  onLoadMeals: (usrId: string) => any;
+  onGenerateMenu: () => any;
+}
+
+const MealSchedule = (props: MealScheduleProps) => {
+  // function SelectableCalendar({ localizer }: Props) {
   // const [events, setEvents] = useState([
   //   {
   //     title: 'test',
@@ -71,6 +81,43 @@ const MealSchedule = () => {
     }
   };
 
+  if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
+
+    const meals: CalendarEvent[] = [];
+
+    console.log(props.detailedMeals.length);
+
+    for (const detailedMeal of props.detailedMeals) {
+      const event: CalendarEvent = {
+        title: detailedMeal.mainDish.name,
+        allDay: true,
+        start: detailedMeal.dateScheduled,
+        end: detailedMeal.dateScheduled,
+        desc: 'test',
+      };
+      meals.push(event);
+    }
+
+    // if (meals.length > 0) {
+    //   setEvents(meals);
+    // }
+
+    if (meals.length !== 0) {
+      if (events.length !== 22) {
+        console.log('setEvents');
+        console.log(meals);
+        setEvents(meals);
+      } else {
+        console.log('events');
+        console.log(events);
+      }
+    }
+  }
+
+  console.log('render calendar');
+  console.log('events');
+  console.log(events);
+
   return (
     <div style={{ height: '100vh' }}>
       <div>
@@ -96,7 +143,25 @@ const MealSchedule = () => {
   );
 };
 
-export default MealSchedule;
+function mapStateToProps(state: any) {
+  const dishes: DishEntity[] = getDishes(state);
+  const meals: MealEntity[] = getMeals(state);
+  const detailedMeals: DetailedMealEntity[] = getDetailedMeals(state, meals, dishes);
+  return {
+    userId: getCurrentUser(state) as string,
+    meals,
+    detailedMeals,
+  };
+}
+
+const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({
+    onLoadMeals: loadMeals,
+    onGenerateMenu: generateMenu,
+  }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MealSchedule);
 
 // import * as React from 'react';
 // import { bindActionCreators } from 'redux';
