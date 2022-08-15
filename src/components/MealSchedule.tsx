@@ -17,22 +17,12 @@ const localizer = momentLocalizer(moment);
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
 
 class CalendarEvent {
-  title: string;
-  allDay: boolean;
-  start: Date;
-  end: Date;
-  desc: string;
+  title: string = '';
+  allDay: boolean = false;
+  start: Date = new Date();
+  end: Date = new Date();
   resourceId?: string;
   tooltip?: string;
-
-  constructor(_title: string, _start: Date, _endDate: Date, _allDay?: boolean, _desc?: string, _resourceId?: string) {
-    this.title = _title;
-    this.allDay = _allDay || false;
-    this.start = _start;
-    this.end = _endDate;
-    this.desc = _desc || '';
-    this.resourceId = _resourceId;
-  }
 }
 
 const now: number = Date.now();
@@ -81,7 +71,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         allDay: true,
         start: detailedMeal.dateScheduled,
         end: detailedMeal.dateScheduled,
-        desc: 'test',
+        tooltip: detailedMeal.mainDish.name,
       };
       mealsInSchedule.push(event);
     }
@@ -97,8 +87,7 @@ const MealSchedule = (props: MealScheduleProps) => {
           if (!(scheduledMeal.title === newMeal.title &&
             scheduledMeal.allDay === newMeal.allDay &&
             scheduledMeal.start === newMeal.start &&
-            scheduledMeal.end === newMeal.end &&
-            scheduledMeal.desc === newMeal.desc
+            scheduledMeal.end === newMeal.end
           )) {
             setEvents(mealsInSchedule);
             break;
