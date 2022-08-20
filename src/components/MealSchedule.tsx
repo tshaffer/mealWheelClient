@@ -11,7 +11,6 @@ import { DetailedMealEntity, DishEntity, DishType, Meal, MealEntity, MealStatus 
 import { loadMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
-import Button from '@mui/material/Button';
 import MealInCalendar from './MealInCalendar';
 
 const localizer = momentLocalizer(moment);
@@ -145,7 +144,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         endAccessor='end'
         titleAccessor='title'
         components={{
-          event: MealInCalendar
+          event: MealInCalendar as any
         }}
       />
     </div>

@@ -7,6 +7,7 @@ import { MealWheelModelBaseAction } from './baseAction';
 // ------------------------------------
 export const ADD_MEAL = 'ADD_MEAL';
 export const ADD_MEALS = 'ADD_MEALS';
+export const UPDATE_MEAL = 'UPDATE_MEAL';
 export const CLEAR_MEALS = 'CLEAR_MEALS';
 
 // ------------------------------------
@@ -54,6 +55,25 @@ export const clearMeals = (
   };
 };
 
+export interface UpdateMealPayload {
+  id: string;
+  meal: MealEntity;
+}
+
+export const updateMealRedux = (
+  id: string,
+  meal: MealEntity
+): any => {
+  return {
+    type: UPDATE_MEAL,
+    payload: {
+      id,
+      meal,
+    }
+  };
+};
+
+
 // ------------------------------------
 // Reducer
 // ------------------------------------
@@ -65,7 +85,7 @@ const initialState: MealsState =
 
 export const mealsStateReducer = (
   state: MealsState = initialState,
-  action: MealWheelModelBaseAction<AddMealPayload & AddMealsPayload>
+  action: MealWheelModelBaseAction<AddMealPayload & AddMealsPayload & UpdateMealPayload>
 ): MealsState => {
   switch (action.type) {
     case ADD_MEAL: {
@@ -76,6 +96,12 @@ export const mealsStateReducer = (
     case ADD_MEALS: {
       const newState = cloneDeep(state) as MealsState;
       newState.meals = newState.meals.concat(action.payload.meals);
+      return newState;
+    }
+    case UPDATE_MEAL: {
+      const newState = cloneDeep(state) as MealsState;
+      const updatedDishes = newState.meals.map((meal) => (meal.id === action.payload.id ? action.payload.meal : meal));
+      newState.meals = updatedDishes;
       return newState;
     }
     case CLEAR_MEALS: {
