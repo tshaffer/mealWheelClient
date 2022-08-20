@@ -80,6 +80,20 @@ export interface AppParameters {
   // startupBoardId: string | null;
 }
 
+export enum DishType {
+  Main = 'main',
+  Side = 'side',
+  Salad = 'salad',
+  Veg = 'veg',
+}
+
+export enum RequiredAccompanimentFlags {
+  None = 0,
+  Side = 1,
+  Salad = 2,
+  Veg = 4,
+}
+
 export enum MealStatus {
   pending = 0,
   accepted = 1,
