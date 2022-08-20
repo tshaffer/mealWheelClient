@@ -11,14 +11,26 @@ import { DetailedMealEntity, DishEntity, DishType, Meal, MealEntity } from '../t
 import { loadMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
+import Button from '@mui/material/Button';
 
 const localizer = momentLocalizer(moment);
 
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
 
 const EventComponent = (props: any) => {
-  console.log('EventComponent props:');
-  console.log(props);
+
+  const handleAccept = (event: any) => {
+    console.log('handleAccept: ');
+    console.log(event);
+  };
+
+  const handleReject = (event: any) => {
+    console.log('handleReject: ');
+    console.log(event);
+  };
+
+  // console.log('EventComponent props:');
+  // console.log(props);
 
   const calendarEvent: CalendarEvent = props.event;
 
@@ -51,6 +63,22 @@ const EventComponent = (props: any) => {
     <div>
       <p>{mainDishLabel}</p>
       <p>{accompanimentLabel}</p>
+      <div>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleReject(detailedMeal)}
+        >
+          Reject
+        </Button>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleAccept(detailedMeal)}
+        >
+          Accept
+        </Button>
+      </div>
     </div>
   );
 };
