@@ -7,7 +7,7 @@ import moment from 'moment';
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { DetailedMealEntity, DishEntity, Meal, MealEntity } from '../types';
+import { DetailedMealEntity, DishEntity, DishType, Meal, MealEntity } from '../types';
 import { loadMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
@@ -16,13 +16,52 @@ const localizer = momentLocalizer(moment);
 
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
 
+const EventComponent = (props: any) => {
+  console.log('EventComponent props:');
+  console.log(props);
+
+  const calendarEvent: CalendarEvent = props.event;
+
+  let mainDishLabel: string = '';
+  let accompanimentLabel: string = '';
+
+  const detailedMeal: DetailedMealEntity | undefined = calendarEvent.detailedMeal;
+  if (!isNil(detailedMeal)) {
+
+    mainDishLabel = 'Main: ' + detailedMeal.mainDish.name;
+
+    let accompanimentType: string = '';
+    if (!isNil(detailedMeal.accompanimentDish)) {
+      switch (detailedMeal.accompanimentDish.type) {
+        case DishType.Salad:
+          accompanimentType = 'Salad';
+          break;
+        case DishType.Veg:
+          accompanimentType = 'Vegetable';
+          break;
+        case DishType.Side:
+        default:
+          accompanimentType = 'Side';
+          break;
+      }
+      accompanimentLabel = accompanimentType + ': ' + detailedMeal.accompanimentDish.name;
+    }
+  }
+  return (
+    <div>
+      <p>{mainDishLabel}</p>
+      <p>{accompanimentLabel}</p>
+    </div>
+  );
+};
+
 class CalendarEvent {
   title: string = '';
   allDay: boolean = false;
   start: Date = new Date();
   end: Date = new Date();
-  resourceId?: string;
   tooltip?: string;
+  detailedMeal?: DetailedMealEntity;
 }
 
 const now: number = Date.now();
@@ -72,6 +111,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         start: detailedMeal.dateScheduled,
         end: detailedMeal.dateScheduled,
         tooltip: detailedMeal.mainDish.name,
+        detailedMeal,
       };
       mealsInSchedule.push(event);
     }
@@ -117,6 +157,9 @@ const MealSchedule = (props: MealScheduleProps) => {
         startAccessor='start'
         endAccessor='end'
         titleAccessor='title'
+        components={{
+          event: EventComponent
+        }}
       />
     </div>
   );
