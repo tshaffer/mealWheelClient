@@ -27,7 +27,7 @@ const MealInCalendar = (props: any) => {
     }
 
     return (
-      <p>{mainDishLabel}</p>
+      <p className='shortParagraph'>{mainDishLabel}</p>
     );
   };
 
@@ -44,7 +44,7 @@ const MealInCalendar = (props: any) => {
     }
 
     return (
-      <p>{accompanimentLabel}</p>
+      <p className='shortParagraph'>{accompanimentLabel}</p>
     );
 
   };
@@ -58,13 +58,58 @@ const MealInCalendar = (props: any) => {
     }
 
     return (
-      <p>{'Meal Status: ' + statusLabel}</p>
+      <p className='shortParagraph'>{'Status: ' + statusLabel}</p>
     );
+  };
+
+  const renderActions = () => {
+
+    if (isNil(detailedMeal)) {
+      // OR select a meal?
+      return null;
+    }
+
+    switch (detailedMeal.status) {
+      case MealStatus.proposed:
+        return (
+          <div>
+            <Button
+              className='menuButton'
+              color='inherit'
+              onClick={() => handleReject(detailedMeal)}
+            >
+              Accept
+            </Button>
+            <Button
+              className='menuButton'
+              color='inherit'
+              onClick={() => handleReject(detailedMeal)}
+            >
+              Reject
+            </Button>
+            <Button
+              className='menuButton'
+              color='inherit'
+              onClick={() => handleAccept(detailedMeal)}
+            >
+              Replace
+            </Button>
+          </div>
+        );
+      case MealStatus.pending:
+        return (<div>pizza</div>)
+      case MealStatus.completed:
+        return 'Completed';
+      default:
+        return '';
+    }
+
   };
 
   const mainDish = renderMainDish();
   const accompaniment = renderAccompaniment();
   const mealStatus = renderMealStatus();
+  const actions = renderActions();
 
   /*
       <div>
@@ -90,6 +135,7 @@ const MealInCalendar = (props: any) => {
       {mainDish}
       {accompaniment}
       {mealStatus}
+      {actions}
     </div>
   );
 };

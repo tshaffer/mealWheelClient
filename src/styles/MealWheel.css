@@ -6,10 +6,15 @@
   margin-right: 2px;
 }
 
-.title {
+/* .title {
   flex-grow: "1";
   display: none,
   [
     theme.
   ]
+} */
+
+.shortParagraph {
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
