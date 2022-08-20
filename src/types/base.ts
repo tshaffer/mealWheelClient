@@ -95,7 +95,7 @@ export enum RequiredAccompanimentFlags {
 }
 
 export enum MealStatus {
-  pending = 0,
-  accepted = 1,
+  proposed = 0,
+  pending = 1,
   completed = 2,
 }

@@ -106,12 +106,12 @@ export const generateMenu = () => {
         mainDishId: selectedDish.id,
         accompanimentDishId,
         dateScheduled: mealDate,
-        status: MealStatus.pending
+        status: MealStatus.proposed
       };
 
       dispatch(addMeal(meal));
 
-      mealDate.setTime(mealDate.getTime() + (24*60*60*1000));
+      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
     }
   };
 };
@@ -126,7 +126,7 @@ export const loadMeals = () => {
     const id = getCurrentUser(state);
 
     console.log('loadMeals, user id: ', id);
-    
+
     const path = serverUrl + apiUrlFragment + 'meals?id=' + id;
 
     return axios.get(path)

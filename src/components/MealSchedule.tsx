@@ -7,83 +7,42 @@ import moment from 'moment';
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { DetailedMealEntity, DishEntity, DishType, Meal, MealEntity } from '../types';
+import { DetailedMealEntity, DishEntity, DishType, Meal, MealEntity, MealStatus } from '../types';
 import { loadMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
 import Button from '@mui/material/Button';
+import MealInCalendar from './MealInCalendar';
 
 const localizer = momentLocalizer(moment);
 
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
 
-const EventComponent = (props: any) => {
-
-  const handleAccept = (event: any) => {
-    console.log('handleAccept: ');
-    console.log(event);
-  };
-
-  const handleReject = (event: any) => {
-    console.log('handleReject: ');
-    console.log(event);
-  };
-
-  // console.log('EventComponent props:');
-  // console.log(props);
-
-  const calendarEvent: CalendarEvent = props.event;
-
-  let mainDishLabel: string = '';
-  let accompanimentLabel: string = '';
-
-  const detailedMeal: DetailedMealEntity | undefined = calendarEvent.detailedMeal;
-  if (!isNil(detailedMeal)) {
-
-    mainDishLabel = 'Main: ' + detailedMeal.mainDish.name;
-
-    let accompanimentType: string = '';
-    if (!isNil(detailedMeal.accompanimentDish)) {
-      switch (detailedMeal.accompanimentDish.type) {
-        case DishType.Salad:
-          accompanimentType = 'Salad';
-          break;
-        case DishType.Veg:
-          accompanimentType = 'Vegetable';
-          break;
-        case DishType.Side:
-        default:
-          accompanimentType = 'Side';
-          break;
-      }
-      accompanimentLabel = accompanimentType + ': ' + detailedMeal.accompanimentDish.name;
-    }
+export const getMealStatusLabel = (mealStatus: MealStatus): string => {
+  switch (mealStatus) {
+    case MealStatus.proposed:
+      return 'Proposed';
+    case MealStatus.pending:
+    default:
+      return 'Pending';
+    case MealStatus.completed:
+      return 'Completed';
   }
-  return (
-    <div>
-      <p>{mainDishLabel}</p>
-      <p>{accompanimentLabel}</p>
-      <div>
-        <Button
-          className='menuButton'
-          color='inherit'
-          onClick={() => handleReject(detailedMeal)}
-        >
-          Reject
-        </Button>
-        <Button
-          className='menuButton'
-          color='inherit'
-          onClick={() => handleAccept(detailedMeal)}
-        >
-          Accept
-        </Button>
-      </div>
-    </div>
-  );
 };
 
-class CalendarEvent {
+export const getAccompanimentLabel = (accompanimentType: DishType): string => {
+  switch (accompanimentType) {
+    case DishType.Salad:
+      return 'Salad';
+    case DishType.Side:
+    default:
+      return 'Side';
+    case DishType.Veg:
+      return 'Vegetable';
+  }
+};
+
+export class CalendarEvent {
   title: string = '';
   allDay: boolean = false;
   start: Date = new Date();
@@ -186,7 +145,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         endAccessor='end'
         titleAccessor='title'
         components={{
-          event: EventComponent
+          event: MealInCalendar
         }}
       />
     </div>
