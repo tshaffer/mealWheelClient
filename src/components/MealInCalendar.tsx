@@ -7,10 +7,7 @@ import { isNil } from 'lodash';
 import { Button, } from '@mui/material';
 import { DetailedMealEntity, MealEntity, MealStatus } from '../types';
 import { CalendarEvent, getAccompanimentLabel, getMealStatusLabel } from './MealSchedule';
-import {
-  updateMealRedux
-} from '../models';
-import { deepStrictEqual } from 'assert';
+import { updateMeal } from '../controllers';
 
 export interface MealInCalendarPropsFromParent {
   event: CalendarEvent;
@@ -151,7 +148,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    onUpdateMeal: updateMealRedux,
+    onUpdateMeal: updateMeal,
   }, dispatch);
 };
 

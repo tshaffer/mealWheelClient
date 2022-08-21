@@ -2,7 +2,7 @@ import axios from 'axios';
 import { isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addMealRedux, addMealsRedux, clearMeals } from '../models';
+import { addMealRedux, addMealsRedux, clearMeals, updateMealRedux } from '../models';
 import { getCurrentUser } from '../selectors';
 
 import {
@@ -166,4 +166,34 @@ export const addMeal = (
 
   });
 };
+
+export const updateMeal = (
+  id: string,
+  meal: MealEntity
+): any => {
+  return ((dispatch: any): any => {
+
+    const path = serverUrl + apiUrlFragment + 'updateMeal';
+
+    const updateMealBody: any = {
+      id,
+      meal,
+    };
+
+    return axios.post(
+      path,
+      updateMealBody
+    ).then((response) => {
+      dispatch(updateMealRedux(id, meal));
+      return;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return;
+    });
+
+  });
+};
+
+
 
