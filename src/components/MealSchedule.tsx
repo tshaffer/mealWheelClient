@@ -46,31 +46,18 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [events, setEvents] = useState([] as CalendarEvent[]);
 
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
-  const toggleDrawer =
-    (open: boolean) =>
-      (event: React.KeyboardEvent | React.MouseEvent) => {
-        if (
-          event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-          return;
-        }
-
-        setSheetOpen(open);
-      };
-
-
-  // const handleNewSelect = (eventevent: React.KeyboardEvent | React.MouseEvent, poo) => {
-
-  // };
-
-
-  const handleOpen = () => {
+  const handleOpen = (event: any) => {
+  
     console.log('handleOpen');
-    console.log(sheetOpen);
+    console.log(event);
 
+    if (isNil(event.title)) {
+      setSelectedMealInCalendar(null);
+    } else {
+      setSelectedMealInCalendar(event as CalendarEvent);
+    }
     setSheetOpen(true);
   };
 
@@ -79,41 +66,6 @@ const MealSchedule = (props: MealScheduleProps) => {
     console.log(sheetOpen);
 
     setSheetOpen(false);
-  };
-
-  const handleSelect = () => {
-
-    console.log('handleSelect');
-    console.log(sheetOpen);
-
-    setSheetOpen(!sheetOpen);
-
-    // if (
-    //   event.type === 'keydown' &&
-    //   ((event as React.KeyboardEvent).key === 'Tab' ||
-    //     (event as React.KeyboardEvent).key === 'Shift')
-    // ) {
-    //   return;
-    // }
-
-    // setState({ ...state, [anchor]: open });
-
-    //const handleSelect = (startEnd: any) => {
-    // const { start, end } = startEnd;
-
-    // const title = window.prompt('New Event name');
-
-    // if (title) {
-    //   const newEvent = {} as CalendarEvent;
-    //   newEvent.start = moment(start).toDate();
-    //   newEvent.end = moment(end).toDate();
-    //   newEvent.title = title;
-
-    //   setEvents([
-    //     ...events,
-    //     newEvent
-    //   ]);
-    // }
   };
 
   if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
@@ -153,8 +105,25 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
-  //  onSelectEvent={event => alert(event.title)}
-  //  onSelectSlot={handleSelect}
+  const renderMealPropertySheet = () => {
+
+    console.log('renderMealPropertySheet');
+    console.log(selectedMealInCalendar);
+
+    if (isNil(selectedMealInCalendar) || isNil(selectedMealInCalendar.detailedMeal)) {
+      return null;
+    }
+    const detailedMeal: DetailedMealEntity = selectedMealInCalendar.detailedMeal as unknown as DetailedMealEntity;
+
+    return (
+      <div>
+        <p className='shortParagraph'>{'Main: ' + detailedMeal.mainDish.name}</p>
+        <Button color='inherit' onClick={handleClose}>Close</Button>
+      </div>
+    );
+  };
+
+  const mealPropertySheet = renderMealPropertySheet();
 
   return (
     <div style={{ height: '100vh' }}>
@@ -172,8 +141,8 @@ const MealSchedule = (props: MealScheduleProps) => {
           defaultView='month'
           views={allViews}
           defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
-          onSelectEvent={event => handleOpen()}
-          onSelectSlot={event => handleOpen()}
+          onSelectEvent={event => handleOpen(event)}
+          onSelectSlot={event => handleOpen(event)}
           startAccessor='start'
           endAccessor='end'
           titleAccessor='title'
@@ -185,13 +154,10 @@ const MealSchedule = (props: MealScheduleProps) => {
       <Drawer
         BackdropProps={{ style: { opacity: 0 } }}
         open={sheetOpen}
-        // onClose={handleClose}
         variant="persistent"
         anchor="right"
-
-      // onClose={event => handleNewSelect(event, null)}
       >
-        <Button color='inherit' onClick={handleClose}>Close</Button>
+        {mealPropertySheet}
       </Drawer>
     </div>
   );
