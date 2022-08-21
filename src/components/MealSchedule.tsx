@@ -12,6 +12,7 @@ import { loadMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
+import Drawer from '@mui/material/Drawer';
 
 const localizer = momentLocalizer(moment);
 
@@ -43,23 +44,61 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const [events, setEvents] = useState([] as CalendarEvent[]);
 
-  const handleSelect = (startEnd: any) => {
+  const [sheetOpen, setSheetOpen] = useState(false);
 
-    const { start, end } = startEnd;
+  const toggleDrawer =
+    (open: boolean) =>
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
 
-    const title = window.prompt('New Event name');
+        setSheetOpen(open);
+      };
 
-    if (title) {
-      const newEvent = {} as CalendarEvent;
-      newEvent.start = moment(start).toDate();
-      newEvent.end = moment(end).toDate();
-      newEvent.title = title;
 
-      setEvents([
-        ...events,
-        newEvent
-      ]);
-    }
+  // const handleNewSelect = (eventevent: React.KeyboardEvent | React.MouseEvent, poo) => {
+
+  // };
+
+
+  const handleSelect = () => {
+
+    console.log('handleSelect');
+    console.log(sheetOpen);
+
+    setSheetOpen(!sheetOpen);
+
+    // if (
+    //   event.type === 'keydown' &&
+    //   ((event as React.KeyboardEvent).key === 'Tab' ||
+    //     (event as React.KeyboardEvent).key === 'Shift')
+    // ) {
+    //   return;
+    // }
+
+    // setState({ ...state, [anchor]: open });
+
+    //const handleSelect = (startEnd: any) => {
+    // const { start, end } = startEnd;
+
+    // const title = window.prompt('New Event name');
+
+    // if (title) {
+    //   const newEvent = {} as CalendarEvent;
+    //   newEvent.start = moment(start).toDate();
+    //   newEvent.end = moment(end).toDate();
+    //   newEvent.title = title;
+
+    //   setEvents([
+    //     ...events,
+    //     newEvent
+    //   ]);
+    // }
   };
 
   if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
@@ -99,32 +138,43 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
-  //        onSelectEvent={event => alert(event.title)}
+  //  onSelectEvent={event => alert(event.title)}
+  //  onSelectSlot={handleSelect}
 
   return (
     <div style={{ height: '100vh' }}>
-      <div>
-        <strong>
-          Click an event to see more info, or drag the mouse over the calendar
-          to select a date/time range.
-        </strong>
+      <div style={{ height: '100vh' }}>
+        <div>
+          <strong>
+            Click an event to see more info, or drag the mouse over the calendar
+            to select a date/time range.
+          </strong>
+        </div>
+        <Calendar
+          selectable
+          localizer={localizer}
+          events={events}
+          defaultView='month'
+          views={allViews}
+          defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
+          onSelectEvent={event => handleSelect()}
+          onSelectSlot={event => handleSelect()}
+          startAccessor='start'
+          endAccessor='end'
+          titleAccessor='title'
+          components={{
+            event: MealInCalendar as any
+          }}
+        />
       </div>
-      <Calendar
-        selectable
-        localizer={localizer}
-        events={events}
-        defaultView='month'
-        views={allViews}
-        defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
-        onSelectEvent={event => console.log(event.title)}
-        onSelectSlot={handleSelect}
-        startAccessor='start'
-        endAccessor='end'
-        titleAccessor='title'
-        components={{
-          event: MealInCalendar as any
-        }}
-      />
+      <Drawer
+        BackdropProps={{ style: { opacity: 0 } }}
+        open={sheetOpen}
+        onClose={handleSelect}
+        // onClose={event => handleNewSelect(event, null)}
+      >
+        Pizza
+      </Drawer>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
-// import ReactModal = require('react-modal');
+import ReactModal = require('react-modal');
 
 import '../styles/MealWheel.css';
 
@@ -241,7 +241,8 @@ const App = (props: AppProps) => {
   const toolbar = renderToolbar();
   const table = renderTable();
 
-  /*
+  return (
+    <div>
       <div>
         <ReactModal
           isOpen={showAboutModal}
@@ -270,10 +271,6 @@ const App = (props: AppProps) => {
           </div>
         </ReactModal>
       </div>
-  */
-
-  return (
-    <div>
       {toolbar}
       {table}
     </div >
