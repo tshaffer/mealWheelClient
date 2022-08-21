@@ -17,30 +17,6 @@ const localizer = momentLocalizer(moment);
 
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
 
-export const getMealStatusLabel = (mealStatus: MealStatus): string => {
-  switch (mealStatus) {
-    case MealStatus.proposed:
-      return 'Proposed';
-    case MealStatus.pending:
-    default:
-      return 'Pending';
-    case MealStatus.completed:
-      return 'Completed';
-  }
-};
-
-export const getAccompanimentLabel = (accompanimentType: DishType): string => {
-  switch (accompanimentType) {
-    case DishType.Salad:
-      return 'Salad';
-    case DishType.Side:
-    default:
-      return 'Side';
-    case DishType.Veg:
-      return 'Vegetable';
-  }
-};
-
 export class CalendarEvent {
   title: string = '';
   allDay: boolean = false;
@@ -123,6 +99,8 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
+  //        onSelectEvent={event => alert(event.title)}
+
   return (
     <div style={{ height: '100vh' }}>
       <div>
@@ -138,7 +116,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         defaultView='month'
         views={allViews}
         defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
-        onSelectEvent={event => alert(event.title)}
+        onSelectEvent={event => console.log(event.title)}
         onSelectSlot={handleSelect}
         startAccessor='start'
         endAccessor='end'

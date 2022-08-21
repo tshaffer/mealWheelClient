@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 import { isNil } from 'lodash';
 
 import { Button, } from '@mui/material';
-import { DetailedMealEntity, MealEntity, MealStatus } from '../types';
-import { CalendarEvent, getAccompanimentLabel, getMealStatusLabel } from './MealSchedule';
+import { DetailedMealEntity, DishType, MealEntity, MealStatus } from '../types';
+import { CalendarEvent } from './MealSchedule';
 import { updateMeal } from '../controllers';
 
 export interface MealInCalendarPropsFromParent {
@@ -18,6 +18,31 @@ export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
+
+  const getMealStatusLabel = (mealStatus: MealStatus): string => {
+    switch (mealStatus) {
+      case MealStatus.proposed:
+        return 'Proposed';
+      case MealStatus.pending:
+      default:
+        return 'Pending';
+      case MealStatus.completed:
+        return 'Completed';
+    }
+  };
+
+  const getAccompanimentLabel = (accompanimentType: DishType): string => {
+    switch (accompanimentType) {
+      case DishType.Salad:
+        return 'Salad';
+      case DishType.Side:
+      default:
+        return 'Side';
+      case DishType.Veg:
+        return 'Vegetable';
+    }
+  };
+
 
   const updateDishStatus = (detailedMeal: DetailedMealEntity) => {
     const mealEntity: MealEntity = {
@@ -46,6 +71,20 @@ const MealInCalendar = (props: MealInCalendarProps) => {
   const handleReplace = (detailedMeal: DetailedMealEntity) => {
     console.log('handleReplace: ');
     console.log(detailedMeal);
+  };
+
+  const handleReconsider = (detailedMeal: DetailedMealEntity) => {
+    console.log('handleReplace: ');
+    console.log(detailedMeal);
+    detailedMeal.status = MealStatus.proposed;
+    updateDishStatus(detailedMeal);
+  };
+
+  const handleCompleted = (detailedMeal: DetailedMealEntity) => {
+    console.log('handleReplace: ');
+    console.log(detailedMeal);
+    detailedMeal.status = MealStatus.completed;
+    updateDishStatus(detailedMeal);
   };
 
   const calendarEvent: CalendarEvent = props.event;
@@ -85,6 +124,69 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
+  const renderProposed = (detailedMeal: DetailedMealEntity) => {
+    return (
+      <div>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleAccept(detailedMeal)}
+        >
+          Accept
+        </Button>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleReject(detailedMeal)}
+        >
+          Reject
+        </Button>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleReplace(detailedMeal)}
+        >
+          Replace
+        </Button>
+      </div>
+    );
+  };
+
+  const renderPending = (detailedMeal: DetailedMealEntity) => {
+    return (
+      <div>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleCompleted(detailedMeal)}
+        >
+          Completed
+        </Button>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleReconsider(detailedMeal)}
+        >
+          Reconsider
+        </Button>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleReject(detailedMeal)}
+        >
+          Remove
+        </Button>
+        <Button
+          className='menuButton'
+          color='inherit'
+          onClick={() => handleReplace(detailedMeal)}
+        >
+          Replace
+        </Button>
+      </div>
+    );
+  };
+
   const renderActions = () => {
     if (isNil(detailedMeal)) {
       // OR select a meal?
@@ -92,37 +194,12 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     }
     switch (detailedMeal.status) {
       case MealStatus.proposed:
-        return (
-          <div>
-            <Button
-              className='menuButton'
-              color='inherit'
-              onClick={() => handleAccept(detailedMeal)}
-            >
-              Accept
-            </Button>
-            <Button
-              className='menuButton'
-              color='inherit'
-              onClick={() => handleReject(detailedMeal)}
-            >
-              Reject
-            </Button>
-            <Button
-              className='menuButton'
-              color='inherit'
-              onClick={() => handleReplace(detailedMeal)}
-            >
-              Replace
-            </Button>
-          </div>
-        );
+        return renderProposed(detailedMeal);
       case MealStatus.pending:
-        return (<div>pizza</div>);
+        return renderPending(detailedMeal);
       case MealStatus.completed:
-        return 'Completed';
       default:
-        return '';
+        return null;
     }
   };
 
