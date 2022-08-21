@@ -13,6 +13,7 @@ import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../select
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
 
 const localizer = momentLocalizer(moment);
 
@@ -65,6 +66,20 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   // };
 
+
+  const handleOpen = () => {
+    console.log('handleOpen');
+    console.log(sheetOpen);
+
+    setSheetOpen(true);
+  };
+
+  const handleClose = () => {
+    console.log('handleClose');
+    console.log(sheetOpen);
+
+    setSheetOpen(false);
+  };
 
   const handleSelect = () => {
 
@@ -157,8 +172,8 @@ const MealSchedule = (props: MealScheduleProps) => {
           defaultView='month'
           views={allViews}
           defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
-          onSelectEvent={event => handleSelect()}
-          onSelectSlot={event => handleSelect()}
+          onSelectEvent={event => handleOpen()}
+          onSelectSlot={event => handleOpen()}
           startAccessor='start'
           endAccessor='end'
           titleAccessor='title'
@@ -170,10 +185,13 @@ const MealSchedule = (props: MealScheduleProps) => {
       <Drawer
         BackdropProps={{ style: { opacity: 0 } }}
         open={sheetOpen}
-        onClose={handleSelect}
-        // onClose={event => handleNewSelect(event, null)}
+        // onClose={handleClose}
+        variant="persistent"
+        anchor="right"
+
+      // onClose={event => handleNewSelect(event, null)}
       >
-        Pizza
+        <Button color='inherit' onClick={handleClose}>Close</Button>
       </Drawer>
     </div>
   );
