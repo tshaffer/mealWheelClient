@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Calendar, View, DateLocalizer } from 'react-big-calendar';
+import { Calendar, View } from 'react-big-calendar';
 import moment from 'moment';
 
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { DetailedMealEntity, DishEntity, DishType, Meal, MealEntity, MealStatus } from '../types';
+import { DetailedMealEntity, DishEntity, MealEntity } from '../types';
 import { loadMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
+
+import MealPropertySheet from './MealPropertySheet';
 
 const localizer = momentLocalizer(moment);
 
@@ -105,26 +106,6 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
-  const renderMealPropertySheet = () => {
-
-    console.log('renderMealPropertySheet');
-    console.log(selectedMealInCalendar);
-
-    if (isNil(selectedMealInCalendar) || isNil(selectedMealInCalendar.detailedMeal)) {
-      return null;
-    }
-    const detailedMeal: DetailedMealEntity = selectedMealInCalendar.detailedMeal as unknown as DetailedMealEntity;
-
-    return (
-      <div>
-        <p className='shortParagraph'>{'Main: ' + detailedMeal.mainDish.name}</p>
-        <Button color='inherit' onClick={handleClose}>Close</Button>
-      </div>
-    );
-  };
-
-  const mealPropertySheet = renderMealPropertySheet();
-
   return (
     <div style={{ height: '100vh' }}>
       <div style={{ height: '100vh' }}>
@@ -157,7 +138,10 @@ const MealSchedule = (props: MealScheduleProps) => {
         variant="persistent"
         anchor="right"
       >
-        {mealPropertySheet}
+        <MealPropertySheet
+          selectedMealInCalendar={selectedMealInCalendar}
+          handleClose={handleClose}
+        />
       </Drawer>
     </div>
   );
