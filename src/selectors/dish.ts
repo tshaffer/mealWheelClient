@@ -1,4 +1,4 @@
-import { DishEntity, MealWheelState } from '../types';
+import { DishEntity, DishType, MealWheelState } from '../types';
 
 export const getDishes = (state: MealWheelState): DishEntity[] => {
   return state.dishesState.dishes;
@@ -29,3 +29,15 @@ export const getDish = (state: MealWheelState, dishId: string) => {
 //   }
 //   return null;
 // };
+
+export const getMainDishes = (state: MealWheelState): DishEntity[] => {
+
+  const mainDishes: DishEntity[] = [];
+  for (const dish of state.dishesState.dishes) {
+    if (dish.type === DishType.Main) {
+      mainDishes.push(dish);
+    }
+  }
+  return mainDishes;
+};
+
