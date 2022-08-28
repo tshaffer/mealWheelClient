@@ -30,14 +30,29 @@ export const getDish = (state: MealWheelState, dishId: string) => {
 //   return null;
 // };
 
-export const getMainDishes = (state: MealWheelState): DishEntity[] => {
+const getDishesOfType = (state: MealWheelState, dishType: DishType): DishEntity[] => {
 
-  const mainDishes: DishEntity[] = [];
+  const dishes: DishEntity[] = [];
   for (const dish of state.dishesState.dishes) {
-    if (dish.type === DishType.Main) {
-      mainDishes.push(dish);
+    if (dish.type === dishType) {
+      dishes.push(dish);
     }
   }
-  return mainDishes;
+  return dishes;
 };
 
+export const getMains = (state: MealWheelState): DishEntity[] => {
+  return getDishesOfType(state, DishType.Main);
+};
+
+export const getSides = (state: MealWheelState): DishEntity[] => {
+  return getDishesOfType(state, DishType.Side);
+};
+
+export const getSalads = (state: MealWheelState): DishEntity[] => {
+  return getDishesOfType(state, DishType.Salad);
+};
+
+export const getVeggies = (state: MealWheelState): DishEntity[] => {
+  return getDishesOfType(state, DishType.Veg);
+};
