@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import TextField from '@mui/material/TextField';
 
 import '../styles/MealWheel.css';
 
@@ -41,6 +42,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const [selectedVeggie, setSelectedVeggie] = React.useState('');
 
   const [checked, setChecked] = React.useState(true);
+
+  const [comments, setComments] = React.useState('');
 
   if (isNil(props.selectedMealInCalendar) || isNil(props.selectedMealInCalendar.detailedMeal)) {
     return null;
@@ -165,6 +168,45 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
+  /* mui example
+        <TextField
+          id="filled-helperText"
+          label="Helper text"
+          defaultValue="Default Value"
+          helperText="Some important text"
+          variant="filled"
+        />
+  */
+  const renderLinkToRecipe = (): JSX.Element => {
+    return (
+      <div>
+        <TextField
+          id="filled-helperText"
+          label="Link to recipe"
+          defaultValue=""
+          helperText="Enter the URL, if available to the online recipe."
+          variant="filled"
+        />
+      </div>
+    );
+  };
+
+  const renderComments = (): JSX.Element => {
+    return (
+      <div>
+        <TextField
+          id="filled-multiline-flexible"
+          label="Comments"
+          multiline
+          maxRows={4}
+          value={comments}
+          onChange={(event) => setComments(event?.target.value)}
+          variant="filled"
+        />
+      </div>
+    );
+  };
+
   const renderActionButtons = (): JSX.Element => {
     return (
       <div>
@@ -180,6 +222,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const sideDishElement = renderSides();
   const saladsDishElement = renderSalads();
   const veggiesDishElement = renderVeggies();
+
+  const linkToRecipeElement = renderLinkToRecipe();
+  const commentsElement = renderComments();
+
   const actionButtons = renderActionButtons();
 
   return (
@@ -190,6 +236,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       {sideDishElement}
       {saladsDishElement}
       {veggiesDishElement}
+      {linkToRecipeElement}
+      {commentsElement}
       {actionButtons}
       <Button color='inherit' onClick={props.handleClose}>Close</Button>
     </div>
@@ -211,4 +259,3 @@ const mapDispatchToProps = (dispatch: any) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MealPropertySheet);
-
