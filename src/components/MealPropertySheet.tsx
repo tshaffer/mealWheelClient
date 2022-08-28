@@ -9,11 +9,13 @@ import Button from '@mui/material/Button';
 import { CalendarEvent } from './MealSchedule';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+
+import '../styles/MealWheel.css';
 
 import { DetailedMealEntity, DishEntity } from '../types';
 import { getMains, getSalads, getSides, getVeggies } from '../selectors';
@@ -48,7 +50,19 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const handleCheckedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
-  
+
+  const handleCompleted = () => {
+    console.log('handleCompleted');
+  };
+
+  const handleClear = () => {
+    console.log('handleClear');
+  };
+
+  const handleRegenerate = () => {
+    console.log('handleRegenerate');
+  };
+
   const renderDishMenuItem = (dishEntity: DishEntity) => {
     return (
       <MenuItem value={dishEntity.id} key={dishEntity.id}>{dishEntity.name}</MenuItem>
@@ -133,7 +147,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  const renderVeggies = () => {
+  const renderVeggies = (): JSX.Element => {
     const menuItems: JSX.Element[] = renderDishMenuItems(props.veggies);
     return (
       <div>
@@ -151,21 +165,32 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
+  const renderActionButtons = (): JSX.Element => {
+    return (
+      <div>
+        <Button className='buttonMarginLeft' color='inherit' variant='contained' onClick={handleCompleted}>Completed</Button>
+        <Button className='buttonMarginLeft' color='inherit' variant='contained' onClick={handleClear}>Clear</Button>
+        <Button className='buttonMarginLeft buttonMarginRight' color='inherit' variant='contained' onClick={handleRegenerate}>Regenerate</Button>
+      </div>
+    );
+  };
 
   const mainDishElement = renderMains();
   const accompanimentRequired = renderAccompanimentRequired();
   const sideDishElement = renderSides();
   const saladsDishElement = renderSalads();
   const veggiesDishElement = renderVeggies();
+  const actionButtons = renderActionButtons();
 
   return (
-    <div>
+    <div className='mealPropertySheet'>
       <p className='shortParagraph'>{'Main: ' + detailedMeal.mainDish.name}</p>
       {mainDishElement}
       {accompanimentRequired}
       {sideDishElement}
       {saladsDishElement}
       {veggiesDishElement}
+      {actionButtons}
       <Button color='inherit' onClick={props.handleClose}>Close</Button>
     </div>
   );

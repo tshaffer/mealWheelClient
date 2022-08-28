@@ -18,3 +18,15 @@
   margin-top: 4px;
   margin-bottom: 4px;
 }
+
+.mealPropertySheet {
+  padding: 16px;
+}
+
+.buttonMarginLeft {
+  margin-left: 4px;
+}
+
+.buttonMarginRight {
+  margin-right: 4px;
+}
