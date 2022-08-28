@@ -206,7 +206,7 @@ const Dishes = (props: DishesProps) => {
       valueFormatter: ({ id: rowId, value, field, api }) => {
         const colDef = api.getColumn(field);
         const option = colDef.valueOptions.find(
-          ({ value: optionValue }) => value === optionValue
+          ({ value: optionValue }: any) => value === optionValue
         );
         return option.label;
       },
