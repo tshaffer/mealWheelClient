@@ -20,7 +20,6 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import {
-  Meal,
   UiState,
   UsersMap,
   VersionInfo,

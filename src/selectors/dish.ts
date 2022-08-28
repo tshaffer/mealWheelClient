@@ -4,7 +4,7 @@ export const getDishes = (state: MealWheelState): DishEntity[] => {
   return state.dishesState.dishes;
 };
 
-export const getDish = (state: MealWheelState, dishId: string) => {
+export const getDish = (state: MealWheelState, dishId: string): DishEntity | null => {
   // FIX TO USE MAP
   const dishes = getDishes(state);
   for (const dish of dishes) {

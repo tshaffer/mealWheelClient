@@ -6,6 +6,16 @@ export const getMeals = (state: MealWheelState): MealEntity[] => {
   return state.mealsState.meals;
 };
 
+export const getMeal = (state: MealWheelState, mealId: string): MealEntity | null => {
+  const mealEntities: MealEntity[] = state.mealsState.meals;
+  for (const mealEntity of mealEntities) {
+    if (mealEntity.id === mealId) {
+      return mealEntity;
+    }
+  }
+  return null;
+};
+
 // export const getDetailedMeals = (state: MealWheelState): DetailedMealEntity[] => {
 //   if (state.mealsState.meals.length > 0) {
 //     debugger;
@@ -24,10 +34,10 @@ export const getMeals = (state: MealWheelState): MealEntity[] => {
 
 export const getDetailedMeals = (state: MealWheelState, meals: MealEntity[], dishes: DishEntity[]): DetailedMealEntity[] => {
 
-  if (isNil(meals) || meals.length ===0) {
+  if (isNil(meals) || meals.length === 0) {
     return [];
   }
-  if (isNil(dishes) || dishes.length ===0) {
+  if (isNil(dishes) || dishes.length === 0) {
     return [];
   }
 

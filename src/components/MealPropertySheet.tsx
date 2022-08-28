@@ -18,8 +18,9 @@ import TextField from '@mui/material/TextField';
 
 import '../styles/MealWheel.css';
 
-import { DetailedMealEntity, DishEntity } from '../types';
+import { DetailedMealEntity, DishEntity, MealEntity } from '../types';
 import { getMains, getSalads, getSides, getVeggies } from '../selectors';
+import { updateMainInMeal } from '../controllers';
 
 export interface MealPropertySheetPropsFromParent {
   selectedMealInCalendar: CalendarEvent | null;
@@ -31,6 +32,7 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   sides: DishEntity[];
   salads: DishEntity[];
   veggies: DishEntity[];
+  onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
 }
 
 
@@ -45,10 +47,17 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const [comments, setComments] = React.useState('');
 
+  const getDetailedMeal = (): DetailedMealEntity => {
+    return (props.selectedMealInCalendar as CalendarEvent).detailedMeal as unknown as DetailedMealEntity;
+  };
+
   if (isNil(props.selectedMealInCalendar) || isNil(props.selectedMealInCalendar.detailedMeal)) {
     return null;
   }
-  const detailedMeal: DetailedMealEntity = props.selectedMealInCalendar.detailedMeal as unknown as DetailedMealEntity;
+
+  const handleUpdateMain = (event: any) => {
+    props.onUpdateMainInMeal(getDetailedMeal().id, event.target.value);
+  };
 
   const handleCheckedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -89,7 +98,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
             labelId="mainLabel"
             id="demo-simple-select-filled"
             value={selectedMain}
-            onChange={(event) => setSelectedMain(event?.target.value)}
+            // onChange={(event) => setSelectedMain(event?.target.value)}
+            onChange={(event) => handleUpdateMain(event)}
           >
             {mainsMenuItems}
           </Select>
@@ -230,7 +240,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   return (
     <div className='mealPropertySheet'>
-      <p className='shortParagraph'>{'Main: ' + detailedMeal.mainDish.name}</p>
+      <p className='shortParagraph'>{'Main: ' + getDetailedMeal().mainDish.name}</p>
       {mainDishElement}
       {accompanimentRequired}
       {sideDishElement}
@@ -255,6 +265,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onUpdateMainInMeal: updateMainInMeal,
   }, dispatch);
 };
 

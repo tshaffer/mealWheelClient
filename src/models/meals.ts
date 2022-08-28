@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { Meal, MealEntity, MealsState } from '../types';
+import { MealEntity, MealsState } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
