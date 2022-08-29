@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField';
 
 import '../styles/MealWheel.css';
 
-import { DetailedMealEntity, DishEntity, MealEntity } from '../types';
+import { DetailedMealEntity, DishEntity, MealEntity, RequiredAccompanimentFlags } from '../types';
 import { getMains, getSalads, getSides, getVeggies } from '../selectors';
 import { updateMainInMeal } from '../controllers';
 
@@ -28,6 +28,8 @@ export interface MealPropertySheetPropsFromParent {
 }
 
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
+  main: DishEntity | null;
+  accompanimentDish: DishEntity | null;
   mains: DishEntity[];
   sides: DishEntity[];
   salads: DishEntity[];
@@ -97,7 +99,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Select
             labelId="mainLabel"
             id="demo-simple-select-filled"
-            value={selectedMain}
+            value={(props.main as DishEntity).id}
             // onChange={(event) => setSelectedMain(event?.target.value)}
             onChange={(event) => handleUpdateMain(event)}
           >
@@ -108,75 +110,87 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  const renderAccompanimentRequired = () => {
-    return (
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={checked}
-              onChange={handleCheckedChange}
-            />
-          }
-          label="Label" />
-        <FormControlLabel disabled control={<Checkbox />} label="Disabled" />
-      </FormGroup>
-    );
+  const renderAccompaniment = () => {
+    if (isNil(props.accompanimentDish)) {
+      return (
+        <div>No Accompaniment</div>
+      );
+    } else {
+      return (
+        <div>{props.accompanimentDish?.name}</div>
+      );
+    }
   };
 
-  const renderSides = () => {
-    const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides);
-    return (
-      <div>
-        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="sidesLabel">Sides</InputLabel>
-          <Select
-            labelId="sidesLabel"
-            value={selectedSide}
-            onChange={(event) => setSelectedSide(event?.target.value)}
-          >
-            {sidesMenuItems}
-          </Select>
-        </FormControl>
-      </div>
-    );
-  };
+  // const renderAccompanimentRequired = () => {
+  //   return (
+  //     <FormGroup>
+  //       <FormControlLabel
+  //         control={
+  //           <Checkbox
+  //             checked={checked}
+  //             onChange={handleCheckedChange}
+  //           />
+  //         }
+  //         label="Label" />
+  //       <FormControlLabel disabled control={<Checkbox />} label="Disabled" />
+  //     </FormGroup>
+  //   );
+  // };
 
-  const renderSalads = () => {
-    const menuItems: JSX.Element[] = renderDishMenuItems(props.salads);
-    return (
-      <div>
-        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="saladsLabel">Salads</InputLabel>
-          <Select
-            labelId="saladsLabel"
-            value={selectedSalad}
-            onChange={(event) => setSelectedSalad(event?.target.value)}
-          >
-            {menuItems}
-          </Select>
-        </FormControl>
-      </div>
-    );
-  };
+  // const renderSides = () => {
+  //   const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides);
+  //   return (
+  //     <div>
+  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+  //         <InputLabel id="sidesLabel">Sides</InputLabel>
+  //         <Select
+  //           labelId="sidesLabel"
+  //           value={selectedSide}
+  //           onChange={(event) => setSelectedSide(event?.target.value)}
+  //         >
+  //           {sidesMenuItems}
+  //         </Select>
+  //       </FormControl>
+  //     </div>
+  //   );
+  // };
 
-  const renderVeggies = (): JSX.Element => {
-    const menuItems: JSX.Element[] = renderDishMenuItems(props.veggies);
-    return (
-      <div>
-        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="veggiesLabel">Veggies</InputLabel>
-          <Select
-            labelId="veggiesLabel"
-            value={selectedVeggie}
-            onChange={(event) => setSelectedVeggie(event?.target.value)}
-          >
-            {menuItems}
-          </Select>
-        </FormControl>
-      </div>
-    );
-  };
+  // const renderSalads = () => {
+  //   const menuItems: JSX.Element[] = renderDishMenuItems(props.salads);
+  //   return (
+  //     <div>
+  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+  //         <InputLabel id="saladsLabel">Salads</InputLabel>
+  //         <Select
+  //           labelId="saladsLabel"
+  //           value={selectedSalad}
+  //           onChange={(event) => setSelectedSalad(event?.target.value)}
+  //         >
+  //           {menuItems}
+  //         </Select>
+  //       </FormControl>
+  //     </div>
+  //   );
+  // };
+
+  // const renderVeggies = (): JSX.Element => {
+  //   const menuItems: JSX.Element[] = renderDishMenuItems(props.veggies);
+  //   return (
+  //     <div>
+  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+  //         <InputLabel id="veggiesLabel">Veggies</InputLabel>
+  //         <Select
+  //           labelId="veggiesLabel"
+  //           value={selectedVeggie}
+  //           onChange={(event) => setSelectedVeggie(event?.target.value)}
+  //         >
+  //           {menuItems}
+  //         </Select>
+  //       </FormControl>
+  //     </div>
+  //   );
+  // };
 
   /* mui example
         <TextField
@@ -228,10 +242,11 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const mainDishElement = renderMains();
-  const accompanimentRequired = renderAccompanimentRequired();
-  const sideDishElement = renderSides();
-  const saladsDishElement = renderSalads();
-  const veggiesDishElement = renderVeggies();
+  const accompaniment = renderAccompaniment();
+  // const accompanimentRequired = renderAccompanimentRequired();
+  // const sideDishElement = renderSides();
+  // const saladsDishElement = renderSalads();
+  // const veggiesDishElement = renderVeggies();
 
   const linkToRecipeElement = renderLinkToRecipe();
   const commentsElement = renderComments();
@@ -242,10 +257,11 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     <div className='mealPropertySheet'>
       <p className='shortParagraph'>{'Main: ' + getDetailedMeal().mainDish.name}</p>
       {mainDishElement}
-      {accompanimentRequired}
+      {accompaniment}
+      {/* {accompanimentRequired}
       {sideDishElement}
       {saladsDishElement}
-      {veggiesDishElement}
+      {veggiesDishElement} */}
       {linkToRecipeElement}
       {commentsElement}
       {actionButtons}
@@ -254,8 +270,25 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent) {
+  let detailedMeal: DetailedMealEntity | null = null;
+  let main: DishEntity | null = null;
+  let accompanimentDish: DishEntity | null = null;
+  // let accompanimentType: RequiredAccompanimentFlags | null = null;
+  // let accompanimentDish: DishEntity | null = null;
+  if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.detailedMeal)) {
+    detailedMeal = ownProps.selectedMealInCalendar.detailedMeal as DetailedMealEntity;
+    main = detailedMeal.mainDish as DishEntity;
+    if (!isNil(main.accompaniment) && (main.accompaniment !== RequiredAccompanimentFlags.None)) {
+      accompanimentDish = detailedMeal.accompanimentDish as DishEntity;
+      // accompanimentType = main..accompaniment as RequiredAccompanimentFlags;
+      // accompanimentDish = detailedMeal.accompanimentDish;
+    }
+  }
+
   return {
+    main,
+    accompanimentDish,
     mains: getMains(state),
     sides: getSides(state),
     salads: getSalads(state),

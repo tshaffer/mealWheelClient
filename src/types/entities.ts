@@ -11,7 +11,7 @@ export interface DishEntity {
   id: string;
   name: string;
   type: DishType;
-  accompaniment?: RequiredAccompanimentFlags;
+  accompaniment?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
 }
 
 export interface MealEntity {
