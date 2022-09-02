@@ -45,15 +45,15 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
 
   const updateDishStatus = (detailedMeal: DetailedMealEntity) => {
-    const mealEntity: MealEntity = {
-      id: detailedMeal.id,
-      userId: detailedMeal.userId,
-      mainDishId: detailedMeal.mainDish.id,
-      accompanimentDishId: isNil(detailedMeal.accompanimentDish) ? null : detailedMeal.accompanimentDish.id,
-      dateScheduled: detailedMeal.dateScheduled,
-      status: detailedMeal.status,
-    };
-    props.onUpdateMeal(mealEntity.id, mealEntity);
+    // const mealEntity: MealEntity = {
+    //   id: detailedMeal.id,
+    //   userId: detailedMeal.userId,
+    //   mainDishId: detailedMeal.mainDish.id,
+    //   accompanimentDishId: isNil(detailedMeal.accompanimentDish) ? null : detailedMeal.accompanimentDish.id,
+    //   dateScheduled: detailedMeal.dateScheduled,
+    //   status: detailedMeal.status,
+    // };
+    // props.onUpdateMeal(mealEntity.id, mealEntity);
   };
 
   const handleAccept = (detailedMeal: DetailedMealEntity) => {

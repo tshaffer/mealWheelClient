@@ -17,6 +17,27 @@ import {
 } from '../types';
 
 
+export const loadMeals = () => {
+  return (dispatch: any, getState: any) => {
+
+    dispatch(clearMeals());
+
+    const state: MealWheelState = getState();
+    const id = getCurrentUser(state);
+
+    console.log('loadMeals, user id: ', id);
+
+    const path = serverUrl + apiUrlFragment + 'meals?id=' + id;
+
+    return axios.get(path)
+      .then((mealsResponse: any) => {
+        const mealEntities: MealEntity[] = (mealsResponse as any).data;
+        dispatch(addMealsRedux(mealEntities));
+      });
+  };
+};
+
+
 export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
 
@@ -100,40 +121,19 @@ export const generateMenu = () => {
       }
 
       const mealId = uuidv4();
-      const meal: MealEntity = {
-        id: mealId,
-        userId: getCurrentUser(mealWheelState) as string,
-        mainDishId: selectedDish.id,
-        accompanimentDishId,
-        dateScheduled: mealDate,
-        status: MealStatus.proposed
-      };
+      // const meal: MealEntity = {
+      //   id: mealId,
+      //   userId: getCurrentUser(mealWheelState) as string,
+      //   mainDishId: selectedDish.id,
+      //   accompanimentDishId,
+      //   dateScheduled: mealDate,
+      //   status: MealStatus.proposed
+      // };
 
-      dispatch(addMeal(meal));
+      // dispatch(addMeal(meal));
 
       mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
     }
-  };
-};
-
-
-export const loadMeals = () => {
-  return (dispatch: any, getState: any) => {
-
-    dispatch(clearMeals());
-
-    const state: MealWheelState = getState();
-    const id = getCurrentUser(state);
-
-    console.log('loadMeals, user id: ', id);
-
-    const path = serverUrl + apiUrlFragment + 'meals?id=' + id;
-
-    return axios.get(path)
-      .then((mealsResponse: any) => {
-        const mealEntities: MealEntity[] = (mealsResponse as any).data;
-        dispatch(addMealsRedux(mealEntities));
-      });
   };
 };
 

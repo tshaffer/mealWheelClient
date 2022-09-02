@@ -7,6 +7,17 @@ export interface UserEntity {
   email: string;
 }
 
+export interface BaseDishEntity {
+  id: string;
+  userId: string;
+  name: string;
+  type: DishType;
+}
+
+export interface MainDishEntity extends BaseDishEntity {
+  accompanimentRequired: RequiredAccompanimentFlags;
+}
+
 export interface DishEntity {
   id: string;
   name: string;
@@ -17,11 +28,12 @@ export interface DishEntity {
 export interface MealEntity {
   id: string;
   userId: string;
-  // mealId: string;
   mainDishId: string;
-  accompanimentDishId: string | null;
-  dateScheduled: Date;
-  status: MealStatus;
+  accompanimentDishIds: string[];
+  mainName: string;
+  vegName: string;
+  saladName: string;
+  sideName: string;
 }
 
 export interface DetailedMealEntity {

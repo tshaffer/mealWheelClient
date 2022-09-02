@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { addDishesRedux, addDishRedux, updateDishRedux } from '../models';
 
-import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../types';
+import { apiUrlFragment, BaseDishEntity, DishEntity, MealWheelState, serverUrl } from '../types';
 
 export const loadDishes = () => {
   return (dispatch: any, getState: any) => {
@@ -19,6 +19,7 @@ export const loadDishes = () => {
     return axios.get(path)
       .then((dishesResponse: any) => {
         const dishEntities: DishEntity[] = (dishesResponse as any).data;
+        console.log(dishEntities);
         dispatch(addDishesRedux(dishEntities));
       });
   };
