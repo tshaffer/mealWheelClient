@@ -3,11 +3,11 @@ import { getDish } from '.';
 import { MealWheelState, ScheduledMealEntity, DetailedMealEntity, DishEntity } from '../types';
 
 export const getMeals = (state: MealWheelState): ScheduledMealEntity[] => {
-  return state.mealsState.meals;
+  return state.scheduledMealsState.scheduledMeals;
 };
 
 export const getMeal = (state: MealWheelState, mealId: string): ScheduledMealEntity | null => {
-  const mealEntities: ScheduledMealEntity[] = state.mealsState.meals;
+  const mealEntities: ScheduledMealEntity[] = state.scheduledMealsState.scheduledMeals;
   for (const ScheduledMealEntity of mealEntities) {
     if (ScheduledMealEntity.id === mealId) {
       return ScheduledMealEntity;

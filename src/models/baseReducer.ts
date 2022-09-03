@@ -5,8 +5,9 @@ import { MealWheelState } from '../types';
 import { appParametersReducer } from './appParameters';
 
 import { appStateReducer } from './appState';
+import { definedMealsStateReducer } from './definedMeals';
 import { dishesStateReducer } from './dishes';
-import { mealsStateReducer } from './meals';
+import { scheduledMealsStateReducer } from './scheduledMeals';
 import { usersReducer } from './users';
 import { versionInfoReducer } from './versionInfo';
 
@@ -17,7 +18,8 @@ export const rootReducer = combineReducers<MealWheelState>({
   appParameters: appParametersReducer,
   appState: appStateReducer,
   dishesState: dishesStateReducer,
-  mealsState: mealsStateReducer,
+  definedMealsState: definedMealsStateReducer,
+  scheduledMealsState: scheduledMealsStateReducer,
   users: usersReducer,
   versionInfo: versionInfoReducer,
 });

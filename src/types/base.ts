@@ -1,4 +1,5 @@
 import {
+  DefinedMealEntity,
   DishEntity, ScheduledMealEntity, UserEntity,
 }
   from './entities';
@@ -12,7 +13,8 @@ export interface MealWheelState {
   appParameters: AppParameters;
   appState: AppState;
   dishesState: DishesState;
-  mealsState: MealsState;
+  definedMealsState: DefinedMealsState;
+  scheduledMealsState: ScheduledMealsState;
   users: UsersMap;
   versionInfo: VersionInfo;
 }
@@ -44,8 +46,12 @@ export interface DishesState {
 //   [id: string]: DishEntity; // dish name
 // }
 
-export interface MealsState {
-  meals: ScheduledMealEntity[];
+export interface DefinedMealsState {
+  definedMeals: DefinedMealEntity[];
+}
+
+export interface ScheduledMealsState {
+  scheduledMeals: ScheduledMealEntity[];
 }
 
 export interface Meal {

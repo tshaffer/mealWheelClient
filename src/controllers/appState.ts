@@ -19,7 +19,11 @@ import { getCurrentUser, getStartPage } from '../selectors';
 import { loadDishes } from './dish';
 import { loadUsers, loginPersistentUser } from './user';
 import { getVersions } from './versionInfo';
-import { addMeal, loadMeals } from './meal';
+import { 
+  addScheduledMeal, 
+  loadDefinedMeals,
+  loadScheduledMeals,
+ } from './meal';
 
 const getStartupParams = () => {
 
@@ -70,7 +74,8 @@ export const initializeApp = () => {
         if (isNil(loggedInUser)) {
           dispatch(setUiState(UiState.SelectUser));
         } else {
-          dispatch(loadMeals());
+          dispatch(loadDefinedMeals());
+          dispatch(loadScheduledMeals());
           dispatch(loadDishes());
           dispatch(setUiState(UiState.Other));
         }

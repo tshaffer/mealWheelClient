@@ -8,7 +8,7 @@ import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import { DetailedMealEntity, DishEntity, ScheduledMealEntity } from '../types';
-import { loadMeals, generateMenu } from '../controllers';
+import { loadScheduledMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
@@ -38,7 +38,7 @@ export interface MealScheduleProps {
   userId: string;
   meals: ScheduledMealEntity[];
   detailedMeals: DetailedMealEntity[];
-  onLoadMeals: (usrId: string) => any;
+  onLoadScheduledMeals: (usrId: string) => any;
   onGenerateMenu: () => any;
 }
 
@@ -168,7 +168,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    onLoadMeals: loadMeals,
+    onLoadScheduledMeals: loadScheduledMeals,
     onGenerateMenu: generateMenu,
   }, dispatch);
 };

@@ -37,15 +37,17 @@ export interface DishEntity {
 //   sideName: string;
 // }
 
-// export interface ScheduledMealEntity {
-//   id: string;
-//   userId: string;
-//   // mealId: string;
-//   mainDishId: string;
-//   accompanimentDishId: string | null;
-//   dateScheduled: Date;
-//   status: MealStatus;
-// }
+export interface DefinedMealEntity {
+  id: string;
+  userId: string;
+  name: string;
+  mainDishId: string;
+  mainName: string;
+  accompanimentDishIds: string[];
+  veggieName: string;
+  saladName: string;
+  sideName: string;
+}
 
 export interface ScheduledMealEntity {
   id: string;
