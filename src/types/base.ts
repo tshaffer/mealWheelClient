@@ -1,5 +1,5 @@
 import {
-  DishEntity, MealEntity, UserEntity,
+  DishEntity, ScheduledMealEntity, UserEntity,
 }
   from './entities';
 
@@ -45,7 +45,7 @@ export interface DishesState {
 // }
 
 export interface MealsState {
-  meals: MealEntity[];
+  meals: ScheduledMealEntity[];
 }
 
 export interface Meal {

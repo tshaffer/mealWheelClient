@@ -7,7 +7,7 @@ import moment from 'moment';
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { DetailedMealEntity, DishEntity, MealEntity } from '../types';
+import { DetailedMealEntity, DishEntity, ScheduledMealEntity } from '../types';
 import { loadMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
 import { isNil } from 'lodash';
@@ -36,7 +36,7 @@ end.setDate(end.getDate() + 1);
 
 export interface MealScheduleProps {
   userId: string;
-  meals: MealEntity[];
+  meals: ScheduledMealEntity[];
   detailedMeals: DetailedMealEntity[];
   onLoadMeals: (usrId: string) => any;
   onGenerateMenu: () => any;
@@ -49,8 +49,12 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
+  const handleGenerateMenu = () => {
+    props.onGenerateMenu();
+  };
+
   const handleOpen = (event: any) => {
-  
+
     console.log('handleOpen');
     console.log(event);
 
@@ -109,6 +113,10 @@ const MealSchedule = (props: MealScheduleProps) => {
   return (
     <div style={{ height: '100vh' }}>
       <div style={{ height: '100vh' }}>
+        <div style={{ height: 30, width: '100%' }}>
+          <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
+          <br />
+        </div>
         <div>
           <strong>
             Click an event to see more info, or drag the mouse over the calendar
@@ -149,7 +157,7 @@ const MealSchedule = (props: MealScheduleProps) => {
 
 function mapStateToProps(state: any) {
   const dishes: DishEntity[] = getDishes(state);
-  const meals: MealEntity[] = getMeals(state);
+  const meals: ScheduledMealEntity[] = getMeals(state);
   const detailedMeals: DetailedMealEntity[] = getDetailedMeals(state, meals, dishes);
   return {
     userId: getCurrentUser(state) as string,

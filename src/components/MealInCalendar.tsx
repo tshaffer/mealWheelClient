@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { isNil } from 'lodash';
 
 import { Button, } from '@mui/material';
-import { DetailedMealEntity, DishType, MealEntity, MealStatus } from '../types';
+import { DetailedMealEntity, DishType, ScheduledMealEntity, MealStatus } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import { updateMeal } from '../controllers';
 
@@ -14,7 +14,7 @@ export interface MealInCalendarPropsFromParent {
 }
 
 export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
-  onUpdateMeal: (id: string, meal: MealEntity) => any;
+  onUpdateMeal: (id: string, meal: ScheduledMealEntity) => any;
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
@@ -45,7 +45,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
 
   const updateDishStatus = (detailedMeal: DetailedMealEntity) => {
-    // const mealEntity: MealEntity = {
+    // const ScheduledMealEntity: ScheduledMealEntity = {
     //   id: detailedMeal.id,
     //   userId: detailedMeal.userId,
     //   mainDishId: detailedMeal.mainDish.id,
@@ -53,7 +53,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     //   dateScheduled: detailedMeal.dateScheduled,
     //   status: detailedMeal.status,
     // };
-    // props.onUpdateMeal(mealEntity.id, mealEntity);
+    // props.onUpdateMeal(ScheduledMealEntity.id, ScheduledMealEntity);
   };
 
   const handleAccept = (detailedMeal: DetailedMealEntity) => {

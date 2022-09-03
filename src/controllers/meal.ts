@@ -9,10 +9,10 @@ import {
   apiUrlFragment,
   DishEntity,
   DishType,
-  MealEntity,
   MealStatus,
   MealWheelState,
   RequiredAccompanimentFlags,
+  ScheduledMealEntity,
   serverUrl
 } from '../types';
 
@@ -31,7 +31,7 @@ export const loadMeals = () => {
 
     return axios.get(path)
       .then((mealsResponse: any) => {
-        const mealEntities: MealEntity[] = (mealsResponse as any).data;
+        const mealEntities: ScheduledMealEntity[] = (mealsResponse as any).data;
         dispatch(addMealsRedux(mealEntities));
       });
   };
@@ -40,6 +40,8 @@ export const loadMeals = () => {
 
 export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
+
+    debugger;
 
     dispatch(clearMeals());
     const allMainDishIndices: number[] = [];
@@ -120,17 +122,23 @@ export const generateMenu = () => {
         accompanimentDishId = allDishes[accompanimentIndex].id;
       }
 
+      const accompanimentDishIds: any[] = isNil(accompanimentDishId) ? [] : [accompanimentDishId];
       const mealId = uuidv4();
-      // const meal: MealEntity = {
-      //   id: mealId,
-      //   userId: getCurrentUser(mealWheelState) as string,
-      //   mainDishId: selectedDish.id,
-      //   accompanimentDishId,
-      //   dateScheduled: mealDate,
-      //   status: MealStatus.proposed
-      // };
+      const scheduledMeal: ScheduledMealEntity = {
+        id: mealId,
+        userId: getCurrentUser(mealWheelState) as string,
+        // name: '',
+        mainDishId: selectedDish.id,
+        accompanimentDishIds,
+        // mainName: '',
+        // veggieName: '',
+        // saladName: '',
+        // sideName: '',
+        dateScheduled: mealDate,
+        status: MealStatus.proposed
+      };
 
-      // dispatch(addMeal(meal));
+      dispatch(addMeal(scheduledMeal));
 
       mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
     }
@@ -139,24 +147,24 @@ export const generateMenu = () => {
 
 
 export const addMeal = (
-  meal: MealEntity
+  scheduledMeal: ScheduledMealEntity
 ): any => {
   return ((dispatch: any): any => {
 
     const path = serverUrl + apiUrlFragment + 'addMeal';
 
-    meal.id = uuidv4();
+    scheduledMeal.id = uuidv4();
 
     const addMealBody: any = {
-      id: meal.id,
-      meal,
+      id: scheduledMeal.id,
+      meal: scheduledMeal,
     };
 
     return axios.post(
       path,
       addMealBody
     ).then((response) => {
-      dispatch(addMealRedux(meal.id, meal));
+      dispatch(addMealRedux(scheduledMeal.id, scheduledMeal));
       return;
     }).catch((error) => {
       console.log('error');
@@ -169,7 +177,7 @@ export const addMeal = (
 
 export const updateMeal = (
   id: string,
-  meal: MealEntity
+  meal: ScheduledMealEntity
 ): any => {
   return ((dispatch: any): any => {
 
@@ -202,7 +210,7 @@ export const updateMainInMeal = (
   return (dispatch: any, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newMain: DishEntity | null = getDish(mealWheelState, newMainId);
-    const meal: MealEntity | null = getMeal(mealWheelState, mealId);
+    const meal: ScheduledMealEntity | null = getMeal(mealWheelState, mealId);
     if (!isNil(newMain) && !isNil(meal)) {
       const existingMain: DishEntity = getDish(mealWheelState, meal?.mainDishId) as DishEntity;
       // combinations

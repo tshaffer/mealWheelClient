@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { MealEntity, MealsState } from '../types';
+import { ScheduledMealEntity, MealsState } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -16,12 +16,12 @@ export const CLEAR_MEALS = 'CLEAR_MEALS';
 
 export interface AddMealPayload {
   id: string;
-  meal: MealEntity;
+  meal: ScheduledMealEntity;
 }
 
 export const addMealRedux = (
   id: string,
-  meal: MealEntity
+  meal: ScheduledMealEntity
 ): any => {
   return {
     type: ADD_MEAL,
@@ -34,11 +34,11 @@ export const addMealRedux = (
 
 export interface AddMealsPayload {
   id: string;
-  meals: MealEntity[];
+  meals: ScheduledMealEntity[];
 }
 
 export const addMealsRedux = (
-  meals: MealEntity[]
+  meals: ScheduledMealEntity[]
 ): any => {
   return {
     type: ADD_MEALS,
@@ -57,12 +57,12 @@ export const clearMeals = (
 
 export interface UpdateMealPayload {
   id: string;
-  meal: MealEntity;
+  meal: ScheduledMealEntity;
 }
 
 export const updateMealRedux = (
   id: string,
-  meal: MealEntity
+  meal: ScheduledMealEntity
 ): any => {
   return {
     type: UPDATE_MEAL,

@@ -1,16 +1,16 @@
 import { isNil } from 'lodash';
 import { getDish } from '.';
-import { MealWheelState, MealEntity, DetailedMealEntity, DishEntity } from '../types';
+import { MealWheelState, ScheduledMealEntity, DetailedMealEntity, DishEntity } from '../types';
 
-export const getMeals = (state: MealWheelState): MealEntity[] => {
+export const getMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.mealsState.meals;
 };
 
-export const getMeal = (state: MealWheelState, mealId: string): MealEntity | null => {
-  const mealEntities: MealEntity[] = state.mealsState.meals;
-  for (const mealEntity of mealEntities) {
-    if (mealEntity.id === mealId) {
-      return mealEntity;
+export const getMeal = (state: MealWheelState, mealId: string): ScheduledMealEntity | null => {
+  const mealEntities: ScheduledMealEntity[] = state.mealsState.meals;
+  for (const ScheduledMealEntity of mealEntities) {
+    if (ScheduledMealEntity.id === mealId) {
+      return ScheduledMealEntity;
     }
   }
   return null;
@@ -20,19 +20,19 @@ export const getMeal = (state: MealWheelState, mealId: string): MealEntity | nul
 //   if (state.mealsState.meals.length > 0) {
 //     debugger;
 //   }
-//   return state.mealsState.meals.map((mealEntity: MealEntity) => {
+//   return state.mealsState.meals.map((ScheduledMealEntity: ScheduledMealEntity) => {
 //     return {
-//       id: mealEntity.id,
-//       userId: mealEntity.userId,
-//       mainDish: getDish(state, mealEntity.mainDishId) as DishEntity,
-//       accompanimentDish: isNil(mealEntity.accompanimentDishId) ? null : getDish(state, mealEntity.accompanimentDishId) as DishEntity,
-//       dateScheduled: mealEntity.dateScheduled,
-//       status: mealEntity.status,
+//       id: ScheduledMealEntity.id,
+//       userId: ScheduledMealEntity.userId,
+//       mainDish: getDish(state, ScheduledMealEntity.mainDishId) as DishEntity,
+//       accompanimentDish: isNil(ScheduledMealEntity.accompanimentDishId) ? null : getDish(state, ScheduledMealEntity.accompanimentDishId) as DishEntity,
+//       dateScheduled: ScheduledMealEntity.dateScheduled,
+//       status: ScheduledMealEntity.status,
 //     };
 //   });
 // };
 
-export const getDetailedMeals = (state: MealWheelState, meals: MealEntity[], dishes: DishEntity[]): DetailedMealEntity[] => {
+export const getDetailedMeals = (state: MealWheelState, meals: ScheduledMealEntity[], dishes: DishEntity[]): DetailedMealEntity[] => {
 
   if (isNil(meals) || meals.length === 0) {
     return [];
@@ -42,14 +42,14 @@ export const getDetailedMeals = (state: MealWheelState, meals: MealEntity[], dis
   }
 
   const detailedMealEntities: DetailedMealEntity[] = [];
-  // for (const mealEntity of meals) {
+  // for (const ScheduledMealEntity of meals) {
   //   const detailedMealEntity: DetailedMealEntity = {
-  //     id: mealEntity.id,
-  //     userId: mealEntity.userId,
-  //     mainDish: getDish(state, mealEntity.mainDishId) as DishEntity,
-  //     accompanimentDish: isNil(mealEntity.accompanimentDishId) ? null : getDish(state, mealEntity.accompanimentDishId) as DishEntity,
-  //     dateScheduled: mealEntity.dateScheduled,
-  //     status: mealEntity.status,
+  //     id: ScheduledMealEntity.id,
+  //     userId: ScheduledMealEntity.userId,
+  //     mainDish: getDish(state, ScheduledMealEntity.mainDishId) as DishEntity,
+  //     accompanimentDish: isNil(ScheduledMealEntity.accompanimentDishId) ? null : getDish(state, ScheduledMealEntity.accompanimentDishId) as DishEntity,
+  //     dateScheduled: ScheduledMealEntity.dateScheduled,
+  //     status: ScheduledMealEntity.status,
   //   };
   //   detailedMealEntities.push(detailedMealEntity);
   // }

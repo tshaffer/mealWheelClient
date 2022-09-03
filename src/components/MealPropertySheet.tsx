@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField';
 
 import '../styles/MealWheel.css';
 
-import { DetailedMealEntity, DishEntity, MealEntity, RequiredAccompanimentFlags } from '../types';
+import { DetailedMealEntity, DishEntity, ScheduledMealEntity, RequiredAccompanimentFlags } from '../types';
 import { getMains, getSalads, getSides, getVeggies } from '../selectors';
 import { updateMainInMeal } from '../controllers';
 
