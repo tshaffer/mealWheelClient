@@ -54,5 +54,5 @@ export const getSalads = (state: MealWheelState): DishEntity[] => {
 };
 
 export const getVeggies = (state: MealWheelState): DishEntity[] => {
-  return getDishesOfType(state, DishType.Veg);
+  return getDishesOfType(state, DishType.Veggie);
 };

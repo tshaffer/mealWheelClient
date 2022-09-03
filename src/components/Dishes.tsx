@@ -58,7 +58,7 @@ function EditToolbar(props: EditToolbarProps) {
       requiresAccompaniment: RequiredAccompanimentFlags.None,
       side: RequiredAccompanimentFlags.None,
       salad: RequiredAccompanimentFlags.None,
-      veg: RequiredAccompanimentFlags.None,
+      veggie: RequiredAccompanimentFlags.None,
       isNew: true
     }]);
     setRowModesModel((oldModel) => ({
@@ -85,7 +85,7 @@ export interface DishesProps {
 const mainOption = { value: 'main', label: 'Main' };
 const saladOption = { value: 'salad', label: 'Salad' };
 const sideOption = { value: 'side', label: 'Side' };
-const vegOption = { value: 'veg', label: 'Veg' };
+const vegOption = { value: 'veggie', label: 'Veggie' };
 
 const initialRows: GridRowsProp = [];
 
@@ -172,8 +172,8 @@ const Dishes = (props: DishesProps) => {
     if (updatedDish.salad) {
       accompaniment = accompaniment + RequiredAccompanimentFlags.Salad;
     }
-    if (updatedDish.veg) {
-      accompaniment = accompaniment + RequiredAccompanimentFlags.Veg;
+    if (updatedDish.veggie) {
+      accompaniment = accompaniment + RequiredAccompanimentFlags.Veggie;
     }
 
     const dish: DishEntity = {
@@ -236,9 +236,9 @@ const Dishes = (props: DishesProps) => {
       editable: true,
     },
     {
-      field: 'veg',
+      field: 'veggie',
       type: 'boolean',
-      headerName: 'Veg',
+      headerName: 'Veggie',
       width: 90,
       editable: true,
     },
@@ -295,7 +295,7 @@ const Dishes = (props: DishesProps) => {
     const rows: GridRowsProp = props.dishes.map((dish: DishEntity) => {
       const side = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Side;
       const salad = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Salad;
-      const veg = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Veg;
+      const veggie = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Veggie;
       const row: GridRowModel = {
         id: dish.id,
         name: dish.name,
@@ -303,7 +303,7 @@ const Dishes = (props: DishesProps) => {
         requiresAccompaniment: !isNil(dish.accompaniment) && dish.accompaniment !== RequiredAccompanimentFlags.None,
         side,
         salad,
-        veg,
+        veggie,
       };
       return row;
     });
@@ -333,7 +333,7 @@ const Dishes = (props: DishesProps) => {
         return dishRowModel.type === 'main';
       case 'side':
       case 'salad':
-      case 'veg':
+      case 'veggie':
         return getAccompanimentEditEnabled(dishRowModel);
       default:
         return true;

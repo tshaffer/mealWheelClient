@@ -60,7 +60,7 @@ export interface DishRowModel {
   requiresAccompaniment: boolean;
   side: number;
   salad: number;
-  veg: number;
+  veggie: number;
 }
 
 export interface StartupParams {
@@ -84,14 +84,14 @@ export enum DishType {
   Main = 'main',
   Side = 'side',
   Salad = 'salad',
-  Veg = 'veg',
+  Veggie = 'veggie',
 }
 
 export enum RequiredAccompanimentFlags {
   None = 0,
   Side = 1,
   Salad = 2,
-  Veg = 4,
+  Veggie = 4,
 }
 
 export enum MealStatus {

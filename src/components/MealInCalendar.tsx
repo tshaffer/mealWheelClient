@@ -38,7 +38,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
       case DishType.Side:
       default:
         return 'Side';
-      case DishType.Veg:
+      case DishType.Veggie:
         return 'Vegetable';
     }
   };

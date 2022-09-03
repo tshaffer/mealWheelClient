@@ -63,7 +63,7 @@ export const generateMenu = () => {
         case 'side':
           allSideIndices.push(index);
           break;
-        case 'veg':
+        case 'veggie':
           allVegIndices.push(index);
           break;
       }
@@ -94,8 +94,8 @@ export const generateMenu = () => {
         if (selectedDish.accompaniment & RequiredAccompanimentFlags.Side) {
           possibleAccompaniments.push(DishType.Side);
         }
-        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Veg) {
-          possibleAccompaniments.push(DishType.Veg);
+        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Veggie) {
+          possibleAccompaniments.push(DishType.Veggie);
         }
         const numPossibleAccompaniments = possibleAccompaniments.length;
         const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
@@ -111,7 +111,7 @@ export const generateMenu = () => {
             accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
             break;
           }
-          case DishType.Veg: {
+          case DishType.Veggie: {
             accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
             break;
           }
