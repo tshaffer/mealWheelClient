@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { isNil } from 'lodash';
 
 import { Button, } from '@mui/material';
-import { DetailedMealEntity, DishType, ScheduledMealEntity, MealStatus } from '../types';
+import { DetailedMealEntity, DishType, ScheduledMealEntity, MealStatus, DishEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import { updateMeal } from '../controllers';
 
@@ -91,6 +91,11 @@ const MealInCalendar = (props: MealInCalendarProps) => {
   const detailedMeal: DetailedMealEntity | undefined = calendarEvent.detailedMeal;
 
   const renderMainDish = () => {
+
+    // if (detailedMeal?.mainDish.name === 'Detroit Pizza') {
+    //   debugger;
+    // }
+
     let mainDishLabel: string = '';
     if (!isNil(detailedMeal)) {
       mainDishLabel = 'Main: ' + detailedMeal.mainDish.name;
@@ -100,18 +105,27 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
-  const renderAccompaniment = () => {
-    let accompanimentLabel: string = '';
-    if (!isNil(detailedMeal)) {
-      let accompanimentType: string = '';
-      if (!isNil(detailedMeal.accompanimentDish)) {
-        accompanimentType = getAccompanimentLabel(detailedMeal.accompanimentDish.type);
-        accompanimentLabel = accompanimentType + ': ' + detailedMeal.accompanimentDish.name;
-      }
-    }
+  const renderAccompaniment = (accompanimentDish: DishEntity) => {
+
+    const accompanimentType = getAccompanimentLabel(accompanimentDish.type);
+    const accompanimentLabel = accompanimentType + ': ' + accompanimentDish.name;
     return (
-      <p className='shortParagraph'>{accompanimentLabel}</p>
+      <p className='shortParagraph' key={accompanimentDish.id}>{accompanimentLabel}</p>
     );
+  };
+
+  const renderAccompaniments = () => {
+    
+    if (isNil(detailedMeal) || isNil(detailedMeal.accompanimentDishes) || detailedMeal.accompanimentDishes.length === 0) {
+      return (
+        <p className='shortParagraph'>{''}</p>
+      );
+    }
+
+    const accompaniments = detailedMeal.accompanimentDishes.map( (accompanimentDish: any) => {
+      return renderAccompaniment(accompanimentDish);
+    });
+    return accompaniments;
   };
 
   const renderMealStatus = () => {
@@ -204,7 +218,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
   };
 
   const mainDish = renderMainDish();
-  const accompaniment = renderAccompaniment();
+  const accompaniment = renderAccompaniments();
   const mealStatus = renderMealStatus();
   const actions = renderActions();
 

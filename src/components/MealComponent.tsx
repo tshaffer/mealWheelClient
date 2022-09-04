@@ -35,6 +35,8 @@ const MealComponent = (props: MealComponentProps) => {
     return null;
   }
   
+  debugger;
+  
   let row = props.mainDish.name;
   if (!isNil(props.accompanimentDish)) {
     row += ' - ' + props.accompanimentDish.name;

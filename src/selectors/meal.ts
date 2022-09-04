@@ -32,27 +32,32 @@ export const getMeal = (state: MealWheelState, mealId: string): ScheduledMealEnt
 //   });
 // };
 
-export const getDetailedMeals = (state: MealWheelState, meals: ScheduledMealEntity[], dishes: DishEntity[]): DetailedMealEntity[] => {
+export const getDetailedMeals = (state: MealWheelState, scheduledMeals: ScheduledMealEntity[], dishes: DishEntity[]): DetailedMealEntity[] => {
 
-  if (isNil(meals) || meals.length === 0) {
+  if (isNil(scheduledMeals) || scheduledMeals.length === 0) {
     return [];
   }
   if (isNil(dishes) || dishes.length === 0) {
     return [];
   }
-
+  
   const detailedMealEntities: DetailedMealEntity[] = [];
-  // for (const ScheduledMealEntity of meals) {
-  //   const detailedMealEntity: DetailedMealEntity = {
-  //     id: ScheduledMealEntity.id,
-  //     userId: ScheduledMealEntity.userId,
-  //     mainDish: getDish(state, ScheduledMealEntity.mainDishId) as DishEntity,
-  //     accompanimentDish: isNil(ScheduledMealEntity.accompanimentDishId) ? null : getDish(state, ScheduledMealEntity.accompanimentDishId) as DishEntity,
-  //     dateScheduled: ScheduledMealEntity.dateScheduled,
-  //     status: ScheduledMealEntity.status,
-  //   };
-  //   detailedMealEntities.push(detailedMealEntity);
-  // }
+  for (const scheduledMeal of scheduledMeals) {
+    const accompanimentDishes: DishEntity[] = [];
+    for (const accompanimentDishId of scheduledMeal.accompanimentDishIds) {
+      const accompanimentDish: DishEntity = getDish(state, accompanimentDishId) as DishEntity;
+      accompanimentDishes.push(accompanimentDish);
+    }
+    const detailedMealEntity: DetailedMealEntity = {
+      id: scheduledMeal.id,
+      userId: scheduledMeal.userId,
+      mainDish: getDish(state, scheduledMeal.mainDishId) as DishEntity,
+      accompanimentDishes,
+      dateScheduled: scheduledMeal.dateScheduled,
+      status: scheduledMeal.status,
+    };
+    detailedMealEntities.push(detailedMealEntity);
+  }
 
   return detailedMealEntities;
 };

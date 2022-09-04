@@ -279,8 +279,8 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.detailedMeal)) {
     detailedMeal = ownProps.selectedMealInCalendar.detailedMeal as DetailedMealEntity;
     main = detailedMeal.mainDish as DishEntity;
-    if (!isNil(main.accompaniment) && (main.accompaniment !== RequiredAccompanimentFlags.None)) {
-      accompanimentDish = detailedMeal.accompanimentDish as DishEntity;
+    if (!isNil(main.accompanimentRequired) && (main.accompanimentRequired !== RequiredAccompanimentFlags.None)) {
+      accompanimentDish = detailedMeal.accompanimentDishes as DishEntity;
       // accompanimentType = main..accompaniment as RequiredAccompanimentFlags;
       // accompanimentDish = detailedMeal.accompanimentDish;
     }

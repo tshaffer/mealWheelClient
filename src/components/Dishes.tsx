@@ -180,7 +180,7 @@ const Dishes = (props: DishesProps) => {
       id: updatedDish.id,
       name: updatedDish.name,
       type: updatedDish.type,
-      accompaniment,
+      accompanimentRequired: accompaniment,
     };
     if (updatedDish.id.startsWith('newDish')) {
       props.onAddDish(dish);
@@ -293,14 +293,14 @@ const Dishes = (props: DishesProps) => {
 
   const getRows = () => {
     const rows: GridRowsProp = props.dishes.map((dish: DishEntity) => {
-      const side = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Side;
-      const salad = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Salad;
-      const veggie = isNil(dish.accompaniment) ? RequiredAccompanimentFlags.None : dish.accompaniment & RequiredAccompanimentFlags.Veggie;
+      const side = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Side;
+      const salad = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Salad;
+      const veggie = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie;
       const row: GridRowModel = {
         id: dish.id,
         name: dish.name,
         type: dish.type,
-        requiresAccompaniment: !isNil(dish.accompaniment) && dish.accompaniment !== RequiredAccompanimentFlags.None,
+        requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
         side,
         salad,
         veggie,

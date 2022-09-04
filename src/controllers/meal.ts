@@ -2,14 +2,14 @@ import axios from 'axios';
 import { isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
-import { 
-  addScheduledMealRedux, 
-  addDefinedMealsRedux, 
-  clearDefinedMeals, 
-  clearScheduledMeals, 
+import {
+  addScheduledMealRedux,
+  addDefinedMealsRedux,
+  clearDefinedMeals,
+  clearScheduledMeals,
   updateScheduledMealRedux,
   addScheduledMealsRedux
- } from '../models';
+} from '../models';
 import { getCurrentUser, getDish, getMeal } from '../selectors';
 
 import {
@@ -115,15 +115,15 @@ export const generateMenu = () => {
       let accompanimentDishId: string | null = null;
 
       // if accompaniment to main is required, select it.
-      if (!isNil(selectedDish.accompaniment) && selectedDish.accompaniment !== RequiredAccompanimentFlags.None) {
+      if (!isNil(selectedDish.accompanimentRequired) && selectedDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
         const possibleAccompaniments: DishType[] = [];
-        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Salad) {
+        if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
           possibleAccompaniments.push(DishType.Salad);
         }
-        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Side) {
+        if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
           possibleAccompaniments.push(DishType.Side);
         }
-        if (selectedDish.accompaniment & RequiredAccompanimentFlags.Veggie) {
+        if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
           possibleAccompaniments.push(DishType.Veggie);
         }
         const numPossibleAccompaniments = possibleAccompaniments.length;

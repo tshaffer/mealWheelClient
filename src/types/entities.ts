@@ -22,20 +22,8 @@ export interface DishEntity {
   id: string;
   name: string;
   type: DishType;
-  accompaniment?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
+  accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
 }
-
-// export interface ScheduledMealEntity {
-//   id: string;
-//   userId: string;
-//   name: string;
-//   mainDishId: string;
-//   accompanimentDishIds: string[];
-//   mainName: string;
-//   veggieName: string;
-//   saladName: string;
-//   sideName: string;
-// }
 
 export interface DefinedMealEntity {
   id: string;
@@ -62,7 +50,7 @@ export interface DetailedMealEntity {
   id: string;
   userId: string;
   mainDish: DishEntity;
-  accompanimentDish: DishEntity | null;
+  accompanimentDishes: DishEntity[];
   dateScheduled: Date;
   status: MealStatus;
 }
