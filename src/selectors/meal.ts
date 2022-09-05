@@ -1,6 +1,6 @@
 import { isNil } from 'lodash';
 import { getDish } from '.';
-import { MealWheelState, ScheduledMealEntity, DetailedMealEntity, DishEntity } from '../types';
+import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, DetailedMealEntity, DishEntity } from '../types';
 
 export const getMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
@@ -61,3 +61,8 @@ export const getDetailedMeals = (state: MealWheelState, scheduledMeals: Schedule
 
   return detailedMealEntities;
 };
+
+export const getDefinedMeals = (state: MealWheelState): DefinedMealEntity[] => {
+  return state.definedMealsState.definedMeals;
+};
+

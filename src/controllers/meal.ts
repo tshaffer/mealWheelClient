@@ -10,7 +10,7 @@ import {
   updateScheduledMealRedux,
   addScheduledMealsRedux
 } from '../models';
-import { getCurrentUser, getDish, getMeal } from '../selectors';
+import { getCurrentUser, getDefinedMeals, getDish, getMeal } from '../selectors';
 
 import {
   apiUrlFragment,
@@ -67,109 +67,129 @@ export const loadScheduledMeals = () => {
 
 export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
-
-    debugger;
-
-    dispatch(clearScheduledMeals());
-    const allMainDishIndices: number[] = [];
-    const allSaladIndices: number[] = [];
-    const allSideIndices: number[] = [];
-    const allVegIndices: number[] = [];
-
-    const selectedMainDishIndices: number[] = [];
-
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
-    const allDishes: DishEntity[] = mealWheelState.dishesState.dishes;
-    allDishes.forEach((dish: DishEntity, index: number) => {
-      switch (dish.type) {
-        case 'main':
-          allMainDishIndices.push(index);
-          break;
-        case 'salad':
-          allSaladIndices.push(index);
-          break;
-        case 'side':
-          allSideIndices.push(index);
-          break;
-        case 'veggie':
-          allVegIndices.push(index);
-          break;
-      }
-    });
+    // dispatch(clearScheduledMeals());
+    const randomDishbasedMeals: ScheduledMealEntity[] = generateRandomMeals(mealWheelState, 5);
+    const randomPredefinedMeals: DefinedMealEntity[] = getRandomPredefinedMeals(mealWheelState, 5);
 
-    // select 10 random main dish items
-    while (selectedMainDishIndices.length <= 10) {
-      const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
-      if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
-        selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-      }
-    }
-
-    const mealDate: Date = new Date();
-
-    for (const selectedMainDishIndex of selectedMainDishIndices) {
-
-      const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
-
-      let accompanimentDishId: string | null = null;
-
-      // if accompaniment to main is required, select it.
-      if (!isNil(selectedDish.accompanimentRequired) && selectedDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
-        const possibleAccompaniments: DishType[] = [];
-        if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
-          possibleAccompaniments.push(DishType.Salad);
-        }
-        if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
-          possibleAccompaniments.push(DishType.Side);
-        }
-        if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
-          possibleAccompaniments.push(DishType.Veggie);
-        }
-        const numPossibleAccompaniments = possibleAccompaniments.length;
-        const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
-        const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
-
-        let accompanimentIndex = -1;
-        switch (accompanimentType) {
-          case DishType.Salad: {
-            accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
-            break;
-          }
-          case DishType.Side: {
-            accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
-            break;
-          }
-          case DishType.Veggie: {
-            accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
-            break;
-          }
-        }
-
-        accompanimentDishId = allDishes[accompanimentIndex].id;
-      }
-
-      const accompanimentDishIds: any[] = isNil(accompanimentDishId) ? [] : [accompanimentDishId];
-      const mealId = uuidv4();
-      const scheduledMeal: ScheduledMealEntity = {
-        id: mealId,
-        userId: getCurrentUser(mealWheelState) as string,
-        // name: '',
-        mainDishId: selectedDish.id,
-        accompanimentDishIds,
-        // mainName: '',
-        // veggieName: '',
-        // saladName: '',
-        // sideName: '',
-        dateScheduled: mealDate,
-        status: MealStatus.proposed
-      };
-
-      dispatch(addScheduledMeal(scheduledMeal));
-
-      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
-    }
+    console.log(randomDishbasedMeals);
+    console.log(randomPredefinedMeals);
   };
+};
+
+const getRandomPredefinedMeals = (mealWheelState: MealWheelState, numMeals: number): DefinedMealEntity[] => {
+  const definedMealEntities: DefinedMealEntity[] = [];
+
+  const allDefinedMeals: DefinedMealEntity[] = getDefinedMeals(mealWheelState);
+  
+  while (definedMealEntities.length < numMeals) {
+    const definedMealIndex = Math.floor(Math.random() * allDefinedMeals.length);
+    const selectedDefinedMeal: DefinedMealEntity = allDefinedMeals[definedMealIndex];
+    definedMealEntities.push(selectedDefinedMeal);
+  }
+  return definedMealEntities;
+};
+
+const generateRandomMeals = (mealWheelState: MealWheelState, numMeals: number): ScheduledMealEntity[] => {
+
+  const scheduledMealEntities: ScheduledMealEntity[] = [];
+
+  const allMainDishIndices: number[] = [];
+  const allSaladIndices: number[] = [];
+  const allSideIndices: number[] = [];
+  const allVegIndices: number[] = [];
+
+  const selectedMainDishIndices: number[] = [];
+
+  const allDishes: DishEntity[] = mealWheelState.dishesState.dishes;
+  allDishes.forEach((dish: DishEntity, index: number) => {
+    switch (dish.type) {
+      case 'main':
+        allMainDishIndices.push(index);
+        break;
+      case 'salad':
+        allSaladIndices.push(index);
+        break;
+      case 'side':
+        allSideIndices.push(index);
+        break;
+      case 'veggie':
+        allVegIndices.push(index);
+        break;
+    }
+  });
+
+  // select random main dish items
+  while (selectedMainDishIndices.length < numMeals) {
+    const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
+    if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
+      selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+    }
+  }
+
+  const mealDate: Date = new Date();
+
+  for (const selectedMainDishIndex of selectedMainDishIndices) {
+
+    const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
+
+    let accompanimentDishId: string | null = null;
+
+    // if accompaniment to main is required, select it.
+    if (!isNil(selectedDish.accompanimentRequired) && selectedDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
+      const possibleAccompaniments: DishType[] = [];
+      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
+        possibleAccompaniments.push(DishType.Salad);
+      }
+      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
+        possibleAccompaniments.push(DishType.Side);
+      }
+      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
+        possibleAccompaniments.push(DishType.Veggie);
+      }
+      const numPossibleAccompaniments = possibleAccompaniments.length;
+      const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
+      const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
+
+      let accompanimentIndex = -1;
+      switch (accompanimentType) {
+        case DishType.Salad: {
+          accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
+          break;
+        }
+        case DishType.Side: {
+          accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
+          break;
+        }
+        case DishType.Veggie: {
+          accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
+          break;
+        }
+      }
+
+      accompanimentDishId = allDishes[accompanimentIndex].id;
+    }
+
+    const accompanimentDishIds: any[] = isNil(accompanimentDishId) ? [] : [accompanimentDishId];
+    const mealId = uuidv4();
+    const scheduledMeal: ScheduledMealEntity = {
+      id: mealId,
+      userId: getCurrentUser(mealWheelState) as string,
+      mainDishId: selectedDish.id,
+      accompanimentDishIds,
+      dateScheduled: mealDate,
+      status: MealStatus.proposed
+    };
+
+    // dispatch(addScheduledMeal(scheduledMeal));
+
+    scheduledMealEntities.push(scheduledMeal);
+
+    mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
+  }
+
+  return scheduledMealEntities;
 };
 
 

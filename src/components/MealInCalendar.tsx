@@ -92,10 +92,6 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   const renderMainDish = () => {
 
-    // if (detailedMeal?.mainDish.name === 'Detroit Pizza') {
-    //   debugger;
-    // }
-
     let mainDishLabel: string = '';
     if (!isNil(detailedMeal)) {
       mainDishLabel = 'Main: ' + detailedMeal.mainDish.name;

@@ -280,7 +280,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
     detailedMeal = ownProps.selectedMealInCalendar.detailedMeal as DetailedMealEntity;
     main = detailedMeal.mainDish as DishEntity;
     if (!isNil(main.accompanimentRequired) && (main.accompanimentRequired !== RequiredAccompanimentFlags.None)) {
-      accompanimentDish = detailedMeal.accompanimentDishes as DishEntity;
+      accompanimentDish = detailedMeal.accompanimentDishes[0] as DishEntity;
       // accompanimentType = main..accompaniment as RequiredAccompanimentFlags;
       // accompanimentDish = detailedMeal.accompanimentDish;
     }
