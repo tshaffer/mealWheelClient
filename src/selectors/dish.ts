@@ -56,3 +56,31 @@ export const getSalads = (state: MealWheelState): DishEntity[] => {
 export const getVeggies = (state: MealWheelState): DishEntity[] => {
   return getDishesOfType(state, DishType.Veggie);
 };
+
+export const getSalad = (accompanimentDishes: DishEntity[]): DishEntity | null => {
+  for (const accompanimentDish of accompanimentDishes) {
+    if (accompanimentDish.type === DishType.Salad) {
+      return accompanimentDish;
+    }
+  }
+  return null;
+};
+
+export const getSide = (accompanimentDishes: DishEntity[]): DishEntity | null => {
+  for (const accompanimentDish of accompanimentDishes) {
+    if (accompanimentDish.type === DishType.Side) {
+      return accompanimentDish;
+    }
+  }
+  return null;
+};
+
+export const getVeggie = (accompanimentDishes: DishEntity[]): DishEntity | null => {
+  for (const accompanimentDish of accompanimentDishes) {
+    if (accompanimentDish.type === DishType.Veggie) {
+      return accompanimentDish;
+    }
+  }
+  return null;
+};
+

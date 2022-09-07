@@ -210,8 +210,6 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
       status: MealStatus.proposed
     };
 
-    // dispatch(addScheduledMeal(scheduledMeal));
-
     scheduledMealEntities.push(scheduledMeal);
 
     mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
