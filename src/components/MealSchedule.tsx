@@ -9,7 +9,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import { DetailedMealEntity, DishEntity, ScheduledMealEntity } from '../types';
 import { loadScheduledMeals, generateMenu } from '../controllers';
-import { getCurrentUser, getDetailedMeals, getDishes, getMeals } from '../selectors';
+import { getCurrentUser, getDetailedMeals, getDishes, getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
@@ -157,7 +157,7 @@ const MealSchedule = (props: MealScheduleProps) => {
 
 function mapStateToProps(state: any) {
   const dishes: DishEntity[] = getDishes(state);
-  const meals: ScheduledMealEntity[] = getMeals(state);
+  const meals: ScheduledMealEntity[] = getScheduledMeals(state);
   const detailedMeals: DetailedMealEntity[] = getDetailedMeals(state, meals, dishes);
   return {
     userId: getCurrentUser(state) as string,

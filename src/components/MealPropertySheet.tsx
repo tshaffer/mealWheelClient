@@ -43,13 +43,6 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
 
 const MealPropertySheet = (props: MealPropertySheetProps) => {
 
-  const [selectedMain, setSelectedMain] = React.useState('');
-  const [selectedSide, setSelectedSide] = React.useState('');
-  const [selectedSalad, setSelectedSalad] = React.useState('');
-  const [selectedVeggie, setSelectedVeggie] = React.useState('');
-
-  const [checked, setChecked] = React.useState(true);
-
   const [comments, setComments] = React.useState('');
 
   const getDetailedMeal = (): DetailedMealEntity => {
@@ -62,10 +55,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const handleUpdateMain = (event: any) => {
     props.onUpdateMainInMeal(getDetailedMeal().id, event.target.value);
-  };
-
-  const handleCheckedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
   };
 
   const handleCompleted = () => {
@@ -94,9 +83,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
 
   const renderMains = () => {
-    // const veggieValue = isNil(props.side) ? '' : props.side;
-    // console.log('veggieValue');
-    // console.log(veggieValue);
     const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains);
     return (
       <div>
@@ -116,39 +102,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  // const renderAccompaniments = () => {
-  //   if (props.accompanimentDishes.length === 0) {
-  //     return (
-  //       <div>No Accompaniments</div>
-  //     );
-  //   // } else {
-  //   //   return (
-  //   //     <div>{props.accompanimentDish?.name}</div>
-  //   //   );
-  //   }
-  // };
-
-  // const renderAccompanimentRequired = () => {
-  //   return (
-  //     <FormGroup>
-  //       <FormControlLabel
-  //         control={
-  //           <Checkbox
-  //             checked={checked}
-  //             onChange={handleCheckedChange}
-  //           />
-  //         }
-  //         label="Label" />
-  //       <FormControlLabel disabled control={<Checkbox />} label="Disabled" />
-  //     </FormGroup>
-  //   );
-  // };
-
-
   const renderSides = () => {
-    const sideValue = isNil(props.side) ? '' : props.side.id;
-    console.log('sideValue');
-    console.log(sideValue);
     const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides);
     return (
       <div>
@@ -167,9 +121,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderSalads = () => {
-    const saladValue = isNil(props.salad) ? '' : props.salad;
-    console.log('saladValue');
-    console.log(saladValue);
     const menuItems: JSX.Element[] = renderDishMenuItems(props.salads);
     return (
       <div>
@@ -208,15 +159,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  /* mui example
-        <TextField
-          id="filled-helperText"
-          label="Helper text"
-          defaultValue="Default Value"
-          helperText="Some important text"
-          variant="filled"
-        />
-  */
   const renderLinkToRecipe = (): JSX.Element => {
     return (
       <div>
@@ -258,7 +200,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const mainDishElement = renderMains();
-  // const accompaniment = renderAccompaniments();
   const sideDishElement = renderSides();
   const saladsDishElement = renderSalads();
   const veggiesDishElement = renderVeggies();
@@ -272,7 +213,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     <div className='mealPropertySheet'>
       <p className='shortParagraph'>{'Main: ' + getDetailedMeal().mainDish.name}</p>
       {mainDishElement}
-      {/* {accompaniment} */}
       {sideDishElement}
       {saladsDishElement}
       {veggiesDishElement}

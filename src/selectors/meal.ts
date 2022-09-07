@@ -2,11 +2,15 @@ import { isNil } from 'lodash';
 import { getDish } from '.';
 import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, DetailedMealEntity, DishEntity } from '../types';
 
-export const getMeals = (state: MealWheelState): ScheduledMealEntity[] => {
+export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
 };
 
-export const getMeal = (state: MealWheelState, mealId: string): ScheduledMealEntity | null => {
+export const getDefinedMeals = (state: MealWheelState): DefinedMealEntity[] => {
+  return state.definedMealsState.definedMeals;
+};
+
+export const getScheduledMeal = (state: MealWheelState, mealId: string): ScheduledMealEntity | null => {
   const mealEntities: ScheduledMealEntity[] = state.scheduledMealsState.scheduledMeals;
   for (const ScheduledMealEntity of mealEntities) {
     if (ScheduledMealEntity.id === mealId) {
@@ -40,7 +44,7 @@ export const getDetailedMeals = (state: MealWheelState, scheduledMeals: Schedule
   if (isNil(dishes) || dishes.length === 0) {
     return [];
   }
-  
+
   const detailedMealEntities: DetailedMealEntity[] = [];
   for (const scheduledMeal of scheduledMeals) {
     const accompanimentDishes: DishEntity[] = [];
@@ -60,9 +64,5 @@ export const getDetailedMeals = (state: MealWheelState, scheduledMeals: Schedule
   }
 
   return detailedMealEntities;
-};
-
-export const getDefinedMeals = (state: MealWheelState): DefinedMealEntity[] => {
-  return state.definedMealsState.definedMeals;
 };
 

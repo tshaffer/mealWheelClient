@@ -10,7 +10,7 @@ import {
   updateScheduledMealRedux,
   addScheduledMealsRedux
 } from '../models';
-import { getCurrentUser, getDefinedMeals, getDish, getMeal } from '../selectors';
+import { getCurrentUser, getDefinedMeals, getDish, getScheduledMeal } from '../selectors';
 
 import {
   apiUrlFragment,
@@ -281,7 +281,8 @@ export const updateMainInMeal = (
   newMainId: string,
 ): any => {
   return (dispatch: any, getState: any) => {
-    // const mealWheelState: MealWheelState = getState() as MealWheelState;
+    debugger;
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
     // const newMain: DishEntity | null = getDish(mealWheelState, newMainId);
     // const meal: DefinedMealEntity | null = getMeal(mealWheelState, mealId);
     // if (!isNil(newMain) && !isNil(meal)) {
