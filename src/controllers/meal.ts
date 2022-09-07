@@ -21,7 +21,8 @@ import {
   RequiredAccompanimentFlags,
   DefinedMealEntity,
   serverUrl,
-  ScheduledMealEntity
+  ScheduledMealEntity,
+  MainDishEntity
 } from '../types';
 
 
@@ -254,24 +255,24 @@ export const updateMeal = (
 ): any => {
   return ((dispatch: any): any => {
 
-    // const path = serverUrl + apiUrlFragment + 'updateMeal';
+    const path = serverUrl + apiUrlFragment + 'updateMeal';
 
-    // const updateMealBody: any = {
-    //   id,
-    //   meal,
-    // };
+    const updateMealBody: any = {
+      id,
+      meal,
+    };
 
-    // return axios.post(
-    //   path,
-    //   updateMealBody
-    // ).then((response) => {
-    //   dispatch(updateScheduledMealRedux(id, meal));
-    //   return;
-    // }).catch((error) => {
-    //   console.log('error');
-    //   console.log(error);
-    //   return;
-    // });
+    return axios.post(
+      path,
+      updateMealBody
+    ).then((response) => {
+      dispatch(updateScheduledMealRedux(id, meal));
+      return;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return;
+    });
 
   });
 };
@@ -281,44 +282,47 @@ export const updateMainInMeal = (
   newMainId: string,
 ): any => {
   return (dispatch: any, getState: any) => {
-    debugger;
+    console.log(mealId);
+    console.log(newMainId);
     const mealWheelState: MealWheelState = getState() as MealWheelState;
-    // const newMain: DishEntity | null = getDish(mealWheelState, newMainId);
-    // const meal: DefinedMealEntity | null = getMeal(mealWheelState, mealId);
-    // if (!isNil(newMain) && !isNil(meal)) {
-    //   const existingMain: DishEntity = getDish(mealWheelState, meal?.mainDishId) as DishEntity;
-    //   // combinations
-    //   //  0) existingMain requires accompaniment, newMain requires accompaniment
-    //   //    no change to accompaniment required
-    //   //  existingMain does not require accompaniment, newMain requires accompaniment
-    //   //    update accompaniment in property - select random one?
-    //   //  existingMain requires accompaniment, newMain does not require accompaniment
-    //   //    no change to accompaniment required
-    //   //  existingMain does not require accompaniment, newMain does not require accompaniment
-    //   //    no change to accompaniment required
-    //   if (isNil(existingMain.accompaniment) || existingMain.accompaniment === RequiredAccompanimentFlags.None) {
-    //     if (isNil(newMain.accompaniment) || newMain.accompaniment === RequiredAccompanimentFlags.None) {
-    //       console.log('neither existing nor newMain require accompaniment');
-    //       meal.mainDishId = newMainId;
-    //       dispatch(updateMeal(meal.id, meal));
-    //       return;
-    //     } else {
-    //       console.log('existing does not require accompaniment; newMain does');
-    //     }
-    //   } else {
-    //     if (isNil(newMain.accompaniment) || newMain.accompaniment === RequiredAccompanimentFlags.None) {
-    //       console.log('existing requires accompaniment; newMain does not');
-    //       meal.mainDishId = newMainId;
-    //       dispatch(updateMeal(meal.id, meal));
-    //       return;
-    //     } else {
-    //       console.log('both existing and newMain require accompaniment');
-    //       meal.mainDishId = newMainId;
-    //       dispatch(updateMeal(meal.id, meal));
-    //       return;
-    //     }
-    //   }
-    // }
+    const newMain: MainDishEntity | null = getDish(mealWheelState, newMainId) as MainDishEntity;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (!isNil(newMain) && !isNil(meal)) {
+      meal.mainDishId = newMainId;
+      dispatch(updateMeal(meal.id, meal));
+      // const existingMain: DishEntity = getDish(mealWheelState, meal?.mainDishId) as DishEntity;
+      // combinations
+      //  0) existingMain requires accompaniment, newMain requires accompaniment
+      //    no change to accompaniment required
+      //  existingMain does not require accompaniment, newMain requires accompaniment
+      //    update accompaniment in property - select random one?
+      //  existingMain requires accompaniment, newMain does not require accompaniment
+      //    no change to accompaniment required
+      //  existingMain does not require accompaniment, newMain does not require accompaniment
+      //    no change to accompaniment required
+      // if (isNil(existingMain.accompaniment) || existingMain.accompaniment === RequiredAccompanimentFlags.None) {
+      //   if (isNil(newMain.accompaniment) || newMain.accompaniment === RequiredAccompanimentFlags.None) {
+      //     console.log('neither existing nor newMain require accompaniment');
+      //     meal.mainDishId = newMainId;
+      //     dispatch(updateMeal(meal.id, meal));
+      //     return;
+      //   } else {
+      //     console.log('existing does not require accompaniment; newMain does');
+      //   }
+      // } else {
+      //   if (isNil(newMain.accompaniment) || newMain.accompaniment === RequiredAccompanimentFlags.None) {
+      //     console.log('existing requires accompaniment; newMain does not');
+      //     meal.mainDishId = newMainId;
+      //     dispatch(updateMeal(meal.id, meal));
+      //     return;
+      //   } else {
+      //     console.log('both existing and newMain require accompaniment');
+      //     meal.mainDishId = newMainId;
+      //     dispatch(updateMeal(meal.id, meal));
+      //     return;
+      //   }
+      // }
+    }
   };
 };
 

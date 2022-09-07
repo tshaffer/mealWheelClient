@@ -139,9 +139,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderVeggies = (): JSX.Element => {
-    const veggieValue = isNil(props.veggie) ? '' : props.veggie.id;
-    console.log('veggieValue');
-    console.log(veggieValue);
     const menuItems: JSX.Element[] = renderDishMenuItems(props.veggies);
     return (
       <div>
