@@ -326,3 +326,29 @@ export const updateMainInMeal = (
   };
 };
 
+export const updateSideInMeal = (
+  mealId: string,
+  newSideId: string,
+): any => {
+  return (dispatch: any, getState: any) => {
+    console.log(mealId);
+  };
+};
+
+export const updateSaladInMeal = (
+  mealId: string,
+  newSaladId: string,
+): any => {
+  return (dispatch: any, getState: any) => {
+    console.log(mealId);
+  };
+};
+
+export const updateVeggieInMeal = (
+  mealId: string,
+  newVeggieId: string,
+): any => {
+  return (dispatch: any, getState: any) => {
+    console.log(mealId);
+  };
+};

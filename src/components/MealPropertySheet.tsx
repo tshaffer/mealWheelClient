@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { isNil } from 'lodash';
+import _, { isNil } from 'lodash';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -11,16 +11,13 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 
 import '../styles/MealWheel.css';
 
-import { DetailedMealEntity, DishEntity, ScheduledMealEntity, RequiredAccompanimentFlags, MainDishEntity, DishType } from '../types';
+import { DetailedMealEntity, DishEntity, MainDishEntity, DishType } from '../types';
 import { getMains, getSalad, getSalads, getSide, getSides, getVeggie, getVeggies } from '../selectors';
-import { updateMainInMeal } from '../controllers';
+import { updateMainInMeal, updateSaladInMeal, updateSideInMeal, updateVeggieInMeal } from '../controllers';
 
 export interface MealPropertySheetPropsFromParent {
   selectedMealInCalendar: CalendarEvent | null;
@@ -38,6 +35,9 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   salads: DishEntity[];
   veggies: DishEntity[];
   onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
+  onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
+  onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
+  onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
 }
 
 
@@ -57,6 +57,18 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     props.onUpdateMainInMeal(getDetailedMeal().id, event.target.value);
   };
 
+  const handleUpdateSide = (event: any) => {
+    props.onUpdateSideInMeal(getDetailedMeal().id, event.target.value);
+  };
+
+  const handleUpdateSalad = (event: any) => {
+    props.onUpdateSaladInMeal(getDetailedMeal().id, event.target.value);
+  };
+
+  const handleUpdateVeggie = (event: any) => {
+    props.onUpdateVeggieInMeal(getDetailedMeal().id, event.target.value);
+  };
+
   const handleCompleted = () => {
     console.log('handleCompleted');
   };
@@ -69,21 +81,34 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     console.log('handleRegenerate');
   };
 
-  const renderDishMenuItem = (dishEntity: DishEntity) => {
+  const renderNoneMenuItem = (): JSX.Element => {
+    return (
+      <MenuItem value={''} key={'none'}>None</MenuItem>
+    );
+  };
+
+  const renderDishMenuItem = (dishEntity: DishEntity): JSX.Element => {
     return (
       <MenuItem value={dishEntity.id} key={dishEntity.id}>{dishEntity.name}</MenuItem>
     );
   };
 
-  const renderDishMenuItems = (dishes: DishEntity[]) => {
-    return dishes.map((mainDish: DishEntity) => {
+  const renderDishMenuItems = (dishes: DishEntity[], includeNone: boolean) => {
+    const dishMenuItems: JSX.Element[] = dishes.map((mainDish: DishEntity) => {
       return renderDishMenuItem(mainDish);
     });
+    if (includeNone) {
+      dishMenuItems.unshift(renderNoneMenuItem());
+    }
+    return dishMenuItems;
+    // return dishes.map((mainDish: DishEntity) => {
+    //   return renderDishMenuItem(mainDish);
+    // });
   };
 
 
   const renderMains = () => {
-    const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains);
+    const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
@@ -92,7 +117,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
             labelId="mainLabel"
             id="demo-simple-select-filled"
             value={(props.main as DishEntity).id}
-            // onChange={(event) => setSelectedMain(event?.target.value)}
             onChange={(event) => handleUpdateMain(event)}
           >
             {mainsMenuItems}
@@ -103,7 +127,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderSides = () => {
-    const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides);
+    const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
@@ -111,7 +135,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Select
             labelId="sidesLabel"
             value={isNil(props.side) ? '' : props.side.id}
-            // onChange={(event) => setSelectedSide(event?.target.value)}
+            onChange={(event) => handleUpdateSide(event)}
           >
             {sidesMenuItems}
           </Select>
@@ -121,7 +145,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderSalads = () => {
-    const menuItems: JSX.Element[] = renderDishMenuItems(props.salads);
+    const menuItems: JSX.Element[] = renderDishMenuItems(props.salads, true);
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
@@ -129,7 +153,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Select
             labelId="saladsLabel"
             value={isNil(props.salad) ? '' : props.salad.id}
-            // onChange={(event) => setSelectedSalad(event?.target.value)}
+            onChange={(event) => handleUpdateSalad(event)}
           >
             {menuItems}
           </Select>
@@ -139,7 +163,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderVeggies = (): JSX.Element => {
-    const menuItems: JSX.Element[] = renderDishMenuItems(props.veggies);
+    const menuItems: JSX.Element[] = renderDishMenuItems(props.veggies, true);
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
@@ -147,7 +171,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Select
             labelId="veggiesLabel"
             value={isNil(props.veggie) ? '' : props.veggie.id}
-            // onChange={(event) => setSelectedVeggie(event?.target.value)}
+            onChange={(event) => handleUpdateVeggie(event)}
           >
             {menuItems}
           </Select>
@@ -253,6 +277,9 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onUpdateMainInMeal: updateMainInMeal,
+    onUpdateSideInMeal: updateSideInMeal,
+    onUpdateSaladInMeal: updateSaladInMeal,
+    onUpdateVeggieInMeal: updateVeggieInMeal,
   }, dispatch);
 };
 
