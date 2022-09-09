@@ -101,7 +101,11 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
-  const renderAccompaniment = (accompanimentDish: DishEntity) => {
+  const renderAccompaniment = (accompanimentDish: DishEntity | null) => {
+
+    if (isNil(accompanimentDish)) {
+      return null;
+    }
 
     const accompanimentType = getAccompanimentLabel(accompanimentDish.type);
     const accompanimentLabel = accompanimentType + ': ' + accompanimentDish.name;
@@ -110,18 +114,19 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
+
   const renderAccompaniments = () => {
-    
-    if (isNil(detailedMeal) || isNil(detailedMeal.accompanimentDishes) || detailedMeal.accompanimentDishes.length === 0) {
+
+    if (isNil(detailedMeal) || (isNil(detailedMeal.salad)) && isNil(detailedMeal.veggie && isNil(detailedMeal.side))) {
       return (
         <p className='shortParagraph'>{''}</p>
       );
     }
 
-    const accompaniments = detailedMeal.accompanimentDishes.map( (accompanimentDish: any) => {
-      return renderAccompaniment(accompanimentDish);
-    });
-    return accompaniments;
+    renderAccompaniment(detailedMeal.salad);
+    renderAccompaniment(detailedMeal.veggie);
+    renderAccompaniment(detailedMeal.side);
+
   };
 
   const renderMealStatus = () => {

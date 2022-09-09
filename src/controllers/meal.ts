@@ -105,12 +105,15 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, numMeals: numb
     const definedMealIndex = Math.floor(Math.random() * allDefinedMeals.length);
     const selectedDefinedMeal: DefinedMealEntity = allDefinedMeals[definedMealIndex];
 
+    const { mainDishId, saladId, veggieId, sideId } = selectedDefinedMeal;
     const mealId = uuidv4();
     const scheduledMeal: ScheduledMealEntity = {
       id: mealId,
       userId: getCurrentUser(mealWheelState) as string,
-      mainDishId: selectedDefinedMeal.mainDishId,
-      accompanimentDishIds: selectedDefinedMeal.accompanimentDishIds,
+      mainDishId,
+      saladId,
+      veggieId,
+      sideId,
       dateScheduled: mealDate,        // placeholder
       status: MealStatus.proposed
     };
@@ -163,7 +166,9 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
     const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
 
-    let accompanimentDishId: string | null = null;
+    let saladId: string = '';
+    let veggieId: string = '';
+    let sideId: string = '';
 
     // if accompaniment to main is required, select it.
     if (!isNil(selectedDish.accompanimentRequired) && selectedDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
@@ -185,28 +190,30 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
       switch (accompanimentType) {
         case DishType.Salad: {
           accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
+          saladId = allDishes[accompanimentIndex].id;
           break;
         }
         case DishType.Side: {
           accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
+          sideId = allDishes[accompanimentIndex].id;
           break;
         }
         case DishType.Veggie: {
           accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
+          veggieId = allDishes[accompanimentIndex].id;
           break;
         }
       }
-
-      accompanimentDishId = allDishes[accompanimentIndex].id;
     }
 
-    const accompanimentDishIds: any[] = isNil(accompanimentDishId) ? [] : [accompanimentDishId];
     const mealId = uuidv4();
     const scheduledMeal: ScheduledMealEntity = {
       id: mealId,
       userId: getCurrentUser(mealWheelState) as string,
       mainDishId: selectedDish.id,
-      accompanimentDishIds,
+      saladId,
+      veggieId,
+      sideId,
       dateScheduled: mealDate,
       status: MealStatus.proposed
     };

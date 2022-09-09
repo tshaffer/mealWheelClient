@@ -47,16 +47,18 @@ export const getDetailedMeals = (state: MealWheelState, scheduledMeals: Schedule
 
   const detailedMealEntities: DetailedMealEntity[] = [];
   for (const scheduledMeal of scheduledMeals) {
-    const accompanimentDishes: DishEntity[] = [];
-    for (const accompanimentDishId of scheduledMeal.accompanimentDishIds) {
-      const accompanimentDish: DishEntity = getDish(state, accompanimentDishId) as DishEntity;
-      accompanimentDishes.push(accompanimentDish);
-    }
+
+    const salad: DishEntity | null = getDish(state, scheduledMeal.saladId);
+    const veggie: DishEntity | null = getDish(state, scheduledMeal.veggieId);
+    const side: DishEntity | null = getDish(state, scheduledMeal.sideId);
+
     const detailedMealEntity: DetailedMealEntity = {
       id: scheduledMeal.id,
       userId: scheduledMeal.userId,
       mainDish: getDish(state, scheduledMeal.mainDishId) as DishEntity,
-      accompanimentDishes,
+      salad,
+      veggie,
+      side,
       dateScheduled: scheduledMeal.dateScheduled,
       status: scheduledMeal.status,
     };

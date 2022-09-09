@@ -30,8 +30,10 @@ export interface DefinedMealEntity {
   userId: string;
   name: string;
   mainDishId: string;
+  saladId: string;
+  veggieId: string;
+  sideId: string;
   mainName: string;
-  accompanimentDishIds: string[];
   veggieName: string;
   saladName: string;
   sideName: string;
@@ -41,16 +43,21 @@ export interface ScheduledMealEntity {
   id: string;
   userId: string;
   mainDishId: string;
-  accompanimentDishIds: string[];
+  saladId: string;
+  veggieId: string;
+  sideId: string;
   dateScheduled: Date;
   status: MealStatus;
 }
+
 
 export interface DetailedMealEntity {
   id: string;
   userId: string;
   mainDish: DishEntity;
-  accompanimentDishes: DishEntity[];
+  salad: DishEntity | null;
+  veggie: DishEntity | null;
+  side: DishEntity | null;
   dateScheduled: Date;
   status: MealStatus;
 }

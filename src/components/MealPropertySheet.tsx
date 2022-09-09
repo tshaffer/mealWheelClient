@@ -29,7 +29,6 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   side: DishEntity | null;
   salad: DishEntity | null;
   veggie: DishEntity | null;
-  accompanimentDishes: DishEntity[];
   mains: DishEntity[];
   sides: DishEntity[];
   salads: DishEntity[];
@@ -251,14 +250,12 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
   let side: DishEntity | null = null;
   let salad: DishEntity | null = null;
   let veggie: DishEntity | null = null;
-  let accompanimentDishes: DishEntity[] = [];
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.detailedMeal)) {
     detailedMeal = ownProps.selectedMealInCalendar.detailedMeal as DetailedMealEntity;
     main = detailedMeal.mainDish as MainDishEntity;
-    accompanimentDishes = detailedMeal.accompanimentDishes;
-    side = getSide(accompanimentDishes);
-    salad = getSalad(accompanimentDishes);
-    veggie = getVeggie(accompanimentDishes);
+    salad = detailedMeal.salad;
+    veggie = detailedMeal.veggie;
+    side = detailedMeal.side;
   }
 
   return {
@@ -266,7 +263,6 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
     side,
     salad,
     veggie,
-    accompanimentDishes,
     mains: getMains(state),
     sides: getSides(state),
     salads: getSalads(state),
