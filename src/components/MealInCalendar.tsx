@@ -117,16 +117,28 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   const renderAccompaniments = () => {
 
-    if (isNil(detailedMeal) || (isNil(detailedMeal.salad)) && isNil(detailedMeal.veggie && isNil(detailedMeal.side))) {
+    if (isNil(detailedMeal) || (isNil(detailedMeal.salad) && isNil(detailedMeal.veggie) && isNil(detailedMeal.side))) {
       return (
         <p className='shortParagraph'>{''}</p>
       );
     }
 
-    renderAccompaniment(detailedMeal.salad);
-    renderAccompaniment(detailedMeal.veggie);
-    renderAccompaniment(detailedMeal.side);
+    const renderedAccompaniments = [];
 
+    let jsx = renderAccompaniment(detailedMeal.salad);
+    if (!isNil(jsx)) {
+      renderedAccompaniments.push(jsx);
+    }
+    jsx = renderAccompaniment(detailedMeal.veggie);
+    if (!isNil(jsx)) {
+      renderedAccompaniments.push(jsx);
+    }
+    jsx = renderAccompaniment(detailedMeal.side);
+    if (!isNil(jsx)) {
+      renderedAccompaniments.push(jsx);
+    }
+
+    return jsx;
   };
 
   const renderMealStatus = () => {
