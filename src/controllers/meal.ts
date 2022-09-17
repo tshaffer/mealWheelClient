@@ -22,7 +22,8 @@ import {
   DefinedMealEntity,
   serverUrl,
   ScheduledMealEntity,
-  MainDishEntity
+  MainDishEntity,
+  BaseDishEntity
 } from '../types';
 
 
@@ -114,13 +115,13 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
       selectedMainDishIds.push(selectedDefinedMealMainDishId);
     }
   }
-  
+
   const scheduledMealEntities: ScheduledMealEntity[] = [];
 
   const mealDate: Date = new Date();
 
   for (const selectedDefinedMeal of selectedDefinedMeals) {
-    
+
     const { mainDishId, saladId, veggieId, sideId } = selectedDefinedMeal;
     const mealId = uuidv4();
     const scheduledMeal: ScheduledMealEntity = {
@@ -137,7 +138,7 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
     scheduledMealEntities.push(scheduledMeal);
 
   }
-  
+
   return scheduledMealEntities;
 };
 
@@ -356,7 +357,13 @@ export const updateSideInMeal = (
   newSideId: string,
 ): any => {
   return (dispatch: any, getState: any) => {
-    console.log(mealId);
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const newSide: BaseDishEntity | null = getDish(mealWheelState, newSideId) as BaseDishEntity;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (!isNil(newSide) && !isNil(meal)) {
+      meal.sideId = newSideId;
+      dispatch(updateMeal(meal.id, meal));
+    }
   };
 };
 

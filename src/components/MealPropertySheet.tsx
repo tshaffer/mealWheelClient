@@ -82,7 +82,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const renderNoneMenuItem = (): JSX.Element => {
     return (
-      <MenuItem value={''} key={'none'}>None</MenuItem>
+      <MenuItem value={'none'} key={'none'}>None</MenuItem>
     );
   };
 
@@ -133,7 +133,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <InputLabel id="sidesLabel">Side</InputLabel>
           <Select
             labelId="sidesLabel"
-            value={isNil(props.side) ? '' : props.side.id}
+            value={isNil(props.side) ? 'none' : props.side.id}
             onChange={(event) => handleUpdateSide(event)}
           >
             {sidesMenuItems}
@@ -256,6 +256,12 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
     salad = detailedMeal.salad;
     veggie = detailedMeal.veggie;
     side = detailedMeal.side;
+  }
+
+  if (!isNil(main) && (main as MainDishEntity).name === 'Burgers') {
+    console.log('selectedMealInCalendar', ownProps.selectedMealInCalendar);
+    console.log('detailedMeal', detailedMeal);
+    console.log('side', side);
   }
 
   return {
