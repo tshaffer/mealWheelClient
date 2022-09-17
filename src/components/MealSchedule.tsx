@@ -7,9 +7,9 @@ import moment from 'moment';
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { DetailedMealEntity, DishEntity, ScheduledMealEntity } from '../types';
+import { DishEntity, ScheduledMealEntity } from '../types';
 import { loadScheduledMeals, generateMenu } from '../controllers';
-import { getCurrentUser, getDetailedMeals, getDishes, getScheduledMeals } from '../selectors';
+import { getCurrentUser, getDish, getDishes, getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
@@ -26,7 +26,7 @@ export class CalendarEvent {
   start: Date = new Date();
   end: Date = new Date();
   tooltip?: string;
-  detailedMeal?: DetailedMealEntity;
+  scheduledMeal?: ScheduledMealEntity;
 }
 
 const now: number = Date.now();
@@ -37,7 +37,6 @@ end.setDate(end.getDate() + 1);
 export interface MealScheduleProps {
   userId: string;
   scheduledMeals: ScheduledMealEntity[];
-  detailedMeals: DetailedMealEntity[];
   onLoadScheduledMeals: (usrId: string) => any;
   onGenerateMenu: () => any;
 }
@@ -73,18 +72,18 @@ const MealSchedule = (props: MealScheduleProps) => {
     setSheetOpen(false);
   };
 
-  if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
+  if (!isNil(props.scheduledMeals) && props.scheduledMeals.length > 0) {
 
     const mealsInSchedule: CalendarEvent[] = [];
 
-    for (const detailedMeal of props.detailedMeals) {
+    for (const scheduledMeal of props.scheduledMeals) {
       const event: CalendarEvent = {
-        title: detailedMeal.mainDish.name,
+        title: scheduledMeal.id,
+        // title: scheduledMeal.mainDish.name,
         allDay: true,
-        start: detailedMeal.dateScheduled,
-        end: detailedMeal.dateScheduled,
-        tooltip: detailedMeal.mainDish.name,
-        detailedMeal,
+        start: scheduledMeal.dateScheduled,
+        end: scheduledMeal.dateScheduled,
+        tooltip: scheduledMeal.mainDish.name,
       };
       mealsInSchedule.push(event);
     }
@@ -158,11 +157,9 @@ const MealSchedule = (props: MealScheduleProps) => {
 function mapStateToProps(state: any) {
   const dishes: DishEntity[] = getDishes(state);
   const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
-  const detailedMeals: DetailedMealEntity[] = getDetailedMeals(state, scheduledMeals, dishes);
   return {
     userId: getCurrentUser(state) as string,
     scheduledMeals,
-    detailedMeals,
   };
 }
 

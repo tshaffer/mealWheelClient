@@ -1,6 +1,6 @@
 import { isNil } from 'lodash';
 import { getDish } from '.';
-import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, DetailedMealEntity, DishEntity } from '../types';
+import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, DishEntity } from '../types';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
@@ -36,35 +36,35 @@ export const getScheduledMeal = (state: MealWheelState, mealId: string): Schedul
 //   });
 // };
 
-export const getDetailedMeals = (state: MealWheelState, scheduledMeals: ScheduledMealEntity[], dishes: DishEntity[]): DetailedMealEntity[] => {
+// export const getDetailedMeals = (state: MealWheelState, scheduledMeals: ScheduledMealEntity[], dishes: DishEntity[]): DetailedMealEntity[] => {
 
-  if (isNil(scheduledMeals) || scheduledMeals.length === 0) {
-    return [];
-  }
-  if (isNil(dishes) || dishes.length === 0) {
-    return [];
-  }
+//   if (isNil(scheduledMeals) || scheduledMeals.length === 0) {
+//     return [];
+//   }
+//   if (isNil(dishes) || dishes.length === 0) {
+//     return [];
+//   }
 
-  const detailedMealEntities: DetailedMealEntity[] = [];
-  for (const scheduledMeal of scheduledMeals) {
+//   const detailedMealEntities: DetailedMealEntity[] = [];
+//   for (const scheduledMeal of scheduledMeals) {
 
-    const salad: DishEntity | null = getDish(state, scheduledMeal.saladId);
-    const veggie: DishEntity | null = getDish(state, scheduledMeal.veggieId);
-    const side: DishEntity | null = getDish(state, scheduledMeal.sideId);
+//     const salad: DishEntity | null = getDish(state, scheduledMeal.saladId);
+//     const veggie: DishEntity | null = getDish(state, scheduledMeal.veggieId);
+//     const side: DishEntity | null = getDish(state, scheduledMeal.sideId);
 
-    const detailedMealEntity: DetailedMealEntity = {
-      id: scheduledMeal.id,
-      userId: scheduledMeal.userId,
-      mainDish: getDish(state, scheduledMeal.mainDishId) as DishEntity,
-      salad,
-      veggie,
-      side,
-      dateScheduled: scheduledMeal.dateScheduled,
-      status: scheduledMeal.status,
-    };
-    detailedMealEntities.push(detailedMealEntity);
-  }
+//     const detailedMealEntity: DetailedMealEntity = {
+//       id: scheduledMeal.id,
+//       userId: scheduledMeal.userId,
+//       mainDish: getDish(state, scheduledMeal.mainDishId) as DishEntity,
+//       salad,
+//       veggie,
+//       side,
+//       dateScheduled: scheduledMeal.dateScheduled,
+//       status: scheduledMeal.status,
+//     };
+//     detailedMealEntities.push(detailedMealEntity);
+//   }
 
-  return detailedMealEntities;
-};
+//   return detailedMealEntities;
+// };
 
