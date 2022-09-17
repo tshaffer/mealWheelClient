@@ -360,11 +360,16 @@ export const updateSideInMeal = (
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newSide: BaseDishEntity | null = getDish(mealWheelState, newSideId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
-    if (!isNil(newSide) && !isNil(meal)) {
-      meal.sideId = newSideId;
+    if (!isNil(meal)) {
+      if (!isNil(newSide)) {
+        meal.sideId = newSideId;
+      } else {
+        meal.sideId = '';
+      }
       dispatch(updateMeal(meal.id, meal));
     }
-  };
+
+  }
 };
 
 export const updateSaladInMeal = (

@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { isArray, isNil } from 'lodash';
 import { getDish } from '.';
 import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, DetailedMealEntity, DishEntity } from '../types';
 
@@ -68,3 +68,28 @@ export const getDetailedMeals = (state: MealWheelState, scheduledMeals: Schedule
   return detailedMealEntities;
 };
 
+export const getDetailedMeal = (state: MealWheelState, scheduledMeal: ScheduledMealEntity | null): DetailedMealEntity | null => {
+
+  let detailedMeal: DetailedMealEntity | null = null;
+
+  if (!isNil(scheduledMeal)) {
+
+    const salad: DishEntity | null = getDish(state, scheduledMeal.saladId);
+    const veggie: DishEntity | null = getDish(state, scheduledMeal.veggieId);
+    const side: DishEntity | null = getDish(state, scheduledMeal.sideId);
+
+    detailedMeal = {
+      id: scheduledMeal.id,
+      userId: scheduledMeal.userId,
+      mainDish: getDish(state, scheduledMeal.mainDishId) as DishEntity,
+      salad,
+      veggie,
+      side,
+      dateScheduled: scheduledMeal.dateScheduled,
+      status: scheduledMeal.status,
+    };
+
+  }
+
+  return detailedMeal;
+};

@@ -110,6 +110,21 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
+  let scheduledMeal: ScheduledMealEntity | null = null;
+  if (!isNil(selectedMealInCalendar) && !isNil(selectedMealInCalendar.detailedMeal)) {
+    const detailedMeal: DetailedMealEntity = selectedMealInCalendar.detailedMeal;
+    scheduledMeal = {
+      id: detailedMeal.id,
+      userId: detailedMeal.userId,
+      mainDishId: detailedMeal.mainDish.id,
+      saladId: isNil(detailedMeal.salad) ? '' : detailedMeal.salad.id,
+      veggieId: isNil(detailedMeal.veggie) ? '' : detailedMeal.veggie.id,
+      sideId: isNil(detailedMeal.side) ? '' : detailedMeal.side.id,
+      dateScheduled: detailedMeal.dateScheduled,
+      status: detailedMeal.status,
+    };
+  }
+
   return (
     <div style={{ height: '100vh' }}>
       <div style={{ height: '100vh' }}>
@@ -147,7 +162,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         anchor="right"
       >
         <MealPropertySheet
-          selectedMealInCalendar={selectedMealInCalendar}
+          scheduledMeal={scheduledMeal}
           handleClose={handleClose}
         />
       </Drawer>

@@ -15,12 +15,12 @@ import TextField from '@mui/material/TextField';
 
 import '../styles/MealWheel.css';
 
-import { DetailedMealEntity, DishEntity, MainDishEntity, DishType } from '../types';
-import { getMains, getSalad, getSalads, getSide, getSides, getVeggie, getVeggies } from '../selectors';
+import { DetailedMealEntity, DishEntity, MainDishEntity, DishType, ScheduledMealEntity } from '../types';
+import { getDetailedMeal, getMains, getSalad, getSalads, getSide, getSides, getVeggie, getVeggies } from '../selectors';
 import { updateMainInMeal, updateSaladInMeal, updateSideInMeal, updateVeggieInMeal } from '../controllers';
 
 export interface MealPropertySheetPropsFromParent {
-  selectedMealInCalendar: CalendarEvent | null;
+  scheduledMeal: ScheduledMealEntity | null;
   handleClose: () => any;
 }
 
@@ -44,28 +44,25 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const [comments, setComments] = React.useState('');
 
-  const getDetailedMeal = (): DetailedMealEntity => {
-    return (props.selectedMealInCalendar as CalendarEvent).detailedMeal as unknown as DetailedMealEntity;
-  };
-
-  if (isNil(props.selectedMealInCalendar) || isNil(props.selectedMealInCalendar.detailedMeal)) {
+  if (isNil(props.scheduledMeal)) {
     return null;
   }
 
   const handleUpdateMain = (event: any) => {
-    props.onUpdateMainInMeal(getDetailedMeal().id, event.target.value);
+    props.onUpdateMainInMeal((props.scheduledMeal as ScheduledMealEntity).id, event.target.value);
   };
 
   const handleUpdateSide = (event: any) => {
-    props.onUpdateSideInMeal(getDetailedMeal().id, event.target.value);
+    debugger;
+    props.onUpdateSideInMeal((props.scheduledMeal as ScheduledMealEntity).id, event.target.value);
   };
 
   const handleUpdateSalad = (event: any) => {
-    props.onUpdateSaladInMeal(getDetailedMeal().id, event.target.value);
+    props.onUpdateSaladInMeal((props.scheduledMeal as ScheduledMealEntity).id, event.target.value);
   };
 
   const handleUpdateVeggie = (event: any) => {
-    props.onUpdateVeggieInMeal(getDetailedMeal().id, event.target.value);
+    props.onUpdateVeggieInMeal((props.scheduledMeal as ScheduledMealEntity).id, event.target.value);
   };
 
   const handleCompleted = () => {
@@ -231,7 +228,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   return (
     <div className='mealPropertySheet'>
-      <p className='shortParagraph'>{'Main: ' + getDetailedMeal().mainDish.name}</p>
+      <p className='shortParagraph'>{'Main: ' + (props.main as DishEntity).name}</p>
       {mainDishElement}
       {sideDishElement}
       {saladsDishElement}
@@ -245,23 +242,16 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 };
 
 function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent) {
-  let detailedMeal: DetailedMealEntity | null = null;
+  const detailedMeal: DetailedMealEntity | null = getDetailedMeal(state, ownProps.scheduledMeal);
   let main: MainDishEntity | null = null;
   let side: DishEntity | null = null;
   let salad: DishEntity | null = null;
   let veggie: DishEntity | null = null;
-  if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.detailedMeal)) {
-    detailedMeal = ownProps.selectedMealInCalendar.detailedMeal as DetailedMealEntity;
+  if (!isNil(detailedMeal)) {
     main = detailedMeal.mainDish as MainDishEntity;
     salad = detailedMeal.salad;
     veggie = detailedMeal.veggie;
     side = detailedMeal.side;
-  }
-
-  if (!isNil(main) && (main as MainDishEntity).name === 'Burgers') {
-    console.log('selectedMealInCalendar', ownProps.selectedMealInCalendar);
-    console.log('detailedMeal', detailedMeal);
-    console.log('side', side);
   }
 
   return {
