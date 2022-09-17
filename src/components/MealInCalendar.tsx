@@ -138,7 +138,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
       renderedAccompaniments.push(jsx);
     }
 
-    return jsx;
+    return renderedAccompaniments;
   };
 
   const renderMealStatus = () => {

@@ -360,19 +360,34 @@ export const updateSideInMeal = (
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newSide: BaseDishEntity | null = getDish(mealWheelState, newSideId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
-    if (!isNil(newSide) && !isNil(meal)) {
-      meal.sideId = newSideId;
+    if (!isNil(meal)) {
+      if (!isNil(newSide)) {
+        meal.sideId = newSideId;
+      } else {
+        meal.sideId = '';
+      }
       dispatch(updateMeal(meal.id, meal));
     }
   };
 };
+
 
 export const updateSaladInMeal = (
   mealId: string,
   newSaladId: string,
 ): any => {
   return (dispatch: any, getState: any) => {
-    console.log(mealId);
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const newSalad: BaseDishEntity | null = getDish(mealWheelState, newSaladId) as BaseDishEntity;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (!isNil(meal)) {
+      if (!isNil(newSalad)) {
+        meal.saladId = newSaladId;
+      } else {
+        meal.saladId = '';
+      }
+      dispatch(updateMeal(meal.id, meal));
+    }
   };
 };
 
@@ -381,6 +396,16 @@ export const updateVeggieInMeal = (
   newVeggieId: string,
 ): any => {
   return (dispatch: any, getState: any) => {
-    console.log(mealId);
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const newVeggie: BaseDishEntity | null = getDish(mealWheelState, newVeggieId) as BaseDishEntity;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (!isNil(meal)) {
+      if (!isNil(newVeggie)) {
+        meal.veggieId = newVeggieId;
+      } else {
+        meal.veggieId = '';
+      }
+      dispatch(updateMeal(meal.id, meal));
+    }
   };
 };
