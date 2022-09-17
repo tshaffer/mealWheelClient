@@ -151,7 +151,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <InputLabel id="saladsLabel">Salad</InputLabel>
           <Select
             labelId="saladsLabel"
-            value={isNil(props.salad) ? '' : props.salad.id}
+            value={isNil(props.salad) ? 'none' : props.salad.id}
             onChange={(event) => handleUpdateSalad(event)}
           >
             {menuItems}
@@ -169,7 +169,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <InputLabel id="veggiesLabel">Veggie</InputLabel>
           <Select
             labelId="veggiesLabel"
-            value={isNil(props.veggie) ? '' : props.veggie.id}
+            value={isNil(props.veggie) ? 'none' : props.veggie.id}
             onChange={(event) => handleUpdateVeggie(event)}
           >
             {menuItems}
