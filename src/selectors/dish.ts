@@ -84,3 +84,12 @@ export const getVeggie = (accompanimentDishes: DishEntity[]): DishEntity | null 
   return null;
 };
 
+export const getVeggieById = (state: MealWheelState, id: string) : DishEntity | null =>{
+  const veggies: DishEntity[] = getVeggies(state);
+  for (const veggie of veggies) {
+    if (veggie.id === id) {
+      return veggie;
+    }
+  }
+  return null;
+};

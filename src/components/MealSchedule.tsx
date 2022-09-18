@@ -17,6 +17,7 @@ import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
+import { scheduledMealsStateReducer } from '../models';
 
 const localizer = momentLocalizer(moment);
 
@@ -96,7 +97,7 @@ const MealSchedule = (props: MealScheduleProps) => {
       if (!isNil(existingEvent.detailedMeal)) {
         if (existingEvent.detailedMeal.id === (calendarEvent.detailedMeal as DetailedMealEntity).id) {
           existingEvents[matchingEventIndex] = calendarEvent;
-          setEvents(existingEvents);
+          setEvents(existingEvents); // BUT THIS DOESN"T UPDATE REDUX, DOES IT??, NO IT DOESN"T
         }
       }
       matchingEventIndex++;
@@ -179,6 +180,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         anchor="right"
       >
         <MealPropertySheet
+          scheduledMealId={isNil(selectedMealInCalendar) ? '' : (isNil(selectedMealInCalendar.detailedMeal) ? '' : selectedMealInCalendar.detailedMeal.id)}
           selectedMealInCalendar={selectedMealInCalendar}
           handleClose={handleClose}
           handleAddPseudoEvent={handleAddPseudoEvent}
