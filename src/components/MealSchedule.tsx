@@ -7,6 +7,8 @@ import moment from 'moment';
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+import { cloneDeep } from 'lodash';
+
 import { DetailedMealEntity, DishEntity, ScheduledMealEntity } from '../types';
 import { loadScheduledMeals, generateMenu } from '../controllers';
 import { getCurrentUser, getDetailedMeals, getDishes, getScheduledMeals } from '../selectors';
@@ -83,6 +85,22 @@ const MealSchedule = (props: MealScheduleProps) => {
     };
     currentEvents.push(pseudoCalendarEvent);
     setEvents(currentEvents);
+  };
+
+  const handleUpdateCalendarEvent = (calendarEvent: CalendarEvent) => {
+    const existingEvents: CalendarEvent[] = cloneDeep(events);
+
+    // find matching calendar event
+    let matchingEventIndex = 0;
+    for (const existingEvent of existingEvents) {
+      if (!isNil(existingEvent.detailedMeal)) {
+        if (existingEvent.detailedMeal.id === (calendarEvent.detailedMeal as DetailedMealEntity).id) {
+          existingEvents[matchingEventIndex] = calendarEvent;
+          setEvents(existingEvents);
+        }
+      }
+      matchingEventIndex++;
+    }
   };
 
   if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
@@ -164,6 +182,7 @@ const MealSchedule = (props: MealScheduleProps) => {
           selectedMealInCalendar={selectedMealInCalendar}
           handleClose={handleClose}
           handleAddPseudoEvent={handleAddPseudoEvent}
+          onUpdateCalendarEvent={handleUpdateCalendarEvent}
         />
       </Drawer>
     </div>

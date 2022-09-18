@@ -23,6 +23,7 @@ export interface MealPropertySheetPropsFromParent {
   selectedMealInCalendar: CalendarEvent | null;
   handleClose: () => any;
   handleAddPseudoEvent: () => any;
+  onUpdateCalendarEvent: (calendarEvent: CalendarEvent) => any;
 }
 
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
@@ -38,6 +39,7 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
   onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
   onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
+  state: any;
 }
 
 
@@ -59,8 +61,18 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const handleUpdateSide = (event: any) => {
+    debugger;
     props.onUpdateSideInMeal(getDetailedMeal().id, event.target.value);
+    // debugger;
     props.handleAddPseudoEvent();
+    // debugger;
+    const selectedMealInCalendar: CalendarEvent = props.selectedMealInCalendar as CalendarEvent;
+    const detailedMeal: DetailedMealEntity = selectedMealInCalendar.detailedMeal as DetailedMealEntity;
+    console.log(selectedMealInCalendar);
+    // (detailedMeal.side as DishEntity).id = (((props.selectedMealInCalendar as CalendarEvent).detailedMeal as DetailedMealEntity).side as DishEntity).id;
+    console.log((detailedMeal.side as DishEntity).id);
+    (detailedMeal.side as DishEntity).id = event.target.value;
+    console.log(selectedMealInCalendar);
   };
 
   const handleUpdateSalad = (event: any) => {
@@ -273,6 +285,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
     sides: getSides(state),
     salads: getSalads(state),
     veggies: getVeggies(state),
+    state,
   };
 }
 
