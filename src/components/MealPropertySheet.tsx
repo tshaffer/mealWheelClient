@@ -22,6 +22,7 @@ import { updateMainInMeal, updateSaladInMeal, updateSideInMeal, updateVeggieInMe
 export interface MealPropertySheetPropsFromParent {
   selectedMealInCalendar: CalendarEvent | null;
   handleClose: () => any;
+  handleAddPseudoEvent: () => any;
 }
 
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
@@ -54,18 +55,22 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const handleUpdateMain = (event: any) => {
     props.onUpdateMainInMeal(getDetailedMeal().id, event.target.value);
+    props.handleAddPseudoEvent();
   };
 
   const handleUpdateSide = (event: any) => {
     props.onUpdateSideInMeal(getDetailedMeal().id, event.target.value);
+    props.handleAddPseudoEvent();
   };
 
   const handleUpdateSalad = (event: any) => {
     props.onUpdateSaladInMeal(getDetailedMeal().id, event.target.value);
+    props.handleAddPseudoEvent();
   };
 
   const handleUpdateVeggie = (event: any) => {
     props.onUpdateVeggieInMeal(getDetailedMeal().id, event.target.value);
+    props.handleAddPseudoEvent();
   };
 
   const handleClear = () => {

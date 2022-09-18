@@ -73,6 +73,18 @@ const MealSchedule = (props: MealScheduleProps) => {
     setSheetOpen(false);
   };
 
+  const handleAddPseudoEvent = () => {
+    const currentEvents: CalendarEvent[] = events;
+    const pseudoCalendarEvent: CalendarEvent = {
+      title: 'PseudoEvent',
+      allDay: true,
+      start: new Date('September 30, 2022 00:00:00'),
+      end: new Date('September 30, 2022 23:00:00'),
+    };
+    currentEvents.push(pseudoCalendarEvent);
+    setEvents(currentEvents);
+  };
+
   if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
 
     const mealsInSchedule: CalendarEvent[] = [];
@@ -109,6 +121,8 @@ const MealSchedule = (props: MealScheduleProps) => {
       }
     }
   }
+
+  console.log('rerender calendar');
 
   return (
     <div style={{ height: '100vh' }}>
@@ -149,6 +163,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         <MealPropertySheet
           selectedMealInCalendar={selectedMealInCalendar}
           handleClose={handleClose}
+          handleAddPseudoEvent={handleAddPseudoEvent}
         />
       </Drawer>
     </div>
