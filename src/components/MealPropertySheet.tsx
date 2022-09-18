@@ -68,10 +68,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     props.onUpdateVeggieInMeal(getDetailedMeal().id, event.target.value);
   };
 
-  const handleCompleted = () => {
-    console.log('handleCompleted');
-  };
-
   const handleClear = () => {
     console.log('handleClear');
   };
@@ -212,9 +208,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const renderActionButtons = (): JSX.Element => {
     return (
       <div>
-        <Button className='buttonMarginLeft' color='inherit' variant='contained' onClick={handleCompleted}>Completed</Button>
         <Button className='buttonMarginLeft' color='inherit' variant='contained' onClick={handleClear}>Clear</Button>
-        <Button className='buttonMarginLeft buttonMarginRight' color='inherit' variant='contained' onClick={handleRegenerate}>Regenerate</Button>
+        <Button className='buttonMarginLeft buttonMarginRight' color='inherit' variant='contained' onClick={handleRegenerate}>Suggest another</Button>
       </div>
     );
   };
