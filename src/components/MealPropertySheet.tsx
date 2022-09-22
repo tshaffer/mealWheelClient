@@ -16,7 +16,7 @@ import TextField from '@mui/material/TextField';
 import '../styles/MealWheel.css';
 
 import { DetailedMealEntity, DishEntity, MainDishEntity, DishType, ScheduledMealEntity } from '../types';
-import { getMains, getSalad, getSalads, getScheduledMeal, getSide, getSides, getVeggie, getVeggieById, getVeggies } from '../selectors';
+import { getMains, getSalad, getSalads, getSaladById, getScheduledMeal, getSide, getSides, getSideById, getVeggie, getVeggieById, getVeggies } from '../selectors';
 import { updateMainInMeal, updateSaladInMeal, updateSideInMeal, updateVeggieInMeal } from '../controllers';
 
 export interface MealPropertySheetPropsFromParent {
@@ -30,6 +30,8 @@ export interface MealPropertySheetPropsFromParent {
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
   scheduledMeal: ScheduledMealEntity | null,
   veggieValue: DishEntity | null;
+  sideValue: DishEntity | null;
+  saladValue: DishEntity | null;
   main: DishEntity | null;
   side: DishEntity | null;
   salad: DishEntity | null;
@@ -64,19 +66,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const handleUpdateSide = (event: any) => {
-    debugger;
     props.onUpdateSideInMeal(getDetailedMeal().id, event.target.value);
-    // debugger;
-    // props.handleAddPseudoEvent();
-    // debugger;
-    const selectedMealInCalendar: CalendarEvent = props.selectedMealInCalendar as CalendarEvent;
-    const detailedMeal: DetailedMealEntity = selectedMealInCalendar.detailedMeal as DetailedMealEntity;
-    console.log(selectedMealInCalendar);
-    // (detailedMeal.side as DishEntity).id = (((props.selectedMealInCalendar as CalendarEvent).detailedMeal as DetailedMealEntity).side as DishEntity).id;
-    // console.log((detailedMeal.side as DishEntity).id);
-    (detailedMeal.side as DishEntity).id = event.target.value;
-    console.log(selectedMealInCalendar);
-    props.onUpdateCalendarEvent(selectedMealInCalendar);
+    props.handleAddPseudoEvent();
   };
 
   const handleUpdateSalad = (event: any) => {
@@ -143,6 +134,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderSides = () => {
+    let sideId = 'none';
+    if (!isNil(props.sideValue)){
+      sideId = props.sideValue.id;
+    }
     const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
     return (
       <div>
@@ -150,7 +145,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <InputLabel id="sidesLabel">Side</InputLabel>
           <Select
             labelId="sidesLabel"
-            value={isNil(props.side) ? 'none' : props.side.id}
+            value={sideId}
             onChange={(event) => handleUpdateSide(event)}
           >
             {sidesMenuItems}
@@ -161,6 +156,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderSalads = () => {
+    let saladId = 'none';
+    if (!isNil(props.saladValue)){
+      saladId = props.saladValue.id;
+    }
     const menuItems: JSX.Element[] = renderDishMenuItems(props.salads, true);
     return (
       <div>
@@ -168,7 +167,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <InputLabel id="saladsLabel">Salad</InputLabel>
           <Select
             labelId="saladsLabel"
-            value={isNil(props.salad) ? 'none' : props.salad.id}
+            value={saladId}
             onChange={(event) => handleUpdateSalad(event)}
           >
             {menuItems}
@@ -269,6 +268,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
 function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent) {
   let scheduledMeal: ScheduledMealEntity | null = null;
+  let saladValue: DishEntity | null = null;
+  let sideValue: DishEntity | null = null;
   let veggieValue: DishEntity | null = null;
   let detailedMeal: DetailedMealEntity | null = null;
   let main: MainDishEntity | null = null;
@@ -278,6 +279,8 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.detailedMeal)) {
     scheduledMeal = getScheduledMeal(state, ownProps.scheduledMealId);
     if (!isNil(scheduledMeal)) {
+      saladValue = getSaladById(state, scheduledMeal.saladId);
+      sideValue = getSideById(state, scheduledMeal.sideId);
       veggieValue = getVeggieById(state, scheduledMeal.veggieId);
     }
     detailedMeal = ownProps.selectedMealInCalendar.detailedMeal as DetailedMealEntity;
@@ -295,6 +298,8 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
 
   return {
     scheduledMeal,
+    saladValue,
+    sideValue,
     veggieValue,
     main,
     side,

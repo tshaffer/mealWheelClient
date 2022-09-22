@@ -93,3 +93,23 @@ export const getVeggieById = (state: MealWheelState, id: string) : DishEntity | 
   }
   return null;
 };
+
+export const getSideById = (state: MealWheelState, id: string) : DishEntity | null =>{
+  const sides: DishEntity[] = getSides(state);
+  for (const side of sides) {
+    if (side.id === id) {
+      return side;
+    }
+  }
+  return null;
+};
+
+export const getSaladById = (state: MealWheelState, id: string) : DishEntity | null =>{
+  const salads: DishEntity[] = getSalads(state);
+  for (const salad of salads) {
+    if (salad.id === id) {
+      return salad;
+    }
+  }
+  return null;
+};
