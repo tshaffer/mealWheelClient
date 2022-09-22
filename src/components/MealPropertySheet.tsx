@@ -16,7 +16,7 @@ import TextField from '@mui/material/TextField';
 import '../styles/MealWheel.css';
 
 import { DetailedMealEntity, DishEntity, MainDishEntity, DishType, ScheduledMealEntity } from '../types';
-import { getMains, getSalad, getSalads, getSaladById, getScheduledMeal, getSide, getSides, getSideById, getVeggie, getVeggieById, getVeggies } from '../selectors';
+import { getMains, getSalad, getSalads, getSaladById, getScheduledMeal, getSide, getSides, getSideById, getVeggie, getVeggieById, getVeggies, getMainById } from '../selectors';
 import { updateMainInMeal, updateSaladInMeal, updateSideInMeal, updateVeggieInMeal } from '../controllers';
 
 export interface MealPropertySheetPropsFromParent {
@@ -29,6 +29,7 @@ export interface MealPropertySheetPropsFromParent {
 
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
   scheduledMeal: ScheduledMealEntity | null,
+  mainValue: DishEntity | null;
   veggieValue: DishEntity | null;
   sideValue: DishEntity | null;
   saladValue: DishEntity | null;
@@ -115,6 +116,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
 
   const renderMains = () => {
+    let mainId = 'none';
+    if (!isNil(props.mainValue)){
+      mainId = props.mainValue.id;
+    }
     const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
     return (
       <div>
@@ -123,7 +128,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Select
             labelId="mainLabel"
             id="demo-simple-select-filled"
-            value={(props.main as DishEntity).id}
+            value={mainId}
             onChange={(event) => handleUpdateMain(event)}
           >
             {mainsMenuItems}
@@ -268,6 +273,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
 function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent) {
   let scheduledMeal: ScheduledMealEntity | null = null;
+  let mainValue: DishEntity | null = null;
   let saladValue: DishEntity | null = null;
   let sideValue: DishEntity | null = null;
   let veggieValue: DishEntity | null = null;
@@ -279,6 +285,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.detailedMeal)) {
     scheduledMeal = getScheduledMeal(state, ownProps.scheduledMealId);
     if (!isNil(scheduledMeal)) {
+      mainValue = getMainById(state, scheduledMeal.mainDishId)
       saladValue = getSaladById(state, scheduledMeal.saladId);
       sideValue = getSideById(state, scheduledMeal.sideId);
       veggieValue = getVeggieById(state, scheduledMeal.veggieId);
@@ -298,6 +305,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
 
   return {
     scheduledMeal,
+    mainValue,
     saladValue,
     sideValue,
     veggieValue,

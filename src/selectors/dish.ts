@@ -113,3 +113,14 @@ export const getSaladById = (state: MealWheelState, id: string) : DishEntity | n
   }
   return null;
 };
+
+export const getMainById = (state: MealWheelState, id: string) : DishEntity | null =>{
+  const mains: DishEntity[] = getMains(state);
+  for (const main of mains) {
+    if (main.id === id) {
+      return main;
+    }
+  }
+  return null;
+};
+
