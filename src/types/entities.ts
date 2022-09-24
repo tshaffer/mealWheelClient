@@ -49,16 +49,3 @@ export interface ScheduledMealEntity {
   dateScheduled: Date;
   status: MealStatus;
 }
-
-
-export interface DetailedMealEntity {
-  id: string;
-  userId: string;
-  mainDish: DishEntity;
-  salad: DishEntity | null;
-  veggie: DishEntity | null;
-  side: DishEntity | null;
-  dateScheduled: Date;
-  status: MealStatus;
-}
-
