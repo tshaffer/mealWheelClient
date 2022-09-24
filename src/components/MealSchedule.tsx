@@ -9,15 +9,14 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import { cloneDeep } from 'lodash';
 
-import { DetailedMealEntity, DishEntity, ScheduledMealEntity } from '../types';
+import { ScheduledMealEntity } from '../types';
 import { loadScheduledMeals, generateMenu } from '../controllers';
-import { getCurrentUser, getDetailedMeals, getDishes, getScheduledMeals } from '../selectors';
+import { getCurrentUser, getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
-import { scheduledMealsStateReducer } from '../models';
 
 const localizer = momentLocalizer(moment);
 
@@ -29,7 +28,7 @@ export class CalendarEvent {
   start: Date = new Date();
   end: Date = new Date();
   tooltip?: string;
-  detailedMeal?: DetailedMealEntity;
+  scheduledMealId?: string;
 }
 
 const now: number = Date.now();
@@ -40,7 +39,6 @@ end.setDate(end.getDate() + 1);
 export interface MealScheduleProps {
   userId: string;
   scheduledMeals: ScheduledMealEntity[];
-  detailedMeals: DetailedMealEntity[];
   onLoadScheduledMeals: (usrId: string) => any;
   onGenerateMenu: () => any;
 }
@@ -94,8 +92,8 @@ const MealSchedule = (props: MealScheduleProps) => {
     // find matching calendar event
     let matchingEventIndex = 0;
     for (const existingEvent of existingEvents) {
-      if (!isNil(existingEvent.detailedMeal)) {
-        if (existingEvent.detailedMeal.id === (calendarEvent.detailedMeal as DetailedMealEntity).id) {
+      if (!isNil(existingEvent.scheduledMealId)) {
+        if (existingEvent.scheduledMealId === calendarEvent.scheduledMealId) {
           existingEvents[matchingEventIndex] = calendarEvent;
           setEvents(existingEvents); // BUT THIS DOESN"T UPDATE REDUX, DOES IT??, NO IT DOESN"T
         }
@@ -104,18 +102,19 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   };
 
-  if (!isNil(props.detailedMeals) && props.detailedMeals.length > 0) {
+
+  if (!isNil(props.scheduledMeals) && props.scheduledMeals.length > 0) {
 
     const mealsInSchedule: CalendarEvent[] = [];
 
-    for (const detailedMeal of props.detailedMeals) {
+    for (const scheduledMeal of props.scheduledMeals) {
       const event: CalendarEvent = {
-        title: detailedMeal.mainDish.name,
+        title: '',
         allDay: true,
-        start: detailedMeal.dateScheduled,
-        end: detailedMeal.dateScheduled,
-        tooltip: detailedMeal.mainDish.name,
-        detailedMeal,
+        start: scheduledMeal.dateScheduled,
+        end: scheduledMeal.dateScheduled,
+        tooltip: '',
+        scheduledMealId: scheduledMeal.id,
       };
       mealsInSchedule.push(event);
     }
@@ -180,7 +179,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         anchor="right"
       >
         <MealPropertySheet
-          scheduledMealId={isNil(selectedMealInCalendar) ? '' : (isNil(selectedMealInCalendar.detailedMeal) ? '' : selectedMealInCalendar.detailedMeal.id)}
+          scheduledMealId={isNil(selectedMealInCalendar) ? '' : (isNil(selectedMealInCalendar.scheduledMealId) ? '' : selectedMealInCalendar.scheduledMealId)}
           selectedMealInCalendar={selectedMealInCalendar}
           handleClose={handleClose}
           handleAddPseudoEvent={handleAddPseudoEvent}
@@ -192,13 +191,10 @@ const MealSchedule = (props: MealScheduleProps) => {
 };
 
 function mapStateToProps(state: any) {
-  const dishes: DishEntity[] = getDishes(state);
   const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
-  const detailedMeals: DetailedMealEntity[] = getDetailedMeals(state, scheduledMeals, dishes);
   return {
     userId: getCurrentUser(state) as string,
     scheduledMeals,
-    detailedMeals,
   };
 }
 

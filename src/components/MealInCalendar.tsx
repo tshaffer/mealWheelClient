@@ -2,32 +2,24 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { isNil } from 'lodash';
+import { isNil, isString } from 'lodash';
 
-import { DetailedMealEntity, DishType, MealStatus, DishEntity } from '../types';
+import { DishType, DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
+import { getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
 
 export interface MealInCalendarPropsFromParent {
   event: CalendarEvent;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
+  main: DishEntity | null;
+  salad: DishEntity | null;
+  side: DishEntity | null;
+  veggie: DishEntity | null;
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
-
-  const getMealStatusLabel = (mealStatus: MealStatus): string => {
-    switch (mealStatus) {
-      case MealStatus.proposed:
-        return 'Proposed';
-      case MealStatus.pending:
-      default:
-        return 'Pending';
-      case MealStatus.completed:
-        return 'Completed';
-    }
-  };
 
   const getAccompanimentLabel = (accompanimentType: DishType): string => {
     switch (accompanimentType) {
@@ -41,21 +33,16 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     }
   };
 
-  const calendarEvent: CalendarEvent = props.event;
-  const detailedMeal: DetailedMealEntity | undefined = calendarEvent.detailedMeal;
-
   const renderMainDish = () => {
-
-    let mainDishLabel: string = '';
-    if (!isNil(detailedMeal)) {
-      mainDishLabel = 'Main: ' + detailedMeal.mainDish.name;
+    if (isNil(props.main)) {
+      return null;
     }
     return (
-      <p className='shortParagraph'>{mainDishLabel}</p>
+      <p className='shortParagraph'>{props.main.name}</p>
     );
   };
 
-  const renderAccompaniment = (accompanimentDish: DishEntity | null) => {
+  const renderAccompaniment = (accompanimentDish: DishEntity | null ) => {
 
     if (isNil(accompanimentDish)) {
       return null;
@@ -71,7 +58,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   const renderAccompaniments = () => {
 
-    if (isNil(detailedMeal) || (isNil(detailedMeal.salad) && isNil(detailedMeal.veggie) && isNil(detailedMeal.side))) {
+    if (isNil(props.salad) && isNil(props.side) && props.veggie) {
       return (
         <p className='shortParagraph'>{''}</p>
       );
@@ -79,15 +66,15 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
     const renderedAccompaniments = [];
 
-    let jsx = renderAccompaniment(detailedMeal.salad);
+    let jsx = renderAccompaniment(props.salad);
     if (!isNil(jsx)) {
       renderedAccompaniments.push(jsx);
     }
-    jsx = renderAccompaniment(detailedMeal.veggie);
+    jsx = renderAccompaniment(props.veggie);
     if (!isNil(jsx)) {
       renderedAccompaniments.push(jsx);
     }
-    jsx = renderAccompaniment(detailedMeal.side);
+    jsx = renderAccompaniment(props.side);
     if (!isNil(jsx)) {
       renderedAccompaniments.push(jsx);
     }
@@ -106,8 +93,30 @@ const MealInCalendar = (props: MealInCalendarProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
+
+  const calendarEvent: CalendarEvent = ownProps.event;
+  const scheduledMealId: string = isNil(calendarEvent.scheduledMealId) ? '' :
+    (isString(calendarEvent.scheduledMealId)) ? calendarEvent.scheduledMealId : '';
+  const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
+  
+  let main: DishEntity | null = null;
+  let salad: DishEntity | null = null;
+  let side: DishEntity | null = null;
+  let veggie: DishEntity | null = null;
+  if (!isNil(scheduledMeal)) {
+    main = getMainById(state, scheduledMeal.mainDishId) as DishEntity;
+    salad = getSaladById(state, scheduledMeal.saladId);
+    side = getSideById(state, scheduledMeal.sideId);
+    veggie = getVeggieById(state, scheduledMeal.veggieId);
+  } else {
+    // anything
+  }
   return {
+    main,
+    salad,
+    side,
+    veggie
   };
 }
 
