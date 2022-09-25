@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -67,16 +67,27 @@ export const loadScheduledMeals = () => {
   };
 };
 
+export const generateMeal = (mealId: string, mealDate: Date) => {
+  return (dispatch: any, getState: any) => {
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1);
+    const meal: ScheduledMealEntity = meals[0];
+    meal.id = mealId;
+    dispatch(updateMeal(mealId, meal));    
+  };
+};
+
 export const generateMenu = () => {
   return (dispatch: any, getState: any) => {
+
+    // TEDTODO - this looks temporary
+    dispatch(clearScheduledMeals());
 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
     const generatedMeals: ScheduledMealEntity[] = [];
 
-    dispatch(clearScheduledMeals());
-
-    const randomDishBasedMeals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, 5);
+    const randomDishBasedMeals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, new Date(), 5);
     const randomPredefinedMeals: ScheduledMealEntity[] = getRandomPredefinedMeals(mealWheelState, randomDishBasedMeals, 5);
 
     const allRandomMeals: ScheduledMealEntity[] = randomDishBasedMeals.concat(randomPredefinedMeals);
@@ -142,7 +153,7 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
   return scheduledMealEntities;
 };
 
-const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number): ScheduledMealEntity[] => {
+const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate: Date, numMeals: number): ScheduledMealEntity[] => {
 
   const scheduledMealEntities: ScheduledMealEntity[] = [];
 
@@ -179,7 +190,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
     }
   }
 
-  const mealDate: Date = new Date();
+  let mealDate: Date = cloneDeep(startDate);
 
   for (const selectedMainDishIndex of selectedMainDishIndices) {
 
@@ -239,6 +250,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
     scheduledMealEntities.push(scheduledMeal);
 
+    mealDate = cloneDeep(mealDate);
     mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
   }
 

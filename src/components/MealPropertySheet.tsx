@@ -31,6 +31,7 @@ import {
   getMainById
 } from '../selectors';
 import {
+  generateMeal,
   updateMainInMeal,
   updateSaladInMeal,
   updateSideInMeal,
@@ -59,6 +60,7 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
   onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
   onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
+  onGenerateMeal: (mealId: string, date: Date) => any;
   state: any;
 }
 
@@ -105,6 +107,9 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const handleRegenerate = () => {
     console.log('handleRegenerate');
+    if (!isNil(props.scheduledMeal)) {
+      props.onGenerateMeal(props.scheduledMeal.id, new Date(props.scheduledMeal.dateScheduled));
+    }
   };
 
   const renderNoneMenuItem = (): JSX.Element => {
@@ -325,6 +330,7 @@ const mapDispatchToProps = (dispatch: any) => {
     onUpdateSideInMeal: updateSideInMeal,
     onUpdateSaladInMeal: updateSaladInMeal,
     onUpdateVeggieInMeal: updateVeggieInMeal,
+    onGenerateMeal: generateMeal,
   }, dispatch);
 };
 
