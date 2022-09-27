@@ -181,6 +181,7 @@ const Dishes = (props: DishesProps) => {
       name: updatedDish.name,
       type: updatedDish.type,
       accompanimentRequired: accompaniment,
+      last: null, // TEDTODO - placeholder code.
     };
     if (updatedDish.id.startsWith('newDish')) {
       props.onAddDish(dish);

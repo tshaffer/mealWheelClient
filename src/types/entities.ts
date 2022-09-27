@@ -12,6 +12,7 @@ export interface BaseDishEntity {
   userId: string;
   name: string;
   type: DishType;
+  last: Date | null;
 }
 
 export interface MainDishEntity extends BaseDishEntity {
@@ -23,6 +24,7 @@ export interface DishEntity {
   name: string;
   type: DishType;
   accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
+  last: Date | null;
 }
 
 export interface DefinedMealEntity {

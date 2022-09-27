@@ -250,6 +250,8 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate:
 
     scheduledMealEntities.push(scheduledMeal);
 
+    // update property 'last' for all dishes in meal
+    
     mealDate = cloneDeep(mealDate);
     mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
   }
