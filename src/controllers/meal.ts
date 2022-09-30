@@ -423,3 +423,17 @@ export const updateVeggieInMeal = (
     }
   };
 };
+
+export const updateMealStatus = (
+  mealId: string,
+  mealStatus: MealStatus,
+): any => {
+  return (dispatch: any, getState: any) => {
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (!isNil(meal)) {
+      meal.status = mealStatus;
+      dispatch(updateMeal(meal.id, meal));
+    }
+  };
+};

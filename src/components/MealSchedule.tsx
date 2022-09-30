@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import ReactModal = require('react-modal');
 import { Calendar, View } from 'react-big-calendar';
 import moment from 'moment';
 
@@ -9,8 +10,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import { cloneDeep } from 'lodash';
 
-import { ScheduledMealEntity } from '../types';
-import { loadScheduledMeals, generateMenu } from '../controllers';
+import { MealStatus, ScheduledMealEntity } from '../types';
+import { generateMenu, updateMealStatus } from '../controllers';
 import { getCurrentUser, getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
@@ -39,25 +40,37 @@ end.setDate(end.getDate() + 1);
 export interface MealScheduleProps {
   userId: string;
   scheduledMeals: ScheduledMealEntity[];
-  onLoadScheduledMeals: (usrId: string) => any;
   onGenerateMenu: () => any;
+  onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
 }
 
 const MealSchedule = (props: MealScheduleProps) => {
 
   const [events, setEvents] = useState([] as CalendarEvent[]);
 
+  const [showResolveStatusModal, setShowResolveStatusModal] = useState<ScheduledMealEntity | null>(null);
+
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
+
+  const modalStyle = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      minHeight: '105px',
+      minWidth: '150px',
+    },
+  };
 
   const handleGenerateMenu = () => {
     props.onGenerateMenu();
   };
 
   const handleOpen = (event: any) => {
-
-    console.log('handleOpen');
-    console.log(event);
 
     if (isNil(event.title)) {
       setSelectedMealInCalendar(null);
@@ -67,10 +80,13 @@ const MealSchedule = (props: MealScheduleProps) => {
     setSheetOpen(true);
   };
 
-  const handleClose = () => {
-    console.log('handleClose');
-    console.log(sheetOpen);
+  const handleCloseModal = () => {
+    const scheduledMeal: ScheduledMealEntity = showResolveStatusModal as ScheduledMealEntity;
+    props.onUpdateMealStatus(scheduledMeal.id, MealStatus.completed);
+    setShowResolveStatusModal(null);
+  };
 
+  const handleClosePropertySheet = () => {
     setSheetOpen(false);
   };
 
@@ -103,9 +119,27 @@ const MealSchedule = (props: MealScheduleProps) => {
   };
 
 
+  console.log('rerender calendar');
+
   if (!isNil(props.scheduledMeals) && props.scheduledMeals.length > 0) {
 
     const mealsInSchedule: CalendarEvent[] = [];
+
+    const currentDate: Date = new Date();
+
+    if (!showResolveStatusModal) {
+      for (const scheduledMeal of props.scheduledMeals) {
+        const mealDateAsStr = scheduledMeal.dateScheduled;
+        const mealDate: Date = new Date(mealDateAsStr);
+        if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
+          if (scheduledMeal.status !== MealStatus.completed) {
+            console.log('invoke setShowResolveStatusModal: ', scheduledMeal);
+            setShowResolveStatusModal(scheduledMeal);
+            break;
+          }
+        }
+      }
+    }
 
     for (const scheduledMeal of props.scheduledMeals) {
       const event: CalendarEvent = {
@@ -140,52 +174,77 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
-  console.log('rerender calendar');
-
   return (
-    <div style={{ height: '100vh' }}>
-      <div style={{ height: '100vh' }}>
-        <div style={{ height: 30, width: '100%' }}>
-          <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
-          <br />
-        </div>
-        <div>
-          <strong>
-            Click an event to see more info, or drag the mouse over the calendar
-            to select a date/time range.
-          </strong>
-        </div>
-        <Calendar
-          selectable
-          localizer={localizer}
-          events={events}
-          defaultView='month'
-          views={allViews}
-          defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
-          onSelectEvent={event => handleOpen(event)}
-          onSelectSlot={event => handleOpen(event)}
-          startAccessor='start'
-          endAccessor='end'
-          titleAccessor='title'
-          components={{
-            event: MealInCalendar as any
-          }}
-        />
-      </div>
-      <Drawer
-        BackdropProps={{ style: { opacity: 0 } }}
-        open={sheetOpen}
-        variant="persistent"
-        anchor="right"
+    <div>
+      <ReactModal
+        isOpen={!isNil(showResolveStatusModal)}
+        style={modalStyle}
+        ariaHideApp={false}
       >
-        <MealPropertySheet
-          scheduledMealId={isNil(selectedMealInCalendar) ? '' : (isNil(selectedMealInCalendar.scheduledMealId) ? '' : selectedMealInCalendar.scheduledMealId)}
-          selectedMealInCalendar={selectedMealInCalendar}
-          handleClose={handleClose}
-          handleAddPseudoEvent={handleAddPseudoEvent}
-          onUpdateCalendarEvent={handleUpdateCalendarEvent}
-        />
-      </Drawer>
+        <div>
+          <div style={{ marginBottom: '10px' }}>
+            <p style={{ marginBottom: '6px' }}>MealWheel</p>
+            <p>{'pizza is great'}</p>
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+            }}
+          >
+            <button
+              onClick={handleCloseModal}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </ReactModal>
+      <div style={{ height: '100vh' }}>
+        <div style={{ height: '100vh' }}>
+          <div style={{ height: 30, width: '100%' }}>
+            <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
+            <br />
+          </div>
+          <div>
+            <strong>
+              Click an event to see more info, or drag the mouse over the calendar
+              to select a date/time range.
+            </strong>
+          </div>
+          <Calendar
+            selectable
+            localizer={localizer}
+            events={events}
+            defaultView='month'
+            views={allViews}
+            defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
+            onSelectEvent={event => handleOpen(event)}
+            onSelectSlot={event => handleOpen(event)}
+            startAccessor='start'
+            endAccessor='end'
+            titleAccessor='title'
+            components={{
+              event: MealInCalendar as any
+            }}
+          />
+        </div>
+        <Drawer
+          BackdropProps={{ style: { opacity: 0 } }}
+          open={sheetOpen}
+          variant="persistent"
+          anchor="right"
+        >
+          <MealPropertySheet
+            scheduledMealId={isNil(selectedMealInCalendar) ? '' : (isNil(selectedMealInCalendar.scheduledMealId) ? '' : selectedMealInCalendar.scheduledMealId)}
+            selectedMealInCalendar={selectedMealInCalendar}
+            handleClose={handleClosePropertySheet}
+            handleAddPseudoEvent={handleAddPseudoEvent}
+            onUpdateCalendarEvent={handleUpdateCalendarEvent}
+          />
+        </Drawer>
+      </div>
     </div>
   );
 };
@@ -200,8 +259,8 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    onLoadScheduledMeals: loadScheduledMeals,
     onGenerateMenu: generateMenu,
+    onUpdateMealStatus: updateMealStatus,
   }, dispatch);
 };
 
