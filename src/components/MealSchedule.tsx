@@ -100,18 +100,6 @@ const MealSchedule = (props: MealScheduleProps) => {
     setSheetOpen(false);
   };
 
-  const handleAddPseudoEvent = () => {
-    const currentEvents: CalendarEvent[] = events;
-    const pseudoCalendarEvent: CalendarEvent = {
-      title: 'PseudoEvent',
-      allDay: true,
-      start: new Date('September 30, 2022 00:00:00'),
-      end: new Date('September 30, 2022 23:00:00'),
-    };
-    currentEvents.push(pseudoCalendarEvent);
-    setEvents(currentEvents);
-  };
-
   const handleUpdateCalendarEvent = (calendarEvent: CalendarEvent) => {
     const existingEvents: CalendarEvent[] = cloneDeep(events);
 
@@ -265,7 +253,6 @@ const MealSchedule = (props: MealScheduleProps) => {
             scheduledMealId={isNil(selectedMealInCalendar) ? '' : (isNil(selectedMealInCalendar.scheduledMealId) ? '' : selectedMealInCalendar.scheduledMealId)}
             selectedMealInCalendar={selectedMealInCalendar}
             handleClose={handleClosePropertySheet}
-            handleAddPseudoEvent={handleAddPseudoEvent}
             onUpdateCalendarEvent={handleUpdateCalendarEvent}
           />
         </Drawer>
