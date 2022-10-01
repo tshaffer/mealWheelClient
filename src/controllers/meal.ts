@@ -92,12 +92,13 @@ export const generateMenu = () => {
 
     const allRandomMeals: ScheduledMealEntity[] = randomDishBasedMeals.concat(randomPredefinedMeals);
 
-    const mealDate: Date = new Date();
+    let mealDate: Date = new Date();
     while (generatedMeals.length < 10) {
       const mealIndex = Math.floor(Math.random() * allRandomMeals.length);
       const scheduledMeal: ScheduledMealEntity = allRandomMeals[mealIndex];
       scheduledMeal.dateScheduled = mealDate;
-      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
+      mealDate = new Date();
+      mealDate.setTime(scheduledMeal.dateScheduled.getTime() + (24 * 60 * 60 * 1000));
       generatedMeals.push(allRandomMeals[mealIndex]);
       dispatch(addScheduledMeal(allRandomMeals[mealIndex]));
       allRandomMeals.splice(mealIndex, 1);
