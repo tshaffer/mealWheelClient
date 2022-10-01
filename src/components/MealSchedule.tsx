@@ -55,12 +55,12 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const modalStyle = {
     content: {
-      top: '50%',
+      top: '5%',
       left: '50%',
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
+      transform: 'translate(-50%, -5%)',
       minHeight: '105px',
       minWidth: '150px',
     },
@@ -125,27 +125,21 @@ const MealSchedule = (props: MealScheduleProps) => {
 
     const currentDate: Date = new Date();
 
-    // console.log('showResolveStatusModal');
-    // console.log(showResolveStatusModal);
-
-    // // if (!showResolveStatusModal) {
-    // let turnedOnModal = false;
-    // for (const scheduledMeal of props.scheduledMeals) {
-    //   const mealDateAsStr = scheduledMeal.dateScheduled;
-    //   const mealDate: Date = new Date(mealDateAsStr);
-    //   if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
-    //     if (scheduledMeal.status === MealStatus.pending) {
-    //       console.log('invoke setShowResolveStatusModal: ', scheduledMeal);
-    //       setShowResolveStatusModal(scheduledMeal);
-    //       turnedOnModal = true;
-    //       break;
-    //     }
-    //   }
-    // }
-    // if (!turnedOnModal) {
-    //   setShowResolveStatusModal(null);
-    // }
-    // // }
+    console.log('check for scheduled meals to resolve');
+    const currentShowResolveStatusModal = showResolveStatusModal;
+    let scheduledMealToResolve: ScheduledMealEntity | null = null;
+    for (const scheduledMeal of props.scheduledMeals) {
+      const mealDateAsStr = scheduledMeal.dateScheduled;
+      const mealDate: Date = new Date(mealDateAsStr);
+      if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
+        if (scheduledMeal.status === MealStatus.pending) {
+          scheduledMealToResolve = scheduledMeal;
+        }
+      }
+    }
+    if (scheduledMealToResolve != currentShowResolveStatusModal) {
+      setShowResolveStatusModal(scheduledMealToResolve);
+    }
 
     for (const scheduledMeal of props.scheduledMeals) {
       const event: CalendarEvent = {
