@@ -80,9 +80,19 @@ const MealSchedule = (props: MealScheduleProps) => {
     setSheetOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleMealPrepared = () => {
     const scheduledMeal: ScheduledMealEntity = showResolveStatusModal as ScheduledMealEntity;
-    props.onUpdateMealStatus(scheduledMeal.id, MealStatus.completed);
+    // debugger;
+    console.log('handleMealPrepared, invoke onUpdateMealStatus: ', scheduledMeal.id);
+    props.onUpdateMealStatus(scheduledMeal.id, MealStatus.prepared);
+    setShowResolveStatusModal(null);
+  };
+
+  const handleMealSkipped = () => {
+    const scheduledMeal: ScheduledMealEntity = showResolveStatusModal as ScheduledMealEntity;
+    // debugger;
+    console.log('handleMealSkipped, invoke onUpdateMealStatus: ', scheduledMeal.id);
+    props.onUpdateMealStatus(scheduledMeal.id, MealStatus.skipped);
     setShowResolveStatusModal(null);
   };
 
@@ -127,19 +137,27 @@ const MealSchedule = (props: MealScheduleProps) => {
 
     const currentDate: Date = new Date();
 
-    if (!showResolveStatusModal) {
-      for (const scheduledMeal of props.scheduledMeals) {
-        const mealDateAsStr = scheduledMeal.dateScheduled;
-        const mealDate: Date = new Date(mealDateAsStr);
-        if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
-          if (scheduledMeal.status !== MealStatus.completed) {
-            console.log('invoke setShowResolveStatusModal: ', scheduledMeal);
-            setShowResolveStatusModal(scheduledMeal);
-            break;
-          }
-        }
-      }
-    }
+    // console.log('showResolveStatusModal');
+    // console.log(showResolveStatusModal);
+
+    // // if (!showResolveStatusModal) {
+    // let turnedOnModal = false;
+    // for (const scheduledMeal of props.scheduledMeals) {
+    //   const mealDateAsStr = scheduledMeal.dateScheduled;
+    //   const mealDate: Date = new Date(mealDateAsStr);
+    //   if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
+    //     if (scheduledMeal.status === MealStatus.pending) {
+    //       console.log('invoke setShowResolveStatusModal: ', scheduledMeal);
+    //       setShowResolveStatusModal(scheduledMeal);
+    //       turnedOnModal = true;
+    //       break;
+    //     }
+    //   }
+    // }
+    // if (!turnedOnModal) {
+    //   setShowResolveStatusModal(null);
+    // }
+    // // }
 
     for (const scheduledMeal of props.scheduledMeals) {
       const event: CalendarEvent = {
@@ -174,6 +192,8 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
+  const dateOfMeal: string = isNil(showResolveStatusModal) || isNil(showResolveStatusModal.dateScheduled) ? '' : (new Date(showResolveStatusModal.dateScheduled)).toDateString();
+
   return (
     <div>
       <ReactModal
@@ -184,7 +204,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         <div>
           <div style={{ marginBottom: '10px' }}>
             <p style={{ marginBottom: '6px' }}>MealWheel</p>
-            <p>{'pizza is great'}</p>
+            <p>{'Please update the status of the meal that was scheduled for ' + dateOfMeal}</p>
           </div>
           <div
             style={{
@@ -194,9 +214,14 @@ const MealSchedule = (props: MealScheduleProps) => {
             }}
           >
             <button
-              onClick={handleCloseModal}
+              onClick={handleMealPrepared}
             >
-              Close
+              Prepared
+            </button>
+            <button
+              onClick={handleMealSkipped}
+            >
+              Skipped
             </button>
           </div>
         </div>
@@ -250,7 +275,9 @@ const MealSchedule = (props: MealScheduleProps) => {
 };
 
 function mapStateToProps(state: any) {
+  console.log('getScheduledMeals');
   const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
+  console.log(scheduledMeals);
   return {
     userId: getCurrentUser(state) as string,
     scheduledMeals,

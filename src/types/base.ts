@@ -101,7 +101,7 @@ export enum RequiredAccompanimentFlags {
 }
 
 export enum MealStatus {
-  proposed = 0,
-  pending = 1,
-  completed = 2,
+  pending = 0,
+  prepared = 1,
+  skipped = 2,
 }

@@ -143,7 +143,7 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
       veggieId,
       sideId,
       dateScheduled: mealDate,        // placeholder
-      status: MealStatus.proposed
+      status: MealStatus.pending
     };
 
     scheduledMealEntities.push(scheduledMeal);
@@ -245,7 +245,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate:
       veggieId,
       sideId,
       dateScheduled: mealDate,
-      status: MealStatus.proposed
+      status: MealStatus.pending
     };
 
     scheduledMealEntities.push(scheduledMeal);
@@ -432,8 +432,9 @@ export const updateMealStatus = (
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
-      meal.status = mealStatus;
-      dispatch(updateMeal(meal.id, meal));
+      const newMeal = cloneDeep(meal);
+      newMeal.status = mealStatus;
+      dispatch(updateMeal(meal.id, newMeal));
     }
   };
 };
