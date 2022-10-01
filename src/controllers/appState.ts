@@ -96,7 +96,9 @@ export const setStartupAppState = () => {
 
 export const uploadFile = (formData: FormData): any => {
   return (dispatch: any, getState: any) => {
-    // const path = serverUrl + apiUrlFragment + 'dishSpec';
+    const state: MealWheelState = getState();
+    const userId = getCurrentUser(state) as string;
+    formData.set('userId', userId);
     const path = serverUrl + apiUrlFragment + 'mealWheelSpec';
     axios.post(path, formData, {
     }).then((response) => {
