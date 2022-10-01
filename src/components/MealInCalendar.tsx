@@ -58,7 +58,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   const renderAccompaniments = () => {
 
-    if (isNil(props.salad) && isNil(props.side) && props.veggie) {
+    if (isNil(props.salad) && isNil(props.side) && isNil(props.veggie)) {
       return (
         <p className='shortParagraph'>{''}</p>
       );
