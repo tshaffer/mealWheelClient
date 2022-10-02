@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import ReactModal = require('react-modal');
 import { Calendar, View } from 'react-big-calendar';
 import moment from 'moment';
 
@@ -54,18 +53,8 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
-  const modalStyle = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      minHeight: '105px',
-      minWidth: '150px',
-    },
-    overlay: { zIndex: 1000 }
+  const handleCloseScheduledMealStatusResolver = () => {
+    setShowResolveStatusModal(null);
   };
 
   const handleGenerateMenu = () => {
@@ -80,22 +69,6 @@ const MealSchedule = (props: MealScheduleProps) => {
       setSelectedMealInCalendar(event as CalendarEvent);
     }
     setSheetOpen(true);
-  };
-
-  const handleMealPrepared = () => {
-    const scheduledMeal: ScheduledMealEntity = showResolveStatusModal as ScheduledMealEntity;
-    // debugger;
-    console.log('handleMealPrepared, invoke onUpdateMealStatus: ', scheduledMeal.id);
-    props.onUpdateMealStatus(scheduledMeal.id, MealStatus.prepared);
-    setShowResolveStatusModal(null);
-  };
-
-  const handleMealSkipped = () => {
-    const scheduledMeal: ScheduledMealEntity = showResolveStatusModal as ScheduledMealEntity;
-    // debugger;
-    console.log('handleMealSkipped, invoke onUpdateMealStatus: ', scheduledMeal.id);
-    props.onUpdateMealStatus(scheduledMeal.id, MealStatus.skipped);
-    setShowResolveStatusModal(null);
   };
 
   const handleClosePropertySheet = () => {
@@ -176,43 +149,13 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
-  const dateOfMeal: string = isNil(showResolveStatusModal) || isNil(showResolveStatusModal.dateScheduled) ? '' : (new Date(showResolveStatusModal.dateScheduled)).toDateString();
-
   return (
     <div>
       <ScheduledMealStatusResolver
         scheduledMeals={props.scheduledMeals}
+        open={!isNil(showResolveStatusModal)}
+        onClose={handleCloseScheduledMealStatusResolver}
       />
-      <ReactModal
-        isOpen={!isNil(showResolveStatusModal)}
-        style={modalStyle}
-        ariaHideApp={false}
-      >
-        <div>
-          <div style={{ marginBottom: '10px' }}>
-            <p style={{ marginBottom: '6px' }}>MealWheel</p>
-            <p>{'Please update the status of the meal that was scheduled for ' + dateOfMeal}</p>
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '10px',
-              right: '10px',
-            }}
-          >
-            <button
-              onClick={handleMealPrepared}
-            >
-              Prepared
-            </button>
-            <button
-              onClick={handleMealSkipped}
-            >
-              Skipped
-            </button>
-          </div>
-        </div>
-      </ReactModal>
       <div style={{ height: '100vh' }}>
         <div style={{ height: '100vh' }}>
           <div style={{ height: 30, width: '100%' }}>

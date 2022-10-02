@@ -10,7 +10,6 @@ import { VersionInfo } from '../types';
 export interface AboutDialogPropsFromParent {
   open: boolean;
   onClose: () => void;
-
 }
 
 export interface AboutDialogProps extends AboutDialogPropsFromParent {
