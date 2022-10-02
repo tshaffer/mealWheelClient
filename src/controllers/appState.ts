@@ -19,11 +19,11 @@ import { getCurrentUser, getStartPage } from '../selectors';
 import { loadDishes } from './dish';
 import { loadUsers, loginPersistentUser } from './user';
 import { getVersions } from './versionInfo';
-import { 
-  addScheduledMeal, 
+import {
+  addScheduledMeal,
   loadDefinedMeals,
   loadScheduledMeals,
- } from './meal';
+} from './meal';
 
 const getStartupParams = () => {
 
@@ -73,14 +73,17 @@ export const initializeApp = () => {
 
         if (isNil(loggedInUser)) {
           dispatch(setUiState(UiState.SelectUser));
+          dispatch(setAppInitialized());
         } else {
-          dispatch(loadDefinedMeals());
-          dispatch(loadScheduledMeals());
-          dispatch(loadDishes());
+          const loadDefinedMealsPromise: Promise<void> = dispatch(loadDefinedMeals());
+          const loadScheduledMealsPromise: Promise<void> = dispatch(loadScheduledMeals());
+          const loadDishesPromise: Promise<void> = dispatch(loadDishes());
           dispatch(setUiState(UiState.Other));
+          Promise.all([loadDefinedMealsPromise, loadScheduledMealsPromise, loadDishesPromise])
+            .then( () => {
+              dispatch(setAppInitialized());
+            });
         }
-
-        dispatch(setAppInitialized());
 
       });
   };
