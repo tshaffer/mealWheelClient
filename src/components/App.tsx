@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { isNil } from 'lodash';
 
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-
-import ReactModal = require('react-modal');
 
 import '../styles/MealWheel.css';
 
@@ -18,6 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+
 
 import {
   UiState,
@@ -40,6 +38,7 @@ import {
 import Dishes from './Dishes';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
+import AboutDialog from './AboutDialog';
 
 export interface AppProps {
   appInitialized: boolean;
@@ -54,7 +53,7 @@ const App = (props: AppProps) => {
 
   const [redirectTarget, setRedirectTarget] = React.useState('');
 
-  const [showAboutModal, setShowAboutModal] = React.useState(false);
+  const [showAbout, setShowAbout] = React.useState(false);
 
   const [selectedTab, setSelectedTab] = React.useState<string>('mealScheduleTabSelect');
 
@@ -67,20 +66,6 @@ const App = (props: AppProps) => {
   if (redirectTarget === 'login') {
     return <Navigate to='/login' />;
   }
-
-  const modalStyle = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      minHeight: '105px',
-      minWidth: '150px',
-    },
-    overlay: {zIndex: 1000},
-  };
 
   const unselectedTabContent = {
     display: 'none',
@@ -142,11 +127,11 @@ const App = (props: AppProps) => {
 
 
   const handleShowAbout = () => {
-    setShowAboutModal(true);
+    setShowAbout(true);
   };
 
-  const handleHideAbout = () => {
-    setShowAboutModal(false);
+  const handleCloseAbout = () => {
+    setShowAbout(false);
   };
 
   function handleSelectTab(evt: any) {
@@ -244,32 +229,10 @@ const App = (props: AppProps) => {
   return (
     <div>
       <div>
-        <ReactModal
-          isOpen={showAboutModal}
-          style={modalStyle}
-          ariaHideApp={false}
-        >
-          <div>
-            <div style={{ marginBottom: '10px' }}>
-              <p style={{ marginBottom: '6px' }}>MealWheel</p>
-              <p>{'Client version: ' + props.versionInfo.clientVersion}</p>
-              <p>{'Server version: ' + props.versionInfo.serverVersion}</p>
-            </div>
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-              }}
-            >
-              <button
-                onClick={handleHideAbout}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </ReactModal>
+        <AboutDialog
+          open={showAbout}
+          onClose={handleCloseAbout}
+        />
       </div>
       {toolbar}
       {table}

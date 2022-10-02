@@ -1,3 +1,4 @@
+export * from './AboutDialog';
 export * from './App';
 export * from './Dishes';
 export * from './MealInCalendar';
