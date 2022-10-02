@@ -79,6 +79,7 @@ const App = (props: AppProps) => {
       minHeight: '105px',
       minWidth: '150px',
     },
+    overlay: {zIndex: 1000},
   };
 
   const unselectedTabContent = {
