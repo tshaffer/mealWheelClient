@@ -61,7 +61,21 @@ export const loadScheduledMeals = () => {
 
     return axios.get(path)
       .then((mealsResponse: any) => {
-        const scheduledMealEntities: ScheduledMealEntity[] = (mealsResponse as any).data;
+        const scheduledMealEntities: ScheduledMealEntity[] = [];
+        const rawScheduledMealEntities: any[] = (mealsResponse as any).data;
+        for (const rawScheduledMealEntity of rawScheduledMealEntities) {
+          const { id, userId, mainDishId, saladId, veggieId, sideId, dateScheduled, status } = rawScheduledMealEntity;
+          scheduledMealEntities.push({
+            id,
+            userId,
+            mainDishId,
+            saladId,
+            veggieId,
+            sideId,
+            dateScheduled: new Date(dateScheduled),
+            status,
+          });
+        }
         dispatch(addScheduledMealsRedux(scheduledMealEntities));
       });
   };
@@ -73,7 +87,7 @@ export const generateMeal = (mealId: string, mealDate: Date) => {
     const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1);
     const meal: ScheduledMealEntity = meals[0];
     meal.id = mealId;
-    dispatch(updateMeal(mealId, meal));    
+    dispatch(updateMeal(mealId, meal));
   };
 };
 
@@ -252,7 +266,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate:
     scheduledMealEntities.push(scheduledMeal);
 
     // update property 'last' for all dishes in meal
-    
+
     mealDate = cloneDeep(mealDate);
     mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
   }
