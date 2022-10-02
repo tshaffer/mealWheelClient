@@ -28,19 +28,17 @@ function AboutDialog(props: AboutDialogProps) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>About MealWheel</DialogTitle>
-      <div>
-        <div style={{ marginLeft: '10px', marginRight: '10px', marginBottom: '10px' }}>
-          <p>{'Client version: ' + props.versionInfo.clientVersion}</p>
-          <p>{'Server version: ' + props.versionInfo.serverVersion}</p>
-        </div>
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-          }}
-        >
-        </div>
+      <div style={{ marginLeft: '10px', marginRight: '10px', marginBottom: '10px' }}>
+        <p style={{ marginTop: '0px' }}>{'Client version: ' + props.versionInfo.clientVersion}</p>
+        <p>{'Server version: ' + props.versionInfo.serverVersion}</p>
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '10px',
+          right: '10px',
+        }}
+      >
       </div>
     </Dialog>
   );
