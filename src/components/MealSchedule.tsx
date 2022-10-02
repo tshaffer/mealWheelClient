@@ -53,6 +53,10 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
+  // React.useEffect(() => {
+  //   console.log('On entry: ', props.scheduledMeals);
+  // }, []);
+
   const handleCloseScheduledMealStatusResolver = () => {
     setShowResolveStatusModal(null);
   };

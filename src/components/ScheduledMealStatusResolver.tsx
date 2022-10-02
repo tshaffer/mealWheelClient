@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 
 import { DishEntity, MealStatus, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
 import { isNil } from 'lodash';
-import { getMainById, getSaladById, getSideById, getVeggieById } from '../selectors';
+import { getMainById, getMains, getSaladById, getSideById, getVeggieById } from '../selectors';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -17,7 +17,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
+import { InputLabel, MenuItem, Select } from '@mui/material';
 
 export interface ScheduledMealStatusResolverPropsFromParent {
   scheduledMeals: ScheduledMealEntity[];
@@ -27,11 +27,10 @@ export interface ScheduledMealStatusResolverPropsFromParent {
 
 export interface ScheduledMealStatusResolverProps extends ScheduledMealStatusResolverPropsFromParent {
   verboseScheduledMeals: VerboseScheduledMeal[];
+  mains: DishEntity[];
 }
 
 const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) => {
-  console.log('ScheduledMealStatusResolver');
-  console.log(props.verboseScheduledMeals);
 
   const { verboseScheduledMeals, open, onClose } = props;
 
@@ -39,8 +38,9 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     onClose();
   };
 
-  const handleListItemClick = (value: string) => {
-    onClose();
+  const handleUpdateMain = (event: any) => {
+    // props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
+    console.log('handleUpdateMain: ', event.target.value);
   };
 
   const getDayOfWeek = (day: number): string => {
@@ -48,20 +48,51 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     return weekday[day];
   };
 
-  const getMealDescription = (verboseScheduledMeal: VerboseScheduledMeal): string => {
-
-    const dayOfWeek: string = getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay());
-    const shortDate: string = verboseScheduledMeal.dateScheduled.toLocaleDateString(
-      'en-us',
-      {
-        month: '2-digit',
-        day: '2-digit',
-      }
+  const renderNoneMenuItem = (): JSX.Element => {
+    return (
+      <MenuItem value={'none'} key={'none'}>None</MenuItem>
     );
-    return dayOfWeek + shortDate + verboseScheduledMeal.mainDish;
   };
 
-  // <ListItemText primary={getMealDescription(verboseScheduledMeal)} />
+  const renderDishMenuItem = (dishEntity: DishEntity): JSX.Element => {
+    return (
+      <MenuItem value={dishEntity.id} key={dishEntity.id}>{dishEntity.name}</MenuItem>
+    );
+  };
+
+
+  const renderDishMenuItems = (dishes: DishEntity[], includeNone: boolean) => {
+    const dishMenuItems: JSX.Element[] = dishes.map((mainDish: DishEntity) => {
+      return renderDishMenuItem(mainDish);
+    });
+    if (includeNone) {
+      dishMenuItems.unshift(renderNoneMenuItem());
+    }
+    return dishMenuItems;
+  };
+
+  const renderMains = (mainDish: DishEntity | null) => {
+    let mainId = 'none';
+    if (!isNil(mainDish)) {
+      mainId = mainDish.id;
+    }
+    const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="mainLabel">Main</InputLabel>
+          <Select
+            labelId="mainLabel"
+            id="demo-simple-select-filled"
+            value={mainId}
+            onChange={(event) => handleUpdateMain(event)}
+          >
+            {mainsMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
 
   return (
     <Dialog onClose={handleClose} open={open} maxWidth={false}>
@@ -79,7 +110,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
                 }
               )}
             </ListItemText>
-            <ListItemText>{verboseScheduledMeal.mainDish}</ListItemText>
+            <ListItemText>{verboseScheduledMeal.mainDishName}</ListItemText>
             <FormControl>
               <RadioGroup
                 row
@@ -91,6 +122,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
                 <FormControlLabel value="different" control={<Radio />} label="Different" />
               </RadioGroup>
             </FormControl>
+            {renderMains(verboseScheduledMeal.mainDish)}
           </ListItem>
         ))}
       </List>
@@ -107,7 +139,8 @@ function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsF
     const mealDate: Date = new Date(mealDateAsStr);
     if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
       if (scheduledMeal.status === MealStatus.pending) {
-        const mainDish: string = isNil(scheduledMeal.mainDishId) ? '' :
+        const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
+        const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
           isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
         const veggie: string = isNil(scheduledMeal.veggieId) ? '' :
           isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
@@ -118,6 +151,7 @@ function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsF
         verboseScheduledMeals.push({
           ...scheduledMeal,
           mainDish,
+          mainDishName,
           salad,
           veggie,
           side,
@@ -128,6 +162,7 @@ function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsF
 
   return {
     verboseScheduledMeals,
+    mains: getMains(state),
   };
 }
 
