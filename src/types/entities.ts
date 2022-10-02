@@ -51,3 +51,10 @@ export interface ScheduledMealEntity {
   dateScheduled: Date;
   status: MealStatus;
 }
+
+export interface VerboseScheduledMeal extends ScheduledMealEntity {
+  mainDish: string;
+  salad: string;
+  veggie: string;
+  side: string;
+}

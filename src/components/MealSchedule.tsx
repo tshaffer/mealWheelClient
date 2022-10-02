@@ -18,6 +18,7 @@ import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
+import ScheduledMealStatusResolver from './ScheduledMealStatusResolver';
 
 const localizer = momentLocalizer(moment);
 
@@ -64,7 +65,7 @@ const MealSchedule = (props: MealScheduleProps) => {
       minHeight: '105px',
       minWidth: '150px',
     },
-    overlay: {zIndex: 1000}
+    overlay: { zIndex: 1000 }
   };
 
   const handleGenerateMenu = () => {
@@ -179,6 +180,9 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   return (
     <div>
+      <ScheduledMealStatusResolver
+        scheduledMeals={props.scheduledMeals}
+      />
       <ReactModal
         isOpen={!isNil(showResolveStatusModal)}
         style={modalStyle}
