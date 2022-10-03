@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 
 import { DishEntity, MealStatus, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
 import { isNil } from 'lodash';
-import { getMainById, getMains, getSaladById, getSideById, getVeggieById } from '../selectors';
+import { getMainById, getMains, getSaladById, getSalads, getSideById, getSides, getVeggieById, getVeggies } from '../selectors';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -28,6 +28,9 @@ export interface ScheduledMealStatusResolverPropsFromParent {
 export interface ScheduledMealStatusResolverProps extends ScheduledMealStatusResolverPropsFromParent {
   verboseScheduledMeals: VerboseScheduledMeal[];
   mains: DishEntity[];
+  sides: DishEntity[];
+  salads: DishEntity[];
+  veggies: DishEntity[];
 }
 
 const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) => {
@@ -41,6 +44,21 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   const handleUpdateMain = (event: any) => {
     // props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
     console.log('handleUpdateMain: ', event.target.value);
+  };
+
+  const handleUpdateSide = (event: any) => {
+    // props.onUpdateSideInMeal(getScheduledMealId(), event.target.value);
+    console.log('handleUpdateSide: ', event.target.value);
+  };
+
+  const handleUpdateSalad = (event: any) => {
+    // props.onUpdateSaladInMeal(getScheduledMealId(), event.target.value);
+    console.log('handleUpdateSalad: ', event.target.value);
+  };
+
+  const handleUpdateVeggie = (event: any) => {
+    // props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
+    console.log('handleUpdateVeggie: ', event.target.value);
   };
 
   const getDayOfWeek = (day: number): string => {
@@ -83,11 +101,80 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
           <InputLabel id="mainLabel">Main</InputLabel>
           <Select
             labelId="mainLabel"
-            id="demo-simple-select-filled"
+            id="selectMain"
             value={mainId}
             onChange={(event) => handleUpdateMain(event)}
           >
             {mainsMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
+
+  const renderSides = (sideDish: DishEntity | null) => {
+    let sideId = 'none';
+    if (!isNil(sideDish)) {
+      sideId = sideDish.id;
+    }
+    const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="sideLabel">Side</InputLabel>
+          <Select
+            labelId="sideLabel"
+            id="selectSide"
+            value={sideId}
+            onChange={(event) => handleUpdateSide(event)}
+          >
+            {sidesMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
+
+  const renderSalads = (salad: DishEntity | null) => {
+    let saladId = 'none';
+    if (!isNil(salad)) {
+      saladId = salad.id;
+    }
+    const saladsMenuItems: JSX.Element[] = renderDishMenuItems(props.salads, true);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="saladLabel">Salad</InputLabel>
+          <Select
+            labelId="saladLabel"
+            id="selectSalad"
+            value={saladId}
+            onChange={(event) => handleUpdateSalad(event)}
+          >
+            {saladsMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
+
+  const renderVeggies = (veggie: DishEntity | null) => {
+    let veggieId = 'none';
+    if (!isNil(veggie)) {
+      veggieId = veggie.id;
+    }
+    const veggiesMenuItems: JSX.Element[] = renderDishMenuItems(props.veggies, true);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="veggieLabel">Veggie</InputLabel>
+          <Select
+            labelId="veggieLabel"
+            id="selectVeggie"
+            value={veggieId}
+            onChange={(event) => handleUpdateVeggie(event)}
+          >
+            {veggiesMenuItems}
           </Select>
         </FormControl>
       </div>
@@ -123,6 +210,9 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
               </RadioGroup>
             </FormControl>
             {renderMains(verboseScheduledMeal.mainDish)}
+            {renderSides(verboseScheduledMeal.side)}
+            {renderSalads(verboseScheduledMeal.salad)}
+            {renderVeggies(verboseScheduledMeal.veggie)}
           </ListItem>
         ))}
       </List>
@@ -134,28 +224,42 @@ function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsF
 
   const verboseScheduledMeals: VerboseScheduledMeal[] = [];
   for (const scheduledMeal of ownProps.scheduledMealsToResolve) {
+
     const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
     const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
       isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
-    const veggie: string = isNil(scheduledMeal.veggieId) ? '' :
+
+    const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
+    const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
       isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
-    const side: string = isNil(scheduledMeal.sideId) ? '' :
+
+    const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
+    const sideName: string = isNil(scheduledMeal.sideId) ? '' :
       isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
-    const salad: string = isNil(scheduledMeal.saladId) ? '' :
+
+    const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
+    const saladName: string = isNil(scheduledMeal.saladId) ? '' :
       isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
+
     verboseScheduledMeals.push({
       ...scheduledMeal,
       mainDish,
       mainDishName,
       salad,
+      saladName,
       veggie,
+      veggieName,
       side,
+      sideName,
     });
   }
 
   return {
     verboseScheduledMeals,
     mains: getMains(state),
+    sides: getSides(state),
+    salads: getSalads(state),
+    veggies: getVeggies(state),
   };
 }
 
