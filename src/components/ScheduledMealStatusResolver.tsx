@@ -20,7 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import { InputLabel, MenuItem, Select } from '@mui/material';
 
 export interface ScheduledMealStatusResolverPropsFromParent {
-  scheduledMeals: ScheduledMealEntity[];
+  scheduledMealsToResolve: ScheduledMealEntity[];
   open: boolean;
   onClose: () => void;
 }
@@ -133,31 +133,24 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
 function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsFromParent) {
 
   const verboseScheduledMeals: VerboseScheduledMeal[] = [];
-  const currentDate: Date = new Date();
-  for (const scheduledMeal of ownProps.scheduledMeals) {
-    const mealDateAsStr = scheduledMeal.dateScheduled;
-    const mealDate: Date = new Date(mealDateAsStr);
-    if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
-      if (scheduledMeal.status === MealStatus.pending) {
-        const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
-        const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
-          isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
-        const veggie: string = isNil(scheduledMeal.veggieId) ? '' :
-          isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
-        const side: string = isNil(scheduledMeal.sideId) ? '' :
-          isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
-        const salad: string = isNil(scheduledMeal.saladId) ? '' :
-          isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
-        verboseScheduledMeals.push({
-          ...scheduledMeal,
-          mainDish,
-          mainDishName,
-          salad,
-          veggie,
-          side,
-        });
-      }
-    }
+  for (const scheduledMeal of ownProps.scheduledMealsToResolve) {
+    const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
+    const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
+      isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
+    const veggie: string = isNil(scheduledMeal.veggieId) ? '' :
+      isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
+    const side: string = isNil(scheduledMeal.sideId) ? '' :
+      isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
+    const salad: string = isNil(scheduledMeal.saladId) ? '' :
+      isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
+    verboseScheduledMeals.push({
+      ...scheduledMeal,
+      mainDish,
+      mainDishName,
+      salad,
+      veggie,
+      side,
+    });
   }
 
   return {
@@ -172,63 +165,3 @@ const mapDispatchToProps = (dispatch: any) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScheduledMealStatusResolver);
-
-/*
-import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Checkbox from '@mui/material/Checkbox';
-import Avatar from '@mui/material/Avatar';
-
-export default function CheckboxListSecondary() {
-  const [checked, setChecked] = React.useState([1]);
-
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
-
-  return (
-    <List dense sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      {[0, 1, 2, 3].map((value) => {
-        const labelId = `checkbox-list-secondary-label-${value}`;
-        return (
-          <ListItem
-            key={value}
-            secondaryAction={
-              <Checkbox
-                edge='end'
-                onChange={handleToggle(value)}
-                checked={checked.indexOf(value) !== -1}
-                inputProps={{ 'aria-labelledby': labelId }}
-              />
-            }
-            disablePadding
-          >
-            <ListItemButton>
-              <ListItemAvatar>
-                <Avatar
-                  alt={`Avatar n°${value + 1}`}
-                  src={`/static/images/avatar/${value + 1}.jpg`}
-                />
-              </ListItemAvatar>
-              <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
-            </ListItemButton>
-          </ListItem>
-        );
-      })}
-    </List>
-  );
-}
-*/

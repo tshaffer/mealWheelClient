@@ -48,7 +48,8 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const [events, setEvents] = useState([] as CalendarEvent[]);
 
-  const [showResolveStatusModal, setShowResolveStatusModal] = useState<ScheduledMealEntity | null>(null);
+  // const [showResolveStatusModal, setShowResolveStatusModal] = useState<ScheduledMealEntity | null>(null);
+  const [scheduledMealsToResolve, setScheduledMealsToResolve] = useState<ScheduledMealEntity[]>([]);
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
@@ -57,21 +58,25 @@ const MealSchedule = (props: MealScheduleProps) => {
 
     console.log('On entry: ', props.scheduledMeals);
     const currentDate: Date = new Date();
-    let scheduledMealToResolve: ScheduledMealEntity | null = null;
+    const localScheduledMealsToResolve: ScheduledMealEntity[] = [];
+    // let scheduledMealToResolve: ScheduledMealEntity | null = null;
     for (const scheduledMeal of props.scheduledMeals) {
       const mealDateAsStr = scheduledMeal.dateScheduled;
       const mealDate: Date = new Date(mealDateAsStr);
       if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
         if (scheduledMeal.status === MealStatus.pending) {
-          scheduledMealToResolve = scheduledMeal;
+          localScheduledMealsToResolve.push(scheduledMeal);
+          // scheduledMealToResolve = scheduledMeal;
         }
       }
     }
-    setShowResolveStatusModal(scheduledMealToResolve);
+    setScheduledMealsToResolve(localScheduledMealsToResolve);
+    // setShowResolveStatusModal(scheduledMealToResolve);
   }, []);
 
   const handleCloseScheduledMealStatusResolver = () => {
-    setShowResolveStatusModal(null);
+    setScheduledMealsToResolve([]);
+    // setShowResolveStatusModal(null);
   };
 
   const handleGenerateMenu = () => {
@@ -152,8 +157,8 @@ const MealSchedule = (props: MealScheduleProps) => {
   return (
     <div>
       <ScheduledMealStatusResolver
-        scheduledMeals={props.scheduledMeals}
-        open={!isNil(showResolveStatusModal)}
+        scheduledMealsToResolve={scheduledMealsToResolve}
+        open={scheduledMealsToResolve.length > 0}
         onClose={handleCloseScheduledMealStatusResolver}
       />
       <div style={{ height: '100vh' }}>
