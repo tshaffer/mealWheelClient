@@ -8,9 +8,10 @@ import {
   clearDefinedMeals,
   clearScheduledMeals,
   updateScheduledMealRedux,
-  addScheduledMealsRedux
+  addScheduledMealsRedux,
+  setScheduledMealsToResolveRedux
 } from '../models';
-import { getCurrentUser, getDefinedMeals, getDish, getScheduledMeal } from '../selectors';
+import { getCurrentUser, getDefinedMeals, getDish, getScheduledMeal, getScheduledMeals } from '../selectors';
 
 import {
   apiUrlFragment,
@@ -304,12 +305,15 @@ export const addScheduledMeal = (
   });
 };
 
-export const updateMeal = (
+const updateMeal = (
   id: string,
   meal: ScheduledMealEntity
 ): any => {
   return ((dispatch: any): any => {
 
+    dispatch(updateScheduledMealRedux(id, meal));
+    dispatch(setScheduledMealsToResolve());
+    
     const path = serverUrl + apiUrlFragment + 'updateMeal';
 
     const updateMealBody: any = {
@@ -321,7 +325,7 @@ export const updateMeal = (
       path,
       updateMealBody
     ).then((response) => {
-      dispatch(updateScheduledMealRedux(id, meal));
+      // dispatch(updateScheduledMealRedux(id, meal));
       return;
     }).catch((error) => {
       console.log('error');
@@ -400,7 +404,6 @@ export const updateSideInMeal = (
   };
 };
 
-
 export const updateSaladInMeal = (
   mealId: string,
   newSaladId: string,
@@ -451,5 +454,24 @@ export const updateMealStatus = (
       newMeal.status = mealStatus;
       dispatch(updateMeal(meal.id, newMeal));
     }
+  };
+};
+
+export const setScheduledMealsToResolve = () => {
+  return (dispatch: any, getState: any) => {
+    const state: MealWheelState = getState() as MealWheelState;
+    const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
+    const currentDate: Date = new Date();
+    const scheduledMealsToResolve: ScheduledMealEntity[] = [];
+    for (const scheduledMeal of scheduledMeals) {
+      const mealDateAsStr = scheduledMeal.dateScheduled;
+      const mealDate: Date = new Date(mealDateAsStr);
+      if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
+        if (scheduledMeal.status === MealStatus.pending) {
+          scheduledMealsToResolve.push(scheduledMeal);
+        }
+      }
+    }
+    dispatch(setScheduledMealsToResolveRedux(scheduledMealsToResolve));
   };
 };

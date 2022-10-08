@@ -4,6 +4,10 @@ export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] 
   return state.scheduledMealsState.scheduledMeals;
 };
 
+export const getScheduledMealsToResolve = (state: MealWheelState): ScheduledMealEntity[] => {
+  return state.scheduledMealsState.scheduledMealsToResolve;
+};
+
 export const getDefinedMeals = (state: MealWheelState): DefinedMealEntity[] => {
   return state.definedMealsState.definedMeals;
 };

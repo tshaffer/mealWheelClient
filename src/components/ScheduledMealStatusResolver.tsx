@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 
 import { DishEntity, MealStatus, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
 import { isNil } from 'lodash';
-import { getMainById, getMains, getSaladById, getSalads, getSideById, getSides, getVeggieById, getVeggies } from '../selectors';
+import { getMainById, getMains, getSaladById, getSalads, getScheduledMealsToResolve, getSideById, getSides, getVeggieById, getVeggies } from '../selectors';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -18,10 +18,9 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import { InputLabel, MenuItem, Select } from '@mui/material';
+import { updateSideInMeal } from '../controllers';
 
 export interface ScheduledMealStatusResolverPropsFromParent {
-  scheduledMealsToResolve: ScheduledMealEntity[];
-  open: boolean;
   onClose: () => void;
 }
 
@@ -31,24 +30,29 @@ export interface ScheduledMealStatusResolverProps extends ScheduledMealStatusRes
   sides: DishEntity[];
   salads: DishEntity[];
   veggies: DishEntity[];
+  scheduledMealsToResolve: ScheduledMealEntity[];
+  onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
+
 }
 
 const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) => {
 
-  const { verboseScheduledMeals, open, onClose } = props;
+  const { verboseScheduledMeals, onClose } = props;
 
   const handleClose = () => {
     onClose();
   };
 
   const handleUpdateMain = (event: any) => {
-    // props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
-    console.log('handleUpdateMain: ', event.target.value);
+    console.log('handleUpdateMain: ');
+    console.log('new main id', event.target.value);
   };
 
-  const handleUpdateSide = (event: any) => {
-    // props.onUpdateSideInMeal(getScheduledMealId(), event.target.value);
-    console.log('handleUpdateSide: ', event.target.value);
+  const handleUpdateSide = (mealId: string, event: any) => {
+    console.log('handleUpdateSide: ');
+    console.log('mealId: ', mealId);
+    console.log('new side id: ', event.target.value);
+    props.onUpdateSideInMeal(mealId, event.target.value);
   };
 
   const handleUpdateSalad = (event: any) => {
@@ -112,11 +116,18 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     );
   };
 
-  const renderSides = (sideDish: DishEntity | null) => {
+  const renderSides = (mealId: string, sideDish: DishEntity | null) => {
+
+    console.log('renderSides');
+
     let sideId = 'none';
     if (!isNil(sideDish)) {
       sideId = sideDish.id;
     }
+
+    console.log('mealId: ', mealId);
+    console.log('current side id: ', sideId);
+
     const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
     return (
       <div>
@@ -126,7 +137,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
             labelId="sideLabel"
             id="selectSide"
             value={sideId}
-            onChange={(event) => handleUpdateSide(event)}
+            onChange={(event) => handleUpdateSide(mealId, event)}
           >
             {sidesMenuItems}
           </Select>
@@ -182,7 +193,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   };
 
   return (
-    <Dialog onClose={handleClose} open={open} maxWidth={false}>
+    <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth={false}>
       <DialogTitle>About MealWheel</DialogTitle>
       <List sx={{ pt: 0 }}>
         {verboseScheduledMeals.map((verboseScheduledMeal: VerboseScheduledMeal) => (
@@ -210,7 +221,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
               </RadioGroup>
             </FormControl>
             {renderMains(verboseScheduledMeal.mainDish)}
-            {renderSides(verboseScheduledMeal.side)}
+            {renderSides(verboseScheduledMeal.id, verboseScheduledMeal.side)}
             {renderSalads(verboseScheduledMeal.salad)}
             {renderVeggies(verboseScheduledMeal.veggie)}
           </ListItem>
@@ -220,10 +231,15 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   );
 };
 
-function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsFromParent) {
+function mapStateToProps(state: any) {
 
   const verboseScheduledMeals: VerboseScheduledMeal[] = [];
-  for (const scheduledMeal of ownProps.scheduledMealsToResolve) {
+
+  const scheduledMealsToResolve: ScheduledMealEntity[] = getScheduledMealsToResolve(state);
+  console.log('ScheduledMealStatusResolver.tsx#mapStateToProps');
+  console.log(scheduledMealsToResolve);
+  
+  for (const scheduledMeal of scheduledMealsToResolve) {
 
     const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
     const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
@@ -236,6 +252,10 @@ function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsF
     const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
     const sideName: string = isNil(scheduledMeal.sideId) ? '' :
       isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
+
+    console.log('mapStateToProps: ');
+    console.log(scheduledMeal.id);
+    console.log(scheduledMeal.sideId);
 
     const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
     const saladName: string = isNil(scheduledMeal.saladId) ? '' :
@@ -260,11 +280,13 @@ function mapStateToProps(state: any, ownProps: ScheduledMealStatusResolverPropsF
     sides: getSides(state),
     salads: getSalads(state),
     veggies: getVeggies(state),
+    scheduledMealsToResolve: getScheduledMealsToResolve(state),
   };
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onUpdateSideInMeal: updateSideInMeal,
   }, dispatch);
 };
 

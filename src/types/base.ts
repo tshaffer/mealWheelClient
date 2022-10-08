@@ -52,6 +52,7 @@ export interface DefinedMealsState {
 
 export interface ScheduledMealsState {
   scheduledMeals: ScheduledMealEntity[];
+  scheduledMealsToResolve: ScheduledMealEntity[];
 }
 
 export interface Meal {

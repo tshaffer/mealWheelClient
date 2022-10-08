@@ -10,7 +10,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { cloneDeep } from 'lodash';
 
 import { MealStatus, ScheduledMealEntity } from '../types';
-import { generateMenu, updateMealStatus } from '../controllers';
+import { generateMenu, setScheduledMealsToResolve, updateMealStatus } from '../controllers';
 import { getCurrentUser, getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
@@ -18,6 +18,7 @@ import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
 import ScheduledMealStatusResolver from './ScheduledMealStatusResolver';
+import { clearScheduledMealsToResolve } from '../models';
 
 const localizer = momentLocalizer(moment);
 
@@ -42,6 +43,8 @@ export interface MealScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
   onGenerateMenu: () => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
+  onSetScheduledMealsToResolve: () => any;
+  onClearScheduledMealsToResolve: () => any;
 }
 
 const MealSchedule = (props: MealScheduleProps) => {
@@ -49,33 +52,35 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [events, setEvents] = useState([] as CalendarEvent[]);
 
   // const [showResolveStatusModal, setShowResolveStatusModal] = useState<ScheduledMealEntity | null>(null);
-  const [scheduledMealsToResolve, setScheduledMealsToResolve] = useState<ScheduledMealEntity[]>([]);
+  // const [scheduledMealsToResolve, setScheduledMealsToResolve] = useState<ScheduledMealEntity[]>([]);
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
   React.useEffect(() => {
 
-    console.log('On entry: ', props.scheduledMeals);
-    const currentDate: Date = new Date();
-    const localScheduledMealsToResolve: ScheduledMealEntity[] = [];
-    // let scheduledMealToResolve: ScheduledMealEntity | null = null;
-    for (const scheduledMeal of props.scheduledMeals) {
-      const mealDateAsStr = scheduledMeal.dateScheduled;
-      const mealDate: Date = new Date(mealDateAsStr);
-      if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
-        if (scheduledMeal.status === MealStatus.pending) {
-          localScheduledMealsToResolve.push(scheduledMeal);
-          // scheduledMealToResolve = scheduledMeal;
-        }
-      }
-    }
-    setScheduledMealsToResolve(localScheduledMealsToResolve);
+    props.onSetScheduledMealsToResolve();
+    // console.log('On entry: ', props.scheduledMeals);
+    // const currentDate: Date = new Date();
+    // const localScheduledMealsToResolve: ScheduledMealEntity[] = [];
+    // // let scheduledMealToResolve: ScheduledMealEntity | null = null;
+    // for (const scheduledMeal of props.scheduledMeals) {
+    //   const mealDateAsStr = scheduledMeal.dateScheduled;
+    //   const mealDate: Date = new Date(mealDateAsStr);
+    //   if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
+    //     if (scheduledMeal.status === MealStatus.pending) {
+    //       localScheduledMealsToResolve.push(scheduledMeal);
+    //       // scheduledMealToResolve = scheduledMeal;
+    //     }
+    //   }
+    // }
+    // setScheduledMealsToResolve(localScheduledMealsToResolve);
     // setShowResolveStatusModal(scheduledMealToResolve);
   }, []);
 
   const handleCloseScheduledMealStatusResolver = () => {
-    setScheduledMealsToResolve([]);
+    props.onClearScheduledMealsToResolve();
+    // setScheduledMealsToResolve([]);
     // setShowResolveStatusModal(null);
   };
 
@@ -118,7 +123,6 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   if (!isNil(props.scheduledMeals) && props.scheduledMeals.length > 0) {
 
-
     const mealsInSchedule: CalendarEvent[] = [];
 
     for (const scheduledMeal of props.scheduledMeals) {
@@ -157,8 +161,6 @@ const MealSchedule = (props: MealScheduleProps) => {
   return (
     <div>
       <ScheduledMealStatusResolver
-        scheduledMealsToResolve={scheduledMealsToResolve}
-        open={scheduledMealsToResolve.length > 0}
         onClose={handleCloseScheduledMealStatusResolver}
       />
       <div style={{ height: '100vh' }}>
@@ -222,6 +224,8 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onGenerateMenu: generateMenu,
     onUpdateMealStatus: updateMealStatus,
+    onSetScheduledMealsToResolve: setScheduledMealsToResolve,
+    onClearScheduledMealsToResolve: clearScheduledMealsToResolve,
   }, dispatch);
 };
 
