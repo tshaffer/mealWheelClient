@@ -313,7 +313,7 @@ const updateMeal = (
 
     dispatch(updateScheduledMealRedux(id, meal));
     dispatch(setScheduledMealsToResolve());
-    
+
     const path = serverUrl + apiUrlFragment + 'updateMeal';
 
     const updateMealBody: any = {
@@ -325,7 +325,6 @@ const updateMeal = (
       path,
       updateMealBody
     ).then((response) => {
-      // dispatch(updateScheduledMealRedux(id, meal));
       return;
     }).catch((error) => {
       console.log('error');

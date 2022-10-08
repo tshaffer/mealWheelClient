@@ -51,37 +51,15 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const [events, setEvents] = useState([] as CalendarEvent[]);
 
-  // const [showResolveStatusModal, setShowResolveStatusModal] = useState<ScheduledMealEntity | null>(null);
-  // const [scheduledMealsToResolve, setScheduledMealsToResolve] = useState<ScheduledMealEntity[]>([]);
-
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
   React.useEffect(() => {
-
     props.onSetScheduledMealsToResolve();
-    // console.log('On entry: ', props.scheduledMeals);
-    // const currentDate: Date = new Date();
-    // const localScheduledMealsToResolve: ScheduledMealEntity[] = [];
-    // // let scheduledMealToResolve: ScheduledMealEntity | null = null;
-    // for (const scheduledMeal of props.scheduledMeals) {
-    //   const mealDateAsStr = scheduledMeal.dateScheduled;
-    //   const mealDate: Date = new Date(mealDateAsStr);
-    //   if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
-    //     if (scheduledMeal.status === MealStatus.pending) {
-    //       localScheduledMealsToResolve.push(scheduledMeal);
-    //       // scheduledMealToResolve = scheduledMeal;
-    //     }
-    //   }
-    // }
-    // setScheduledMealsToResolve(localScheduledMealsToResolve);
-    // setShowResolveStatusModal(scheduledMealToResolve);
   }, []);
 
   const handleCloseScheduledMealStatusResolver = () => {
     props.onClearScheduledMealsToResolve();
-    // setScheduledMealsToResolve([]);
-    // setShowResolveStatusModal(null);
   };
 
   const handleGenerateMenu = () => {

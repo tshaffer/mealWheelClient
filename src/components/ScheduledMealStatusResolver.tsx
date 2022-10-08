@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
-import { DishEntity, MealStatus, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
+import { DishEntity, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
 import { isNil } from 'lodash';
 import { getMainById, getMains, getSaladById, getSalads, getScheduledMealsToResolve, getSideById, getSides, getVeggieById, getVeggies } from '../selectors';
 
@@ -18,7 +18,12 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import { InputLabel, MenuItem, Select } from '@mui/material';
-import { updateSideInMeal } from '../controllers';
+import {
+  updateMainInMeal,
+  updateSideInMeal,
+  updateSaladInMeal,
+  updateVeggieInMeal,
+} from '../controllers';
 
 export interface ScheduledMealStatusResolverPropsFromParent {
   onClose: () => void;
@@ -32,7 +37,9 @@ export interface ScheduledMealStatusResolverProps extends ScheduledMealStatusRes
   veggies: DishEntity[];
   scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
-
+  onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
+  onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
+  onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
 }
 
 const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) => {
@@ -43,26 +50,20 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     onClose();
   };
 
-  const handleUpdateMain = (event: any) => {
-    console.log('handleUpdateMain: ');
-    console.log('new main id', event.target.value);
+  const handleUpdateMain = (mealId: string, event: any) => {
+    props.onUpdateMainInMeal(mealId, event.target.value);
   };
 
   const handleUpdateSide = (mealId: string, event: any) => {
-    console.log('handleUpdateSide: ');
-    console.log('mealId: ', mealId);
-    console.log('new side id: ', event.target.value);
     props.onUpdateSideInMeal(mealId, event.target.value);
   };
 
-  const handleUpdateSalad = (event: any) => {
-    // props.onUpdateSaladInMeal(getScheduledMealId(), event.target.value);
-    console.log('handleUpdateSalad: ', event.target.value);
+  const handleUpdateSalad = (mealId: string, event: any) => {
+    props.onUpdateSaladInMeal(mealId, event.target.value);
   };
 
-  const handleUpdateVeggie = (event: any) => {
-    // props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
-    console.log('handleUpdateVeggie: ', event.target.value);
+  const handleUpdateVeggie = (mealId: string, event: any) => {
+    props.onUpdateVeggieInMeal(mealId, event.target.value);
   };
 
   const getDayOfWeek = (day: number): string => {
@@ -93,7 +94,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     return dishMenuItems;
   };
 
-  const renderMains = (mainDish: DishEntity | null) => {
+  const renderMains = (mealId: string, mainDish: DishEntity | null) => {
     let mainId = 'none';
     if (!isNil(mainDish)) {
       mainId = mainDish.id;
@@ -107,7 +108,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
             labelId="mainLabel"
             id="selectMain"
             value={mainId}
-            onChange={(event) => handleUpdateMain(event)}
+            onChange={(event) => handleUpdateMain(mealId, event)}
           >
             {mainsMenuItems}
           </Select>
@@ -117,17 +118,10 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   };
 
   const renderSides = (mealId: string, sideDish: DishEntity | null) => {
-
-    console.log('renderSides');
-
     let sideId = 'none';
     if (!isNil(sideDish)) {
       sideId = sideDish.id;
     }
-
-    console.log('mealId: ', mealId);
-    console.log('current side id: ', sideId);
-
     const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
     return (
       <div>
@@ -146,7 +140,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     );
   };
 
-  const renderSalads = (salad: DishEntity | null) => {
+  const renderSalads = (mealId: string, salad: DishEntity | null) => {
     let saladId = 'none';
     if (!isNil(salad)) {
       saladId = salad.id;
@@ -160,7 +154,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
             labelId="saladLabel"
             id="selectSalad"
             value={saladId}
-            onChange={(event) => handleUpdateSalad(event)}
+            onChange={(event) => handleUpdateSalad(mealId, event)}
           >
             {saladsMenuItems}
           </Select>
@@ -169,7 +163,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     );
   };
 
-  const renderVeggies = (veggie: DishEntity | null) => {
+  const renderVeggies = (mealId: string, veggie: DishEntity | null) => {
     let veggieId = 'none';
     if (!isNil(veggie)) {
       veggieId = veggie.id;
@@ -183,7 +177,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
             labelId="veggieLabel"
             id="selectVeggie"
             value={veggieId}
-            onChange={(event) => handleUpdateVeggie(event)}
+            onChange={(event) => handleUpdateVeggie(mealId, event)}
           >
             {veggiesMenuItems}
           </Select>
@@ -220,10 +214,10 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
                 <FormControlLabel value="different" control={<Radio />} label="Different" />
               </RadioGroup>
             </FormControl>
-            {renderMains(verboseScheduledMeal.mainDish)}
+            {renderMains(verboseScheduledMeal.id, verboseScheduledMeal.mainDish)}
             {renderSides(verboseScheduledMeal.id, verboseScheduledMeal.side)}
-            {renderSalads(verboseScheduledMeal.salad)}
-            {renderVeggies(verboseScheduledMeal.veggie)}
+            {renderSalads(verboseScheduledMeal.id, verboseScheduledMeal.salad)}
+            {renderVeggies(verboseScheduledMeal.id, verboseScheduledMeal.veggie)}
           </ListItem>
         ))}
       </List>
@@ -238,7 +232,7 @@ function mapStateToProps(state: any) {
   const scheduledMealsToResolve: ScheduledMealEntity[] = getScheduledMealsToResolve(state);
   console.log('ScheduledMealStatusResolver.tsx#mapStateToProps');
   console.log(scheduledMealsToResolve);
-  
+
   for (const scheduledMeal of scheduledMealsToResolve) {
 
     const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
@@ -287,6 +281,10 @@ function mapStateToProps(state: any) {
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onUpdateSideInMeal: updateSideInMeal,
+    onUpdateMainInMeal: updateMainInMeal,
+    onUpdateSaladInMeal: updateSaladInMeal,
+    onUpdateVeggieInMeal: updateVeggieInMeal,
+
   }, dispatch);
 };
 
