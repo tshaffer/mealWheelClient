@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
-import { DishEntity, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
-import { isNil } from 'lodash';
+import { DishEntity, MealStatus, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
+import { cloneDeep, initial, isNil } from 'lodash';
 import { getMainById, getMains, getSaladById, getSalads, getScheduledMealsToResolve, getSideById, getSides, getVeggieById, getVeggies } from '../selectors';
 
 import List from '@mui/material/List';
@@ -23,6 +23,7 @@ import {
   updateSideInMeal,
   updateSaladInMeal,
   updateVeggieInMeal,
+  updateMealStatus,
 } from '../controllers';
 
 export interface ScheduledMealStatusResolverPropsFromParent {
@@ -40,11 +41,32 @@ export interface ScheduledMealStatusResolverProps extends ScheduledMealStatusRes
   onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
   onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
   onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
+  onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
+}
+
+interface MiniMeal {
+  mealId: string;
+  mealStatus: MealStatus;
 }
 
 const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) => {
 
   const { verboseScheduledMeals, onClose } = props;
+
+  const [mealsStatus, setMealsStatus] = useState<MiniMeal[]>([]);
+
+  React.useEffect(() => {
+    if (mealsStatus.length === 0) {
+      const initialMealsStatus: MiniMeal[] = [];
+      verboseScheduledMeals.forEach((verboseScheduledMeal: VerboseScheduledMeal) => {
+        initialMealsStatus.push({
+          mealId: verboseScheduledMeal.id,
+          mealStatus: verboseScheduledMeal.status,
+        });
+      });
+      setMealsStatus(initialMealsStatus);
+    }
+  }, [verboseScheduledMeals]);
 
   const handleClose = () => {
     onClose();
@@ -64,6 +86,31 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
 
   const handleUpdateVeggie = (mealId: string, event: any) => {
     props.onUpdateVeggieInMeal(mealId, event.target.value);
+  };
+
+  const handleUpdateMealStatus = (meal: VerboseScheduledMeal, event: any) => {
+    console.log('handleUpdateMealStatus: ', event.target.value);
+    // props.onUpdateMealStatus(meal.id, parseInt(event.target.value, 10));
+
+    const miniMeals: MiniMeal[] = cloneDeep(mealsStatus);
+    // TODO - improve
+    miniMeals.forEach((miniMeal: MiniMeal) => {
+      if (miniMeal.mealId === meal.id) {
+        miniMeal.mealStatus = event.target.value;
+      }
+    });
+    setMealsStatus(miniMeals);
+  };
+
+  const getMealStatus = (mealId: string): MealStatus => {
+    // TODO - make me better
+    let mealStatus: MealStatus = MealStatus.pending;
+    mealsStatus.forEach((miniMeal: MiniMeal) => {
+      if (miniMeal.mealId === mealId) {
+        mealStatus = miniMeal.mealStatus;
+      }
+    });
+    return mealStatus;
   };
 
   const getDayOfWeek = (day: number): string => {
@@ -208,10 +255,12 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="row-radio-buttons-group"
+                value={getMealStatus(verboseScheduledMeal.id)}
+                onChange={(event) => handleUpdateMealStatus(verboseScheduledMeal, event)}
               >
-                <FormControlLabel value="cooked" control={<Radio />} label="Cooked" />
-                <FormControlLabel value="tbd" control={<Radio />} label="TBD" />
-                <FormControlLabel value="different" control={<Radio />} label="Different" />
+                <FormControlLabel value={MealStatus.prepared} control={<Radio />} label="Cooked" />
+                <FormControlLabel value={MealStatus.pending} control={<Radio />} label="TBD" />
+                <FormControlLabel value={MealStatus.different} control={<Radio />} label="Different" />
               </RadioGroup>
             </FormControl>
             {renderMains(verboseScheduledMeal.id, verboseScheduledMeal.mainDish)}
@@ -284,6 +333,7 @@ const mapDispatchToProps = (dispatch: any) => {
     onUpdateMainInMeal: updateMainInMeal,
     onUpdateSaladInMeal: updateSaladInMeal,
     onUpdateVeggieInMeal: updateVeggieInMeal,
+    onUpdateMealStatus: updateMealStatus,
 
   }, dispatch);
 };

@@ -126,9 +126,6 @@ export const scheduledMealsStateReducer = (
     }
     case UPDATE_SCHEDULED_MEAL: {
       const newState = cloneDeep(state) as ScheduledMealsState;
-      console.log('UPDATE_SCHEDULED_MEAL');
-      console.log(action.payload.id);
-      console.log(action.payload.scheduledMeal.sideId);
       const updatedDishes = newState.scheduledMeals.map((scheduledMeal) => (scheduledMeal.id === action.payload.id ? action.payload.scheduledMeal : scheduledMeal));
       newState.scheduledMeals = updatedDishes;
       return newState;
