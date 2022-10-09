@@ -89,14 +89,11 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   };
 
   const handleUpdateMealStatus = (meal: VerboseScheduledMeal, event: any) => {
-    console.log('handleUpdateMealStatus: ', event.target.value);
-    // props.onUpdateMealStatus(meal.id, parseInt(event.target.value, 10));
-
     const miniMeals: MiniMeal[] = cloneDeep(mealsStatus);
     // TODO - improve
     miniMeals.forEach((miniMeal: MiniMeal) => {
       if (miniMeal.mealId === meal.id) {
-        miniMeal.mealStatus = event.target.value;
+        miniMeal.mealStatus = parseInt(event.target.value, 10);
       }
     });
     setMealsStatus(miniMeals);
@@ -233,6 +230,21 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     );
   };
 
+  const renderAccompaniments = (verboseScheduledMeal: VerboseScheduledMeal) => {
+    const mealStatus: MealStatus = getMealStatus(verboseScheduledMeal.id);
+    if (mealStatus !== MealStatus.different) {
+      return null;
+    }
+    return (
+      <div>
+        {renderMains(verboseScheduledMeal.id, verboseScheduledMeal.mainDish)}
+        {renderSides(verboseScheduledMeal.id, verboseScheduledMeal.side)}
+        {renderSalads(verboseScheduledMeal.id, verboseScheduledMeal.salad)}
+        {renderVeggies(verboseScheduledMeal.id, verboseScheduledMeal.veggie)}\
+      </div>
+    );
+  };
+
   return (
     <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth={false}>
       <DialogTitle>About MealWheel</DialogTitle>
@@ -263,10 +275,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
                 <FormControlLabel value={MealStatus.different} control={<Radio />} label="Different" />
               </RadioGroup>
             </FormControl>
-            {renderMains(verboseScheduledMeal.id, verboseScheduledMeal.mainDish)}
-            {renderSides(verboseScheduledMeal.id, verboseScheduledMeal.side)}
-            {renderSalads(verboseScheduledMeal.id, verboseScheduledMeal.salad)}
-            {renderVeggies(verboseScheduledMeal.id, verboseScheduledMeal.veggie)}
+            {renderAccompaniments(verboseScheduledMeal)}
           </ListItem>
         ))}
       </List>
@@ -279,8 +288,6 @@ function mapStateToProps(state: any) {
   const verboseScheduledMeals: VerboseScheduledMeal[] = [];
 
   const scheduledMealsToResolve: ScheduledMealEntity[] = getScheduledMealsToResolve(state);
-  console.log('ScheduledMealStatusResolver.tsx#mapStateToProps');
-  console.log(scheduledMealsToResolve);
 
   for (const scheduledMeal of scheduledMealsToResolve) {
 
@@ -295,10 +302,6 @@ function mapStateToProps(state: any) {
     const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
     const sideName: string = isNil(scheduledMeal.sideId) ? '' :
       isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
-
-    console.log('mapStateToProps: ');
-    console.log(scheduledMeal.id);
-    console.log(scheduledMeal.sideId);
 
     const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
     const saladName: string = isNil(scheduledMeal.saladId) ? '' :
