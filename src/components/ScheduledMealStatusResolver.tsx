@@ -26,6 +26,28 @@ import {
   updateMealStatus,
 } from '../controllers';
 
+import Box from '@mui/material/Box';
+
+import { DataGrid, GridCellParams } from '@mui/x-data-grid';
+import {
+  GridRowsProp,
+  GridRowModesModel,
+  GridRowModes,
+  GridColumns,
+  GridRowParams,
+  MuiEvent,
+  GridToolbarContainer,
+  GridActionsCellItem,
+  GridEventListener,
+  GridRowId,
+  GridRowModel,
+} from '@mui/x-data-grid-pro';
+
+const cookedOption = { value: 1, label: 'Cooked' };
+const tbdOption = { value: 0, label: 'TBD' };
+const differentOption = { value: 2, label: 'Different' };
+
+
 export interface ScheduledMealStatusResolverPropsFromParent {
   onClose: () => void;
 }
@@ -54,6 +76,8 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   const { verboseScheduledMeals, onClose } = props;
 
   const [mealsStatus, setMealsStatus] = useState<MiniMeal[]>([]);
+
+  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 
   React.useEffect(() => {
     if (mealsStatus.length === 0) {
@@ -245,42 +269,125 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     );
   };
 
+  const getIsCellEditable = (params: GridCellParams): boolean => {
+    return false;
+  };
+
+  const getRows = () => {
+    const rows: GridRowsProp = props.verboseScheduledMeals.map((verboseScheduledMeal: VerboseScheduledMeal) => {
+      // const side = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Side;
+      // const salad = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Salad;
+      // const veggie = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie;
+      const row: GridRowModel = {
+        id: verboseScheduledMeal.id,
+        dayOfWeek: getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay()),
+        mainName: verboseScheduledMeal.mainDishName,
+        mealStatus: verboseScheduledMeal.status,
+      };
+      return row;
+    });
+    return rows;
+  };
+
+  const mealColumns: GridColumns = [
+    { field: 'dayOfWeek', headerName: 'Day', width: 120, editable: false },
+    { field: 'date', headerName: 'Date', width: 120, editable: false },
+    { field: 'mainName', headerName: 'Main', width: 200, editable: false },
+    {
+      field: 'mealStatus',
+      type: 'singleSelect',
+      valueOptions: [
+        cookedOption,
+        tbdOption,
+        differentOption,
+      ],
+      // https://github.com/mui/mui-x/issues/4437
+      valueFormatter: ({ id: rowId, value, field, api }) => {
+        const colDef = api.getColumn(field);
+        const option = colDef.valueOptions.find(
+          ({ value: optionValue }: any) => value === optionValue
+        );
+        return option.label;
+      },
+      headerName: 'Meal Status',
+      width: 100,
+      editable: true,
+    },
+  ];
+
+  // return (
+  //   <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth={false}>
+  //     <DialogTitle>About MealWheel</DialogTitle>
+  //     <List sx={{ pt: 0 }}>
+  //       {verboseScheduledMeals.map((verboseScheduledMeal: VerboseScheduledMeal) => (
+  //         <ListItem key={verboseScheduledMeal.id}>
+  //           <ListItemText>{getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay())}</ListItemText>
+  //           <ListItemText>
+  //             {verboseScheduledMeal.dateScheduled.toLocaleDateString(
+  //               'en-us',
+  //               {
+  //                 month: '2-digit',
+  //                 day: '2-digit',
+  //               }
+  //             )}
+  //           </ListItemText>
+  //           <ListItemText>{verboseScheduledMeal.mainDishName}</ListItemText>
+  //           <FormControl>
+  //             <RadioGroup
+  //               row
+  //               aria-labelledby="demo-row-radio-buttons-group-label"
+  //               name="row-radio-buttons-group"
+  //               value={getMealStatus(verboseScheduledMeal.id)}
+  //               onChange={(event) => handleUpdateMealStatus(verboseScheduledMeal, event)}
+  //             >
+  //               <FormControlLabel value={MealStatus.prepared} control={<Radio />} label="Cooked" />
+  //               <FormControlLabel value={MealStatus.pending} control={<Radio />} label="TBD" />
+  //               <FormControlLabel value={MealStatus.different} control={<Radio />} label="Different" />
+  //             </RadioGroup>
+  //           </FormControl>
+  //           {renderAccompaniments(verboseScheduledMeal)}
+  //         </ListItem>
+  //       ))}
+  //     </List>
+  //   </Dialog>
+  // );
+
+  const rows = getRows();
+  console.log('rows');
+  console.log(rows);
+
   return (
-    <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth={false}>
+    <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth='xl'>
       <DialogTitle>About MealWheel</DialogTitle>
-      <List sx={{ pt: 0 }}>
-        {verboseScheduledMeals.map((verboseScheduledMeal: VerboseScheduledMeal) => (
-          <ListItem key={verboseScheduledMeal.id}>
-            <ListItemText>{getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay())}</ListItemText>
-            <ListItemText>
-              {verboseScheduledMeal.dateScheduled.toLocaleDateString(
-                'en-us',
-                {
-                  month: '2-digit',
-                  day: '2-digit',
-                }
-              )}
-            </ListItemText>
-            <ListItemText>{verboseScheduledMeal.mainDishName}</ListItemText>
-            <FormControl>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                value={getMealStatus(verboseScheduledMeal.id)}
-                onChange={(event) => handleUpdateMealStatus(verboseScheduledMeal, event)}
-              >
-                <FormControlLabel value={MealStatus.prepared} control={<Radio />} label="Cooked" />
-                <FormControlLabel value={MealStatus.pending} control={<Radio />} label="TBD" />
-                <FormControlLabel value={MealStatus.different} control={<Radio />} label="Different" />
-              </RadioGroup>
-            </FormControl>
-            {renderAccompaniments(verboseScheduledMeal)}
-          </ListItem>
-        ))}
-      </List>
-    </Dialog>
+      <Box
+        sx={{
+          height: 500,
+          width: '800px',
+          '& .actions': {
+            color: 'text.secondary',
+          },
+          '& .textPrimary': {
+            color: 'text.primary',
+          },
+        }}
+      >
+
+        <DataGrid
+          initialState={{
+            sorting: {
+              sortModel: [{ field: 'date', sort: 'asc' }],
+            },
+          }} rows={rows}
+          columns={mealColumns}
+          editMode='row'
+          rowModesModel={rowModesModel}
+          experimentalFeatures={{ newEditingApi: true }}
+          isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
+        />
+      </Box>
+    </Dialog >
   );
+
 };
 
 function mapStateToProps(state: any) {
