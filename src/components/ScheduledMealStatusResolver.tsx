@@ -123,9 +123,9 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     }
   };
 
-  const processRowUpdate = (updatedDish: GridRowModel) => {
-    debugger;
-    return updatedDish;
+  const processRowUpdate = (updatedMeal: GridRowModel) => {
+    console.log('processRowUpdate');
+    console.log(updatedMeal);
   };
 
 
@@ -146,8 +146,8 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
 
   const getIsCellEditable = (params: GridCellParams): boolean => {
 
-    console.log('getIsCellEditable');
-    console.log(params.row);
+    // console.log('getIsCellEditable');
+    // console.log(params.row);
 
     // const scheduledMealToResolveRowModel: ScheduledMealToResolveRowModel = params.row;
 
@@ -162,6 +162,8 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
 
   const getRows = () => {
     const rows: GridRowsProp = props.verboseScheduledMeals.map((verboseScheduledMeal: VerboseScheduledMeal) => {
+      console.log('mains id');
+      console.log((verboseScheduledMeal.mainDish as DishEntity).id);
       const row: GridRowModel = {
         id: verboseScheduledMeal.id,
         dayOfWeek: getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay()),
