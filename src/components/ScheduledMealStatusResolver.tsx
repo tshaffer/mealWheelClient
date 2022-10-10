@@ -165,6 +165,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
       const row: GridRowModel = {
         id: verboseScheduledMeal.id,
         dayOfWeek: getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay()),
+        date: verboseScheduledMeal.dateScheduled,
         mainName: verboseScheduledMeal.mainDishName,
         mealStatus: verboseScheduledMeal.status,
       };
@@ -174,9 +175,9 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   };
 
   const mealColumns: GridColumns = [
-    { field: 'dayOfWeek', headerName: 'Day', width: 120, editable: true },
-    { field: 'date', headerName: 'Date', width: 120, editable: true },
-    { field: 'mainName', headerName: 'Main', width: 300, editable: true },
+    { field: 'dayOfWeek', type: 'string', headerName: 'Day', width: 120, editable: true },
+    { field: 'date', type: 'date', headerName: 'Date', width: 120, editable: true },
+    { field: 'mainName', type: 'string', headerName: 'Main', width: 300, editable: true },
     {
       field: 'mealStatus',
       type: 'singleSelect',
