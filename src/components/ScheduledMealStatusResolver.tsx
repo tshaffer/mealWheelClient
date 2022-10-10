@@ -33,7 +33,6 @@ const cookedOption = { value: 1, label: 'Cooked' };
 const tbdOption = { value: 0, label: 'TBD' };
 const differentOption = { value: 2, label: 'Different' };
 
-
 export interface ScheduledMealStatusResolverPropsFromParent {
   onClose: () => void;
 }
@@ -154,6 +153,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
 
     switch (params.field) {
       case 'mealStatus':
+      case 'mains':
         return true;
       default:
         return false;
@@ -168,10 +168,21 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
         date: verboseScheduledMeal.dateScheduled,
         mainName: verboseScheduledMeal.mainDishName,
         mealStatus: verboseScheduledMeal.status,
+        mains: (verboseScheduledMeal.mainDish as DishEntity).id,
       };
       return row;
     });
     return rows;
+  };
+
+  const getMainValueOptions = (): any[] => {
+    const mainValueOptions = props.mains.map( (main: DishEntity) => {
+      return ( {
+        value: main.id,
+        label: main.name,
+      });
+    });
+    return mainValueOptions;
   };
 
   const mealColumns: GridColumns = [
@@ -196,6 +207,22 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
       },
       headerName: 'Meal Status',
       width: 100,
+      editable: true,
+    },
+    {
+      field: 'mains',
+      type: 'singleSelect',
+      valueOptions: getMainValueOptions(),
+      // https://github.com/mui/mui-x/issues/4437
+      valueFormatter: ({ id: rowId, value, field, api }) => {
+        const colDef = api.getColumn(field);
+        const option = colDef.valueOptions.find(
+          ({ value: optionValue }: any) => value === optionValue
+        );
+        return option.label;
+      },
+      headerName: 'Main',
+      width: 300,
       editable: true,
     },
     {
@@ -273,6 +300,14 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
           initialState={{
             sorting: {
               sortModel: [{ field: 'date', sort: 'asc' }],
+            },
+            // https://stackoverflow.com/questions/71588166/how-can-i-hide-a-column-in-mui
+            // https://mui.com/x/react-data-grid/column-visibility/#controlled-visible-columns
+
+            columns: {
+              columnVisibilityModel: {
+                date: false,
+              },
             },
           }} rows={rows}
           columns={mealColumns}
