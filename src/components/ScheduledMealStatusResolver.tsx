@@ -52,6 +52,13 @@ export interface ScheduledMealStatusResolverProps extends ScheduledMealStatusRes
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
 }
 
+// interface ScheduledMealToResolveRowModel {
+//   id: string;
+//   dayOfWeek: string;
+//   mainName: string;
+//   mealStatus: MealStatus;
+// }
+
 interface MiniMeal {
   mealId: string;
   mealStatus: MealStatus;
@@ -139,7 +146,18 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   };
 
   const getIsCellEditable = (params: GridCellParams): boolean => {
-    return true;
+
+    console.log('getIsCellEditable');
+    console.log(params.row);
+
+    // const scheduledMealToResolveRowModel: ScheduledMealToResolveRowModel = params.row;
+
+    switch (params.field) {
+      case 'mealStatus':
+        return true;
+      default:
+        return false;
+    }
   };
 
   const getRows = () => {
