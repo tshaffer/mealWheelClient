@@ -6,8 +6,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
 import { DishEntity, MealStatus, ScheduledMealEntity, VerboseScheduledMeal } from '../types';
-import { cloneDeep, isNil } from 'lodash';
-import { getMainById, getMains, getSaladById, getSalads, getScheduledMealsToResolve, getSideById, getSides, getVeggieById, getVeggies } from '../selectors';
+import { isNil } from 'lodash';
+import {
+  getMainById,
+  getMains,
+  getSaladById,
+  getSalads,
+  getScheduledMealsToResolve,
+  getSideById,
+  getSides,
+  getVeggieById,
+  getVeggies
+} from '../selectors';
 
 import Box from '@mui/material/Box';
 
@@ -155,6 +165,9 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
     switch (params.field) {
       case 'mealStatus':
       case 'mains':
+      case 'sides':
+      case 'salads':
+      case 'veggies':
         return true;
       default:
         return false;
@@ -170,6 +183,9 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
         mainName: verboseScheduledMeal.mainDishName,
         mealStatus: verboseScheduledMeal.status,
         mains: (verboseScheduledMeal.mainDish as DishEntity).id,
+        sides: isNil(verboseScheduledMeal.sideId) ? 'none' : verboseScheduledMeal.sideId,
+        salads: isNil(verboseScheduledMeal.saladId) ? 'none' : verboseScheduledMeal.saladId,
+        veggies: isNil(verboseScheduledMeal.veggieId) ? 'none' : verboseScheduledMeal.veggieId,
       };
       return row;
     });
@@ -177,13 +193,57 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   };
 
   const getMainValueOptions = (): any[] => {
-    const mainValueOptions = props.mains.map( (main: DishEntity) => {
-      return ( {
+    const mainValueOptions = props.mains.map((main: DishEntity) => {
+      return ({
         value: main.id,
         label: main.name,
       });
     });
     return mainValueOptions;
+  };
+
+  const getSideValueOptions = (): any[] => {
+    const sideValueOptions = props.sides.map((side: DishEntity) => {
+      return ({
+        value: side.id,
+        label: side.name,
+      });
+    });
+    sideValueOptions.unshift({
+      value: 'none',
+      label: 'None',
+    });
+
+    return sideValueOptions;
+  };
+
+  const getSaladValueOptions = (): any[] => {
+    const saladValueOptions = props.salads.map((salad: DishEntity) => {
+      return ({
+        value: salad.id,
+        label: salad.name,
+      });
+    });
+    saladValueOptions.unshift({
+      value: 'none',
+      label: 'None',
+    });
+
+    return saladValueOptions;
+  };
+
+  const getVeggieValueOptions = (): any[] => {
+    const veggieValueOptions = props.veggies.map((veggie: DishEntity) => {
+      return ({
+        value: veggie.id,
+        label: veggie.name,
+      });
+    });
+    veggieValueOptions.unshift({
+      value: 'none',
+      label: 'None',
+    });
+    return veggieValueOptions;
   };
 
   const mealColumns: GridColumns = [
@@ -223,6 +283,63 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
         return option.label;
       },
       headerName: 'Main',
+      width: 300,
+      editable: true,
+    },
+    {
+      field: 'sides',
+      type: 'singleSelect',
+      valueOptions: getSideValueOptions(),
+      // https://github.com/mui/mui-x/issues/4437
+      valueFormatter: ({ id: rowId, value, field, api }) => {
+        const colDef = api.getColumn(field);
+        const option = colDef.valueOptions.find(
+          ({ value: optionValue }: any) => value === optionValue
+        );
+        if (isNil(option)) {
+          return 'None';
+        }
+        return option.label;
+      },
+      headerName: 'Side',
+      width: 300,
+      editable: true,
+    },
+    {
+      field: 'salads',
+      type: 'singleSelect',
+      valueOptions: getSaladValueOptions(),
+      // https://github.com/mui/mui-x/issues/4437
+      valueFormatter: ({ id: rowId, value, field, api }) => {
+        const colDef = api.getColumn(field);
+        const option = colDef.valueOptions.find(
+          ({ value: optionValue }: any) => value === optionValue
+        );
+        if (isNil(option)) {
+          return 'None';
+        }
+        return option.label;
+      },
+      headerName: 'Salad',
+      width: 300,
+      editable: true,
+    },
+    {
+      field: 'veggies',
+      type: 'singleSelect',
+      valueOptions: getVeggieValueOptions(),
+      // https://github.com/mui/mui-x/issues/4437
+      valueFormatter: ({ id: rowId, value, field, api }) => {
+        const colDef = api.getColumn(field);
+        const option = colDef.valueOptions.find(
+          ({ value: optionValue }: any) => value === optionValue
+        );
+        if (isNil(option)) {
+          return 'None';
+        }
+        return option.label;
+      },
+      headerName: 'Veggie',
       width: 300,
       editable: true,
     },
