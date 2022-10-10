@@ -126,6 +126,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
   const processRowUpdate = (updatedMeal: GridRowModel) => {
     console.log('processRowUpdate');
     console.log(updatedMeal);
+    return updatedMeal;
   };
 
 
@@ -162,8 +163,6 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
 
   const getRows = () => {
     const rows: GridRowsProp = props.verboseScheduledMeals.map((verboseScheduledMeal: VerboseScheduledMeal) => {
-      console.log('mains id');
-      console.log((verboseScheduledMeal.mainDish as DishEntity).id);
       const row: GridRowModel = {
         id: verboseScheduledMeal.id,
         dayOfWeek: getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay()),
