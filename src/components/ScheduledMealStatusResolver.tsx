@@ -195,7 +195,7 @@ const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) =>
         return option.label;
       },
       headerName: 'Meal Status',
-      width: 300,
+      width: 100,
       editable: true,
     },
     {
