@@ -30,6 +30,7 @@ export interface MealStatusResolverPropsFromParent {
   onPreviousDay: () => void;
   onNextDay: () => void;
   onClose: () => void;
+  onSave: (scheduledMeal: ScheduledMealEntity) => void;
 }
 
 export interface MealStatusResolverProps extends MealStatusResolverPropsFromParent {
@@ -39,16 +40,11 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
   salads: DishEntity[];
   veggies: DishEntity[];
   scheduledMealsToResolve: ScheduledMealEntity[];
-  onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
-  onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
-  onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
-  onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
-  onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
 }
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { verboseScheduledMeal, previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose,
+  const { verboseScheduledMeal, previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave,
     mains, sides, salads, veggies } = props;
 
   const [meal, setMeal] = React.useState(verboseScheduledMeal);
@@ -64,6 +60,20 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const handleClose = () => {
     onClose();
+  };
+
+  const handleSave = () => {
+    const scheduledMeal: ScheduledMealEntity = {
+      id: meal.id,
+      userId: meal.userId,
+      mainDishId: meal.mainDishId,
+      saladId: meal.saladId,
+      veggieId: meal.veggieId,
+      sideId: meal.sideId,
+      dateScheduled: meal.dateScheduled,
+      status: meal.status,
+    };
+    onSave(scheduledMeal);
   };
 
   const handleMealStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +96,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
     updatedMeal.main = selectedMain;
+    updatedMeal.mainDishId = isNil(selectedMain) ? '' : selectedMain.id;
     updatedMeal.mainName = mainName;
     setMeal(updatedMeal);
   };
@@ -104,6 +115,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
     updatedMeal.side = selectedSide;
+    updatedMeal.sideId = isNil(selectedSide) ? '' : selectedSide.id;
     updatedMeal.sideName = sideName;
     setMeal(updatedMeal);
   };
@@ -119,6 +131,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     }
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
     updatedMeal.salad = selectedSalad;
+    updatedMeal.saladId = isNil(selectedSalad) ? '' : selectedSalad.id;
     updatedMeal.saladName = isNil(selectedSalad) ? '' : selectedSalad.name;
     setMeal(updatedMeal);
   };
@@ -137,6 +150,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
     updatedMeal.veggie = selectedVeggie;
+    updatedMeal.veggieId = isNil(selectedVeggie) ? '' : selectedVeggie.id;
     updatedMeal.veggieName = veggieName;
     setMeal(updatedMeal);
   };
@@ -328,6 +342,21 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
         {sideDishElement}
         {saladDishElement}
         {veggieDishElement}
+        <div>
+          <button
+            type="button"
+            onClick={handleClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+          >
+            Save
+          </button>
+
+        </div>
       </Box>
     </Dialog>
   );

@@ -305,7 +305,7 @@ export const addScheduledMeal = (
   });
 };
 
-const updateMeal = (
+export const updateMeal = (
   id: string,
   meal: ScheduledMealEntity
 ): any => {

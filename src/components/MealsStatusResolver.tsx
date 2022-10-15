@@ -2,8 +2,9 @@ import { isNil } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getMains, getSides, getSalads, getVeggies } from '../selectors';
-import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } from '../types';
+import { updateMeal } from '../controllers';
+import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById } from '../selectors';
+import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity } from '../types';
 
 import MealStatusResolver from './MealStatusResolver';
 
@@ -13,16 +14,8 @@ export interface MealsStatusResolverPropsFromParent {
 
 export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromParent {
   verboseScheduledMeals: VerboseScheduledMeal[];
-  mains: DishEntity[];
-  sides: DishEntity[];
-  salads: DishEntity[];
-  veggies: DishEntity[];
   scheduledMealsToResolve: ScheduledMealEntity[];
-  onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
-  onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
-  onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
-  onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
-  onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
+  onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
@@ -32,18 +25,30 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   const [mealIndex, setMealIndex] = React.useState(0);
 
   const handlePreviousDay = () => {
-    const currentMealIndex = mealIndex;
-    setMealIndex(currentMealIndex - 1);
+    if (mealIndex > 0) {
+      const currentMealIndex = mealIndex;
+      setMealIndex(currentMealIndex - 1);
+    }
   };
 
   const handleNextDay = () => {
-    const currentMealIndex = mealIndex;
-    setMealIndex(currentMealIndex + 1);
+    if (mealIndex < (verboseScheduledMeals.length - 1)) {
+      const currentMealIndex = mealIndex;
+      setMealIndex(currentMealIndex + 1);
+    }
   };
 
   const handleCloseMealStatusResolver = () => {
     console.log('handleCloseMealStatusResolver');
     // props.onClearScheduledMealsToResolve();
+  };
+
+
+  const handleSaveMealStatusResolver = (scheduledMeal: ScheduledMealEntity) => {
+    console.log('handleCloseMealStatusResolver');
+    // props.onClearScheduledMealsToResolve();
+    props.onUpdateMeal(scheduledMeal.id, scheduledMeal);
+    handleNextDay();
   };
 
   if (verboseScheduledMeals.length === 0) {
@@ -59,6 +64,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
         nextDayEnabled={mealIndex < (verboseScheduledMeals.length - 1)}
         onNextDay={handleNextDay}
         onClose={handleCloseMealStatusResolver}
+        onSave={handleSaveMealStatusResolver}
       />
     </div>
   );
@@ -72,7 +78,7 @@ function mapStateToProps(state: any) {
 
   for (const scheduledMeal of scheduledMealsToResolve) {
 
-    const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
+    const main: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
     const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
       isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
 
@@ -90,7 +96,7 @@ function mapStateToProps(state: any) {
 
     verboseScheduledMeals.push({
       ...scheduledMeal,
-      mainDish,
+      main,
       mainName: mainDishName,
       salad,
       saladName,
@@ -103,10 +109,6 @@ function mapStateToProps(state: any) {
 
   return {
     verboseScheduledMeals,
-    mains: getMains(state),
-    sides: getSides(state),
-    salads: getSalads(state),
-    veggies: getVeggies(state),
     scheduledMealsToResolve: getScheduledMealsToResolve(state),
   };
 }
@@ -114,6 +116,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onUpdateMeal: updateMeal,
   }, dispatch);
 };
 

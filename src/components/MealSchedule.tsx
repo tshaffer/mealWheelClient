@@ -17,7 +17,6 @@ import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
-import ScheduledMealsStatusResolver from './ScheduledMealsStatusResolver';
 import { clearScheduledMealsToResolve } from '../models';
 import MealsStatusResolver from './MealsStatusResolver';
 

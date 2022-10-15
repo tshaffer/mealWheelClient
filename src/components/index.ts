@@ -5,6 +5,7 @@ export * from './MealInCalendar';
 export * from './Home';
 export * from './Login';
 export * from './MealSchedule';
-export * from './ScheduledMealsStatusResolver';
+export * from './MealStatusResolver';
+export * from './MealsStatusResolver';
 export * from './ToolsAndSettings';
 
