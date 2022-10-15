@@ -3,8 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateMeal } from '../controllers';
-import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById } from '../selectors';
+import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getPendingMeal } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity } from '../types';
+import { setPendingMeal } from '../models';
 
 import MealStatusResolver from './MealStatusResolver';
 
@@ -14,15 +15,23 @@ export interface MealsStatusResolverPropsFromParent {
 
 export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromParent {
   verboseScheduledMeals: VerboseScheduledMeal[];
+  pendingMeal: VerboseScheduledMeal | null;
   scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
+  onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
-  const { verboseScheduledMeals, onClose } = props;
+  const { verboseScheduledMeals, onClose, onSetPendingMeal } = props;
 
   const [mealIndex, setMealIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (verboseScheduledMeals.length > 0) {
+      onSetPendingMeal(verboseScheduledMeals[mealIndex]);
+    }
+  }, [mealIndex, verboseScheduledMeals.length]);
 
   const handlePreviousDay = () => {
     if (mealIndex > 0) {
@@ -52,6 +61,10 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   };
 
   if (verboseScheduledMeals.length === 0) {
+    return null;
+  }
+
+  if (isNil(props.pendingMeal)) {
     return null;
   }
 
@@ -109,6 +122,7 @@ function mapStateToProps(state: any) {
 
   return {
     verboseScheduledMeals,
+    pendingMeal: getPendingMeal(state),
     scheduledMealsToResolve: getScheduledMealsToResolve(state),
   };
 }
@@ -116,6 +130,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onSetPendingMeal: setPendingMeal,
     onUpdateMeal: updateMeal,
   }, dispatch);
 };

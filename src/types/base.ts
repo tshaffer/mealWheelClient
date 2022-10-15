@@ -1,6 +1,6 @@
 import {
   DefinedMealEntity,
-  DishEntity, ScheduledMealEntity, UserEntity,
+  DishEntity, ScheduledMealEntity, UserEntity, VerboseScheduledMeal,
 }
   from './entities';
 
@@ -15,6 +15,7 @@ export interface MealWheelState {
   dishesState: DishesState;
   definedMealsState: DefinedMealsState;
   scheduledMealsState: ScheduledMealsState;
+  pendingMealState: PendingMealState;
   users: UsersMap;
   versionInfo: VersionInfo;
 }
@@ -53,6 +54,10 @@ export interface DefinedMealsState {
 export interface ScheduledMealsState {
   scheduledMeals: ScheduledMealEntity[];
   scheduledMealsToResolve: ScheduledMealEntity[];
+}
+
+export interface PendingMealState {
+  pendingMeal: VerboseScheduledMeal | null;
 }
 
 export interface Meal {
