@@ -1,4 +1,16 @@
-import { Dialog, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import {
+  Box,
+  Dialog,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select
+} from '@mui/material';
 import { isNil } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -48,8 +60,35 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     setValue((event.target as HTMLInputElement).value as unknown as MealStatus);
   };
 
-  return (
-    <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth='xl'>
+  const handleUpdateMain = (event: any) => {
+    console.log('handleUpdateMain: ', event.target.value);
+    // props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
+  };
+
+  const renderNoneMenuItem = (): JSX.Element => {
+    return (
+      <MenuItem value={'none'} key={'none'}>None</MenuItem>
+    );
+  };
+
+  const renderDishMenuItem = (dishEntity: DishEntity): JSX.Element => {
+    return (
+      <MenuItem value={dishEntity.id} key={dishEntity.id}>{dishEntity.name}</MenuItem>
+    );
+  };
+
+  const renderDishMenuItems = (dishes: DishEntity[], includeNone: boolean) => {
+    const dishMenuItems: JSX.Element[] = dishes.map((mainDish: DishEntity) => {
+      return renderDishMenuItem(mainDish);
+    });
+    if (includeNone) {
+      dishMenuItems.unshift(renderNoneMenuItem());
+    }
+    return dishMenuItems;
+  };
+
+  const renderMealStatus = (): JSX.Element => {
+    return (
       <div>
         <p>{getDayDate()}</p>
         <FormControl>
@@ -66,7 +105,56 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             <FormControlLabel value={MealStatus.different} control={<Radio />} label="Different" />
           </RadioGroup>
         </FormControl>
+
       </div>
+    );
+  };
+
+  const renderMains = (): JSX.Element => {
+    let mainId = 'none';
+    if (!isNil(verboseScheduledMeal.mainDish)) {
+      mainId = verboseScheduledMeal.mainDish.id;
+    }
+    const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="mainLabel">Main</InputLabel>
+          <Select
+            labelId="mainLabel"
+            id="demo-simple-select-filled"
+            value={mainId}
+            onChange={(event) => handleUpdateMain(event)}
+          >
+            {mainsMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
+
+
+  const mealStatusElement = renderMealStatus();
+  const mainDishElement = renderMains();
+
+  return (
+    <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth='xl'>
+      <DialogTitle>Welcome Back Fatso</DialogTitle>
+      <Box
+        sx={{
+          height: 500,
+          width: '800px',
+          '& .actions': {
+            color: 'text.secondary',
+          },
+          '& .textPrimary': {
+            color: 'text.primary',
+          },
+        }}
+      >
+        {mealStatusElement}
+        {mainDishElement}
+      </Box>
     </Dialog>
   );
 };

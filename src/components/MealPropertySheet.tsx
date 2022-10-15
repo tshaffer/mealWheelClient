@@ -298,7 +298,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.scheduledMealId) && ownProps.selectedMealInCalendar.scheduledMealId !== '') {
     scheduledMeal = getScheduledMeal(state, ownProps.scheduledMealId);
     if (!isNil(scheduledMeal)) {
-      mainValue = getMainById(state, scheduledMeal.mainDishId)
+      mainValue = getMainById(state, scheduledMeal.mainDishId);
       saladValue = getSaladById(state, scheduledMeal.saladId);
       sideValue = getSideById(state, scheduledMeal.sideId);
       veggieValue = getVeggieById(state, scheduledMeal.veggieId);
