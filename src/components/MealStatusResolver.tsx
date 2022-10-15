@@ -1,3 +1,8 @@
+import { isNil } from 'lodash';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import {
   Box,
   Dialog,
@@ -11,10 +16,10 @@ import {
   RadioGroup,
   Select
 } from '@mui/material';
-import { isNil } from 'lodash';
-import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getMains, getSides, getSalads, getVeggies, getScheduledMeal } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } from '../types';
 
@@ -105,7 +110,21 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   const renderMealStatus = (): JSX.Element => {
     return (
       <div>
-        <p>{getDayDate()}</p>
+        <div>
+          <IconButton
+            className='menuButton'
+            color='inherit'
+          >
+            <ArrowBackIosNewIcon />
+          </IconButton>
+          {getDayDate()}
+          <IconButton
+            className='menuButton'
+            color='inherit'
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </div>
         <FormControl>
           <FormLabel id="meal-status-label">MealStatus</FormLabel>
           <RadioGroup
