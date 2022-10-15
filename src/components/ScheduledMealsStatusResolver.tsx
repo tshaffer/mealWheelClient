@@ -180,7 +180,7 @@ const ScheduledMealsStatusResolver = (props: ScheduledMealsStatusResolverProps) 
         id: verboseScheduledMeal.id,
         dayOfWeek: getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay()),
         date: verboseScheduledMeal.dateScheduled,
-        mainName: verboseScheduledMeal.mainDishName,
+        mainName: verboseScheduledMeal.mainName,
         mealStatus: verboseScheduledMeal.status,
         mains: (verboseScheduledMeal.mainDish as DishEntity).id,
         sides: isNil(verboseScheduledMeal.sideId) ? 'none' : verboseScheduledMeal.sideId,
@@ -471,7 +471,7 @@ function mapStateToProps(state: any) {
     verboseScheduledMeals.push({
       ...scheduledMeal,
       mainDish,
-      mainDishName,
+      mainName: mainDishName,
       salad,
       saladName,
       veggie,

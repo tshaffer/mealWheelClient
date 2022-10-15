@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -48,9 +48,10 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { verboseScheduledMeal, previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose } = props;
+  const { verboseScheduledMeal, previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose,
+    mains, sides, salads, veggies } = props;
 
-  const [value, setValue] = React.useState(MealStatus.pending);
+  const [meal, setMeal] = React.useState(verboseScheduledMeal);
 
   const getDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -66,27 +67,78 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const handleMealStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value as unknown as MealStatus);
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
+    updatedMeal.status = parseInt((event.target as HTMLInputElement).value, 10);
+    setMeal(updatedMeal);
   };
 
   const handleUpdateMain = (event: any) => {
-    console.log('handleUpdateMain: ', event.target.value);
-    // props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
+    const mainId = event.target.value;
+    let selectedMain: DishEntity | null = null;
+    for (const main of mains) {
+      if (mainId === main.id) {
+        selectedMain = main;
+        break;
+      }
+    }
+
+    const mainName: string = isNil(selectedMain) ? '' : selectedMain.name;
+
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
+    updatedMeal.main = selectedMain;
+    updatedMeal.mainName = mainName;
+    setMeal(updatedMeal);
   };
 
   const handleUpdateSide = (event: any) => {
-    console.log('handleUpdateSide: ', event.target.value);
-    // props.onUpdateSideInMeal(getScheduledMealId(), event.target.value);
+    const sideId = event.target.value;
+    let selectedSide: DishEntity | null = null;
+    for (const side of sides) {
+      if (sideId === side.id) {
+        selectedSide = side;
+        break;
+      }
+    }
+
+    const sideName: string = isNil(selectedSide) ? '' : selectedSide.name;
+
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
+    updatedMeal.side = selectedSide;
+    updatedMeal.sideName = sideName;
+    setMeal(updatedMeal);
   };
 
   const handleUpdateSalad = (event: any) => {
-    console.log('handleUpdateSalad: ', event.target.value);
-    // props.onUpdateSaladInMeal(getScheduledMealId(), event.target.value);
+    const saladId = event.target.value;
+    let selectedSalad: DishEntity | null = null;
+    for (const salad of salads) {
+      if (saladId === salad.id) {
+        selectedSalad = salad;
+        break;
+      }
+    }
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
+    updatedMeal.salad = selectedSalad;
+    updatedMeal.saladName = isNil(selectedSalad) ? '' : selectedSalad.name;
+    setMeal(updatedMeal);
   };
 
   const handleUpdateVeggie = (event: any) => {
-    console.log('handleUpdateVeggie: ', event.target.value);
-    // props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
+    const veggieId = event.target.value;
+    let selectedVeggie: DishEntity | null = null;
+    for (const veggie of veggies) {
+      if (veggieId === veggie.id) {
+        selectedVeggie = veggie;
+        break;
+      }
+    }
+
+    const veggieName: string = isNil(selectedVeggie) ? '' : selectedVeggie.name;
+
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal);
+    updatedMeal.veggie = selectedVeggie;
+    updatedMeal.veggieName = veggieName;
+    setMeal(updatedMeal);
   };
 
   const renderNoneMenuItem = (): JSX.Element => {
@@ -140,7 +192,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             row
             aria-labelledby="meal-status-label"
             name="row-radio-buttons-group"
-            value={value}
+            value={meal.status}
             onChange={handleMealStatusChange}
           >
             <FormControlLabel value={MealStatus.prepared} control={<Radio />} label="Cooked" />
@@ -155,8 +207,8 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const renderMains = (): JSX.Element => {
     let mainId = 'none';
-    if (!isNil(verboseScheduledMeal.main)) {
-      mainId = verboseScheduledMeal.main.id;
+    if (!isNil(meal.main)) {
+      mainId = meal.main.id;
     }
     const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
     return (
@@ -168,7 +220,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={mainId}
             onChange={(event) => handleUpdateMain(event)}
-            disabled={verboseScheduledMeal.status !== MealStatus.different}
+            disabled={meal.status !== MealStatus.different}
           >
             {mainsMenuItems}
           </Select>
@@ -179,8 +231,8 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const renderSides = (): JSX.Element => {
     let sideId = 'none';
-    if (!isNil(verboseScheduledMeal.side)) {
-      sideId = verboseScheduledMeal.side.id;
+    if (!isNil(meal.side)) {
+      sideId = meal.side.id;
     }
     const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
     return (
@@ -192,7 +244,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={sideId}
             onChange={(event) => handleUpdateSide(event)}
-            disabled={verboseScheduledMeal.status !== MealStatus.different}
+            disabled={meal.status !== MealStatus.different}
           >
             {sidesMenuItems}
           </Select>
@@ -203,10 +255,10 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const renderSalads = (): JSX.Element => {
     let saladId = 'none';
-    if (!isNil(verboseScheduledMeal.salad)) {
-      saladId = verboseScheduledMeal.salad.id;
+    if (!isNil(meal.salad)) {
+      saladId = meal.salad.id;
     }
-    const saladsMenuItems: JSX.Element[] = renderDishMenuItems(props.salads, true);
+    const saladsMenuItems: JSX.Element[] = renderDishMenuItems(salads, true);
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
@@ -216,7 +268,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={saladId}
             onChange={(event) => handleUpdateSalad(event)}
-            disabled={verboseScheduledMeal.status !== MealStatus.different}
+            disabled={meal.status !== MealStatus.different}
           >
             {saladsMenuItems}
           </Select>
@@ -227,10 +279,10 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const renderVeggies = (): JSX.Element => {
     let veggieId = 'none';
-    if (!isNil(verboseScheduledMeal.veggie)) {
-      veggieId = verboseScheduledMeal.veggie.id;
+    if (!isNil(meal.veggie)) {
+      veggieId = meal.veggie.id;
     }
-    const veggiesMenuItems: JSX.Element[] = renderDishMenuItems(props.veggies, true);
+    const veggiesMenuItems: JSX.Element[] = renderDishMenuItems(veggies, true);
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
@@ -240,7 +292,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={veggieId}
             onChange={(event) => handleUpdateVeggie(event)}
-            disabled={verboseScheduledMeal.status !== MealStatus.different}
+            disabled={meal.status !== MealStatus.different}
           >
             {veggiesMenuItems}
           </Select>
@@ -304,7 +356,7 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
   const verboseScheduledMeal: VerboseScheduledMeal = {
     ...scheduledMeal,
     main,
-    mainDishName,
+    mainName: mainDishName,
     salad,
     saladName,
     veggie,

@@ -49,7 +49,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   if (verboseScheduledMeals.length === 0) {
     return null;
   }
-  
+
   return (
     <div>
       <MealStatusResolver
@@ -91,7 +91,7 @@ function mapStateToProps(state: any) {
     verboseScheduledMeals.push({
       ...scheduledMeal,
       mainDish,
-      mainDishName,
+      mainName: mainDishName,
       salad,
       saladName,
       veggie,
