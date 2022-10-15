@@ -53,7 +53,7 @@ export interface ScheduledMealEntity {
 }
 
 export interface VerboseScheduledMeal extends ScheduledMealEntity {
-  mainDish: DishEntity | null;
+  main: DishEntity | null;
   mainDishName: string;
   salad: DishEntity| null;
   saladName: string;

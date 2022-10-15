@@ -65,6 +65,21 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     // props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
   };
 
+  const handleUpdateSide = (event: any) => {
+    console.log('handleUpdateSide: ', event.target.value);
+    // props.onUpdateSideInMeal(getScheduledMealId(), event.target.value);
+  };
+
+  const handleUpdateSalad = (event: any) => {
+    console.log('handleUpdateSalad: ', event.target.value);
+    // props.onUpdateSaladInMeal(getScheduledMealId(), event.target.value);
+  };
+
+  const handleUpdateVeggie = (event: any) => {
+    console.log('handleUpdateVeggie: ', event.target.value);
+    // props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
+  };
+
   const renderNoneMenuItem = (): JSX.Element => {
     return (
       <MenuItem value={'none'} key={'none'}>None</MenuItem>
@@ -78,8 +93,8 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const renderDishMenuItems = (dishes: DishEntity[], includeNone: boolean) => {
-    const dishMenuItems: JSX.Element[] = dishes.map((mainDish: DishEntity) => {
-      return renderDishMenuItem(mainDish);
+    const dishMenuItems: JSX.Element[] = dishes.map((dish: DishEntity) => {
+      return renderDishMenuItem(dish);
     });
     if (includeNone) {
       dishMenuItems.unshift(renderNoneMenuItem());
@@ -112,8 +127,8 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const renderMains = (): JSX.Element => {
     let mainId = 'none';
-    if (!isNil(verboseScheduledMeal.mainDish)) {
-      mainId = verboseScheduledMeal.mainDish.id;
+    if (!isNil(verboseScheduledMeal.main)) {
+      mainId = verboseScheduledMeal.main.id;
     }
     const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
     return (
@@ -133,9 +148,81 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     );
   };
 
+  const renderSides = (): JSX.Element => {
+    let sideId = 'none';
+    if (!isNil(verboseScheduledMeal.side)) {
+      sideId = verboseScheduledMeal.side.id;
+    }
+    const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="sideLabel">Side</InputLabel>
+          <Select
+            labelId="sideLabel"
+            id="demo-simple-select-filled"
+            value={sideId}
+            onChange={(event) => handleUpdateSide(event)}
+          >
+            {sidesMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
+
+  const renderSalads = (): JSX.Element => {
+    let saladId = 'none';
+    if (!isNil(verboseScheduledMeal.salad)) {
+      saladId = verboseScheduledMeal.salad.id;
+    }
+    const saladsMenuItems: JSX.Element[] = renderDishMenuItems(props.salads, true);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="saladLabel">Salad</InputLabel>
+          <Select
+            labelId="saladLabel"
+            id="demo-simple-select-filled"
+            value={saladId}
+            onChange={(event) => handleUpdateSalad(event)}
+          >
+            {saladsMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
+
+  const renderVeggies = (): JSX.Element => {
+    let veggieId = 'none';
+    if (!isNil(verboseScheduledMeal.veggie)) {
+      veggieId = verboseScheduledMeal.veggie.id;
+    }
+    const veggiesMenuItems: JSX.Element[] = renderDishMenuItems(props.veggies, true);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="veggieLabel">Veggie</InputLabel>
+          <Select
+            labelId="veggieLabel"
+            id="demo-simple-select-filled"
+            value={veggieId}
+            onChange={(event) => handleUpdateVeggie(event)}
+          >
+            {veggiesMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  };
+
 
   const mealStatusElement = renderMealStatus();
   const mainDishElement = renderMains();
+  const sideDishElement = renderSides();
+  const saladDishElement = renderSalads();
+  const veggieDishElement = renderVeggies();
 
   return (
     <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth='xl'>
@@ -154,6 +241,9 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
       >
         {mealStatusElement}
         {mainDishElement}
+        {sideDishElement}
+        {saladDishElement}
+        {veggieDishElement}
       </Box>
     </Dialog>
   );
@@ -163,7 +253,7 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
 
   const scheduledMeal: ScheduledMealEntity = getScheduledMeal(state, ownProps.scheduledMealId) as ScheduledMealEntity;
 
-  const mainDish: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
+  const main: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
   const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
     isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
 
@@ -179,9 +269,9 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
   const saladName: string = isNil(scheduledMeal.saladId) ? '' :
     isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
 
-  const verboseScheduledMeal = {
+  const verboseScheduledMeal: VerboseScheduledMeal = {
     ...scheduledMeal,
-    mainDish,
+    main,
     mainDishName,
     salad,
     saladName,
