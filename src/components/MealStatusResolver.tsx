@@ -71,7 +71,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
       veggieId: meal.veggieId,
       sideId: meal.sideId,
       dateScheduled: meal.dateScheduled,
-      status: meal.status,
+      status: MealStatus.prepared,
     };
     onSave(scheduledMeal);
   };
