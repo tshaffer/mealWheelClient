@@ -43,11 +43,11 @@ const cookedOption = { value: 1, label: 'Cooked' };
 const tbdOption = { value: 0, label: 'TBD' };
 const differentOption = { value: 2, label: 'Different' };
 
-export interface ScheduledMealStatusResolverPropsFromParent {
+export interface ScheduledMealsStatusResolverPropsFromParent {
   onClose: () => void;
 }
 
-export interface ScheduledMealStatusResolverProps extends ScheduledMealStatusResolverPropsFromParent {
+export interface ScheduledMealsStatusResolverProps extends ScheduledMealsStatusResolverPropsFromParent {
   verboseScheduledMeals: VerboseScheduledMeal[];
   mains: DishEntity[];
   sides: DishEntity[];
@@ -75,7 +75,7 @@ interface MiniMeal {
 
 const initialRows: GridRowsProp = [];
 
-const ScheduledMealStatusResolver = (props: ScheduledMealStatusResolverProps) => {
+const ScheduledMealsStatusResolver = (props: ScheduledMealsStatusResolverProps) => {
 
   const { verboseScheduledMeals, onClose } = props;
 
@@ -496,4 +496,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScheduledMealStatusResolver);
+export default connect(mapStateToProps, mapDispatchToProps)(ScheduledMealsStatusResolver);
