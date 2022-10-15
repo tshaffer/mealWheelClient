@@ -29,17 +29,17 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   const { verboseScheduledMeals, onClose } = props;
 
+  const [mealIndex, setMealIndex] = React.useState(0);
+
   const handlePreviousDay = () => {
-    console.log('handlePreviousDay');
-    // props.onClearScheduledMealsToResolve();
+    const currentMealIndex = mealIndex;
+    setMealIndex(currentMealIndex - 1);
   };
 
   const handleNextDay = () => {
-    console.log('handleNextDay');
-    // props.onClearScheduledMealsToResolve();
+    const currentMealIndex = mealIndex;
+    setMealIndex(currentMealIndex + 1);
   };
-
-
 
   const handleCloseMealStatusResolver = () => {
     console.log('handleCloseMealStatusResolver');
@@ -53,10 +53,10 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   return (
     <div>
       <MealStatusResolver
-        scheduledMealId={verboseScheduledMeals[0].id}
-        previousDayEnabled={true}
+        scheduledMealId={verboseScheduledMeals[mealIndex].id}
+        previousDayEnabled={mealIndex > 0}
         onPreviousDay={handlePreviousDay}
-        nextDayEnabled={true}
+        nextDayEnabled={mealIndex < (verboseScheduledMeals.length - 1)}
         onNextDay={handleNextDay}
         onClose={handleCloseMealStatusResolver}
       />
