@@ -17,8 +17,9 @@ import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
-import ScheduledMealStatusResolver from './ScheduledMealStatusResolver';
+import ScheduledMealsStatusResolver from './ScheduledMealsStatusResolver';
 import { clearScheduledMealsToResolve } from '../models';
+import MealsStatusResolver from './MealsStatusResolver';
 
 const localizer = momentLocalizer(moment);
 
@@ -58,8 +59,9 @@ const MealSchedule = (props: MealScheduleProps) => {
     props.onSetScheduledMealsToResolve();
   }, []);
 
-  const handleCloseScheduledMealStatusResolver = () => {
-    props.onClearScheduledMealsToResolve();
+  const handleCloseScheduledMealsStatusResolver = () => {
+    console.log('handleCloseScheduledMealsStatusResolver');
+    // props.onClearScheduledMealsToResolve();
   };
 
   const handleGenerateMenu = () => {
@@ -136,10 +138,16 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
+  /*
+      <ScheduledMealsStatusResolver
+        onClose={handleCloseScheduledMealsStatusResolver}
+      />
+  */
+
   return (
     <div>
-      <ScheduledMealStatusResolver
-        onClose={handleCloseScheduledMealStatusResolver}
+      <MealsStatusResolver
+        onClose={handleCloseScheduledMealsStatusResolver}
       />
       <div style={{ height: '100vh' }}>
         <div style={{ height: '100vh' }}>
