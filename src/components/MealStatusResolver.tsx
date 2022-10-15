@@ -140,6 +140,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={mainId}
             onChange={(event) => handleUpdateMain(event)}
+            disabled={verboseScheduledMeal.status !== MealStatus.different}
           >
             {mainsMenuItems}
           </Select>
@@ -163,6 +164,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={sideId}
             onChange={(event) => handleUpdateSide(event)}
+            disabled={verboseScheduledMeal.status !== MealStatus.different}
           >
             {sidesMenuItems}
           </Select>
@@ -186,6 +188,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={saladId}
             onChange={(event) => handleUpdateSalad(event)}
+            disabled={verboseScheduledMeal.status !== MealStatus.different}
           >
             {saladsMenuItems}
           </Select>
@@ -209,6 +212,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={veggieId}
             onChange={(event) => handleUpdateVeggie(event)}
+            disabled={verboseScheduledMeal.status !== MealStatus.different}
           >
             {veggiesMenuItems}
           </Select>
