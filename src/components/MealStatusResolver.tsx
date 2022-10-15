@@ -1,4 +1,4 @@
-import { Dialog } from '@mui/material';
+import { Dialog, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 import { isNil } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -29,10 +29,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const { verboseScheduledMeal, onClose } = props;
 
-  const getDayOfWeek = (day: number): string => {
-    const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return weekday[day];
-  };
+  const [value, setValue] = React.useState(MealStatus.pending);
 
   const getDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -40,7 +37,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const getDayDate = (): string => {
-    // return (getDayOfWeek(verboseScheduledMeal.dateScheduled.getDay()) + ', ' + getDate(verboseScheduledMeal.dateScheduled));
     return (getDate(verboseScheduledMeal.dateScheduled));
   };
 
@@ -48,10 +44,28 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     onClose();
   };
 
+  const handleMealStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue((event.target as HTMLInputElement).value as unknown as MealStatus);
+  };
+
   return (
     <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth='xl'>
       <div>
         <p>{getDayDate()}</p>
+        <FormControl>
+          <FormLabel id="meal-status-label">MealStatus</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="meal-status-label"
+            name="row-radio-buttons-group"
+            value={value}
+            onChange={handleMealStatusChange}
+          >
+            <FormControlLabel value={MealStatus.prepared} control={<Radio />} label="Cooked" />
+            <FormControlLabel value={MealStatus.pending} control={<Radio />} label="??" />
+            <FormControlLabel value={MealStatus.different} control={<Radio />} label="Different" />
+          </RadioGroup>
+        </FormControl>
       </div>
     </Dialog>
   );
