@@ -29,6 +29,18 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   const { verboseScheduledMeals, onClose } = props;
 
+  const handlePreviousDay = () => {
+    console.log('handlePreviousDay');
+    // props.onClearScheduledMealsToResolve();
+  };
+
+  const handleNextDay = () => {
+    console.log('handleNextDay');
+    // props.onClearScheduledMealsToResolve();
+  };
+
+
+
   const handleCloseMealStatusResolver = () => {
     console.log('handleCloseMealStatusResolver');
     // props.onClearScheduledMealsToResolve();
@@ -42,6 +54,10 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
     <div>
       <MealStatusResolver
         scheduledMealId={verboseScheduledMeals[0].id}
+        previousDayEnabled={true}
+        onPreviousDay={handlePreviousDay}
+        nextDayEnabled={true}
+        onNextDay={handleNextDay}
         onClose={handleCloseMealStatusResolver}
       />
     </div>

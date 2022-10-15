@@ -25,6 +25,10 @@ import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } fro
 
 export interface MealStatusResolverPropsFromParent {
   scheduledMealId: string;
+  previousDayEnabled: boolean;
+  nextDayEnabled: boolean;
+  onPreviousDay: () => void;
+  onNextDay: () => void;
   onClose: () => void;
 }
 
@@ -44,7 +48,7 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { verboseScheduledMeal, onClose } = props;
+  const { verboseScheduledMeal, previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose } = props;
 
   const [value, setValue] = React.useState(MealStatus.pending);
 
@@ -114,6 +118,8 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
           <IconButton
             className='menuButton'
             color='inherit'
+            disabled={!previousDayEnabled}
+            onClick={onPreviousDay}
           >
             <ArrowBackIosNewIcon />
           </IconButton>
@@ -121,6 +127,9 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
           <IconButton
             className='menuButton'
             color='inherit'
+            disabled={!nextDayEnabled}
+            onClick={onNextDay}
+
           >
             <ArrowForwardIosIcon />
           </IconButton>
