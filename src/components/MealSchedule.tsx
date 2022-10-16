@@ -98,8 +98,6 @@ const MealSchedule = (props: MealScheduleProps) => {
   };
 
 
-  console.log('rerender calendar');
-
   if (!isNil(props.scheduledMeals) && props.scheduledMeals.length > 0) {
 
     const mealsInSchedule: CalendarEvent[] = [];
@@ -196,9 +194,8 @@ const MealSchedule = (props: MealScheduleProps) => {
 };
 
 function mapStateToProps(state: any) {
-  console.log('getScheduledMeals');
+  console.log('MealScheduled mapStateToProps invoked');
   const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
-  console.log(scheduledMeals);
   return {
     userId: getCurrentUser(state) as string,
     scheduledMeals,

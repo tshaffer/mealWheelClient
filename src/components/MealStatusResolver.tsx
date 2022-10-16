@@ -20,7 +20,7 @@ import IconButton from '@mui/material/IconButton';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getMains, getSides, getSalads, getVeggies, getScheduledMeal, getPendingMeal } from '../selectors';
+import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } from '../types';
 import { setPendingMeal } from '../models';
 
@@ -35,19 +35,17 @@ export interface MealStatusResolverPropsFromParent {
 }
 
 export interface MealStatusResolverProps extends MealStatusResolverPropsFromParent {
-  verboseScheduledMeal: VerboseScheduledMeal;
   meal: VerboseScheduledMeal | null;
   mains: DishEntity[];
   sides: DishEntity[];
   salads: DishEntity[];
   veggies: DishEntity[];
-  scheduledMealsToResolve: ScheduledMealEntity[];
   onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
 }
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { verboseScheduledMeal, previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave,
+  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave,
     mains, sides, salads, veggies, onSetPendingMeal } = props;
   const meal = props.meal;
 
@@ -57,7 +55,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const getDayDate = (): string => {
-    return (getDate(verboseScheduledMeal.dateScheduled));
+    return (getDate((meal as VerboseScheduledMeal).dateScheduled));
   };
 
   const handleClose = () => {
@@ -318,9 +316,11 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
 
+  console.log('MealStatusResolve: check isNil(meal)');
   if (isNil(meal)) {
     return null;
   }
+  console.log('MealStatusResolver: meal is non null');
   
   const mealStatusElement = renderMealStatus();
   const mainDishElement = renderMains();
@@ -329,7 +329,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   const veggieDishElement = renderVeggies();
 
   return (
-    <Dialog onClose={handleClose} open={props.scheduledMealsToResolve.length > 0} maxWidth='xl'>
+    <Dialog onClose={handleClose} open={true} maxWidth='xl'>
       <DialogTitle>Welcome Back Fatso</DialogTitle>
       <Box
         sx={{
@@ -370,43 +370,13 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
 function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent) {
 
-  const scheduledMeal: ScheduledMealEntity = getScheduledMeal(state, ownProps.scheduledMealId) as ScheduledMealEntity;
-
-  const main: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
-  const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
-    isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
-
-  const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
-  const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
-    isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
-
-  const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
-  const sideName: string = isNil(scheduledMeal.sideId) ? '' :
-    isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
-
-  const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
-  const saladName: string = isNil(scheduledMeal.saladId) ? '' :
-    isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
-
-  const verboseScheduledMeal: VerboseScheduledMeal = {
-    ...scheduledMeal,
-    main,
-    mainName: mainDishName,
-    salad,
-    saladName,
-    veggie,
-    veggieName,
-    side,
-    sideName,
-  };
+  console.log('MealStatusResolver mapStateToProps invoked');
 
   return {
-    verboseScheduledMeal,
     mains: getMains(state),
     sides: getSides(state),
     salads: getSalads(state),
     veggies: getVeggies(state),
-    scheduledMealsToResolve: getScheduledMealsToResolve(state),
     meal: getPendingMeal(state) as VerboseScheduledMeal,
   };
 }

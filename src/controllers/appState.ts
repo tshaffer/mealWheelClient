@@ -76,11 +76,13 @@ export const initializeApp = () => {
           dispatch(setAppInitialized());
         } else {
           const loadDefinedMealsPromise: Promise<void> = dispatch(loadDefinedMeals());
+          console.log('initializeApp: invoke loadScheduledMeals');
           const loadScheduledMealsPromise: Promise<void> = dispatch(loadScheduledMeals());
           const loadDishesPromise: Promise<void> = dispatch(loadDishes());
           dispatch(setUiState(UiState.Other));
           Promise.all([loadDefinedMealsPromise, loadScheduledMealsPromise, loadDishesPromise])
             .then( () => {
+              console.log('initializeApp: promises resolved.');
               dispatch(setAppInitialized());
             });
         }

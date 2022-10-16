@@ -10,7 +10,9 @@ import {
   updateScheduledMealRedux,
   addScheduledMealsRedux,
   setScheduledMealsToResolveRedux,
-  setMealsToResolve
+  setMealsToResolve,
+  setMealIndex,
+  setPendingMeal
 } from '../models';
 import { getCurrentUser, getDefinedMeals, getDish, getMainById, getSaladById, getScheduledMeal, getScheduledMeals, getSideById, getVeggieById } from '../selectors';
 
@@ -38,8 +40,6 @@ export const loadDefinedMeals = () => {
     const state: MealWheelState = getState();
     const id = getCurrentUser(state);
 
-    console.log('loadDefinedMeals, user id: ', id);
-
     const path = serverUrl + apiUrlFragment + 'definedMeals?id=' + id;
 
     return axios.get(path)
@@ -53,17 +53,20 @@ export const loadDefinedMeals = () => {
 export const loadScheduledMeals = () => {
   return (dispatch: any, getState: any) => {
 
+    console.log('execute loadScheduledMeals');
+
     dispatch(clearScheduledMeals());
 
     const state: MealWheelState = getState();
     const id = getCurrentUser(state);
 
-    console.log('loadMeals, user id: ', id);
-
     const path = serverUrl + apiUrlFragment + 'scheduledMeals?id=' + id;
 
     return axios.get(path)
       .then((mealsResponse: any) => {
+
+        console.log('loadScheduledMeals: axios get completed');
+
         const scheduledMealEntities: ScheduledMealEntity[] = [];
         const rawScheduledMealEntities: any[] = (mealsResponse as any).data;
         for (const rawScheduledMealEntity of rawScheduledMealEntities) {
@@ -82,8 +85,13 @@ export const loadScheduledMeals = () => {
         dispatch(addScheduledMealsRedux(scheduledMealEntities));
 
         // generate mealsToResolve
-        const verboseScheduledMealsToResolve: VerboseScheduledMeal[] = generateMealsToResolve(state, scheduledMealEntities);
-        dispatch(setMealsToResolve(verboseScheduledMealsToResolve));
+        const mealsToResolve: VerboseScheduledMeal[] = generateMealsToResolve(state, scheduledMealEntities);
+        console.log('loadScheduledMeals: invoke setMealsToResolve');
+        dispatch(setMealsToResolve(mealsToResolve));
+        if (mealsToResolve.length > 0) {
+          dispatch(setMealIndex(0));
+          dispatch(setPendingMeal(mealsToResolve[0]));
+        }
       });
   };
 };
@@ -346,8 +354,6 @@ export const updateMainInMeal = (
   newMainId: string,
 ): any => {
   return (dispatch: any, getState: any) => {
-    console.log(mealId);
-    console.log(newMainId);
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newMain: MainDishEntity | null = getDish(mealWheelState, newMainId) as MainDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);

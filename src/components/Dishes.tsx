@@ -143,8 +143,6 @@ const Dishes = (props: DishesProps) => {
 
     // check for empty name
     if (updatedDish.name === '') {
-      console.log('name is empty');
-      // Promise.reject(new Error('Error while saving user: name can\'t be empty.'));
       setSnackbar({ children: 'Error while saving user: name can\'t be empty.', severity: 'error' });
       return;
     }
@@ -154,9 +152,6 @@ const Dishes = (props: DishesProps) => {
     for (let dishIndex = 0; dishIndex < rows.length; dishIndex++) {
       const existingDish: DishEntity = rows[dishIndex];
       if (updatedDish.id !== existingDish.id && existingDish.name === updatedDishName) {
-        console.log('Duplicate name with dish: ');
-        console.log(existingDish);
-        // Promise.reject(new Error('Error while saving user: duplicate dish name'));
         setSnackbar({ children: 'Error while saving user: duplicate dish name', severity: 'error' });
         return;
       }
@@ -348,8 +343,6 @@ const Dishes = (props: DishesProps) => {
     setRowsRead(true);
     setRows(newRows);
   }
-
-  // console.log('Dishes: render');
 
   return (
     <Box

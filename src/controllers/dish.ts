@@ -11,15 +11,12 @@ export const loadDishes = () => {
 
     const state: MealWheelState = getState();
     const id = getCurrentUser(state);
-
-    console.log('loadDishes, user id: ', id);
     
     const path = serverUrl + apiUrlFragment + 'dishes?id=' + id;
 
     return axios.get(path)
       .then((dishesResponse: any) => {
         const dishEntities: DishEntity[] = (dishesResponse as any).data;
-        console.log(dishEntities);
         dispatch(addDishesRedux(dishEntities));
       });
   };

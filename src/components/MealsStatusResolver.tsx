@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateMeal } from '../controllers';
-import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getPendingMeal } from '../selectors';
+import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getPendingMeal, getMealsToResolve } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity } from '../types';
 import { setPendingMeal } from '../models';
 
@@ -14,7 +14,7 @@ export interface MealsStatusResolverPropsFromParent {
 }
 
 export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromParent {
-  verboseScheduledMeals: VerboseScheduledMeal[];
+  mealsToResolve: VerboseScheduledMeal[];
   pendingMeal: VerboseScheduledMeal | null;
   scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
@@ -23,15 +23,15 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
-  const { verboseScheduledMeals, onClose, onSetPendingMeal } = props;
+  const { mealsToResolve, onClose, onSetPendingMeal } = props;
 
   const [mealIndex, setMealIndex] = React.useState(0);
 
-  React.useEffect(() => {
-    if (verboseScheduledMeals.length > 0) {
-      onSetPendingMeal(verboseScheduledMeals[mealIndex]);
-    }
-  }, [mealIndex, verboseScheduledMeals.length]);
+  // React.useEffect(() => {
+  //   if (mealsToResolve.length > 0) {
+  //     onSetPendingMeal(mealsToResolve[mealIndex]);
+  //   }
+  // }, [mealIndex, mealsToResolve.length]);
 
   const handlePreviousDay = () => {
     if (mealIndex > 0) {
@@ -41,7 +41,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   };
 
   const handleNextDay = () => {
-    if (mealIndex < (verboseScheduledMeals.length - 1)) {
+    if (mealIndex < (mealsToResolve.length - 1)) {
       const currentMealIndex = mealIndex;
       setMealIndex(currentMealIndex + 1);
     }
@@ -60,21 +60,27 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
     handleNextDay();
   };
 
-  if (verboseScheduledMeals.length === 0) {
+  console.log('MealsStatusResolver - check array lengths');
+
+  if (mealsToResolve.length === 0) {
     return null;
   }
+
+  console.log('MealsStatusResolver - mealsToResolve.length > 0');
 
   if (isNil(props.pendingMeal)) {
     return null;
   }
 
+  console.log('MealsStatusResolver - pendingMeal non null');
+
   return (
     <div>
       <MealStatusResolver
-        scheduledMealId={verboseScheduledMeals[mealIndex].id}
+        scheduledMealId={mealsToResolve[mealIndex].id}
         previousDayEnabled={mealIndex > 0}
         onPreviousDay={handlePreviousDay}
-        nextDayEnabled={mealIndex < (verboseScheduledMeals.length - 1)}
+        nextDayEnabled={mealIndex < (mealsToResolve.length - 1)}
         onNextDay={handleNextDay}
         onClose={handleCloseMealStatusResolver}
         onSave={handleSaveMealStatusResolver}
@@ -84,44 +90,9 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 };
 
 function mapStateToProps(state: any) {
-
-  const verboseScheduledMeals: VerboseScheduledMeal[] = [];
-
-  const scheduledMealsToResolve: ScheduledMealEntity[] = getScheduledMealsToResolve(state);
-
-  for (const scheduledMeal of scheduledMealsToResolve) {
-
-    const main: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
-    const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
-      isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
-
-    const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
-    const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
-      isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
-
-    const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
-    const sideName: string = isNil(scheduledMeal.sideId) ? '' :
-      isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
-
-    const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
-    const saladName: string = isNil(scheduledMeal.saladId) ? '' :
-      isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
-
-    verboseScheduledMeals.push({
-      ...scheduledMeal,
-      main,
-      mainName: mainDishName,
-      salad,
-      saladName,
-      veggie,
-      veggieName,
-      side,
-      sideName,
-    });
-  }
-
+  console.log('MealsStatusResolver mapStateToProps invoked');
   return {
-    verboseScheduledMeals,
+    mealsToResolve: getMealsToResolve(state),
     pendingMeal: getPendingMeal(state),
     scheduledMealsToResolve: getScheduledMealsToResolve(state),
   };

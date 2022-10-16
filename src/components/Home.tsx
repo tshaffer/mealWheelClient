@@ -22,17 +22,13 @@ export interface HomeProps {
 
 const Home = (props: HomeProps) => {
 
-  console.log('Home invoked - pre useEffect');
 
   React.useEffect(() => {
-    console.log('Home: appInitialized = ', props.appInitialized);
     if (!props.appInitialized) {
       props.onInitializeApp();
     }
   }, [props.appInitialized]);
 
-
-  console.log('Home invoked - post useEffect');
   
   const divStyle = {
     height: '98vh',
