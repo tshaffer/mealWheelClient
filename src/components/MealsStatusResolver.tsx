@@ -2,10 +2,10 @@ import { isNil } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateMeal } from '../controllers';
-import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
-import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity } from '../types';
-import { setMealIndex, setMealIndexAndPendingMeal, setPendingMeal } from '../models';
+import { updateAfterSave, updateMeal } from '../controllers';
+import { getScheduledMealsToResolve, getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
+import { VerboseScheduledMeal, ScheduledMealEntity, MealStatus } from '../types';
+import { setMealIndexAndPendingMeal } from '../models';
 
 import MealStatusResolver from './MealStatusResolver';
 
@@ -19,14 +19,13 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
   pendingMeal: VerboseScheduledMeal | null;
   scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
-  onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
-  onSetMealIndex: (index: number) => any;
   onSetMealIndexAndPendingMeal: (index: number, meal: VerboseScheduledMeal) => any;
+  onUpdateAfterSave: (meal: VerboseScheduledMeal) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
-  const { mealIndex, mealsToResolve, pendingMeal, onClose, onSetPendingMeal, onSetMealIndex, onSetMealIndexAndPendingMeal } = props;
+  const { mealIndex, mealsToResolve, onSetMealIndexAndPendingMeal } = props;
 
   const handlePreviousDay = () => {
     if (mealIndex > 0) {
@@ -48,11 +47,24 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   };
 
 
-  const handleSaveMealStatusResolver = (scheduledMeal: ScheduledMealEntity) => {
-    console.log('handleCloseMealStatusResolver');
-    // props.onClearScheduledMealsToResolve();
+  const handleSaveMealStatusResolver = (meal: VerboseScheduledMeal) => {
+    
+    console.log('handleSaveMealStatusResolver');
+
+    const scheduledMeal: ScheduledMealEntity = {
+      id: (meal as VerboseScheduledMeal).id,
+      userId: (meal as VerboseScheduledMeal).userId,
+      mainDishId: (meal as VerboseScheduledMeal).mainDishId,
+      saladId: (meal as VerboseScheduledMeal).saladId,
+      veggieId: (meal as VerboseScheduledMeal).veggieId,
+      sideId: (meal as VerboseScheduledMeal).sideId,
+      dateScheduled: (meal as VerboseScheduledMeal).dateScheduled,
+      status: MealStatus.prepared,
+    };
+
+    // save current meal, update meal index as needed, and update pendingMeal
     props.onUpdateMeal(scheduledMeal.id, scheduledMeal);
-    handleNextDay();
+    props.onUpdateAfterSave(meal);
   };
 
   console.log('MealsStatusResolver - check array lengths');
@@ -97,10 +109,9 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    onSetMealIndex: setMealIndex,
-    onSetPendingMeal: setPendingMeal,
     onSetMealIndexAndPendingMeal: setMealIndexAndPendingMeal,
     onUpdateMeal: updateMeal,
+    onUpdateAfterSave: updateAfterSave,
   }, dispatch);
 };
 

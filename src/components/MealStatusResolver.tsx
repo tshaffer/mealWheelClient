@@ -32,7 +32,7 @@ export interface MealStatusResolverPropsFromParent {
   onPreviousDay: () => void;
   onNextDay: () => void;
   onClose: () => void;
-  onSave: (scheduledMeal: ScheduledMealEntity) => void;
+  onSave: (meal: VerboseScheduledMeal) => void;
 }
 
 export interface MealStatusResolverProps extends MealStatusResolverPropsFromParent {
@@ -41,13 +41,12 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
   sides: DishEntity[];
   salads: DishEntity[];
   veggies: DishEntity[];
-  onRemoveMealToResolve: (mealId: string) => any;
   onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
 }
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onRemoveMealToResolve, onSetPendingMeal,
+  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onSetPendingMeal,
     mains, sides, salads, veggies } = props;
   const meal = props.meal;
 
@@ -65,18 +64,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const handleSave = () => {
-    const scheduledMeal: ScheduledMealEntity = {
-      id: (meal as VerboseScheduledMeal).id,
-      userId: (meal as VerboseScheduledMeal).userId,
-      mainDishId: (meal as VerboseScheduledMeal).mainDishId,
-      saladId: (meal as VerboseScheduledMeal).saladId,
-      veggieId: (meal as VerboseScheduledMeal).veggieId,
-      sideId: (meal as VerboseScheduledMeal).sideId,
-      dateScheduled: (meal as VerboseScheduledMeal).dateScheduled,
-      status: MealStatus.prepared,
-    };
-    onSave(scheduledMeal);
-    onRemoveMealToResolve(scheduledMeal.id);
+    onSave(meal as VerboseScheduledMeal);
   };
 
   const handleSkip = () => {
@@ -402,7 +390,6 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    onRemoveMealToResolve: removeMealToResolve,
     onSetPendingMeal: setPendingMeal,
   }, dispatch);
 };
