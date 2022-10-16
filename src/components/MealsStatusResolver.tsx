@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { updateMeal } from '../controllers';
 import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity } from '../types';
-import { setMealIndex, setPendingMeal } from '../models';
+import { setMealIndex } from '../models';
 
 import MealStatusResolver from './MealStatusResolver';
 
@@ -19,13 +19,12 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
   pendingMeal: VerboseScheduledMeal | null;
   scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
-  onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
   onSetMealIndex: (index: number) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
-  const { mealIndex, mealsToResolve, onClose, onSetPendingMeal, onSetMealIndex } = props;
+  const { mealIndex, mealsToResolve, onClose, onSetMealIndex } = props;
 
   // React.useEffect(() => {
   //   if (mealsToResolve.length > 0) {
@@ -37,7 +36,6 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
     if (mealIndex > 0) {
       const currentMealIndex = mealIndex;
       onSetMealIndex(currentMealIndex - 1);
-      onSetPendingMeal(mealsToResolve[mealIndex]);
     }
   };
 
@@ -45,7 +43,6 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
     if (mealIndex < (mealsToResolve.length - 1)) {
       const currentMealIndex = mealIndex;
       onSetMealIndex(currentMealIndex + 1);
-      onSetPendingMeal(mealsToResolve[mealIndex]);
     }
   };
 
@@ -105,7 +102,6 @@ function mapStateToProps(state: any) {
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onSetMealIndex: setMealIndex,
-    onSetPendingMeal: setPendingMeal,
     onUpdateMeal: updateMeal,
   }, dispatch);
 };

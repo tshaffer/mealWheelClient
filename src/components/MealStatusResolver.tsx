@@ -22,7 +22,6 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } from '../types';
-import { setPendingMeal } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
   scheduledMealId: string;
@@ -40,13 +39,12 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
   sides: DishEntity[];
   salads: DishEntity[];
   veggies: DishEntity[];
-  onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
 }
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave,
-    mains, sides, salads, veggies, onSetPendingMeal } = props;
+    mains, sides, salads, veggies } = props;
   const meal = props.meal;
 
   const getDate = (date: Date): string => {
@@ -79,7 +77,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   const handleMealStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
     updatedMeal.status = parseInt((event.target as HTMLInputElement).value, 10);
-    onSetPendingMeal(updatedMeal);
   };
 
   const handleUpdateMain = (event: any) => {
@@ -98,7 +95,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.main = selectedMain;
     updatedMeal.mainDishId = isNil(selectedMain) ? '' : selectedMain.id;
     updatedMeal.mainName = mainName;
-    onSetPendingMeal(updatedMeal);
   };
 
   const handleUpdateSide = (event: any) => {
@@ -117,7 +113,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.side = selectedSide;
     updatedMeal.sideId = isNil(selectedSide) ? '' : selectedSide.id;
     updatedMeal.sideName = sideName;
-    onSetPendingMeal(updatedMeal);
   };
 
   const handleUpdateSalad = (event: any) => {
@@ -133,7 +128,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.salad = selectedSalad;
     updatedMeal.saladId = isNil(selectedSalad) ? '' : selectedSalad.id;
     updatedMeal.saladName = isNil(selectedSalad) ? '' : selectedSalad.name;
-    onSetPendingMeal(updatedMeal);
   };
 
   const handleUpdateVeggie = (event: any) => {
@@ -152,7 +146,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.veggie = selectedVeggie;
     updatedMeal.veggieId = isNil(selectedVeggie) ? '' : selectedVeggie.id;
     updatedMeal.veggieName = veggieName;
-    onSetPendingMeal(updatedMeal);
   };
 
   const renderNoneMenuItem = (): JSX.Element => {
@@ -383,7 +376,6 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
-    onSetPendingMeal: setPendingMeal,
   }, dispatch);
 };
 
