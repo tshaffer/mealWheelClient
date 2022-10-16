@@ -2,7 +2,7 @@ import { isNil } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateAfterSave, updateMeal } from '../controllers';
+import { resolveMeal, updateMeal } from '../controllers';
 import { getScheduledMealsToResolve, getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
 import { VerboseScheduledMeal, ScheduledMealEntity, MealStatus } from '../types';
 import { setMealIndexAndPendingMeal } from '../models';
@@ -20,7 +20,7 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
   scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
   onSetMealIndexAndPendingMeal: (index: number, meal: VerboseScheduledMeal) => any;
-  onUpdateAfterSave: (meal: VerboseScheduledMeal) => any;
+  onResolveMeal: (meal: VerboseScheduledMeal) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
@@ -48,8 +48,6 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
 
   const handleSaveMealStatusResolver = (meal: VerboseScheduledMeal) => {
-    
-    console.log('handleSaveMealStatusResolver');
 
     const scheduledMeal: ScheduledMealEntity = {
       id: (meal as VerboseScheduledMeal).id,
@@ -64,7 +62,11 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
     // save current meal, update meal index as needed, and update pendingMeal
     props.onUpdateMeal(scheduledMeal.id, scheduledMeal);
-    props.onUpdateAfterSave(meal);
+    props.onResolveMeal(meal);
+  };
+
+  const handleSkipMealStatusResolver = (meal: VerboseScheduledMeal) => {
+    props.onResolveMeal(meal);
   };
 
   console.log('MealsStatusResolver - check array lengths');
@@ -91,6 +93,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
         onNextDay={handleNextDay}
         onClose={handleCloseMealStatusResolver}
         onSave={handleSaveMealStatusResolver}
+        onSkip={handleSkipMealStatusResolver}
       />
     </div>
   );
@@ -111,7 +114,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onSetMealIndexAndPendingMeal: setMealIndexAndPendingMeal,
     onUpdateMeal: updateMeal,
-    onUpdateAfterSave: updateAfterSave,
+    onResolveMeal: resolveMeal,
   }, dispatch);
 };
 

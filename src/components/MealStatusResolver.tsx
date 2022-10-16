@@ -8,12 +8,8 @@ import {
   Dialog,
   DialogTitle,
   FormControl,
-  FormControlLabel,
-  FormLabel,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -21,8 +17,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
-import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } from '../types';
-import { removeMealToResolve } from '../models';
+import { VerboseScheduledMeal, DishEntity } from '../types';
 import { setPendingMeal } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
@@ -33,6 +28,7 @@ export interface MealStatusResolverPropsFromParent {
   onNextDay: () => void;
   onClose: () => void;
   onSave: (meal: VerboseScheduledMeal) => void;
+  onSkip: (meal: VerboseScheduledMeal) => void;
 }
 
 export interface MealStatusResolverProps extends MealStatusResolverPropsFromParent {
@@ -46,7 +42,7 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onSetPendingMeal,
+  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onSkip, onSetPendingMeal,
     mains, sides, salads, veggies } = props;
   const meal = props.meal;
 
@@ -68,17 +64,11 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const handleSkip = () => {
-    // onClose();
+    onSkip(meal as VerboseScheduledMeal);
   };
 
   const handleNew = () => {
     // onClose();
-  };
-
-
-  const handleMealStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
-    updatedMeal.status = parseInt((event.target as HTMLInputElement).value, 10);
   };
 
   const handleUpdateMain = (event: any) => {
@@ -198,21 +188,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             <ArrowForwardIosIcon />
           </IconButton>
         </div>
-        <FormControl>
-          <FormLabel id="meal-status-label">MealStatus</FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="meal-status-label"
-            name="row-radio-buttons-group"
-            value={(meal as VerboseScheduledMeal).status}
-            onChange={handleMealStatusChange}
-          >
-            <FormControlLabel value={MealStatus.prepared} control={<Radio />} label="Cooked" />
-            <FormControlLabel value={MealStatus.pending} control={<Radio />} label="??" />
-            <FormControlLabel value={MealStatus.different} control={<Radio />} label="Different" />
-          </RadioGroup>
-        </FormControl>
-
       </div>
     );
   };
