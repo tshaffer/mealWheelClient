@@ -5,13 +5,47 @@ import { MealWheelModelBaseAction } from './baseAction';
 // ------------------------------------
 // Constants
 // ------------------------------------
+const SET_PENDING_MEAL = 'SET_PENDING_MEAL';
 const SET_MEAL_INDEX = 'SET_MEAL_INDEX';
 const SET_MEALS_TO_RESOLVE = 'SET_MEALS_TO_RESOLVE';
 const REMOVE_MEAL_TO_RESOLVE = 'REMOVE_MEAL_TO_RESOLVE';
+const SET_MEAL_INDEX_AND_PENDING_MEAL = 'SET_MEAL_INDEX_AND_PENDING_MEAL';
 
 // ------------------------------------
 // Actions
 // ------------------------------------
+
+export interface SetMealIndexAndPendingMealPayload {
+  mealIndex: number;
+  pendingMeal: VerboseScheduledMeal;
+}
+
+export const setMealIndexAndPendingMeal = (
+  mealIndex: number,
+  pendingMeal: VerboseScheduledMeal): any => {
+  return {
+    type: SET_MEAL_INDEX_AND_PENDING_MEAL,
+    payload: {
+      mealIndex,
+      pendingMeal,
+    }
+  };
+};
+
+
+export interface SetPendingMealPayload {
+  pendingMeal: VerboseScheduledMeal;
+}
+
+export const setPendingMeal = (
+  pendingMeal: VerboseScheduledMeal): any => {
+  return {
+    type: SET_PENDING_MEAL,
+    payload: {
+      pendingMeal,
+    }
+  };
+};
 
 export interface SetMealIndexPayload {
   mealIndex: number;
@@ -62,15 +96,25 @@ export const removeMealToResolve = (
 
 const initialState: MealsResolutionState =
 {
+  pendingMeal: null,
   mealIndex: 0,
   mealsToResolve: []
 };
 
 export const mealsResolutionStateReducer = (
   state: MealsResolutionState = initialState,
-  action: MealWheelModelBaseAction<SetMealIndexPayload & SetMealsToResolvePayload & RemoveMealToResolvePayload>
+  action: MealWheelModelBaseAction<SetMealIndexAndPendingMealPayload & SetPendingMealPayload & SetMealIndexPayload & SetMealsToResolvePayload & RemoveMealToResolvePayload>
 ): MealsResolutionState => {
   switch (action.type) {
+    case SET_MEAL_INDEX_AND_PENDING_MEAL:
+      return {
+        ...state,
+        pendingMeal: cloneDeep(action.payload.pendingMeal),
+        mealIndex: action.payload.mealIndex
+      };
+    case SET_PENDING_MEAL: {
+      return { ...state, pendingMeal: cloneDeep(action.payload.pendingMeal) };
+    }
     case SET_MEAL_INDEX: {
       return { ...state, mealIndex: action.payload.mealIndex };
     }

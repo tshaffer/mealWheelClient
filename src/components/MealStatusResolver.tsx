@@ -23,6 +23,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } from '../types';
 import { removeMealToResolve } from '../models';
+import { setPendingMeal } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
   scheduledMealId: string;
@@ -41,11 +42,12 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
   salads: DishEntity[];
   veggies: DishEntity[];
   onRemoveMealToResolve: (mealId: string) => any;
+  onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
 }
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onRemoveMealToResolve,
+  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onRemoveMealToResolve, onSetPendingMeal,
     mains, sides, salads, veggies } = props;
   const meal = props.meal;
 
@@ -92,7 +94,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const handleUpdateMain = (event: any) => {
-    debugger;
     const mainId = event.target.value;
     let selectedMain: DishEntity | null = null;
     for (const main of mains) {
@@ -108,6 +109,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.main = selectedMain;
     updatedMeal.mainDishId = isNil(selectedMain) ? '' : selectedMain.id;
     updatedMeal.mainName = mainName;
+    onSetPendingMeal(updatedMeal);
   };
 
   const handleUpdateSide = (event: any) => {
@@ -386,11 +388,11 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
   console.log('MealStatusResolver mapStateToProps invoked');
 
   return {
+    meal: getPendingMeal(state) as VerboseScheduledMeal,
     mains: getMains(state),
     sides: getSides(state),
     salads: getSalads(state),
     veggies: getVeggies(state),
-    meal: getPendingMeal(state) as VerboseScheduledMeal,
   };
 }
 
@@ -398,6 +400,7 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onRemoveMealToResolve: removeMealToResolve,
+    onSetPendingMeal: setPendingMeal,
   }, dispatch);
 };
 

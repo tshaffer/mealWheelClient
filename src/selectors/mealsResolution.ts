@@ -1,11 +1,8 @@
 import { MealWheelState, VerboseScheduledMeal } from '../types';
 
 export const getPendingMeal = (state: MealWheelState): VerboseScheduledMeal | null => {
-  if (state.mealsResolutionState.mealsToResolve.length > 0) {
-    return state.mealsResolutionState.mealsToResolve[state.mealsResolutionState.mealIndex];
-  }
-  return null;
-};
+  return state.mealsResolutionState.pendingMeal;
+}
 
 export const getMealIndex = (state: MealWheelState): number => {
   return state.mealsResolutionState.mealIndex;

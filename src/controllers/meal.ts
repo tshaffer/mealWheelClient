@@ -11,6 +11,7 @@ import {
   addScheduledMealsRedux,
   setMealsToResolve,
   setMealIndex,
+  setPendingMeal
 } from '../models';
 import { getCurrentUser, getDefinedMeals, getDish, getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
 
@@ -94,6 +95,7 @@ export const loadScheduledMeals = () => {
         dispatch(setMealsToResolve(mealsToResolve));
         if (mealsToResolve.length > 0) {
           dispatch(setMealIndex(0));
+          dispatch(setPendingMeal(mealsToResolve[0]));
         }
       });
   };
@@ -440,7 +442,7 @@ export const updateMealStatus = (
 };
 
 const generateMealsToResolve = (state: MealWheelState, scheduledMeals: ScheduledMealEntity[]): VerboseScheduledMeal[] => {
-  
+
   const verboseScheduledMealsToResolve: VerboseScheduledMeal[] = [];
 
   const currentDate: Date = new Date();

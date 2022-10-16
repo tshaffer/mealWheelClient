@@ -57,6 +57,7 @@ export interface ScheduledMealsState {
 }
 
 export interface MealsResolutionState {
+  pendingMeal: VerboseScheduledMeal | null;
   mealIndex: number;
   mealsToResolve: VerboseScheduledMeal[];
 }
