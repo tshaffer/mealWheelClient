@@ -195,7 +195,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             color='inherit'
             disabled={!nextDayEnabled}
             onClick={onNextDay}
-
           >
             <ArrowForwardIosIcon />
           </IconButton>

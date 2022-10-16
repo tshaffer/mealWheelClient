@@ -3,9 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateMeal } from '../controllers';
-import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getPendingMeal, getMealsToResolve } from '../selectors';
+import { getScheduledMealsToResolve, getMainById, getVeggieById, getSideById, getSaladById, getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity } from '../types';
-import { setPendingMeal } from '../models';
+import { setMealIndex, setPendingMeal } from '../models';
 
 import MealStatusResolver from './MealStatusResolver';
 
@@ -14,18 +14,18 @@ export interface MealsStatusResolverPropsFromParent {
 }
 
 export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromParent {
+  mealIndex: number;
   mealsToResolve: VerboseScheduledMeal[];
   pendingMeal: VerboseScheduledMeal | null;
   scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
   onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
+  onSetMealIndex: (index: number) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
-  const { mealsToResolve, onClose, onSetPendingMeal } = props;
-
-  const [mealIndex, setMealIndex] = React.useState(0);
+  const { mealIndex, mealsToResolve, onClose, onSetPendingMeal, onSetMealIndex } = props;
 
   // React.useEffect(() => {
   //   if (mealsToResolve.length > 0) {
@@ -36,14 +36,16 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   const handlePreviousDay = () => {
     if (mealIndex > 0) {
       const currentMealIndex = mealIndex;
-      setMealIndex(currentMealIndex - 1);
+      onSetMealIndex(currentMealIndex - 1);
+      onSetPendingMeal(mealsToResolve[mealIndex]);
     }
   };
 
   const handleNextDay = () => {
     if (mealIndex < (mealsToResolve.length - 1)) {
       const currentMealIndex = mealIndex;
-      setMealIndex(currentMealIndex + 1);
+      onSetMealIndex(currentMealIndex + 1);
+      onSetPendingMeal(mealsToResolve[mealIndex]);
     }
   };
 
@@ -92,6 +94,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 function mapStateToProps(state: any) {
   console.log('MealsStatusResolver mapStateToProps invoked');
   return {
+    mealIndex: getMealIndex(state),
     mealsToResolve: getMealsToResolve(state),
     pendingMeal: getPendingMeal(state),
     scheduledMealsToResolve: getScheduledMealsToResolve(state),
@@ -101,6 +104,7 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onSetMealIndex: setMealIndex,
     onSetPendingMeal: setPendingMeal,
     onUpdateMeal: updateMeal,
   }, dispatch);
