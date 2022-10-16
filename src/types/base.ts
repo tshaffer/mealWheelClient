@@ -15,7 +15,7 @@ export interface MealWheelState {
   dishesState: DishesState;
   definedMealsState: DefinedMealsState;
   scheduledMealsState: ScheduledMealsState;
-  pendingMealState: PendingMealState;
+  mealsResolutionState: MealsResolutionState;
   users: UsersMap;
   versionInfo: VersionInfo;
 }
@@ -54,6 +54,12 @@ export interface DefinedMealsState {
 export interface ScheduledMealsState {
   scheduledMeals: ScheduledMealEntity[];
   scheduledMealsToResolve: ScheduledMealEntity[];
+}
+
+export interface MealsResolutionState {
+  pendingMeal: VerboseScheduledMeal | null;
+  mealIndex: number;
+  mealsToResolve: VerboseScheduledMeal[];
 }
 
 export interface PendingMealState {

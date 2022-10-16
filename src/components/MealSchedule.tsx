@@ -10,7 +10,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { cloneDeep } from 'lodash';
 
 import { MealStatus, ScheduledMealEntity } from '../types';
-import { generateMenu, setScheduledMealsToResolve, updateMealStatus } from '../controllers';
+import { generateMenu, updateMealStatus } from '../controllers';
 import { getCurrentUser, getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
@@ -43,7 +43,7 @@ export interface MealScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
   onGenerateMenu: () => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
-  onSetScheduledMealsToResolve: () => any;
+  // onSetScheduledMealsToResolve: () => any;
   onClearScheduledMealsToResolve: () => any;
 }
 
@@ -54,9 +54,9 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
-  React.useEffect(() => {
-    props.onSetScheduledMealsToResolve();
-  }, []);
+  // React.useEffect(() => {
+  //   props.onSetScheduledMealsToResolve();
+  // }, []);
 
   const handleCloseScheduledMealsStatusResolver = () => {
     console.log('handleCloseScheduledMealsStatusResolver');
@@ -209,7 +209,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onGenerateMenu: generateMenu,
     onUpdateMealStatus: updateMealStatus,
-    onSetScheduledMealsToResolve: setScheduledMealsToResolve,
+    // onSetScheduledMealsToResolve: setScheduledMealsToResolve,
     onClearScheduledMealsToResolve: clearScheduledMealsToResolve,
   }, dispatch);
 };

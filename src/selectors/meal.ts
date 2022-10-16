@@ -1,4 +1,4 @@
-import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, VerboseScheduledMeal } from '../types';
+import { MealWheelState, ScheduledMealEntity, DefinedMealEntity } from '../types';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
@@ -20,8 +20,4 @@ export const getScheduledMeal = (state: MealWheelState, mealId: string): Schedul
     }
   }
   return null;
-};
-
-export const getPendingMeal = (state: MealWheelState): VerboseScheduledMeal | null => {
-  return state.pendingMealState.pendingMeal;
 };

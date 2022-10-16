@@ -9,9 +9,10 @@ import {
   clearScheduledMeals,
   updateScheduledMealRedux,
   addScheduledMealsRedux,
-  setScheduledMealsToResolveRedux
+  setScheduledMealsToResolveRedux,
+  setMealsToResolve
 } from '../models';
-import { getCurrentUser, getDefinedMeals, getDish, getScheduledMeal, getScheduledMeals } from '../selectors';
+import { getCurrentUser, getDefinedMeals, getDish, getMainById, getSaladById, getScheduledMeal, getScheduledMeals, getSideById, getVeggieById } from '../selectors';
 
 import {
   apiUrlFragment,
@@ -24,7 +25,8 @@ import {
   serverUrl,
   ScheduledMealEntity,
   MainDishEntity,
-  BaseDishEntity
+  BaseDishEntity,
+  VerboseScheduledMeal
 } from '../types';
 
 
@@ -78,6 +80,10 @@ export const loadScheduledMeals = () => {
           });
         }
         dispatch(addScheduledMealsRedux(scheduledMealEntities));
+
+        // generate mealsToResolve
+        const verboseScheduledMealsToResolve: VerboseScheduledMeal[] = generateMealsToResolve(state, scheduledMealEntities);
+        dispatch(setMealsToResolve(verboseScheduledMealsToResolve));
       });
   };
 };
@@ -312,7 +318,7 @@ export const updateMeal = (
   return ((dispatch: any): any => {
 
     dispatch(updateScheduledMealRedux(id, meal));
-    dispatch(setScheduledMealsToResolve());
+    // dispatch(setScheduledMealsToResolve());
 
     const path = serverUrl + apiUrlFragment + 'updateMeal';
 
@@ -456,21 +462,70 @@ export const updateMealStatus = (
   };
 };
 
-export const setScheduledMealsToResolve = () => {
-  return (dispatch: any, getState: any) => {
-    const state: MealWheelState = getState() as MealWheelState;
-    const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
-    const currentDate: Date = new Date();
-    const scheduledMealsToResolve: ScheduledMealEntity[] = [];
-    for (const scheduledMeal of scheduledMeals) {
-      const mealDateAsStr = scheduledMeal.dateScheduled;
-      const mealDate: Date = new Date(mealDateAsStr);
-      if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
-        if (scheduledMeal.status === MealStatus.pending) {
-          scheduledMealsToResolve.push(scheduledMeal);
-        }
+// export const setScheduledMealsToResolve = () => {
+//   return (dispatch: any, getState: any) => {
+//     const state: MealWheelState = getState() as MealWheelState;
+//     const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
+//     const currentDate: Date = new Date();
+//     const scheduledMealsToResolve: ScheduledMealEntity[] = [];
+//     for (const scheduledMeal of scheduledMeals) {
+//       const mealDateAsStr = scheduledMeal.dateScheduled;
+//       const mealDate: Date = new Date(mealDateAsStr);
+//       if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
+//         if (scheduledMeal.status === MealStatus.pending) {
+//           scheduledMealsToResolve.push(scheduledMeal);
+//         }
+//       }
+//     }
+//     dispatch(setScheduledMealsToResolveRedux(scheduledMealsToResolve));
+//   };
+// };
+
+const generateMealsToResolve = (state: MealWheelState, scheduledMeals: ScheduledMealEntity[]): VerboseScheduledMeal[] => {
+  
+  const verboseScheduledMealsToResolve: VerboseScheduledMeal[] = [];
+
+  const currentDate: Date = new Date();
+  const scheduledMealsToResolve: ScheduledMealEntity[] = [];
+  for (const scheduledMeal of scheduledMeals) {
+    const mealDateAsStr = scheduledMeal.dateScheduled;
+    const mealDate: Date = new Date(mealDateAsStr);
+    if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
+      if (scheduledMeal.status === MealStatus.pending) {
+        scheduledMealsToResolve.push(scheduledMeal);
+
+        const main: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
+        const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
+          isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
+
+        const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
+        const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
+          isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
+
+        const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
+        const sideName: string = isNil(scheduledMeal.sideId) ? '' :
+          isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
+
+        const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
+        const saladName: string = isNil(scheduledMeal.saladId) ? '' :
+          isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
+
+        const verboseScheduledMeal: VerboseScheduledMeal = {
+          ...scheduledMeal,
+          main,
+          mainName: mainDishName,
+          salad,
+          saladName,
+          veggie,
+          veggieName,
+          side,
+          sideName,
+        };
+
+        verboseScheduledMealsToResolve.push(verboseScheduledMeal);
       }
     }
-    dispatch(setScheduledMealsToResolveRedux(scheduledMealsToResolve));
-  };
+  }
+
+  return verboseScheduledMealsToResolve;
 };

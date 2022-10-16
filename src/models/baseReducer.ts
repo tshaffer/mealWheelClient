@@ -7,7 +7,7 @@ import { appParametersReducer } from './appParameters';
 import { appStateReducer } from './appState';
 import { definedMealsStateReducer } from './definedMeals';
 import { dishesStateReducer } from './dishes';
-import { pendingMealStateReducer } from './pendingMeal';
+import { mealsResolutionStateReducer } from './mealsResolution';
 import { scheduledMealsStateReducer } from './scheduledMeals';
 import { usersReducer } from './users';
 import { versionInfoReducer } from './versionInfo';
@@ -21,7 +21,7 @@ export const rootReducer = combineReducers<MealWheelState>({
   dishesState: dishesStateReducer,
   definedMealsState: definedMealsStateReducer,
   scheduledMealsState: scheduledMealsStateReducer,
-  pendingMealState: pendingMealStateReducer,
+  mealsResolutionState: mealsResolutionStateReducer,
   users: usersReducer,
   versionInfo: versionInfoReducer,
 });
