@@ -22,6 +22,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, ScheduledMealEntity, MealStatus } from '../types';
+import { removeMealToResolve } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
   scheduledMealId: string;
@@ -39,11 +40,12 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
   sides: DishEntity[];
   salads: DishEntity[];
   veggies: DishEntity[];
+  onRemoveMealToResolve: (mealId: string) => any;
 }
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave,
+  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onRemoveMealToResolve,
     mains, sides, salads, veggies } = props;
   const meal = props.meal;
 
@@ -72,7 +74,17 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
       status: MealStatus.prepared,
     };
     onSave(scheduledMeal);
+    onRemoveMealToResolve(scheduledMeal.id);
   };
+
+  const handleSkip = () => {
+    // onClose();
+  };
+
+  const handleNew = () => {
+    // onClose();
+  };
+
 
   const handleMealStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
@@ -80,6 +92,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const handleUpdateMain = (event: any) => {
+    debugger;
     const mainId = event.target.value;
     let selectedMain: DishEntity | null = null;
     for (const main of mains) {
@@ -226,7 +239,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={mainId}
             onChange={(event) => handleUpdateMain(event)}
-            disabled={(meal as VerboseScheduledMeal).status !== MealStatus.different}
           >
             {mainsMenuItems}
           </Select>
@@ -250,7 +262,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={sideId}
             onChange={(event) => handleUpdateSide(event)}
-            disabled={(meal as VerboseScheduledMeal).status !== MealStatus.different}
           >
             {sidesMenuItems}
           </Select>
@@ -274,7 +285,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={saladId}
             onChange={(event) => handleUpdateSalad(event)}
-            disabled={(meal as VerboseScheduledMeal).status !== MealStatus.different}
           >
             {saladsMenuItems}
           </Select>
@@ -298,7 +308,6 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             id="demo-simple-select-filled"
             value={veggieId}
             onChange={(event) => handleUpdateVeggie(event)}
-            disabled={(meal as VerboseScheduledMeal).status !== MealStatus.different}
           >
             {veggiesMenuItems}
           </Select>
@@ -353,6 +362,18 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
           >
             Save
           </button>
+          <button
+            type="button"
+            onClick={handleSkip}
+          >
+            Skip
+          </button>
+          <button
+            type="button"
+            onClick={handleNew}
+          >
+            New
+          </button>
 
         </div>
       </Box>
@@ -376,6 +397,7 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onRemoveMealToResolve: removeMealToResolve,
   }, dispatch);
 };
 
