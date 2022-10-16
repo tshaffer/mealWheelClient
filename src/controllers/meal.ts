@@ -9,12 +9,11 @@ import {
   clearScheduledMeals,
   updateScheduledMealRedux,
   addScheduledMealsRedux,
-  setScheduledMealsToResolveRedux,
   setMealsToResolve,
   setMealIndex,
   setPendingMeal
 } from '../models';
-import { getCurrentUser, getDefinedMeals, getDish, getMainById, getSaladById, getScheduledMeal, getScheduledMeals, getSideById, getVeggieById } from '../selectors';
+import { getCurrentUser, getDefinedMeals, getDish, getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
 
 import {
   apiUrlFragment,
@@ -30,7 +29,6 @@ import {
   BaseDishEntity,
   VerboseScheduledMeal
 } from '../types';
-
 
 export const loadDefinedMeals = () => {
   return (dispatch: any, getState: any) => {
@@ -85,7 +83,6 @@ export const loadScheduledMeals = () => {
         dispatch(addScheduledMealsRedux(scheduledMealEntities));
 
         // generate mealsToResolve
-        debugger;
         const mealsToResolve: VerboseScheduledMeal[] = generateMealsToResolve(state, scheduledMealEntities);
         console.log('loadScheduledMeals: invoke setMealsToResolve');
         dispatch(setMealsToResolve(mealsToResolve));
@@ -361,38 +358,6 @@ export const updateMainInMeal = (
     if (!isNil(newMain) && !isNil(meal)) {
       meal.mainDishId = newMainId;
       dispatch(updateMeal(meal.id, meal));
-      // const existingMain: DishEntity = getDish(mealWheelState, meal?.mainDishId) as DishEntity;
-      // combinations
-      //  0) existingMain requires accompaniment, newMain requires accompaniment
-      //    no change to accompaniment required
-      //  existingMain does not require accompaniment, newMain requires accompaniment
-      //    update accompaniment in property - select random one?
-      //  existingMain requires accompaniment, newMain does not require accompaniment
-      //    no change to accompaniment required
-      //  existingMain does not require accompaniment, newMain does not require accompaniment
-      //    no change to accompaniment required
-      // if (isNil(existingMain.accompaniment) || existingMain.accompaniment === RequiredAccompanimentFlags.None) {
-      //   if (isNil(newMain.accompaniment) || newMain.accompaniment === RequiredAccompanimentFlags.None) {
-      //     console.log('neither existing nor newMain require accompaniment');
-      //     meal.mainDishId = newMainId;
-      //     dispatch(updateMeal(meal.id, meal));
-      //     return;
-      //   } else {
-      //     console.log('existing does not require accompaniment; newMain does');
-      //   }
-      // } else {
-      //   if (isNil(newMain.accompaniment) || newMain.accompaniment === RequiredAccompanimentFlags.None) {
-      //     console.log('existing requires accompaniment; newMain does not');
-      //     meal.mainDishId = newMainId;
-      //     dispatch(updateMeal(meal.id, meal));
-      //     return;
-      //   } else {
-      //     console.log('both existing and newMain require accompaniment');
-      //     meal.mainDishId = newMainId;
-      //     dispatch(updateMeal(meal.id, meal));
-      //     return;
-      //   }
-      // }
     }
   };
 };
@@ -468,25 +433,6 @@ export const updateMealStatus = (
     }
   };
 };
-
-// export const setScheduledMealsToResolve = () => {
-//   return (dispatch: any, getState: any) => {
-//     const state: MealWheelState = getState() as MealWheelState;
-//     const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
-//     const currentDate: Date = new Date();
-//     const scheduledMealsToResolve: ScheduledMealEntity[] = [];
-//     for (const scheduledMeal of scheduledMeals) {
-//       const mealDateAsStr = scheduledMeal.dateScheduled;
-//       const mealDate: Date = new Date(mealDateAsStr);
-//       if ((mealDate.getTime() < currentDate.getTime()) && (mealDate.getDate() !== currentDate.getDate())) {
-//         if (scheduledMeal.status === MealStatus.pending) {
-//           scheduledMealsToResolve.push(scheduledMeal);
-//         }
-//       }
-//     }
-//     dispatch(setScheduledMealsToResolveRedux(scheduledMealsToResolve));
-//   };
-// };
 
 const generateMealsToResolve = (state: MealWheelState, scheduledMeals: ScheduledMealEntity[]): VerboseScheduledMeal[] => {
   
