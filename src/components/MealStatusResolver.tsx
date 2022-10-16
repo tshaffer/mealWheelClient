@@ -128,6 +128,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.side = selectedSide;
     updatedMeal.sideId = isNil(selectedSide) ? '' : selectedSide.id;
     updatedMeal.sideName = sideName;
+    onSetPendingMeal(updatedMeal);
   };
 
   const handleUpdateSalad = (event: any) => {
@@ -143,6 +144,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.salad = selectedSalad;
     updatedMeal.saladId = isNil(selectedSalad) ? '' : selectedSalad.id;
     updatedMeal.saladName = isNil(selectedSalad) ? '' : selectedSalad.name;
+    onSetPendingMeal(updatedMeal);
   };
 
   const handleUpdateVeggie = (event: any) => {
@@ -161,6 +163,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.veggie = selectedVeggie;
     updatedMeal.veggieId = isNil(selectedVeggie) ? '' : selectedVeggie.id;
     updatedMeal.veggieName = veggieName;
+    onSetPendingMeal(updatedMeal);
   };
 
   const renderNoneMenuItem = (): JSX.Element => {

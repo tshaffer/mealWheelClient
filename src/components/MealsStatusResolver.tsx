@@ -28,12 +28,6 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   const { mealIndex, mealsToResolve, pendingMeal, onClose, onSetPendingMeal, onSetMealIndex, onSetMealIndexAndPendingMeal } = props;
 
-  // React.useEffect(() => {
-  //   if (mealsToResolve.length > 0) {
-  //     onSetPendingMeal(mealsToResolve[mealIndex]);
-  //   }
-  // }, [mealIndex, mealsToResolve.length]);
-
   const handlePreviousDay = () => {
     if (mealIndex > 0) {
       const newMealIndex = mealIndex - 1;
@@ -43,19 +37,8 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   const handleNextDay = () => {
     if (mealIndex < (mealsToResolve.length - 1)) {
-      console.log('handleNextDay');
-      console.log(pendingMeal);
-      console.log(mealIndex);
-      console.log(mealsToResolve);
-      console.log(mealsToResolve[mealIndex]);
       const newMealIndex = mealIndex + 1;
       onSetMealIndexAndPendingMeal(newMealIndex, mealsToResolve[newMealIndex]);
-      // onSetMealIndex(currentMealIndex + 1);
-      // onSetPendingMeal(mealsToResolve[props.mealIndex]);
-      console.log(pendingMeal);
-      console.log(mealIndex);
-      console.log(mealsToResolve);
-      console.log(mealsToResolve[mealIndex]);
     }
   };
 
