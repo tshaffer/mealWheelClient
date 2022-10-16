@@ -36,9 +36,8 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   const handlePreviousDay = () => {
     if (mealIndex > 0) {
-      const currentMealIndex = mealIndex;
-      onSetMealIndex(currentMealIndex - 1);
-      onSetPendingMeal(mealsToResolve[mealIndex]);
+      const newMealIndex = mealIndex - 1;
+      onSetMealIndexAndPendingMeal(newMealIndex, mealsToResolve[newMealIndex]);
     }
   };
 
