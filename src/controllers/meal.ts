@@ -47,6 +47,10 @@ export const loadDefinedMeals = () => {
   };
 };
 
+const dateComparator = (scheduledMeal1: ScheduledMealEntity, scheduledMeal2: ScheduledMealEntity): number => {
+  return scheduledMeal1.dateScheduled.getTime() - scheduledMeal2.dateScheduled.getTime();
+};
+
 export const loadScheduledMeals = () => {
   return (dispatch: any, getState: any) => {
 
@@ -79,6 +83,9 @@ export const loadScheduledMeals = () => {
             status,
           });
         }
+
+        scheduledMealEntities.sort(dateComparator);
+
         dispatch(addScheduledMealsRedux(scheduledMealEntities));
 
         // generate mealsToResolve
