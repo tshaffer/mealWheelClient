@@ -75,16 +75,31 @@ export const initializeApp = () => {
           dispatch(setUiState(UiState.SelectUser));
           dispatch(setAppInitialized());
         } else {
-          const loadDefinedMealsPromise: Promise<void> = dispatch(loadDefinedMeals());
-          console.log('initializeApp: invoke loadScheduledMeals');
-          const loadScheduledMealsPromise: Promise<void> = dispatch(loadScheduledMeals());
+
+          console.log('initializeApp: invoke loadDishes');
           const loadDishesPromise: Promise<void> = dispatch(loadDishes());
-          dispatch(setUiState(UiState.Other));
-          Promise.all([loadDefinedMealsPromise, loadScheduledMealsPromise, loadDishesPromise])
-            .then( () => {
-              console.log('initializeApp: promises resolved.');
+          return loadDishesPromise
+            .then(() => {
+              console.log('initializeApp: invoke loadDefinedMeals');
+              dispatch(loadDefinedMeals());
+            }).then(() => {
+              console.log('initializeApp: invoke loadScheduledMeals');
+              dispatch(loadScheduledMeals());
+            }).then(() => {
+              console.log('initializeApp: async calls completed.');
+              dispatch(setUiState(UiState.Other));
               dispatch(setAppInitialized());
             });
+          // const loadDefinedMealsPromise: Promise<void> = dispatch(loadDefinedMeals());
+
+          // console.log('initializeApp: invoke loadScheduledMeals');
+          // const loadScheduledMealsPromise: Promise<void> = dispatch(loadScheduledMeals());
+          // dispatch(setUiState(UiState.Other));
+          // Promise.all([loadDefinedMealsPromise, loadScheduledMealsPromise, loadDishesPromise])
+          //   .then( () => {
+          //     console.log('initializeApp: promises resolved.');
+          //     dispatch(setAppInitialized());
+          //   });
         }
 
       });

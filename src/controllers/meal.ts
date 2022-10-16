@@ -85,6 +85,7 @@ export const loadScheduledMeals = () => {
         dispatch(addScheduledMealsRedux(scheduledMealEntities));
 
         // generate mealsToResolve
+        debugger;
         const mealsToResolve: VerboseScheduledMeal[] = generateMealsToResolve(state, scheduledMealEntities);
         console.log('loadScheduledMeals: invoke setMealsToResolve');
         dispatch(setMealsToResolve(mealsToResolve));
