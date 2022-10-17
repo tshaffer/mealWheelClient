@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { resolveMeal, updateMeal } from '../controllers';
 import { getScheduledMealsToResolve, getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
 import { VerboseScheduledMeal, ScheduledMealEntity, MealStatus } from '../types';
-import { setMealIndexAndPendingMeal } from '../models';
+import { clearMealsToResolve, setMealIndexAndPendingMeal } from '../models';
 
 import MealStatusResolver from './MealStatusResolver';
 
@@ -21,6 +21,7 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
   onSetMealIndexAndPendingMeal: (index: number, meal: VerboseScheduledMeal) => any;
   onResolveMeal: (meal: VerboseScheduledMeal) => any;
+  onClearMealsToResolve: () => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
@@ -43,7 +44,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   const handleCloseMealStatusResolver = () => {
     console.log('handleCloseMealStatusResolver');
-    // props.onClearScheduledMealsToResolve();
+    props.onClearMealsToResolve();
   };
 
 
@@ -115,6 +116,7 @@ const mapDispatchToProps = (dispatch: any) => {
     onSetMealIndexAndPendingMeal: setMealIndexAndPendingMeal,
     onUpdateMeal: updateMeal,
     onResolveMeal: resolveMeal,
+    onClearMealsToResolve: clearMealsToResolve,
   }, dispatch);
 };
 

@@ -10,10 +10,18 @@ const SET_MEAL_INDEX = 'SET_MEAL_INDEX';
 const SET_MEALS_TO_RESOLVE = 'SET_MEALS_TO_RESOLVE';
 const REMOVE_MEAL_TO_RESOLVE = 'REMOVE_MEAL_TO_RESOLVE';
 const SET_MEAL_INDEX_AND_PENDING_MEAL = 'SET_MEAL_INDEX_AND_PENDING_MEAL';
+const CLEAR_MEALS_TO_RESOLVE = 'CLEAR_MEALS_TO_RESOLVE';
 
 // ------------------------------------
 // Actions
 // ------------------------------------
+
+export const clearMealsToResolve = (): any => {
+  return {
+    type: CLEAR_MEALS_TO_RESOLVE,
+  };
+};
+
 
 export interface SetMealIndexAndPendingMealPayload {
   mealIndex: number;
@@ -106,6 +114,11 @@ export const mealsResolutionStateReducer = (
   action: MealWheelModelBaseAction<SetMealIndexAndPendingMealPayload & SetPendingMealPayload & SetMealIndexPayload & SetMealsToResolvePayload & RemoveMealToResolvePayload>
 ): MealsResolutionState => {
   switch (action.type) {
+    case CLEAR_MEALS_TO_RESOLVE:
+      return {
+        ...state,
+        mealsToResolve: [],
+      };
     case SET_MEAL_INDEX_AND_PENDING_MEAL:
       return {
         ...state,
