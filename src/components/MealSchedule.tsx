@@ -11,7 +11,7 @@ import { cloneDeep } from 'lodash';
 
 import { MealStatus, ScheduledMealEntity } from '../types';
 import { generateMenu, updateMealStatus } from '../controllers';
-import { getCurrentUser, getScheduledMeals } from '../selectors';
+import { getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
@@ -19,6 +19,8 @@ import Drawer from '@mui/material/Drawer';
 import MealPropertySheet from './MealPropertySheet';
 import { clearScheduledMealsToResolve } from '../models';
 import MealsStatusResolver from './MealsStatusResolver';
+
+import GenerateMenuDialog from './GenerateMenuDialog';
 
 const localizer = momentLocalizer(moment);
 
@@ -53,9 +55,7 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
-  // React.useEffect(() => {
-  //   props.onSetScheduledMealsToResolve();
-  // }, []);
+  const [showGenerateMenu, setShowGenerateMenu] = React.useState(false);
 
   const handleCloseScheduledMealsStatusResolver = () => {
     console.log('handleCloseScheduledMealsStatusResolver');
@@ -63,7 +63,12 @@ const MealSchedule = (props: MealScheduleProps) => {
   };
 
   const handleGenerateMenu = () => {
-    props.onGenerateMenu();
+    // props.onGenerateMenu();
+    setShowGenerateMenu(true);
+  };
+
+  const handleCloseGenerateMenu = () => {
+    setShowGenerateMenu(false);
   };
 
   const handleOpen = (event: any) => {
@@ -142,6 +147,12 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   return (
     <div>
+      <div>
+        <GenerateMenuDialog
+          open={showGenerateMenu}
+          onClose={handleCloseGenerateMenu}
+        />
+      </div>
       <MealsStatusResolver
         onClose={handleCloseScheduledMealsStatusResolver}
       />
