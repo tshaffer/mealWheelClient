@@ -63,8 +63,15 @@ const MealSchedule = (props: MealScheduleProps) => {
   };
 
   const handleGenerateMenu = () => {
-    // props.onGenerateMenu();
     setShowGenerateMenu(true);
+  };
+
+  const handleExecuteGenerateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
+    console.log('handleExecuteGenerateMenu');
+    console.log(startDate);
+    console.log(numberOfMealsToGenerate);
+    console.log(overwriteExistingMeals);
+    // props.onGenerateMenu();
   };
 
   const handleCloseGenerateMenu = () => {
@@ -151,6 +158,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         <GenerateMenuDialog
           open={showGenerateMenu}
           onClose={handleCloseGenerateMenu}
+          onGenerateMenus={handleExecuteGenerateMenu}
         />
       </div>
       <MealsStatusResolver

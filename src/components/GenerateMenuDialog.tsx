@@ -10,7 +10,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -19,7 +19,7 @@ import { isNil } from 'lodash';
 
 export interface GenerateMenuDialogPropsFromParent {
   open: boolean;
-  // onGenerateMenus(startDate: )
+  onGenerateMenus: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => void;
   onClose: () => void;
 }
 
@@ -29,9 +29,12 @@ export interface GenerateMenuDialogProps extends GenerateMenuDialogPropsFromPare
 
 function GenerateMenuDialog(props: GenerateMenuDialogProps) {
 
-  const { open, onClose } = props;
+  debugger;
+  const foo = new dayjs.Dayjs();
 
-  const [startDate, setStartDate] = React.useState<dayjs.Dayjs | null>(new dayjs.Dayjs('2022-10-22T21:11:54'));
+  const { open, onClose, onGenerateMenus } = props;
+
+  const [startDate, setStartDate] = React.useState<dayjs.Dayjs | null>(new dayjs.Dayjs());
   const [numberOfMealsToGenerate, setNumberOfMealsToGenerate] = React.useState<number>(7);
   const [overwriteExistingMeals, setOverwriteExistingMeals] = React.useState<boolean>(true);
 
@@ -49,13 +52,14 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
     setOverwriteExistingMeals(event.target.checked);
   };
 
-  const handleClose = () => {
-
+  const handleGenerateMenu = () => {
     if (!isNil(startDate)) {
       const startDateToReturn: Date = startDate?.toDate();
-      console.log('Start date: ', startDateToReturn);
+      onGenerateMenus(startDateToReturn, numberOfMealsToGenerate, overwriteExistingMeals);
     }
+  };
 
+  const handleClose = () => {
     onClose();
   };
 
@@ -102,7 +106,7 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleClose} autoFocus>
+        <Button onClick={handleGenerateMenu} autoFocus>
           Generate Menu
         </Button>
       </DialogActions>
