@@ -39,7 +39,6 @@ const end: Date = new Date(now);
 end.setDate(end.getDate() + 1);
 
 export interface MealScheduleProps {
-  userId: string;
   scheduledMeals: ScheduledMealEntity[];
   onGenerateMenu: () => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
@@ -194,11 +193,8 @@ const MealSchedule = (props: MealScheduleProps) => {
 };
 
 function mapStateToProps(state: any) {
-  console.log('MealScheduled mapStateToProps invoked');
-  const scheduledMeals: ScheduledMealEntity[] = getScheduledMeals(state);
   return {
-    userId: getCurrentUser(state) as string,
-    scheduledMeals,
+    scheduledMeals: getScheduledMeals(state),
   };
 }
 

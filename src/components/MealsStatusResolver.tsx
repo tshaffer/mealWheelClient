@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { resolveMeal, updateMeal } from '../controllers';
-import { getScheduledMealsToResolve, getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
+import { getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
 import { VerboseScheduledMeal, ScheduledMealEntity, MealStatus } from '../types';
 import { clearMealsToResolve, setMealIndexAndPendingMeal } from '../models';
 
@@ -17,7 +17,6 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
   mealIndex: number;
   mealsToResolve: VerboseScheduledMeal[];
   pendingMeal: VerboseScheduledMeal | null;
-  scheduledMealsToResolve: ScheduledMealEntity[];
   onUpdateMeal: (mealId: string, scheduledMeal: ScheduledMealEntity) => any;
   onSetMealIndexAndPendingMeal: (index: number, meal: VerboseScheduledMeal) => any;
   onResolveMeal: (meal: VerboseScheduledMeal) => any;
@@ -87,7 +86,6 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   return (
     <div>
       <MealStatusResolver
-        scheduledMealId={mealsToResolve[mealIndex].id}
         previousDayEnabled={mealIndex > 0}
         onPreviousDay={handlePreviousDay}
         nextDayEnabled={mealIndex < (mealsToResolve.length - 1)}
@@ -106,7 +104,6 @@ function mapStateToProps(state: any) {
     mealIndex: getMealIndex(state),
     mealsToResolve: getMealsToResolve(state),
     pendingMeal: getPendingMeal(state),
-    scheduledMealsToResolve: getScheduledMealsToResolve(state),
   };
 }
 

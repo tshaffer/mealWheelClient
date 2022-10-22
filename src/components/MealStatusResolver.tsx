@@ -21,7 +21,6 @@ import { VerboseScheduledMeal, DishEntity } from '../types';
 import { setPendingMeal } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
-  scheduledMealId: string;
   previousDayEnabled: boolean;
   nextDayEnabled: boolean;
   onPreviousDay: () => void;

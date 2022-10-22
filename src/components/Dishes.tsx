@@ -32,7 +32,6 @@ import Alert, { AlertProps } from '@mui/material/Alert';
 import { DishEntity, DishRowModel, DishType, RequiredAccompanimentFlags } from '../types';
 import {
   getDishes,
-  getCurrentUser,
 } from '../selectors';
 import {
   addDish,
@@ -77,7 +76,6 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 export interface DishesProps {
-  userId: string;
   dishes: DishEntity[];
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
@@ -395,7 +393,6 @@ const Dishes = (props: DishesProps) => {
 
 function mapStateToProps(state: any) {
   return {
-    userId: getCurrentUser(state) as string,
     dishes: getDishes(state),
   };
 }

@@ -5,18 +5,17 @@ import { useNavigate } from 'react-router-dom';
 
 import Select from 'react-select';
 
-import { AppState, UiState, UserEntity, UsersMap } from '../types';
+import { UiState, UserEntity, UsersMap } from '../types';
 import {
   initializeApp,
   setStartupAppState
 } from '../controllers';
-import { getAppInitialized, getAppState, getUsers } from '../selectors';
+import { getAppInitialized, getUsers } from '../selectors';
 import { setUiState, setUser } from '../models';
 import { isNil } from 'lodash';
 
 export interface LoginProps {
   appInitialized: boolean;
-  appState: AppState,
   users: UsersMap;
   onInitializeApp: () => any;
   onSetUser: (userId: string) => any;
@@ -120,7 +119,6 @@ function mapStateToProps(state: any) {
   return {
     appInitialized: getAppInitialized(state),
     users: getUsers(state),
-    appState: getAppState(state),
   };
 }
 

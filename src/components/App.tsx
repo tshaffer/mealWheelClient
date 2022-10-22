@@ -20,7 +20,6 @@ import Button from '@mui/material/Button';
 import {
   UiState,
   UsersMap,
-  VersionInfo,
 } from '../types';
 
 import {
@@ -33,7 +32,6 @@ import {
 import {
   getAppInitialized,
   getUsers,
-  getVersionInfo,
 } from '../selectors';
 import Dishes from './Dishes';
 import MealSchedule from './MealSchedule';
@@ -42,7 +40,6 @@ import AboutDialog from './AboutDialog';
 
 export interface AppProps {
   appInitialized: boolean;
-  versionInfo: VersionInfo;
   users: UsersMap,
   onInitializeApp: () => any;
   onSetUiState: (uiState: UiState) => any;
@@ -244,7 +241,6 @@ function mapStateToProps(state: any) {
   return {
     appInitialized: getAppInitialized(state),
     users: getUsers(state),
-    versionInfo: getVersionInfo(state),
   };
 }
 
