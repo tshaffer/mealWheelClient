@@ -10,8 +10,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
-
-import dayjs, { Dayjs } from 'dayjs';
+import * as dayjs from 'dayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -20,6 +19,7 @@ import { isNil } from 'lodash';
 
 export interface GenerateMenuDialogPropsFromParent {
   open: boolean;
+  // onGenerateMenus(startDate: )
   onClose: () => void;
 }
 
@@ -31,13 +31,11 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
 
   const { open, onClose } = props;
 
-  const [startDate, setStartDate] = React.useState<Dayjs | null>(
-    dayjs('2022-10-22T21:11:54'),
-  );
+  const [startDate, setStartDate] = React.useState<dayjs.Dayjs | null>(new dayjs.Dayjs('2022-10-22T21:11:54'));
   const [numberOfMealsToGenerate, setNumberOfMealsToGenerate] = React.useState<number>(7);
   const [overwriteExistingMeals, setOverwriteExistingMeals] = React.useState<boolean>(true);
 
-  const handleUpdateStartDate = (newValue: Dayjs | null) => {
+  const handleUpdateStartDate = (newValue: dayjs.Dayjs | null) => {
     setStartDate(newValue);
   };
 
