@@ -53,16 +53,11 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
     if (!isNil(startDate)) {
       const startDateToReturn: Date = startDate?.toDate();
       onGenerateMenus(startDateToReturn, numberOfMealsToGenerate, overwriteExistingMeals);
+      onClose();
     }
   };
 
   const handleClose = () => {
-
-    if (!isNil(startDate)) {
-      const startDateToReturn: Date = startDate?.toDate();
-      console.log('Start date: ', startDateToReturn);
-    }
-
     onClose();
   };
 

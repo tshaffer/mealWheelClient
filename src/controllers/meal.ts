@@ -104,30 +104,29 @@ export const loadScheduledMeals = () => {
 export const generateMeal = (mealId: string, mealDate: Date) => {
   return (dispatch: any, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1);
+    const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1, true);
     const meal: ScheduledMealEntity = meals[0];
     meal.id = mealId;
     dispatch(updateMeal(mealId, meal));
   };
 };
 
-export const generateMenu = () => {
+export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
   return (dispatch: any, getState: any) => {
-
-    // TEDTODO - this looks temporary
-    dispatch(clearScheduledMeals());
 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
     const generatedMeals: ScheduledMealEntity[] = [];
 
-    const randomDishBasedMeals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, new Date(), 5);
-    const randomPredefinedMeals: ScheduledMealEntity[] = getRandomPredefinedMeals(mealWheelState, randomDishBasedMeals, 5);
+    const randomDishBasedMeals: ScheduledMealEntity[] =
+      generateRandomDishBasedMeals(mealWheelState, startDate, numberOfMealsToGenerate, overwriteExistingMeals);
+    // const randomPredefinedMeals: ScheduledMealEntity[] = getRandomPredefinedMeals(mealWheelState, randomDishBasedMeals, 5);
 
-    const allRandomMeals: ScheduledMealEntity[] = randomDishBasedMeals.concat(randomPredefinedMeals);
+    // const allRandomMeals: ScheduledMealEntity[] = randomDishBasedMeals.concat(randomPredefinedMeals);
+    const allRandomMeals: ScheduledMealEntity[] = cloneDeep(randomDishBasedMeals);
 
-    let mealDate: Date = new Date();
-    while (generatedMeals.length < 10) {
+    let mealDate: Date = new Date(startDate);
+    while (generatedMeals.length < numberOfMealsToGenerate) {
       const mealIndex = Math.floor(Math.random() * allRandomMeals.length);
       const scheduledMeal: ScheduledMealEntity = allRandomMeals[mealIndex];
       scheduledMeal.dateScheduled = mealDate;
@@ -188,7 +187,7 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
   return scheduledMealEntities;
 };
 
-const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate: Date, numMeals: number): ScheduledMealEntity[] => {
+const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate: Date, numMeals: number, overwriteExistingMeals: boolean): ScheduledMealEntity[] => {
 
   const scheduledMealEntities: ScheduledMealEntity[] = [];
 

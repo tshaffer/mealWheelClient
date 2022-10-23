@@ -42,7 +42,7 @@ end.setDate(end.getDate() + 1);
 
 export interface MealScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
-  onGenerateMenu: () => any;
+  onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
   // onSetScheduledMealsToResolve: () => any;
   onClearScheduledMealsToResolve: () => any;
@@ -71,7 +71,7 @@ const MealSchedule = (props: MealScheduleProps) => {
     console.log(startDate);
     console.log(numberOfMealsToGenerate);
     console.log(overwriteExistingMeals);
-    // props.onGenerateMenu();
+    props.onGenerateMenu(startDate, numberOfMealsToGenerate, overwriteExistingMeals);
   };
 
   const handleCloseGenerateMenu = () => {
