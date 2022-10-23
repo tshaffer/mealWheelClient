@@ -21,3 +21,21 @@ export const getScheduledMeal = (state: MealWheelState, mealId: string): Schedul
   }
   return null;
 };
+
+export const getScheduledMealByDate = (state: MealWheelState, targetMealDate: Date): ScheduledMealEntity | null => {
+
+  const targetMealYear = targetMealDate.getFullYear();
+  const targetMealMonth = targetMealDate.getMonth();
+  const targetMealDayInMonth = targetMealDate.getDate();
+
+  const mealEntities: ScheduledMealEntity[] = state.scheduledMealsState.scheduledMeals;
+  for (const mealEntity of mealEntities) {
+    const existingMealYear = mealEntity.dateScheduled.getFullYear();
+    const existingMealMonth = mealEntity.dateScheduled.getMonth();
+    const existingMealDayInMonth = mealEntity.dateScheduled.getDate();
+    if (targetMealYear === existingMealYear && targetMealMonth === existingMealMonth && targetMealDayInMonth === existingMealDayInMonth) {
+      return mealEntity;
+    }
+  }
+  return null;
+};

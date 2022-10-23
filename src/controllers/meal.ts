@@ -13,7 +13,17 @@ import {
   setMealIndex,
   setPendingMeal
 } from '../models';
-import { getCurrentUser, getDefinedMeals, getDish, getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
+import {
+  getCurrentUser,
+  getDefinedMeals,
+  getDish,
+  getMainById,
+  getSaladById,
+  getScheduledMeal,
+  getScheduledMealByDate,
+  getSideById,
+  getVeggieById
+} from '../selectors';
 
 import {
   apiUrlFragment,
@@ -111,12 +121,14 @@ export const generateMeal = (mealId: string, mealDate: Date) => {
   };
 };
 
+// TODO - use of allRandomMeals / mealIndex
 export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
+  
   return (dispatch: any, getState: any) => {
 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
-    const generatedMeals: ScheduledMealEntity[] = [];
+    let generatedMealCount: number = 0;
 
     const randomDishBasedMeals: ScheduledMealEntity[] =
       generateRandomDishBasedMeals(mealWheelState, startDate, numberOfMealsToGenerate, overwriteExistingMeals);
@@ -126,15 +138,48 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, o
     const allRandomMeals: ScheduledMealEntity[] = cloneDeep(randomDishBasedMeals);
 
     let mealDate: Date = new Date(startDate);
-    while (generatedMeals.length < numberOfMealsToGenerate) {
+    while (generatedMealCount < numberOfMealsToGenerate) {
+
       const mealIndex = Math.floor(Math.random() * allRandomMeals.length);
       const scheduledMeal: ScheduledMealEntity = allRandomMeals[mealIndex];
       scheduledMeal.dateScheduled = mealDate;
+
+      // check to see if there's a meal already scheduled for this date
+      const mealScheduledForThisDate: ScheduledMealEntity | null = getScheduledMealByDate(mealWheelState, mealDate);
+
+      /* overwriteExistingMeals pseudoCode
+        if overwriteExistingMeals
+          if mealScheduledForThisDate !== null
+            replace meal on this date
+          else
+            add meal on this date
+        else
+          if mealScheduledForThisDate !== null
+            skip this meal
+          else
+            add meal on this date
+
+        existing action creator: addScheduledMeal
+        required action creator: replaceScheuledMeal
+      */
+      if (overwriteExistingMeals) {
+        if (!isNil(mealScheduledForThisDate)) {
+          dispatch(updateMeal(mealScheduledForThisDate.id, allRandomMeals[mealIndex]));
+        } else {
+          dispatch(addScheduledMeal(allRandomMeals[mealIndex]));
+        }
+      } else {
+        if (isNil(mealScheduledForThisDate)) {
+          dispatch(addScheduledMeal(allRandomMeals[mealIndex]));
+        }
+      }
+
       mealDate = new Date();
       mealDate.setTime(scheduledMeal.dateScheduled.getTime() + (24 * 60 * 60 * 1000));
-      generatedMeals.push(allRandomMeals[mealIndex]);
-      dispatch(addScheduledMeal(allRandomMeals[mealIndex]));
+
       allRandomMeals.splice(mealIndex, 1);
+
+      generatedMealCount++;
     }
   };
 };
@@ -334,9 +379,13 @@ export const updateMeal = (
 
     const path = serverUrl + apiUrlFragment + 'updateMeal';
 
+    // TODO - better way to do the following?
+    const mealWithRightId: ScheduledMealEntity = cloneDeep(meal);
+    mealWithRightId.id = id;
+
     const updateMealBody: any = {
       id,
-      meal,
+      meal: mealWithRightId,
     };
 
     return axios.post(
