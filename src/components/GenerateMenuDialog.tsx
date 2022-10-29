@@ -17,6 +17,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { isNil } from 'lodash';
 
+import { setStartDate, setNumberOfMealsToGenerate, setOverwriteExistingMeals } from '../models';
+import { getStartDate, getNumberOfMealsToGenerate, getOverwriteExistingMeals } from '../selectors';
+import { bindActionCreators } from 'redux';
+
 export interface GenerateMenuDialogPropsFromParent {
   open: boolean;
   onGenerateMenus: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => void;
@@ -24,19 +28,20 @@ export interface GenerateMenuDialogPropsFromParent {
 }
 
 export interface GenerateMenuDialogProps extends GenerateMenuDialogPropsFromParent {
-  pizza: string;
+  startDate: Date;
+  numberOfMealsToGenerate: number;
+  overwriteExistingMeals: boolean;
+  onSetStartDate: (startDate: Date) => void;
+  onSetNumberOfMealsToGenerate: (numberOfMealsToGenerate: number) => void;
+  onOverwriteExistingMeals: (overwriteExistingMeals: boolean) => void;
 }
 
 function GenerateMenuDialog(props: GenerateMenuDialogProps) {
 
   const { open, onClose, onGenerateMenus } = props;
 
-  const [startDate, setStartDate] = React.useState<Dayjs | null>(dayjs('2022-10-22T21:11:54'));
-  const [numberOfMealsToGenerate, setNumberOfMealsToGenerate] = React.useState<number>(7);
-  const [overwriteExistingMeals, setOverwriteExistingMeals] = React.useState<boolean>(true);
-
   const handleUpdateStartDate = (newValue: Dayjs | null) => {
-    setStartDate(newValue);
+    props.onSetStartDate((newValue as Dayjs).toDate());
   };
 
   const handleUpdateNumberOfMealsToGenerate = (event: object) => {
@@ -50,9 +55,8 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
   };
 
   const handleGenerateMenu = () => {
-    if (!isNil(startDate)) {
-      const startDateToReturn: Date = startDate?.toDate();
-      onGenerateMenus(startDateToReturn, numberOfMealsToGenerate, overwriteExistingMeals);
+    if (!isNil(props.startDate)) {
+      onGenerateMenus(props.startDate, props.numberOfMealsToGenerate, props.overwriteExistingMeals);
       onClose();
     }
   };
@@ -71,7 +75,7 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
           <DesktopDatePicker
             label="Start Date"
             inputFormat="MM/DD/YYYY"
-            value={startDate}
+            value={props.startDate}
             onChange={handleUpdateStartDate}
             renderInput={(params) => <TextField {...params} />}
           />
@@ -84,7 +88,7 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
           InputProps={{
             inputProps: { min: 1 }
           }}
-          value={numberOfMealsToGenerate}
+          value={props.numberOfMealsToGenerate}
           onChange={handleUpdateNumberOfMealsToGenerate}
         />
         <br />
@@ -94,7 +98,7 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={overwriteExistingMeals}
+                checked={props.overwriteExistingMeals}
                 onChange={handleUpdateOverwriteExistingMeals}
               />
             }
@@ -114,9 +118,20 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
 
 function mapStateToProps(state: any) {
   return {
-    pizza: 'stromboli',
+    startDate: getStartDate(state),
+    numberOfMealsToGenerate: getNumberOfMealsToGenerate(state),
+    overwriteExistingMeals: getOverwriteExistingMeals(state),
   };
 }
 
-export default connect(mapStateToProps)(GenerateMenuDialog);
+const mapDispatchToProps = (dispatch: any) => {
+  return bindActionCreators({
+    onSetStartDate: setStartDate,
+    onSetNumberOfMealsToGenerate: setNumberOfMealsToGenerate,
+    onOverwriteExistingMeals: setOverwriteExistingMeals,
+  }, dispatch);
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(GenerateMenuDialog);
 
