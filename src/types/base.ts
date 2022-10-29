@@ -14,6 +14,7 @@ export interface MealWheelState {
   appState: AppState;
   dishesState: DishesState;
   definedMealsState: DefinedMealsState;
+  generateMealsState: GenerateMealsState;
   scheduledMealsState: ScheduledMealsState;
   mealsResolutionState: MealsResolutionState;
   users: UsersMap;
@@ -54,6 +55,12 @@ export interface DefinedMealsState {
 export interface ScheduledMealsState {
   scheduledMeals: ScheduledMealEntity[];
   scheduledMealsToResolve: ScheduledMealEntity[];
+}
+
+export interface GenerateMealsState {
+  startDate: Date;
+  numberOfMealsToGenerate: number;
+  overwriteExistingMeals: boolean;
 }
 
 export interface MealsResolutionState {
