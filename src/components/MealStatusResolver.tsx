@@ -321,13 +321,13 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             type="button"
             onClick={handleClose}
           >
-            Cancel
+            Exit
           </button>
           <button
             type="button"
             onClick={handleSave}
           >
-            Save
+            Save and Continue
           </button>
           <button
             type="button"
@@ -339,7 +339,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             type="button"
             onClick={handleNew}
           >
-            New
+            Specify New
           </button>
 
         </div>
