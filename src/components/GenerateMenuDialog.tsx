@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import Button from '@mui/material/Button';
@@ -19,7 +20,6 @@ import { isNil } from 'lodash';
 
 import { setStartDate, setNumberOfMealsToGenerate, setOverwriteExistingMeals } from '../models';
 import { getStartDate, getNumberOfMealsToGenerate, getOverwriteExistingMeals } from '../selectors';
-import { bindActionCreators } from 'redux';
 
 export interface GenerateMenuDialogPropsFromParent {
   open: boolean;
@@ -33,7 +33,7 @@ export interface GenerateMenuDialogProps extends GenerateMenuDialogPropsFromPare
   overwriteExistingMeals: boolean;
   onSetStartDate: (startDate: Date) => void;
   onSetNumberOfMealsToGenerate: (numberOfMealsToGenerate: number) => void;
-  onOverwriteExistingMeals: (overwriteExistingMeals: boolean) => void;
+  onSetOverwriteExistingMeals: (overwriteExistingMeals: boolean) => void;
 }
 
 function GenerateMenuDialog(props: GenerateMenuDialogProps) {
@@ -47,11 +47,11 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
   const handleUpdateNumberOfMealsToGenerate = (event: object) => {
     const textEntry = ((event as any).target as any).value;
     const numberOfMealsToGenerateEntry = parseInt(textEntry, 10);
-    setNumberOfMealsToGenerate(numberOfMealsToGenerateEntry);
+    props.onSetNumberOfMealsToGenerate(numberOfMealsToGenerateEntry);
   };
 
   const handleUpdateOverwriteExistingMeals = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOverwriteExistingMeals(event.target.checked);
+    props.onSetOverwriteExistingMeals(event.target.checked);
   };
 
   const handleGenerateMenu = () => {
@@ -128,7 +128,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onSetStartDate: setStartDate,
     onSetNumberOfMealsToGenerate: setNumberOfMealsToGenerate,
-    onOverwriteExistingMeals: setOverwriteExistingMeals,
+    onSetOverwriteExistingMeals: setOverwriteExistingMeals,
   }, dispatch);
 };
 

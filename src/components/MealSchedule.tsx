@@ -17,9 +17,9 @@ import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
-import { clearScheduledMealsToResolve } from '../models';
-import MealsStatusResolver from './MealsStatusResolver';
+import { setStartDate } from '../models';
 
+import MealsStatusResolver from './MealsStatusResolver';
 import GenerateMenuDialog from './GenerateMenuDialog';
 
 const localizer = momentLocalizer(moment);
@@ -44,8 +44,8 @@ export interface MealScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
   onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
-  // onSetScheduledMealsToResolve: () => any;
-  onClearScheduledMealsToResolve: () => any;
+  onSetStartDate: (startDate: Date) => void;
+
 }
 
 const MealSchedule = (props: MealScheduleProps) => {
@@ -59,10 +59,10 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const handleCloseScheduledMealsStatusResolver = () => {
     console.log('handleCloseScheduledMealsStatusResolver');
-    // props.onClearScheduledMealsToResolve();
   };
 
   const handleGenerateMenu = () => {
+    props.onSetStartDate(new Date());
     setShowGenerateMenu(true);
   };
 
@@ -221,8 +221,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onGenerateMenu: generateMenu,
     onUpdateMealStatus: updateMealStatus,
-    // onSetScheduledMealsToResolve: setScheduledMealsToResolve,
-    onClearScheduledMealsToResolve: clearScheduledMealsToResolve,
+    onSetStartDate: setStartDate,
   }, dispatch);
 };
 
