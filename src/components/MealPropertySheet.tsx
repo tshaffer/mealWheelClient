@@ -31,6 +31,7 @@ import {
   getMainById
 } from '../selectors';
 import {
+  deleteScheduledMeal,
   generateMeal,
   updateMainInMeal,
   updateSaladInMeal,
@@ -60,6 +61,7 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
   onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
   onGenerateMeal: (mealId: string, date: Date) => any;
+  onDeleteMeal: (mealId: string) => any;
   state: any;
 }
 
@@ -76,6 +78,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
+  if (getScheduledMealId() === '') {
+    return null;
+  }
+  
   if (isNil(props.selectedMealInCalendar) || isNil(props.selectedMealInCalendar.scheduledMealId) || props.selectedMealInCalendar.scheduledMealId === '') {
     return null;
   }
@@ -96,8 +102,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
   };
 
-  const handleClear = () => {
-    console.log('handleClear');
+  const handleDelete = () => {
+    console.log('handleDelete');
+    props.onDeleteMeal(getScheduledMealId());
+    props.handleClose();
   };
 
   const handleRegenerate = () => {
@@ -256,7 +264,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const renderActionButtons = (): JSX.Element => {
     return (
       <div>
-        <Button className='buttonMarginLeft' color='inherit' variant='contained' onClick={handleClear}>Clear</Button>
+        <Button className='buttonMarginLeft' color='inherit' variant='contained' onClick={handleDelete}>Delete</Button>
         <Button className='buttonMarginLeft buttonMarginRight' color='inherit' variant='contained' onClick={handleRegenerate}>Suggest another</Button>
       </div>
     );
@@ -326,6 +334,7 @@ const mapDispatchToProps = (dispatch: any) => {
     onUpdateSaladInMeal: updateSaladInMeal,
     onUpdateVeggieInMeal: updateVeggieInMeal,
     onGenerateMeal: generateMeal,
+    onDeleteMeal: deleteScheduledMeal,
   }, dispatch);
 };
 

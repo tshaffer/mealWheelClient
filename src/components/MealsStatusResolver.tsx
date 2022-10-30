@@ -21,7 +21,7 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
   onSetMealIndexAndPendingMeal: (index: number, meal: VerboseScheduledMeal) => any;
   onResolveMeal: (meal: VerboseScheduledMeal) => any;
   onClearMealsToResolve: () => any;
-  onDeleteMeal: (index: string) => any;
+  onDeleteMeal: (id: string) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
