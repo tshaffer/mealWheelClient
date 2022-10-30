@@ -47,9 +47,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   };
 
   const handleDeleteMealStatusResolver = (meal: VerboseScheduledMeal) => {
-    console.log('invoke onResolvedMeal');
     props.onResolveMeal(meal);
-    console.log('invoke onDeleteMeal');
     props.onDeleteMeal(meal.id);
   };
 
@@ -100,7 +98,6 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 };
 
 function mapStateToProps(state: any) {
-  // console.log('MealsStatusResolver mapStateToProps invoked');
   return {
     mealIndex: getMealIndex(state),
     mealsToResolve: getMealsToResolve(state),

@@ -6,8 +6,6 @@ export const resolveMeal = (meal: VerboseScheduledMeal) => {
 
   return (dispatch: any, getState: any) => {
 
-    console.log('resolveMeal dispatched');
-
     let state: MealWheelState = getState();
     const mealIndex: number = getMealIndex(state);
     const mealsToResolve: VerboseScheduledMeal[] = getMealsToResolve(state);

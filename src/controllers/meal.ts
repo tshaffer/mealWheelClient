@@ -406,12 +406,8 @@ export const updateScheduledMeal = (
 export const deleteScheduledMeal = (
   id: string,
 ) => {
-  return ((dispatch: any, getState: any): any => {
-    let mealWheelState: MealWheelState = getState() as MealWheelState;
-    console.log('before: ' + mealWheelState.scheduledMealsState.scheduledMeals.length);
+  return ((dispatch: any): any => {
     dispatch(deleteScheduledMealRedux(id));
-    mealWheelState = getState() as MealWheelState;
-    console.log('after: ' + mealWheelState.scheduledMealsState.scheduledMeals.length);
   });
 };
 

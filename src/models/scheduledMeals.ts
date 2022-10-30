@@ -147,21 +147,10 @@ export const scheduledMealsStateReducer = (
       return newState;
     }
     case DELETE_SCHEDULED_MEAL: {
-      console.log('scheduledMealsStateReducer: DELETE_SCHEDULED_MEAL');
       const index = state.scheduledMeals.findIndex((scheduledMeal) => scheduledMeal.id === action.payload.id);
       if (!isNil(index)) {
         const newState = cloneDeep(state) as ScheduledMealsState;
-
-        const firstPart = newState.scheduledMeals.slice(0, index);
-        console.log('firstPart: ', firstPart);
-
-        const secondPart = newState.scheduledMeals.slice(index + 1);
-        console.log('secondPart: ', secondPart);
-
-        const bothParts = firstPart.concat(secondPart);
-        newState.scheduledMeals = bothParts;
-        // newState.scheduledMeals.slice(index + 1);
-        console.log('newState: ', newState);
+        newState.scheduledMeals = newState.scheduledMeals.slice(0, index).concat(newState.scheduledMeals.slice(index + 1));
         return newState;
 
         // return {
