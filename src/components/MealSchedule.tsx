@@ -62,7 +62,9 @@ const MealSchedule = (props: MealScheduleProps) => {
   };
 
   const handleGenerateMenu = () => {
-    props.onSetStartDate(new Date());
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    props.onSetStartDate(tomorrow);
     setShowGenerateMenu(true);
   };
 
