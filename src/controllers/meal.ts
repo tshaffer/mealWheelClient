@@ -407,7 +407,26 @@ export const deleteScheduledMeal = (
   id: string,
 ) => {
   return ((dispatch: any): any => {
+
     dispatch(deleteScheduledMealRedux(id));
+
+    const path = serverUrl + apiUrlFragment + 'deleteScheduledMeal';
+
+    const deleteMealBody: any = {
+      id,
+    };
+
+    return axios.post(
+      path,
+      deleteMealBody
+    ).then((response) => {
+      return;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return;
+    });
+
   });
 };
 
