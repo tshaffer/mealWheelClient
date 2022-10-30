@@ -12,7 +12,7 @@ export const resolveMeal = (meal: VerboseScheduledMeal) => {
     const mealIndex: number = getMealIndex(state);
     const mealsToResolve: VerboseScheduledMeal[] = getMealsToResolve(state);
 
-    // remove the saved meal from the list of meals to resolve.
+    // remove the specifid meal from the list of meals to resolve.
     dispatch(removeMealToResolve(meal.id));
     state = getState();
 

@@ -28,6 +28,7 @@ export interface MealStatusResolverPropsFromParent {
   onClose: () => void;
   onSave: (meal: VerboseScheduledMeal) => void;
   onSkip: (meal: VerboseScheduledMeal) => void;
+  onDelete: (meal: VerboseScheduledMeal) => void;
 }
 
 export interface MealStatusResolverProps extends MealStatusResolverPropsFromParent {
@@ -41,7 +42,7 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
 
 const MealStatusResolver = (props: MealStatusResolverProps) => {
 
-  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onSave, onSkip, onSetPendingMeal,
+  const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onDelete, onSave, onSkip, onSetPendingMeal,
     mains, sides, salads, veggies } = props;
   const meal = props.meal;
 
@@ -66,8 +67,8 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     onSkip(meal as VerboseScheduledMeal);
   };
 
-  const handleNew = () => {
-    // onClose();
+  const handleDelete = () => {
+    onDelete(meal as VerboseScheduledMeal);
   };
 
   const handleUpdateMain = (event: any) => {
@@ -284,11 +285,11 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
 
-  console.log('MealStatusResolve: check isNil(meal)');
+  // console.log('MealStatusResolve: check isNil(meal)');
   if (isNil(meal)) {
     return null;
   }
-  console.log('MealStatusResolver: meal is non null');
+  // console.log('MealStatusResolver: meal is non null');
   
   const mealStatusElement = renderMealStatus();
   const mainDishElement = renderMains();
@@ -337,9 +338,9 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
           </button>
           <button
             type="button"
-            onClick={handleNew}
+            onClick={handleDelete}
           >
-            Specify New
+            Delete
           </button>
 
         </div>
@@ -350,7 +351,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
 function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent) {
 
-  console.log('MealStatusResolver mapStateToProps invoked');
+  // console.log('MealStatusResolver mapStateToProps invoked');
 
   return {
     meal: getPendingMeal(state) as VerboseScheduledMeal,

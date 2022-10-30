@@ -2,7 +2,7 @@ import { isNil } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { resolveMeal, updateMeal } from '../controllers';
+import { deleteScheduledMeal, resolveMeal, updateScheduledMeal } from '../controllers';
 import { getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
 import { VerboseScheduledMeal, ScheduledMealEntity, MealStatus } from '../types';
 import { clearMealsToResolve, setMealIndexAndPendingMeal } from '../models';
@@ -21,6 +21,7 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
   onSetMealIndexAndPendingMeal: (index: number, meal: VerboseScheduledMeal) => any;
   onResolveMeal: (meal: VerboseScheduledMeal) => any;
   onClearMealsToResolve: () => any;
+  onDeleteMeal: (index: string) => any;
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
@@ -42,10 +43,15 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
   };
 
   const handleCloseMealStatusResolver = () => {
-    console.log('handleCloseMealStatusResolver');
     props.onClearMealsToResolve();
   };
 
+  const handleDeleteMealStatusResolver = (meal: VerboseScheduledMeal) => {
+    console.log('invoke onResolvedMeal');
+    props.onResolveMeal(meal);
+    console.log('invoke onDeleteMeal');
+    props.onDeleteMeal(meal.id);
+  };
 
   const handleSaveMealStatusResolver = (meal: VerboseScheduledMeal) => {
 
@@ -69,19 +75,13 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
     props.onResolveMeal(meal);
   };
 
-  console.log('MealsStatusResolver - check array lengths');
-
   if (mealsToResolve.length === 0) {
     return null;
   }
 
-  console.log('MealsStatusResolver - mealsToResolve.length > 0');
-
   if (isNil(props.pendingMeal)) {
     return null;
   }
-
-  console.log('MealsStatusResolver - pendingMeal non null');
 
   return (
     <div>
@@ -91,6 +91,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
         nextDayEnabled={mealIndex < (mealsToResolve.length - 1)}
         onNextDay={handleNextDay}
         onClose={handleCloseMealStatusResolver}
+        onDelete={handleDeleteMealStatusResolver}
         onSave={handleSaveMealStatusResolver}
         onSkip={handleSkipMealStatusResolver}
       />
@@ -99,7 +100,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 };
 
 function mapStateToProps(state: any) {
-  console.log('MealsStatusResolver mapStateToProps invoked');
+  // console.log('MealsStatusResolver mapStateToProps invoked');
   return {
     mealIndex: getMealIndex(state),
     mealsToResolve: getMealsToResolve(state),
@@ -111,9 +112,10 @@ function mapStateToProps(state: any) {
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onSetMealIndexAndPendingMeal: setMealIndexAndPendingMeal,
-    onUpdateMeal: updateMeal,
+    onUpdateMeal: updateScheduledMeal,
     onResolveMeal: resolveMeal,
     onClearMealsToResolve: clearMealsToResolve,
+    onDeleteMeal: deleteScheduledMeal,
   }, dispatch);
 };
 

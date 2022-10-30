@@ -7,6 +7,7 @@ import {
   addDefinedMealsRedux,
   clearDefinedMeals,
   clearScheduledMeals,
+  deleteScheduledMealRedux,
   updateScheduledMealRedux,
   addScheduledMealsRedux,
   setMealsToResolve,
@@ -117,13 +118,13 @@ export const generateMeal = (mealId: string, mealDate: Date) => {
     const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1, true);
     const meal: ScheduledMealEntity = meals[0];
     meal.id = mealId;
-    dispatch(updateMeal(mealId, meal));
+    dispatch(updateScheduledMeal(mealId, meal));
   };
 };
 
 // TODO - use of allRandomMeals / mealIndex
 export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
-  
+
   return (dispatch: any, getState: any) => {
 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
@@ -164,7 +165,7 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, o
       */
       if (overwriteExistingMeals) {
         if (!isNil(mealScheduledForThisDate)) {
-          dispatch(updateMeal(mealScheduledForThisDate.id, allRandomMeals[mealIndex]));
+          dispatch(updateScheduledMeal(mealScheduledForThisDate.id, allRandomMeals[mealIndex]));
         } else {
           dispatch(addScheduledMeal(allRandomMeals[mealIndex]));
         }
@@ -368,7 +369,7 @@ export const addScheduledMeal = (
   });
 };
 
-export const updateMeal = (
+export const updateScheduledMeal = (
   id: string,
   meal: ScheduledMealEntity
 ): any => {
@@ -402,6 +403,18 @@ export const updateMeal = (
   });
 };
 
+export const deleteScheduledMeal = (
+  id: string,
+) => {
+  return ((dispatch: any, getState: any): any => {
+    let mealWheelState: MealWheelState = getState() as MealWheelState;
+    console.log('before: ' + mealWheelState.scheduledMealsState.scheduledMeals.length);
+    dispatch(deleteScheduledMealRedux(id));
+    mealWheelState = getState() as MealWheelState;
+    console.log('after: ' + mealWheelState.scheduledMealsState.scheduledMeals.length);
+  });
+};
+
 export const updateMainInMeal = (
   mealId: string,
   newMainId: string,
@@ -412,7 +425,7 @@ export const updateMainInMeal = (
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(newMain) && !isNil(meal)) {
       meal.mainDishId = newMainId;
-      dispatch(updateMeal(meal.id, meal));
+      dispatch(updateScheduledMeal(meal.id, meal));
     }
   };
 };
@@ -431,7 +444,7 @@ export const updateSideInMeal = (
       } else {
         meal.sideId = '';
       }
-      dispatch(updateMeal(meal.id, meal));
+      dispatch(updateScheduledMeal(meal.id, meal));
     }
   };
 };
@@ -450,7 +463,7 @@ export const updateSaladInMeal = (
       } else {
         meal.saladId = '';
       }
-      dispatch(updateMeal(meal.id, meal));
+      dispatch(updateScheduledMeal(meal.id, meal));
     }
   };
 };
@@ -469,7 +482,7 @@ export const updateVeggieInMeal = (
       } else {
         meal.veggieId = '';
       }
-      dispatch(updateMeal(meal.id, meal));
+      dispatch(updateScheduledMeal(meal.id, meal));
     }
   };
 };
@@ -484,7 +497,7 @@ export const updateMealStatus = (
     if (!isNil(meal)) {
       const newMeal = cloneDeep(meal);
       newMeal.status = mealStatus;
-      dispatch(updateMeal(meal.id, newMeal));
+      dispatch(updateScheduledMeal(meal.id, newMeal));
     }
   };
 };

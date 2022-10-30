@@ -1,14 +1,15 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import { ScheduledMealEntity, ScheduledMealsState } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const ADD_SCHEDULED_MEAL = 'ADD_SCHEDULED_MEAL';
-export const ADD_SCHEDULED_MEALS = 'ADD_SCHEDULED_MEALS';
-export const UPDATE_SCHEDULED_MEAL = 'UPDATE_SCHEDULED_MEAL';
-export const CLEAR_SCHEDULED_MEALS = 'CLEAR_SCHEDULED_MEALS';
+const ADD_SCHEDULED_MEAL = 'ADD_SCHEDULED_MEAL';
+const ADD_SCHEDULED_MEALS = 'ADD_SCHEDULED_MEALS';
+const UPDATE_SCHEDULED_MEAL = 'UPDATE_SCHEDULED_MEAL';
+const DELETE_SCHEDULED_MEAL = 'DELETE_SCHEDULED_MEAL';
+const CLEAR_SCHEDULED_MEALS = 'CLEAR_SCHEDULED_MEALS';
 const SET_SCHEDULED_MEALS_TO_RESOLVE = 'SET_SCHEDULED_MEALS_TO_RESOLVE';
 const CLEAR_SCHEDULED_MEALS_TO_RESOLVE = 'CLEAR_SCHEDULED_MEALS_TO_RESOLVE';
 
@@ -75,6 +76,21 @@ export const updateScheduledMealRedux = (
   };
 };
 
+export interface DeleteScheduledMealPayload {
+  id: string;
+}
+
+export const deleteScheduledMealRedux = (
+  id: string,
+): any => {
+  return {
+    type: DELETE_SCHEDULED_MEAL,
+    payload: {
+      id,
+    }
+  };
+};
+
 export interface SetScheduledMealsToResolvePayload {
   id: string;
   scheduledMealsToResolve: ScheduledMealEntity[];
@@ -111,7 +127,7 @@ const initialState: ScheduledMealsState =
 
 export const scheduledMealsStateReducer = (
   state: ScheduledMealsState = initialState,
-  action: MealWheelModelBaseAction<AddScheduledMealPayload & AddScheduledMealsPayload & UpdateScheduledMealPayload & SetScheduledMealsToResolvePayload>
+  action: MealWheelModelBaseAction<AddScheduledMealPayload & AddScheduledMealsPayload & UpdateScheduledMealPayload & DeleteScheduledMealPayload & SetScheduledMealsToResolvePayload>
 ): ScheduledMealsState => {
   switch (action.type) {
     case ADD_SCHEDULED_MEAL: {
@@ -129,6 +145,32 @@ export const scheduledMealsStateReducer = (
       const updatedDishes = newState.scheduledMeals.map((scheduledMeal) => (scheduledMeal.id === action.payload.id ? action.payload.scheduledMeal : scheduledMeal));
       newState.scheduledMeals = updatedDishes;
       return newState;
+    }
+    case DELETE_SCHEDULED_MEAL: {
+      console.log('scheduledMealsStateReducer: DELETE_SCHEDULED_MEAL');
+      const index = state.scheduledMeals.findIndex((scheduledMeal) => scheduledMeal.id === action.payload.id);
+      if (!isNil(index)) {
+        const newState = cloneDeep(state) as ScheduledMealsState;
+
+        const firstPart = newState.scheduledMeals.slice(0, index);
+        console.log('firstPart: ', firstPart);
+
+        const secondPart = newState.scheduledMeals.slice(index + 1);
+        console.log('secondPart: ', secondPart);
+
+        const bothParts = firstPart.concat(secondPart);
+        newState.scheduledMeals = bothParts;
+        // newState.scheduledMeals.slice(index + 1);
+        console.log('newState: ', newState);
+        return newState;
+
+        // return {
+        //   ...state,
+        //   ...state.scheduledMeals.slice(0, index),
+        //   ...state.scheduledMeals.slice(index + 1)
+        // };
+      }
+      return state;
     }
     case CLEAR_SCHEDULED_MEALS: {
       // TEDTODO - use spread operator to do this properly
