@@ -77,6 +77,7 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
             inputFormat="MM/DD/YYYY"
             value={props.startDate}
             onChange={handleUpdateStartDate}
+            disablePast={true}
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
