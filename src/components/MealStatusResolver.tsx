@@ -12,6 +12,7 @@ import {
   MenuItem,
   Select
 } from '@mui/material';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -69,6 +70,10 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const handleDelete = () => {
     onDelete(meal as VerboseScheduledMeal);
+  };
+
+  const handleNew = () => {
+    console.log('handleNew invoked');
   };
 
   const handleUpdateMain = (event: any) => {
@@ -144,6 +149,16 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     onSetPendingMeal(updatedMeal);
   };
 
+  const renderNewMenuItem = (): JSX.Element => {
+    return (
+      <Button color='inherit' onClick={handleNew}>New</Button>
+    );
+    // return (
+    //   <MenuItem value={'new'} key={'new'}>New</MenuItem>
+    // );
+
+  };
+
   const renderNoneMenuItem = (): JSX.Element => {
     return (
       <MenuItem value={'none'} key={'none'}>None</MenuItem>
@@ -163,6 +178,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     if (includeNone) {
       dishMenuItems.unshift(renderNoneMenuItem());
     }
+    dishMenuItems.unshift(renderNewMenuItem());
     return dishMenuItems;
   };
 
@@ -290,7 +306,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     return null;
   }
   // console.log('MealStatusResolver: meal is non null');
-  
+
   const mealStatusElement = renderMealStatus();
   const mainDishElement = renderMains();
   const sideDishElement = renderSides();
