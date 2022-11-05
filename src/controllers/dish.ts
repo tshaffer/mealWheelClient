@@ -25,7 +25,7 @@ export const loadDishes = () => {
 export const addDish = (
   dish: DishEntity
 ): any => {
-  return ((dispatch: any, getState: any): any => {
+  return ((dispatch: any, getState: any): Promise<string> => {
 
     const path = serverUrl + apiUrlFragment + 'addDish';
 
@@ -42,11 +42,11 @@ export const addDish = (
       addDishBody
     ).then((response) => {
       dispatch(addDishRedux(dish.id, dish));
-      return;
+      return dish.id;
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      return;
+      return '';
     });
 
   });

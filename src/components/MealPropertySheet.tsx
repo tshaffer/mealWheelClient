@@ -149,14 +149,20 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     console.log('handleAddDish: ', dishTypeFromDialog);
     console.log(dishName);
     console.log(requiredAccompanimentFlags);
+    const dishId: string = 'addedDish' + uuidv4();
     const dishEntity: DishEntity = {
-      id: 'addedDish' + uuidv4(),
+      id: dishId,
       name: dishName,
       type: dishTypeFromDialog,
       accompanimentRequired: requiredAccompanimentFlags,
       last: null,
     };
-    props.onAddDish(dishEntity);
+    const addDishPromise = props.onAddDish(dishEntity);
+    addDishPromise
+      .then((updatedDishId: string) => {
+        const scheduledMealId = getScheduledMealId();
+        props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
+      });
   };
 
   const handleCloseNewDishDialog = () => {
