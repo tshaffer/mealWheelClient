@@ -2,6 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { isNil } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -18,6 +19,7 @@ import '../styles/MealWheel.css';
 import {
   DishEntity,
   DishType,
+  RequiredAccompanimentFlags,
   ScheduledMealEntity
 } from '../types';
 import {
@@ -32,6 +34,7 @@ import {
   getMainById
 } from '../selectors';
 import {
+  addDish,
   deleteScheduledMeal,
   generateMeal,
   updateMainInMeal,
@@ -65,6 +68,7 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
   onGenerateMeal: (mealId: string, date: Date) => any;
   onDeleteMeal: (mealId: string) => any;
+  onAddDish: (dish: DishEntity) => any;
   state: any;
 }
 
@@ -102,15 +106,30 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const handleUpdateSide = (event: any) => {
-    props.onUpdateSideInMeal(getScheduledMealId(), event.target.value);
+    if (event.target.value === 'new') {
+      setDishType(DishType.Side);
+      setShowNewDishDialog(true);
+    } else {
+      props.onUpdateSideInMeal(getScheduledMealId(), event.target.value);
+    }
   };
 
   const handleUpdateSalad = (event: any) => {
-    props.onUpdateSaladInMeal(getScheduledMealId(), event.target.value);
+    if (event.target.value === 'new') {
+      setDishType(DishType.Salad);
+      setShowNewDishDialog(true);
+    } else {
+      props.onUpdateSaladInMeal(getScheduledMealId(), event.target.value);
+    }
   };
 
   const handleUpdateVeggie = (event: any) => {
-    props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
+    if (event.target.value === 'new') {
+      setDishType(DishType.Veggie);
+      setShowNewDishDialog(true);
+    } else {
+      props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
+    }
   };
 
   const handleDelete = () => {
@@ -126,9 +145,19 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  // const handleShowNewDishDialog = () => {
-  //   setShowNewDishDialog(true);
-  // };
+  const handleAddDish = (dishName: string, dishTypeFromDialog: DishType, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => {
+    console.log('handleAddDish: ', dishTypeFromDialog);
+    console.log(dishName);
+    console.log(requiredAccompanimentFlags);
+    const dishEntity: DishEntity = {
+      id: 'addedDish' + uuidv4(),
+      name: dishName,
+      type: dishTypeFromDialog,
+      accompanimentRequired: requiredAccompanimentFlags,
+      last: null,
+    };
+    props.onAddDish(dishEntity);
+  };
 
   const handleCloseNewDishDialog = () => {
     setShowNewDishDialog(false);
@@ -312,6 +341,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       <div>
         <NewDishDialog
           open={showNewDishDialog}
+          onAddDish={handleAddDish}
           onClose={handleCloseNewDishDialog}
           dishType={dishType}
         />
@@ -370,6 +400,7 @@ const mapDispatchToProps = (dispatch: any) => {
     onUpdateVeggieInMeal: updateVeggieInMeal,
     onGenerateMeal: generateMeal,
     onDeleteMeal: deleteScheduledMeal,
+    onAddDish: addDish,
   }, dispatch);
 };
 

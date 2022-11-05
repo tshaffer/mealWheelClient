@@ -25,13 +25,14 @@ export const loadDishes = () => {
 export const addDish = (
   dish: DishEntity
 ): any => {
-  return ((dispatch: any): any => {
+  return ((dispatch: any, getState: any): any => {
 
     const path = serverUrl + apiUrlFragment + 'addDish';
 
     dish.id = uuidv4();
 
     const addDishBody: any = {
+      userId: getCurrentUser(getState()),
       id: dish.id,
       dish,
     };
