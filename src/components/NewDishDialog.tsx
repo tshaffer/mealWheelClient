@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, TextField } from '@mui/material';
+import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
 import { DishType, RequiredAccompanimentFlags } from '../types';
 
 export interface NewDishDialogPropsFromParent {
@@ -69,22 +69,16 @@ function NewDishDialog(props: NewDishDialogProps) {
       return null;
     }
 
-    const poo = 6;
-
     return (
       <div>
         <FormGroup
           sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
         >
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={requiredAccompanimentFlags !== RequiredAccompanimentFlags.None}
-                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? RequiredAccompanimentFlags.Salad : RequiredAccompanimentFlags.None)}
-              />
-            }
-            label="Requires Accompaniment"
-          />
+          <FormLabel
+            style={{ marginRight: '20px', marginTop: '10px' }}
+          >
+            <label>Requires Accompaniment:</label>
+          </FormLabel>
           <FormControlLabel
             control={
               <Checkbox
@@ -137,7 +131,7 @@ function NewDishDialog(props: NewDishDialogProps) {
       // fullWidth={true}
       // maxWidth={'lg'}
       // PaperProps={{ sx: { width: '30%', height: '40%' } }}
-      PaperProps={{ sx: { width: '600px', height: '220px' } }}
+      PaperProps={{ sx: { width: '518px', height: '220px' } }}
     >
       <DialogTitle>New {getTypeLabelFromType()}</DialogTitle>
       <DialogContent
@@ -173,7 +167,6 @@ function NewDishDialog(props: NewDishDialogProps) {
 
 function mapStateToProps(state: any) {
   return {
-    // versionInfo: getVersionInfo(state),
     pizza: 'sausage',
   };
 }
