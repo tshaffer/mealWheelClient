@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import { Button, Checkbox, DialogActions, DialogContent, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, TextField } from '@mui/material';
 import { DishType } from '../types';
 
 export interface NewDishDialogPropsFromParent {
   open: boolean;
+  onAddDish: (dishName: string, requiresAccompaniment?: boolean) => void;
   onClose: () => void;
   dishType: DishType;
 }
@@ -37,8 +38,13 @@ function NewDishDialog(props: NewDishDialogProps) {
     }
   };
 
-  const handleSaveNewDish = () => {
-    console.log('save new dish');
+  const handleAddNewDish = () => {
+    if (props.dishType === DishType.Main) {
+      props.onAddDish(dishName, requiresAccompaniment);
+    }
+    else {
+      props.onAddDish(dishName);
+    }
   };
 
   const handleClose = () => {
@@ -113,8 +119,8 @@ function NewDishDialog(props: NewDishDialogProps) {
         style={{ marginTop: '10px' }}
       >
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleSaveNewDish} autoFocus>
-          Save
+        <Button onClick={handleAddNewDish} autoFocus>
+          Add
         </Button>
       </DialogActions>
 
