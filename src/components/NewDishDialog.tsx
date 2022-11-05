@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, TextField } from '@mui/material';
-import { DishType } from '../types';
+import { DishType, RequiredAccompanimentFlags } from '../types';
 
 export interface NewDishDialogPropsFromParent {
   open: boolean;
-  onAddDish: (dishName: string, requiresAccompaniment?: boolean) => void;
+  onAddDish: (dishName: string, dishType: DishType, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => void;
   onClose: () => void;
   dishType: DishType;
 }
@@ -22,7 +22,7 @@ function NewDishDialog(props: NewDishDialogProps) {
   const { open, onClose } = props;
 
   const [dishName, setDishName] = React.useState('');
-  const [requiresAccompaniment, setRequiresAccompaniment] = React.useState(false);
+  const [requiredAccompanimentFlags, setRequiredAccompanimentFlags] = React.useState(RequiredAccompanimentFlags.None);
 
   const getTypeLabelFromType = (): string => {
     switch (props.dishType) {
@@ -38,12 +38,25 @@ function NewDishDialog(props: NewDishDialogProps) {
     }
   };
 
+  const sideRequired = (): boolean => {
+    return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Side) !== 0;
+  };
+
+  const saladRequired = (): boolean => {
+    return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Salad) !== 0;
+  };
+
+  const veggieRequired = (): boolean => {
+    return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Veggie) !== 0;
+  };
+
+
   const handleAddNewDish = () => {
     if (props.dishType === DishType.Main) {
-      props.onAddDish(dishName, requiresAccompaniment);
+      props.onAddDish(dishName, props.dishType, requiredAccompanimentFlags);
     }
     else {
-      props.onAddDish(dishName);
+      props.onAddDish(dishName, props.dishType);
     }
   };
 
@@ -55,6 +68,9 @@ function NewDishDialog(props: NewDishDialogProps) {
     if (props.dishType !== DishType.Main) {
       return null;
     }
+
+    const poo = 6;
+
     return (
       <div>
         <FormGroup
@@ -63,11 +79,38 @@ function NewDishDialog(props: NewDishDialogProps) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={requiresAccompaniment}
-                onChange={(event) => setRequiresAccompaniment(event.target.checked)}
+                checked={requiredAccompanimentFlags !== RequiredAccompanimentFlags.None}
+                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? RequiredAccompanimentFlags.Salad : RequiredAccompanimentFlags.None)}
               />
             }
             label="Requires Accompaniment"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={sideRequired()}
+                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Side + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Side)))}
+              />
+            }
+            label="Side"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={saladRequired()}
+                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Salad + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Salad)))}
+              />
+            }
+            label="Salad"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={veggieRequired()}
+                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Veggie + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Veggie)))}
+              />
+            }
+            label="Veggie"
           />
         </FormGroup>
       </div>
@@ -94,7 +137,7 @@ function NewDishDialog(props: NewDishDialogProps) {
       // fullWidth={true}
       // maxWidth={'lg'}
       // PaperProps={{ sx: { width: '30%', height: '40%' } }}
-      PaperProps={{ sx: { width: '300px', height: '220px' } }}
+      PaperProps={{ sx: { width: '600px', height: '220px' } }}
     >
       <DialogTitle>New {getTypeLabelFromType()}</DialogTitle>
       <DialogContent
