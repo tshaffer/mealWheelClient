@@ -96,8 +96,7 @@ function NewDishDialog(props: NewDishDialogProps) {
         <div
           style={{
             position: 'absolute',
-            bottom: '10px',
-            right: '10px',
+            top: '45px',
           }}
         >
           <TextField
