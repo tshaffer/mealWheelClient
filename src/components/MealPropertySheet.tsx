@@ -149,6 +149,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     console.log('handleAddDish: ', dishTypeFromDialog);
     console.log(dishName);
     console.log(requiredAccompanimentFlags);
+    // TODO - I don't think the 'addedDish' is necessary.
     const dishId: string = 'addedDish' + uuidv4();
     const dishEntity: DishEntity = {
       id: dishId,
@@ -161,7 +162,20 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     addDishPromise
       .then((updatedDishId: string) => {
         const scheduledMealId = getScheduledMealId();
-        props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
+        switch (dishTypeFromDialog) {
+          case DishType.Main:
+            props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
+            break;
+          case DishType.Salad:
+            props.onUpdateSaladInMeal(scheduledMealId, updatedDishId);
+            break;
+          case DishType.Side:
+            props.onUpdateSideInMeal(scheduledMealId, updatedDishId);
+            break;
+          case DishType.Veggie:
+            props.onUpdateVeggieInMeal(scheduledMealId, updatedDishId);
+            break;
+        }
       });
   };
 
