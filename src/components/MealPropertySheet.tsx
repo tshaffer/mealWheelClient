@@ -17,6 +17,7 @@ import '../styles/MealWheel.css';
 
 import {
   DishEntity,
+  DishType,
   ScheduledMealEntity
 } from '../types';
 import {
@@ -38,6 +39,8 @@ import {
   updateSideInMeal,
   updateVeggieInMeal
 } from '../controllers';
+
+import NewDishDialog from './NewDishDialog';
 
 export interface MealPropertySheetPropsFromParent {
   scheduledMealId: string;
@@ -70,6 +73,9 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const [comments, setComments] = React.useState('');
 
+  const [showNewDishDialog, setShowNewDishDialog] = React.useState(false);
+  const [dishType, setDishType] = React.useState(DishType.Main);
+
   const getScheduledMealId = (): string => {
     if (!isNil(props.scheduledMeal)) {
       return props.scheduledMeal.id;
@@ -81,13 +87,18 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   if (getScheduledMealId() === '') {
     return null;
   }
-  
+
   if (isNil(props.selectedMealInCalendar) || isNil(props.selectedMealInCalendar.scheduledMealId) || props.selectedMealInCalendar.scheduledMealId === '') {
     return null;
   }
 
   const handleUpdateMain = (event: any) => {
-    props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
+    if (event.target.value === 'new') {
+      setDishType(DishType.Main);
+      setShowNewDishDialog(true);
+    } else {
+      props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
+    }
   };
 
   const handleUpdateSide = (event: any) => {
@@ -115,6 +126,23 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
+  // const handleShowNewDishDialog = () => {
+  //   setShowNewDishDialog(true);
+  // };
+
+  const handleCloseNewDishDialog = () => {
+    setShowNewDishDialog(false);
+  };
+
+  const renderNewMenuItem = (): JSX.Element => {
+    // return (
+    //   <Button color='inherit' onClick={handleNew}>New</Button>
+    // );
+    return (
+      <MenuItem value={'new'} key={'new'}>New</MenuItem>
+    );
+  };
+
   const renderNoneMenuItem = (): JSX.Element => {
     return (
       <MenuItem value={'none'} key={'none'}>None</MenuItem>
@@ -134,12 +162,9 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     if (includeNone) {
       dishMenuItems.unshift(renderNoneMenuItem());
     }
+    dishMenuItems.unshift(renderNewMenuItem());
     return dishMenuItems;
-    // return dishes.map((mainDish: DishEntity) => {
-    //   return renderDishMenuItem(mainDish);
-    // });
   };
-
 
   const renderMains = () => {
     let mainId = 'none';
@@ -283,16 +308,26 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   console.log('MealPropertySheet props: ', props);
 
   return (
-    <div className='mealPropertySheet'>
-      <p className='shortParagraph'>{'Main: ' + (props.mainValue as DishEntity).name}</p>
-      {mainDishElement}
-      {sideDishElement}
-      {saladsDishElement}
-      {veggiesDishElement}
-      {linkToRecipeElement}
-      {commentsElement}
-      {actionButtons}
-      <Button color='inherit' onClick={props.handleClose}>Close</Button>
+    <div>
+      <div>
+        <NewDishDialog
+          open={showNewDishDialog}
+          onClose={handleCloseNewDishDialog}
+          dishType={dishType}
+        />
+      </div>
+      <div className='mealPropertySheet'>
+        <p className='shortParagraph'>{'Main: ' + (props.mainValue as DishEntity).name}</p>
+        {mainDishElement}
+        {sideDishElement}
+        {saladsDishElement}
+        {veggiesDishElement}
+        {linkToRecipeElement}
+        {commentsElement}
+        {actionButtons}
+        <Button color='inherit' onClick={props.handleClose}>Close</Button>
+      </div>
+
     </div>
   );
 };

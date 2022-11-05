@@ -8,5 +8,6 @@ export * from './MealInCalendar';
 export * from './MealSchedule';
 export * from './MealStatusResolver';
 export * from './MealsStatusResolver';
+export * from './NewDishDialog';
 export * from './ToolsAndSettings';
 

@@ -3,18 +3,16 @@ import { connect } from 'react-redux';
 
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-
-// import { getVersionInfo } from '../selectors';
-// import { VersionInfo } from '../types';
+import { Button, Checkbox, DialogActions, DialogContent, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { DishType } from '../types';
 
 export interface NewDishDialogPropsFromParent {
   open: boolean;
   onClose: () => void;
+  dishType: DishType;
 }
 
 export interface NewDishDialogProps extends NewDishDialogPropsFromParent {
-  // versionInfo: VersionInfo;
   pizza: string;
 }
 
@@ -22,52 +20,105 @@ function NewDishDialog(props: NewDishDialogProps) {
 
   const { open, onClose } = props;
 
-  const handleUpdateType = (event: any): void => {
-    console.log('handleUpdateType: ', event.target.value);
+  const [dishName, setDishName] = React.useState('');
+  const [requiresAccompaniment, setRequiresAccompaniment] = React.useState(false);
+
+  const getTypeLabelFromType = (): string => {
+    switch (props.dishType) {
+      case DishType.Main:
+        return 'Main';
+      case DishType.Salad:
+        return 'Salad';
+      case DishType.Side:
+        return 'Side';
+      case DishType.Veggie:
+      default:
+        return 'Veggie';
+    }
   };
-  
+
+  const handleSaveNewDish = () => {
+    console.log('save new dish');
+  };
+
   const handleClose = () => {
     onClose();
   };
 
-  const renderTypeSelect = (): JSX.Element => {
-
+  const renderRequiresAccompaniment = () => {
+    if (props.dishType !== DishType.Main) {
+      return null;
+    }
     return (
       <div>
-        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="mainLabel">Main</InputLabel>
-          <Select
-            labelId="mainLabel"
-            id="demo-simple-select-filled"
-            value={'main'}
-            onChange={(event) => handleUpdateType(event)}
-          >
-            <MenuItem value={'main'} key={'main'}>Main</MenuItem>
-            <MenuItem value={'side'} key={'side'}>Side</MenuItem>
-            <MenuItem value={'salad'} key={'salad'}>Salad</MenuItem>
-            <MenuItem value={'veggie'} key={'veggie'}>Veggie</MenuItem>
-          </Select>
-        </FormControl>
+        <FormGroup
+          sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={requiresAccompaniment}
+                onChange={(event) => setRequiresAccompaniment(event.target.checked)}
+              />
+            }
+            label="Requires Accompaniment"
+          />
+        </FormGroup>
       </div>
     );
   };
 
-  const typeSelect = renderTypeSelect();
+  /*
+    Form
+      Text field for
+        Name
+      If main, checkbox for
+        Requires accompaniment
+    Validation
+      Name - not empty
+      Name - unique within type
+  */
+
+  const requiresAccompanimentJsx = renderRequiresAccompaniment();
 
   return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>New Dish</DialogTitle>
-      <div style={{ marginLeft: '10px', marginRight: '10px', marginBottom: '10px' }}>
-        {typeSelect}
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '10px',
-          right: '10px',
-        }}
+    <Dialog
+      onClose={handleClose}
+      open={open}
+      // fullWidth={true}
+      // maxWidth={'lg'}
+      // PaperProps={{ sx: { width: '30%', height: '40%' } }}
+      PaperProps={{ sx: { width: '300px', height: '220px' } }}
+    >
+      <DialogTitle>New {getTypeLabelFromType()}</DialogTitle>
+      <DialogContent
       >
-      </div>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+          }}
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label="Dish name"
+            value={dishName}
+            onChange={(event) => setDishName(event.target.value)}
+          />
+          {requiresAccompanimentJsx}
+        </div>
+      </DialogContent>
+      <DialogActions
+        style={{ marginTop: '10px' }}
+      >
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleSaveNewDish} autoFocus>
+          Save
+        </Button>
+      </DialogActions>
+
     </Dialog>
   );
 }
