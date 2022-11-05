@@ -176,6 +176,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
             props.onUpdateVeggieInMeal(scheduledMealId, updatedDishId);
             break;
         }
+        setShowNewDishDialog(false);
       });
   };
 
