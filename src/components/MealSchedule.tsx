@@ -68,6 +68,10 @@ const MealSchedule = (props: MealScheduleProps) => {
     setShowGenerateMenu(true);
   };
 
+  const handleGenerateGroceryList = () => {
+    console.log('handleGenerateGroceryList');
+  };
+
   const handleExecuteGenerateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
     console.log('handleExecuteGenerateMenu');
     console.log(startDate);
@@ -170,6 +174,7 @@ const MealSchedule = (props: MealScheduleProps) => {
         <div style={{ height: '100vh' }}>
           <div style={{ height: 30, width: '100%' }}>
             <button type="button" onClick={handleGenerateMenu}>Generate Menu</button>
+            <button type='button' onClick={handleGenerateGroceryList}>Generate Grocery List</button>
             <br />
           </div>
           <div>
