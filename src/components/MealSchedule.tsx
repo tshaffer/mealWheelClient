@@ -10,17 +10,21 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { cloneDeep } from 'lodash';
 
 import { MealStatus, ScheduledMealEntity } from '../types';
-import { generateMenu, updateMealStatus } from '../controllers';
+import { generateGroceryList, generateMenu, updateMealStatus } from '../controllers';
 import { getScheduledMeals } from '../selectors';
 import { isNil } from 'lodash';
 import MealInCalendar from './MealInCalendar';
 import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
-import { setStartDate } from '../models';
+import {
+  setGroceryListStartDate,
+  setStartDate,
+} from '../models';
 
 import MealsStatusResolver from './MealsStatusResolver';
 import GenerateMenuDialog from './GenerateMenuDialog';
+import GenerateGroceryListDialog from './GenerateGroceryListDialog';
 
 const localizer = momentLocalizer(moment);
 
@@ -43,9 +47,10 @@ end.setDate(end.getDate() + 1);
 export interface MealScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
   onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => any;
+  onGenerateGroceryList: (startDate: Date, numberOfMealsToGenerate: number) => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
   onSetStartDate: (startDate: Date) => void;
-
+  onSetGroceryListStartDate: (startDate: Date) => void;
 }
 
 const MealSchedule = (props: MealScheduleProps) => {
@@ -56,6 +61,7 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
   const [showGenerateMenu, setShowGenerateMenu] = React.useState(false);
+  const [showGenerateGroceryList, setShowGenerateGroceryList] = React.useState(false);
 
   const handleCloseScheduledMealsStatusResolver = () => {
     console.log('handleCloseScheduledMealsStatusResolver');
@@ -69,7 +75,10 @@ const MealSchedule = (props: MealScheduleProps) => {
   };
 
   const handleGenerateGroceryList = () => {
-    console.log('handleGenerateGroceryList');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    props.onSetGroceryListStartDate(tomorrow);
+    setShowGenerateGroceryList(true);
   };
 
   const handleExecuteGenerateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
@@ -82,6 +91,17 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const handleCloseGenerateMenu = () => {
     setShowGenerateMenu(false);
+  };
+
+  const handleExecuteGenerateGroceryList = (startDate: Date, numberOfMealsToGenerate: number) => {
+    console.log('handleExecuteGenerateGroceryList');
+    console.log(startDate);
+    console.log(numberOfMealsToGenerate);
+    props.onGenerateGroceryList(startDate, numberOfMealsToGenerate);
+  };
+
+  const handleCloseGenerateGroceryList = () => {
+    setShowGenerateGroceryList(false);
   };
 
   const handleOpen = (event: any) => {
@@ -167,6 +187,13 @@ const MealSchedule = (props: MealScheduleProps) => {
           onGenerateMenus={handleExecuteGenerateMenu}
         />
       </div>
+      <div>
+        <GenerateGroceryListDialog
+          open={showGenerateGroceryList}
+          onClose={handleCloseGenerateGroceryList}
+          onGenerateGroceryList={handleExecuteGenerateGroceryList}
+        />
+      </div>
       <MealsStatusResolver
         onClose={handleCloseScheduledMealsStatusResolver}
       />
@@ -227,8 +254,10 @@ function mapStateToProps(state: any) {
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onGenerateMenu: generateMenu,
+    onGenerateGroceryList: generateGroceryList,
     onUpdateMealStatus: updateMealStatus,
     onSetStartDate: setStartDate,
+    onSetGroceryListStartDate: setGroceryListStartDate,
   }, dispatch);
 };
 

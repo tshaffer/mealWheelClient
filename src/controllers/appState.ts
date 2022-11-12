@@ -24,7 +24,7 @@ import {
   loadDefinedMeals,
   loadScheduledMeals,
 } from './meal';
-import { loadIngredientsByDish } from './ingredients';
+import { loadIngredients, loadIngredientsByDish } from './ingredients';
 
 const getStartupParams = () => {
 
@@ -82,6 +82,8 @@ export const initializeApp = () => {
               dispatch(loadDefinedMeals());
             }).then(() => {
               dispatch(loadScheduledMeals());
+            }).then(() => {
+              dispatch(loadIngredients());
             }).then(() => {
               dispatch(loadIngredientsByDish());
             }).then(() => {

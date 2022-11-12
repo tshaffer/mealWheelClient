@@ -22,6 +22,7 @@ import {
   getSaladById,
   getScheduledMeal,
   getScheduledMealByDate,
+  getScheduledMealsForDays,
   getSideById,
   getVeggieById
 } from '../selectors';
@@ -183,6 +184,36 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, o
       generatedMealCount++;
     }
   };
+};
+
+export const addToUniqueDishes = (uniqueDishes: any, dishId: string): void => {
+  if (!isNil(dishId) && isNil(uniqueDishes[dishId])) {
+    uniqueDishes[dishId] = dishId;
+  }
+};
+
+export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: number) => {
+
+  return (dispatch: any, getState: any) => {
+
+    const state: MealWheelState = getState();
+
+    // get all the scheduled meals for the date range for the grocery list
+    const scheduledMeals: ScheduledMealEntity[] = getScheduledMealsForDays(state, startDate, numberOfMealsToGenerate);
+
+    // get the list of dish ids for the scheduled meals for this date range - dish ids are unique
+    const uniqueDishes: any = {};
+    scheduledMeals.forEach((scheduledMeal: ScheduledMealEntity) => {
+      const { mainDishId, saladId, veggieId, sideId } = scheduledMeal;
+      addToUniqueDishes(uniqueDishes, mainDishId);
+      addToUniqueDishes(uniqueDishes, saladId);
+      addToUniqueDishes(uniqueDishes, veggieId);
+      addToUniqueDishes(uniqueDishes, sideId);
+    });
+
+    // get list of ingredients given dish ids.
+  };
+
 };
 
 const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadyScheduledMeals: ScheduledMealEntity[], numMeals: number): ScheduledMealEntity[] => {

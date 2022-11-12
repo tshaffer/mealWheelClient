@@ -1,6 +1,7 @@
 export * from './AboutDialog';
 export * from './App';
 export * from './Dishes';
+export * from './GenerateGroceryListDialog';
 export * from './GenerateMenuDialog';
 export * from './Home';
 export * from './Login';

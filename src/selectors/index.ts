@@ -1,6 +1,7 @@
 export * from './appParameters';
 export * from './appState';
 export * from './dish';
+export * from './generateGroceryList';
 export * from './generateMeals';
 export * from './meal';
 export * from './mealsResolution';

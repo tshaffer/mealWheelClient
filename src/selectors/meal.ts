@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import { MealWheelState, ScheduledMealEntity, DefinedMealEntity } from '../types';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
@@ -39,3 +40,21 @@ export const getScheduledMealByDate = (state: MealWheelState, targetMealDate: Da
   }
   return null;
 };
+
+export const getScheduledMealsForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): ScheduledMealEntity[] => {
+
+  const mealEntities: ScheduledMealEntity[] = [];
+
+  for (let dayIndex = 0; dayIndex < numberOfDays; dayIndex++) {
+
+    const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, mealDate);
+    if (!isNil(scheduledMeal)) {
+      mealEntities.push(scheduledMeal);
+    }
+    mealDate.setDate(mealDate.getDate() + 1);
+
+  }
+
+  return mealEntities;
+};
+

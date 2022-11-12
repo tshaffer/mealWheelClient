@@ -62,3 +62,13 @@ export interface VerboseScheduledMeal extends ScheduledMealEntity {
   side: DishEntity | null;
   sideName: string;
 }
+
+export interface IngredientsByDish {
+  [dishId: string]: string[];   // string array is list of ingredient ids
+}
+
+export interface IngredientEntity {
+  id: string;
+  name: string;
+  ingredients: IngredientEntity[];
+}

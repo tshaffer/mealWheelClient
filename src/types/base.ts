@@ -1,6 +1,11 @@
 import {
   DefinedMealEntity,
-  DishEntity, ScheduledMealEntity, UserEntity, VerboseScheduledMeal,
+  DishEntity,
+  IngredientEntity,
+  IngredientsByDish,
+  ScheduledMealEntity,
+  UserEntity,
+  VerboseScheduledMeal,
 }
   from './entities';
 
@@ -14,7 +19,9 @@ export interface MealWheelState {
   appState: AppState;
   dishesState: DishesState;
   definedMealsState: DefinedMealsState;
+  generateGroceryListState: GenerateGroceryListState;
   generateMealsState: GenerateMealsState;
+  ingredientsState: IngredientsState;
   scheduledMealsState: ScheduledMealsState;
   mealsResolutionState: MealsResolutionState;
   users: UsersMap;
@@ -48,6 +55,11 @@ export interface DishesState {
 //   [id: string]: DishEntity; // dish name
 // }
 
+export interface IngredientsState {
+  ingredients: IngredientEntity[];
+  ingredientsByDish: IngredientsByDish;
+}
+
 export interface DefinedMealsState {
   definedMeals: DefinedMealEntity[];
 }
@@ -61,6 +73,11 @@ export interface GenerateMealsState {
   startDate: Date;
   numberOfMealsToGenerate: number;
   overwriteExistingMeals: boolean;
+}
+
+export interface GenerateGroceryListState {
+  startDate: Date;
+  numberOfMealsInGroceryList: number;
 }
 
 export interface MealsResolutionState {

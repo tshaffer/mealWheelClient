@@ -7,7 +7,9 @@ import { appParametersReducer } from './appParameters';
 import { appStateReducer } from './appState';
 import { definedMealsStateReducer } from './definedMeals';
 import { dishesStateReducer } from './dishes';
+import { generateGroceryListStateReducer } from './generateGroceryList';
 import { generateMealsStateReducer } from './generateMeals';
+import { ingredientsStateReducer } from './ingredients';
 import { mealsResolutionStateReducer } from './mealsResolution';
 import { scheduledMealsStateReducer } from './scheduledMeals';
 import { usersReducer } from './users';
@@ -19,11 +21,13 @@ import { versionInfoReducer } from './versionInfo';
 export const rootReducer = combineReducers<MealWheelState>({
   appParameters: appParametersReducer,
   appState: appStateReducer,
-  dishesState: dishesStateReducer,
   definedMealsState: definedMealsStateReducer,
+  dishesState: dishesStateReducer,
+  generateGroceryListState: generateGroceryListStateReducer,
   generateMealsState: generateMealsStateReducer,
-  scheduledMealsState: scheduledMealsStateReducer,
+  ingredientsState: ingredientsStateReducer,
   mealsResolutionState: mealsResolutionStateReducer,
+  scheduledMealsState: scheduledMealsStateReducer,
   users: usersReducer,
   versionInfo: versionInfoReducer,
 });
