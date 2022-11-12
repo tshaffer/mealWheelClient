@@ -16,14 +16,15 @@ import {
 
 import { getCurrentUser, getStartPage } from '../selectors';
 
+import { getVersions } from './versionInfo';
 import { loadDishes } from './dish';
 import { loadUsers, loginPersistentUser } from './user';
-import { getVersions } from './versionInfo';
 import {
   addScheduledMeal,
   loadDefinedMeals,
   loadScheduledMeals,
 } from './meal';
+import { loadIngredientsByDish } from './ingredients';
 
 const getStartupParams = () => {
 
@@ -81,6 +82,8 @@ export const initializeApp = () => {
               dispatch(loadDefinedMeals());
             }).then(() => {
               dispatch(loadScheduledMeals());
+            }).then(() => {
+              dispatch(loadIngredientsByDish());
             }).then(() => {
               dispatch(setUiState(UiState.Other));
               dispatch(setAppInitialized());
