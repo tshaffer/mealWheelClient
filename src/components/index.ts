@@ -3,6 +3,7 @@ export * from './App';
 export * from './Dishes';
 export * from './GenerateGroceryListDialog';
 export * from './GenerateMenuDialog';
+export * from './GroceryListDialog';
 export * from './Home';
 export * from './Login';
 export * from './MealInCalendar';

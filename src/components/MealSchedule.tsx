@@ -25,6 +25,7 @@ import {
 import MealsStatusResolver from './MealsStatusResolver';
 import GenerateMenuDialog from './GenerateMenuDialog';
 import GenerateGroceryListDialog from './GenerateGroceryListDialog';
+import GroceryListDialog from './GroceryListDialog';
 
 const localizer = momentLocalizer(moment);
 
@@ -62,6 +63,7 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const [showGenerateMenu, setShowGenerateMenu] = React.useState(false);
   const [showGenerateGroceryList, setShowGenerateGroceryList] = React.useState(false);
+  const [showGroceryList, setShowGroceryList] = React.useState(false);
 
   const handleCloseScheduledMealsStatusResolver = () => {
     console.log('handleCloseScheduledMealsStatusResolver');
@@ -98,10 +100,15 @@ const MealSchedule = (props: MealScheduleProps) => {
     console.log(startDate);
     console.log(numberOfMealsToGenerate);
     props.onGenerateGroceryList(startDate, numberOfMealsToGenerate);
+    setShowGroceryList(true);
   };
 
   const handleCloseGenerateGroceryList = () => {
     setShowGenerateGroceryList(false);
+  };
+
+  const handleCloseGroceryList = () => {
+    setShowGroceryList(false);
   };
 
   const handleOpen = (event: any) => {
@@ -192,6 +199,12 @@ const MealSchedule = (props: MealScheduleProps) => {
           open={showGenerateGroceryList}
           onClose={handleCloseGenerateGroceryList}
           onGenerateGroceryList={handleExecuteGenerateGroceryList}
+        />
+      </div>
+      <div>
+        <GroceryListDialog
+          open={showGroceryList}
+          onClose={handleCloseGroceryList}
         />
       </div>
       <MealsStatusResolver
