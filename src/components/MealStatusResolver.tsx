@@ -151,7 +151,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const renderNewMenuItem = (): JSX.Element => {
     return (
-      <Button color='inherit' onClick={handleNew}>New</Button>
+      <Button color='inherit' onClick={handleNew} key={'new'}>New</Button>
     );
     // return (
     //   <MenuItem value={'new'} key={'new'}>New</MenuItem>
