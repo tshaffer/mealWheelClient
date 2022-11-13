@@ -18,6 +18,8 @@ import {
   getCurrentUser,
   getDefinedMeals,
   getDish,
+  getIngredientById,
+  getIngredientIdsByDish,
   getMainById,
   getSaladById,
   getScheduledMeal,
@@ -39,7 +41,8 @@ import {
   ScheduledMealEntity,
   MainDishEntity,
   BaseDishEntity,
-  VerboseScheduledMeal
+  VerboseScheduledMeal,
+  IngredientEntity
 } from '../types';
 
 export const loadDefinedMeals = () => {
@@ -211,7 +214,27 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
       addToUniqueDishes(uniqueDishes, sideId);
     });
 
-    // get list of ingredients given dish ids.
+    // get list of ingredients ids given dish ids.
+
+    // [id: string]: string;   // key is ingredientId, value is ingredientId
+    const allIngredientIds: any = {};
+    for (const dishId in uniqueDishes) {
+      const ingredientIdsForDish: string[] = getIngredientIdsByDish(state, dishId);
+      ingredientIdsForDish.forEach((ingredientIdInDish: string) => {
+        allIngredientIds[ingredientIdInDish] = ingredientIdInDish;
+      });
+    }
+
+    // get list of ingredients given ingredient ids.
+    const allIngredients: IngredientEntity[] = [];
+    for (const ingredientId in allIngredientIds) {
+      const ingredient: IngredientEntity | null = getIngredientById(state, ingredientId);
+      if (!isNil(ingredient)) {
+        allIngredients.push(ingredient);
+      }
+    }
+
+    console.log(allIngredients);
   };
 
 };
