@@ -22,6 +22,7 @@ export interface MealWheelState {
   definedMealsState: DefinedMealsState;
   generateGroceryListState: GenerateGroceryListState;
   generateMealsState: GenerateMealsState;
+  groceryListState: GroceryListState;
   ingredientsState: IngredientsState;
   scheduledMealsState: ScheduledMealsState;
   mealsResolutionState: MealsResolutionState;
@@ -79,6 +80,10 @@ export interface GenerateMealsState {
 export interface GenerateGroceryListState {
   startDate: Date;
   numberOfMealsInGroceryList: number;
+}
+
+export interface GroceryListState {
+  ingredients: IngredientEntity[];
 }
 
 export interface MealsResolutionState {

@@ -9,6 +9,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
 import TextField from '@mui/material/TextField';
+import { IngredientEntity } from '../types';
+import { getGroceryListIngredients } from '../selectors';
 
 export interface GroceryListDialogPropsFromParent {
   open: boolean;
@@ -16,17 +18,30 @@ export interface GroceryListDialogPropsFromParent {
 }
 
 export interface GroceryListDialogProps extends GroceryListDialogPropsFromParent {
+  ingredientsInGroceryList: IngredientEntity[];
 }
 
 function GroceryListDialog(props: GroceryListDialogProps) {
 
-  const { open, onClose } = props;
+  const { ingredientsInGroceryList, open, onClose } = props;
 
   const handleClose = () => {
     onClose();
   };
 
-  const ingredientsInGroceryList = 'Eggs\nMilk';
+  const getIngredientsInGroceryList = (): string => {
+    let ingredientsString = '';
+    for (let index = 0; index < ingredientsInGroceryList.length; index++) {
+      const ingredient: IngredientEntity = ingredientsInGroceryList[index];
+      if (index > 0) {
+        ingredientsString += '\n';
+      }
+      ingredientsString = ingredientsString + ingredient.name;
+    }
+    return ingredientsString;
+  };
+
+  const ingredientsString: string = getIngredientsInGroceryList();
 
   return (
     <Dialog onClose={handleClose} open={open}>
@@ -40,7 +55,7 @@ function GroceryListDialog(props: GroceryListDialogProps) {
           InputProps={{
             readOnly: true
           }}
-          value={ingredientsInGroceryList}
+          value={ingredientsString}
         />
         <br />
       </DialogContent>
@@ -53,6 +68,7 @@ function GroceryListDialog(props: GroceryListDialogProps) {
 
 function mapStateToProps(state: any) {
   return {
+    ingredientsInGroceryList: getGroceryListIngredients(state),
   };
 }
 

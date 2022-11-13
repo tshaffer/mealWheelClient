@@ -12,7 +12,8 @@ import {
   addScheduledMealsRedux,
   setMealsToResolve,
   setMealIndex,
-  setPendingMeal
+  setPendingMeal,
+  setIngredientsInGroceryList
 } from '../models';
 import {
   getCurrentUser,
@@ -235,6 +236,8 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
     }
 
     console.log(allIngredients);
+
+    dispatch(setIngredientsInGroceryList(allIngredients));
   };
 
 };

@@ -6,6 +6,7 @@ export * from './definedMeals';
 export * from './dishes';
 export * from './generateGroceryList';
 export * from './generateMeals';
+export * from './groceryList';
 export * from './ingredients';
 export * from './mealsResolution';
 export * from './scheduledMeals';
