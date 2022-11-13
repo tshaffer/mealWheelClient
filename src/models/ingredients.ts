@@ -52,7 +52,7 @@ export const setIngredientsByDishRedux = (
 
 const initialState: IngredientsState =
 {
-  ingredients: [],
+  ingredientsById: {},
   ingredientsByDish: {},
 };
 
@@ -63,7 +63,9 @@ export const ingredientsStateReducer = (
   switch (action.type) {
     case ADD_INGREDIENTS: {
       const newState = cloneDeep(state) as IngredientsState;
-      newState.ingredients = newState.ingredients.concat(action.payload.ingredients);
+      action.payload.ingredients.forEach( (ingredient: IngredientEntity) => {
+        newState.ingredientsById[ingredient.id] = ingredient;
+      });
       return newState;
     }
     case SET_INGREDIENTS_BY_DISH: {

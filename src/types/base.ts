@@ -3,6 +3,7 @@ import {
   DishEntity,
   IngredientEntity,
   IngredientsByDish,
+  IngredientsById,
   ScheduledMealEntity,
   UserEntity,
   VerboseScheduledMeal,
@@ -56,7 +57,7 @@ export interface DishesState {
 // }
 
 export interface IngredientsState {
-  ingredients: IngredientEntity[];
+  ingredientsById: IngredientsById;
   ingredientsByDish: IngredientsByDish;
 }
 
