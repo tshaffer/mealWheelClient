@@ -8,6 +8,10 @@ import Box from '@mui/material/Box';
 import { DataGrid, GridCellParams } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -16,6 +20,7 @@ import {
   GridRowParams,
   MuiEvent,
   GridToolbarContainer,
+  GridActionsCellItem,
   GridEventListener,
   GridRowId,
   GridRowModel,
@@ -133,8 +138,8 @@ const Ingredients = (props: IngredientsProps) => {
     // check for duplicate ingredient names.
     const updatedIngredientName = updatedIngredient.name;
     for (let ingredientIndex = 0; ingredientIndex < rows.length; ingredientIndex++) {
-      const existingDish: IngredientEntity = rows[ingredientIndex];
-      if (updatedIngredient.id !== existingDish.id && existingDish.name === updatedIngredientName) {
+      const existingIngredient: IngredientEntity = rows[ingredientIndex];
+      if (updatedIngredient.id !== existingIngredient.id && existingIngredient.name === updatedIngredientName) {
         setSnackbar({ children: 'Error while saving user: duplicate ingredient name', severity: 'error' });
         return;
       }
@@ -163,9 +168,56 @@ const Ingredients = (props: IngredientsProps) => {
     {
       field: 'showInGroceryList',
       type: 'boolean',
-      headerName: 'Staple',
-      width: 100,
+      headerName: 'Show in Grocery List',
+      width: 180,
       editable: true
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              onClick={handleSaveClick(id)}
+              key={0}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+              key={0}
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+            key={0}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+            key={0}
+          />,
+        ];
+      },
     },
   ];
 
@@ -181,16 +233,7 @@ const Ingredients = (props: IngredientsProps) => {
     return rows;
   };
 
-  const getAccompanimentEditEnabled = (ingredient: IngredientRowModel): boolean => {
-    if (ingredient.type !== 'main') {
-      return false;
-    }
-    return ingredient.requiresAccompaniment === true;
-  };
-
   const getIsCellEditable = (params: GridCellParams): boolean => {
-
-    const dishRowModel: IngredientRowModel = params.row;
 
     // return value specific to the column field
     switch (params.field) {
@@ -203,8 +246,6 @@ const Ingredients = (props: IngredientsProps) => {
       default:
         return true;
     }
-
-    return true;
   };
 
   const newRows: GridRowsProp = getRows();

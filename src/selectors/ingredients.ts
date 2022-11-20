@@ -17,10 +17,11 @@ export const getIngredientById = (state: MealWheelState, id: string): Ingredient
 
 export const getIngredients = (state: MealWheelState): IngredientEntity[] => {
   const ingredients: IngredientEntity[] = [];
-  for (const ingredientId in state.ingredientsState.ingredientsById) {
-    if (state.ingredientsState.ingredientsById.prototype.hasOwnProperty.call(state.ingredientsState.ingredientsById, ingredientId)) {
-      const ingredient: IngredientEntity = state.ingredientsState.ingredientsById[ingredientId];
-      ingredients.push(ingredient);
+  const ingredientsById = state.ingredientsState.ingredientsById;
+  for (const ingredientId in ingredientsById) {
+    if (Object.prototype.hasOwnProperty.call(ingredientsById, ingredientId)) {
+      const ingredient: IngredientEntity = ingredientsById[ingredientId];
+      ingredients.push(ingredient);      
     }
   }
   return ingredients;

@@ -332,8 +332,6 @@ const Dishes = (props: DishesProps) => {
       default:
         return true;
     }
-
-    return true;
   };
 
   const newRows: GridRowsProp = getRows();
