@@ -48,7 +48,7 @@ end.setDate(end.getDate() + 1);
 export interface MealScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
   onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => any;
-  onGenerateGroceryList: (startDate: Date, numberOfMealsToGenerate: number) => any;
+  onGenerateGroceryList: (startDate: Date, numberOfMealsToGenerate: number, showStaples: boolean) => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
   onSetStartDate: (startDate: Date) => void;
   onSetGroceryListStartDate: (startDate: Date) => void;
@@ -95,11 +95,11 @@ const MealSchedule = (props: MealScheduleProps) => {
     setShowGenerateMenu(false);
   };
 
-  const handleExecuteGenerateGroceryList = (startDate: Date, numberOfMealsToGenerate: number) => {
+  const handleExecuteGenerateGroceryList = (startDate: Date, numberOfMealsToGenerate: number, showStaples: boolean) => {
     console.log('handleExecuteGenerateGroceryList');
     console.log(startDate);
     console.log(numberOfMealsToGenerate);
-    props.onGenerateGroceryList(startDate, numberOfMealsToGenerate);
+    props.onGenerateGroceryList(startDate, numberOfMealsToGenerate, showStaples);
     setShowGroceryList(true);
   };
 

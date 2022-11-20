@@ -24,7 +24,7 @@ import { setShowStaples } from '../models';
 
 export interface GenerateGroceryListDialogPropsFromParent {
   open: boolean;
-  onGenerateGroceryList: (startDate: Date, numberOfMealsInGroceryList: number) => void;
+  onGenerateGroceryList: (startDate: Date, numberOfMealsInGroceryList: number, showStaples: boolean) => void;
   onClose: () => void;
 }
 
@@ -53,7 +53,7 @@ function GenerateGroceryListDialog(props: GenerateGroceryListDialogProps) {
 
   const handleGenerateGroceryList = () => {
     if (!isNil(props.startDate)) {
-      onGenerateGroceryList(props.startDate, props.numberOfMealsInGroceryList);
+      onGenerateGroceryList(props.startDate, props.numberOfMealsInGroceryList, props.showStaples);
       onClose();
     }
   };
@@ -68,7 +68,7 @@ function GenerateGroceryListDialog(props: GenerateGroceryListDialogProps) {
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Generate GroceryList</DialogTitle>
+      <DialogTitle>Generate Grocery List</DialogTitle>
       <DialogContent>
         <LocalizationProvider
           dateAdapter={AdapterDayjs}
@@ -122,6 +122,7 @@ function mapStateToProps(state: any) {
   return {
     startDate: getGroceryListStartDate(state),
     numberOfMealsInGroceryList: getNumberOfMealsInGroceryList(state),
+    showStaples: getShowStaples(state),
   };
 }
 

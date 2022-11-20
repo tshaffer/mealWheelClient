@@ -196,7 +196,7 @@ export const addToUniqueDishes = (uniqueDishes: any, dishId: string): void => {
   }
 };
 
-export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: number) => {
+export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: number, showStaples: boolean) => {
 
   return (dispatch: any, getState: any) => {
 
@@ -230,7 +230,7 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
     const allIngredients: IngredientEntity[] = [];
     for (const ingredientId in allIngredientIds) {
       const ingredient: IngredientEntity | null = getIngredientById(state, ingredientId);
-      if (!isNil(ingredient)) {
+      if (!isNil(ingredient) && (ingredient.showInGroceryList || showStaples)) {
         allIngredients.push(ingredient);
       }
     }
