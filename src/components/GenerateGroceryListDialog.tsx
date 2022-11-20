@@ -7,6 +7,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import Checkbox from '@mui/material/Checkbox';
 
 import { Dayjs } from 'dayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -17,6 +18,9 @@ import { isNil } from 'lodash';
 
 import { setGroceryListStartDate, setNumberOfMealsInGroceryList } from '../models';
 import { getGroceryListStartDate, getNumberOfMealsInGroceryList } from '../selectors';
+import { getShowStaples } from '../selectors';
+import { FormGroup, FormControlLabel } from '@mui/material';
+import { setShowStaples } from '../models';
 
 export interface GenerateGroceryListDialogPropsFromParent {
   open: boolean;
@@ -27,8 +31,10 @@ export interface GenerateGroceryListDialogPropsFromParent {
 export interface GenerateGroceryListDialogProps extends GenerateGroceryListDialogPropsFromParent {
   startDate: Date;
   numberOfMealsInGroceryList: number;
+  showStaples: boolean;
   onSetStartDate: (startDate: Date) => void;
   onSetNumberOfMealsInGroceryList: (numberOfMealsInGroceryList: number) => void;
+  onSetShowStaples: (showStaples: boolean) => void;
 }
 
 function GenerateGroceryListDialog(props: GenerateGroceryListDialogProps) {
@@ -50,6 +56,10 @@ function GenerateGroceryListDialog(props: GenerateGroceryListDialogProps) {
       onGenerateGroceryList(props.startDate, props.numberOfMealsInGroceryList);
       onClose();
     }
+  };
+
+  const handleUpdateShowStaples = (event: React.ChangeEvent<HTMLInputElement>) => {
+    props.onSetShowStaples(event.target.checked);
   };
 
   const handleClose = () => {
@@ -84,6 +94,19 @@ function GenerateGroceryListDialog(props: GenerateGroceryListDialogProps) {
           onChange={handleUpdateNumberOfMealsInGroceryList}
         />
         <br />
+        <FormGroup
+          sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={props.showStaples}
+                onChange={handleUpdateShowStaples}
+              />
+            }
+            label="Show staples"
+          />
+        </FormGroup>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
@@ -106,6 +129,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onSetStartDate: setGroceryListStartDate,
     onSetNumberOfMealsInGroceryList: setNumberOfMealsInGroceryList,
+    onSetShowStaples: setShowStaples,
   }, dispatch);
 };
 

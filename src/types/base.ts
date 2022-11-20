@@ -80,6 +80,7 @@ export interface GenerateMealsState {
 export interface GenerateGroceryListState {
   startDate: Date;
   numberOfMealsInGroceryList: number;
+  showStaples: boolean;
 }
 
 export interface GroceryListState {
