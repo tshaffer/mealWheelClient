@@ -34,6 +34,7 @@ import {
   getUsers,
 } from '../selectors';
 import Dishes from './Dishes';
+import Ingredients from './Ingredients';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
@@ -167,15 +168,29 @@ const App = (props: AppProps) => {
 
     let dishesTabStyle;
     let dishesTabContentStyle;
+    let ingredientsTabStyle;
+    let ingredientsTabContentStyle;
     let mealScheduleTabStyle;
     let mealScheduleTabContentStyle;
     let settingsTabStyle;
     let settingsTabContentStyle;
 
     switch (selectedTab) {
-      case 'newGameTabSelect':
+      case 'dishesTabSelect':
         dishesTabStyle = tabLinkSelected;
         dishesTabContentStyle = selectedTabContent;
+        ingredientsTabStyle = tabLinkUnselected;
+        ingredientsTabContentStyle = unselectedTabContent;
+        mealScheduleTabStyle = tabLinkUnselected;
+        mealScheduleTabContentStyle = unselectedTabContent;
+        settingsTabStyle = tabLinkUnselected;
+        settingsTabContentStyle = unselectedTabContent;
+        break;
+      case 'ingredientsTabSelect':
+        dishesTabStyle = tabLinkUnselected;
+        dishesTabContentStyle = unselectedTabContent;
+        ingredientsTabStyle = tabLinkSelected;
+        ingredientsTabContentStyle = selectedTabContent;
         mealScheduleTabStyle = tabLinkUnselected;
         mealScheduleTabContentStyle = unselectedTabContent;
         settingsTabStyle = tabLinkUnselected;
@@ -185,6 +200,8 @@ const App = (props: AppProps) => {
       case 'mealScheduleTabSelect':
         dishesTabStyle = tabLinkUnselected;
         dishesTabContentStyle = unselectedTabContent;
+        ingredientsTabStyle = tabLinkUnselected;
+        ingredientsTabContentStyle = unselectedTabContent;
         mealScheduleTabStyle = tabLinkSelected;
         mealScheduleTabContentStyle = selectedTabContent;
         settingsTabStyle = tabLinkUnselected;
@@ -193,6 +210,8 @@ const App = (props: AppProps) => {
       case 'settingsTabSelect':
         dishesTabContentStyle = unselectedTabContent;
         dishesTabStyle = tabLinkUnselected;
+        ingredientsTabStyle = tabLinkUnselected;
+        ingredientsTabContentStyle = unselectedTabContent;
         mealScheduleTabStyle = tabLinkUnselected;
         mealScheduleTabContentStyle = unselectedTabContent;
         settingsTabStyle = tabLinkSelected;
@@ -204,7 +223,8 @@ const App = (props: AppProps) => {
       <div>
         <div style={tab}>
           <button style={mealScheduleTabStyle} onClick={handleSelectTab} id='mealScheduleTabSelect' >Meal Schedule</button>
-          <button style={dishesTabStyle} onClick={handleSelectTab} id='newGameTabSelect'>Dishes</button>
+          <button style={dishesTabStyle} onClick={handleSelectTab} id='dishesTabSelect'>Dishes</button>
+          <button style={ingredientsTabStyle} onClick={handleSelectTab} id='ingredientsTabSelect'>Ingredients</button>
           <button style={settingsTabStyle} onClick={handleSelectTab} id='settingsTabSelect' >Tools & Settings</button>
         </div>
         <div id='mealScheduleContent' style={mealScheduleTabContentStyle}>
@@ -212,6 +232,9 @@ const App = (props: AppProps) => {
         </div>
         <div id='dishesContent' style={dishesTabContentStyle}>
           <Dishes />
+        </div>
+        <div id='ingredientsContent' style={ingredientsTabContentStyle}>
+          <Ingredients />
         </div>
         <div id='settingsContent' style={settingsTabContentStyle}>
           <ToolsAndSettings />

@@ -15,3 +15,14 @@ export const getIngredientById = (state: MealWheelState, id: string): Ingredient
   return state.ingredientsState.ingredientsById[id];
 };
 
+export const getIngredients = (state: MealWheelState): IngredientEntity[] => {
+  const ingredients: IngredientEntity[] = [];
+  for (const ingredientId in state.ingredientsState.ingredientsById) {
+    if (state.ingredientsState.ingredientsById.prototype.hasOwnProperty.call(state.ingredientsState.ingredientsById, ingredientId)) {
+      const ingredient: IngredientEntity = state.ingredientsState.ingredientsById[ingredientId];
+      ingredients.push(ingredient);
+    }
+  }
+  return ingredients;
+};
+

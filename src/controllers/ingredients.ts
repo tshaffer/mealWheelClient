@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { apiUrlFragment, BaseDishEntity, DishEntity, IngredientEntity, IngredientsByDish, MealWheelState, serverUrl } from '../types';
+import { apiUrlFragment, IngredientEntity, IngredientsByDish, MealWheelState, serverUrl } from '../types';
 
 import { getCurrentUser } from '../selectors';
 import { addIngredientsRedux, setIngredientsByDishRedux } from '../models';
@@ -34,5 +34,21 @@ export const loadIngredientsByDish = () => {
         dispatch(setIngredientsByDishRedux(ingredientsByDish));
       });
   };
+};
+
+export const addIngredient = (
+  ingredient: IngredientEntity
+): any => {
+  return ((dispatch: any, getState: any): Promise<string> => {
+    return Promise.resolve('success');
+  });
+};
+
+export const updateIngredient = (
+  id: string,
+  ingredient: IngredientEntity
+): any => {
+  return ((dispatch: any): any => {
+  });
 };
 

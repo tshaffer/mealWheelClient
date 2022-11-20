@@ -5,6 +5,7 @@ export * from './GenerateGroceryListDialog';
 export * from './GenerateMenuDialog';
 export * from './GroceryListDialog';
 export * from './Home';
+export * from './Ingredients';
 export * from './Login';
 export * from './MealInCalendar';
 export * from './MealSchedule';
