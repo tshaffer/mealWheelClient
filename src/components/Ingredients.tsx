@@ -126,7 +126,6 @@ const Ingredients = (props: IngredientsProps) => {
     // setSnackbar({ children: error.message, severity: 'error' });
   }, []);
 
-
   const processRowUpdate = (updatedIngredient: GridRowModel) => {
 
     // check for empty name

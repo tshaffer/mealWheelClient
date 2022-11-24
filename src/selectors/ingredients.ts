@@ -27,3 +27,17 @@ export const getIngredients = (state: MealWheelState): IngredientEntity[] => {
   return ingredients;
 };
 
+export const getIngredientsByDish = (state: MealWheelState, id: string): IngredientEntity[] => {
+  const ingredients: IngredientEntity[] = [];
+  
+  const ingredientsIdsByDish = getIngredientIdsByDish(state, id);
+  ingredientsIdsByDish.forEach((ingredientId: string) => {
+    const ingredientInDish: IngredientEntity | null = getIngredientById(state, ingredientId);
+    if (!isNil(ingredientInDish)) {
+      ingredients.push(ingredientInDish);
+    }
+  });
+
+  return ingredients;
+};
+
