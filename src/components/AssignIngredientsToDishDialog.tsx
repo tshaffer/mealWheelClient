@@ -50,11 +50,11 @@ function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
 
   const handleAddRow = () => {
-    // const id = 'newIngredient' + uuidv4();
-    const id = '53d8be67-3993-40d4-868e-0b0c0455362b';
+    const id = 'newIngredientInDish' + uuidv4();
+    // const id = '53d8be67-3993-40d4-868e-0b0c0455362b';
     setRows((oldRows) => [...oldRows, {
       id,
-      name: 'fresh basil',
+      name: '',
       isNew: true
     }]);
     setRowModesModel((oldModel) => ({
@@ -147,25 +147,31 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const processRowUpdate = (updatedIngredient: GridRowModel) => {
 
-    // check for duplicate ingredient names.
-    const updatedIngredientName = updatedIngredient.name;
-    for (let ingredientIndex = 0; ingredientIndex < rows.length; ingredientIndex++) {
-      const existingIngredient: IngredientEntity = rows[ingredientIndex];
-      if (updatedIngredient.id !== existingIngredient.id && existingIngredient.name === updatedIngredientName) {
-        setSnackbar({ children: 'Error while saving user: duplicate ingredient name', severity: 'error' });
-        return;
-      }
+    // check for empty name
+    if (updatedIngredient.name === '') {
+      setSnackbar({ children: 'Error while saving user: name can\'t be empty.', severity: 'error' });
+      return;
     }
+
+    // check for duplicates
+    // const updatedIngredientName = updatedIngredient.name;
+    // for (let ingredientIndex = 0; ingredientIndex < rows.length; ingredientIndex++) {
+    //   const existingIngredient: IngredientEntity = rows[ingredientIndex];
+    //   if (updatedIngredient.id !== existingIngredient.id && existingIngredient.name === updatedIngredientName) {
+    //     setSnackbar({ children: 'Error while saving user: duplicate ingredient name', severity: 'error' });
+    //     return;
+    //   }
+    // }
 
     const updatedRow = { ...updatedIngredient, isNew: false };
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRow : row)));
 
-    const ingredient: IngredientEntity = {
-      id: updatedIngredient.id,
-      name: updatedIngredient.name,
-      showInGroceryList: updatedIngredient.showInGroceryList,
-      ingredients: [],
-    };
+    // const ingredient: IngredientEntity = {
+    //   id: updatedIngredient.id,
+    //   name: updatedIngredient.name,
+    //   showInGroceryList: updatedIngredient.showInGroceryList,
+    //   ingredients: [],
+    // };
     // if (updatedIngredient.id.startsWith('newIngredient')) {
     //   props.onAddIngredient(ingredient);
     // } else {
@@ -177,15 +183,15 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   console.log('generate ingredientOptions');
 
-  const ingredientOptions: ValueOptions[] = allIngredients.map((ingredient: IngredientEntity) => {
-    return {
-      value: ingredient.id,
-      label: ingredient.name,
-    };
-  });
+  // const ingredientOptions: ValueOptions[] = allIngredients.map((ingredient: IngredientEntity) => {
+  //   return {
+  //     value: ingredient.id,
+  //     label: ingredient.name,
+  //   };
+  // });
 
-  console.log(allIngredients);
-  console.log(ingredientOptions);
+  // console.log(allIngredients);
+  // console.log(ingredientOptions);
 
   const ingredientsInDishColumns: GridColumns = [
     { field: 'name', headerName: 'Name', width: 240, editable: true },
