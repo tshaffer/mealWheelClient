@@ -11,6 +11,7 @@ import { cloneDeep } from 'lodash';
 // Constants
 // ------------------------------------
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
+export const ADD_INGREDIENT_TO_DISH = 'ADD_INGREDIENT_TO_DISH';
 export const SET_INGREDIENTS_BY_DISH = 'SET_INGREDIENTS_BY_DISH';
 
 // ------------------------------------
@@ -46,6 +47,24 @@ export const setIngredientsByDishRedux = (
   };
 };
 
+export interface AddIngredientToDishPayload {
+  dishId: string;
+  ingredientEntity: IngredientEntity;
+}
+
+export const addIngredientToDish = (
+  dishId: string,
+  ingredientEntity: IngredientEntity,
+): any => {
+  return {
+    type: ADD_INGREDIENT_TO_DISH,
+    payload: {
+      dishId,
+      ingredientEntity,
+    }
+  };
+};
+
 // ------------------------------------
 // Reducer
 // ------------------------------------
@@ -58,7 +77,7 @@ const initialState: IngredientsState =
 
 export const ingredientsStateReducer = (
   state: IngredientsState = initialState,
-  action: MealWheelModelBaseAction<AddIngredientsPayload & SetIngredientsByDishPayload>
+  action: MealWheelModelBaseAction<AddIngredientsPayload & AddIngredientToDishPayload & SetIngredientsByDishPayload>
 ): IngredientsState => {
   switch (action.type) {
     case ADD_INGREDIENTS: {
@@ -66,6 +85,11 @@ export const ingredientsStateReducer = (
       action.payload.ingredients.forEach( (ingredient: IngredientEntity) => {
         newState.ingredientsById[ingredient.id] = ingredient;
       });
+      return newState;
+    }
+    case ADD_INGREDIENT_TO_DISH: {
+      const newState = cloneDeep(state) as IngredientsState;
+      newState.ingredientsByDish[action.payload.dishId].push(action.payload.ingredientEntity.id);
       return newState;
     }
     case SET_INGREDIENTS_BY_DISH: {

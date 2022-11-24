@@ -37,6 +37,7 @@ import {
 } from '@mui/x-data-grid-pro';
 import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
+import { addIngredientToDish } from '../models';
 
 // table
 interface EditToolbarProps {
@@ -90,13 +91,14 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
   dish: DishEntity | null;
   allIngredients: IngredientEntity[];
   ingredientsInDish: IngredientEntity[];
+  onAddIngredientToDish: (dishId: string, ingredient: IngredientEntity) => any;
 }
 
 const initialRows: GridRowsProp = [];
 
 function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps) {
 
-  const { open, dish, allIngredients, ingredientsInDish, onClose } = props;
+  const { open, dishId, dish, allIngredients, ingredientsInDish, onClose } = props;
 
   const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState(initialRows);
@@ -153,6 +155,21 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       return;
     }
 
+    // find matching ingredient
+    console.log('look for an ingredient entity with the name: ');
+    console.log(updatedIngredient.name);
+
+    let matchingIngredient: IngredientEntity | null = null;
+    const ingredientName: string = updatedIngredient.name;
+    for (const ingredientEntity of allIngredients) {
+      if (ingredientName === ingredientEntity.name) {
+        matchingIngredient = ingredientEntity;
+      }
+    }
+    if (isNil(matchingIngredient)) {
+      setSnackbar({ children: 'Error: ingredient not found', severity: 'error' });
+      return;
+    }
     // check for duplicates
     // const updatedIngredientName = updatedIngredient.name;
     // for (let ingredientIndex = 0; ingredientIndex < rows.length; ingredientIndex++) {
@@ -165,6 +182,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
     const updatedRow = { ...updatedIngredient, isNew: false };
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRow : row)));
+
+    props.onAddIngredientToDish(dishId, matchingIngredient);
 
     // const ingredient: IngredientEntity = {
     //   id: updatedIngredient.id,
@@ -273,7 +292,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Assign ingredients to {dishLabel}</DialogTitle>
+      <DialogTitle>Assign Ingredients to {dishLabel}</DialogTitle>
       <DialogContent>
         <Box
           sx={{
@@ -338,6 +357,7 @@ function mapStateToProps(state: any, ownProps: AssignIngredientsToDishDialogProp
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onAddIngredientToDish: addIngredientToDish,
   }, dispatch);
 };
 
