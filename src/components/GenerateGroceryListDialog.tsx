@@ -104,7 +104,7 @@ function GenerateGroceryListDialog(props: GenerateGroceryListDialogProps) {
                 onChange={handleUpdateShowStaples}
               />
             }
-            label="Show staples"
+            label="Show all"
           />
         </FormGroup>
       </DialogContent>

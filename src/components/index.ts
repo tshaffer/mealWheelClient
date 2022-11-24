@@ -1,5 +1,6 @@
 export * from './AboutDialog';
 export * from './App';
+export * from './AssignIngredientsToDishDialog';
 export * from './Dishes';
 export * from './GenerateGroceryListDialog';
 export * from './GenerateMenuDialog';

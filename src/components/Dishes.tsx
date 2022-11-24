@@ -13,6 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -37,6 +38,7 @@ import {
   addDish,
   updateDish
 } from '../controllers';
+import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -94,6 +96,9 @@ const Dishes = (props: DishesProps) => {
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
+  const [showAssignIngredientsToDish, setShowAssignIngredientsToDish] = React.useState(false);
+  const [dishId, setDishId] = React.useState('');
+
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleRowEditStart = (
@@ -109,6 +114,16 @@ const Dishes = (props: DishesProps) => {
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleAssignIngredientsToDish = (id: GridRowId) => () => {
+    console.log('handleAssignIngredientsToDish, dishId: ', id);
+    setDishId(id.toString());
+    setShowAssignIngredientsToDish(true);
+  };
+
+  const handleCloseAssignIngredientsToDish = () => {
+    setShowAssignIngredientsToDish(false);
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
@@ -264,12 +279,21 @@ const Dishes = (props: DishesProps) => {
           ];
         }
 
+
         return [
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id)}
+            color="inherit"
+            key={0}
+          />,
+          <GridActionsCellItem
+            icon={<LocalGroceryStoreIcon />}
+            label="Ingredients"
+            className="textPrimary"
+            onClick={handleAssignIngredientsToDish(id)}
             color="inherit"
             key={0}
           />,
@@ -340,52 +364,61 @@ const Dishes = (props: DishesProps) => {
     setRows(newRows);
   }
 
+  console.log('dishId: ', dishId);
+
   return (
-    <Box
-      sx={{
-        height: 500,
-        width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
-    >
-      <DataGrid
-        initialState={{
-          sorting: {
-            sortModel: [{ field: 'name', sort: 'asc' }],
-          },
-        }} rows={rows}
-        columns={dishesColumns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowEditStart={handleRowEditStart}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={handleProcessRowUpdateError}
-        components={{
-          Toolbar: EditToolbar,
-        }}
-        componentsProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-        experimentalFeatures={{ newEditingApi: true }}
-        isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
+    <div>
+      <AssignIngredientsToDishDialog
+        open={showAssignIngredientsToDish}
+        dishId={dishId}
+        onClose={handleCloseAssignIngredientsToDish}
       />
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
-        >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
-    </Box>
+      <Box
+        sx={{
+          height: 500,
+          width: '100%',
+          '& .actions': {
+            color: 'text.secondary',
+          },
+          '& .textPrimary': {
+            color: 'text.primary',
+          },
+        }}
+      >
+        <DataGrid
+          initialState={{
+            sorting: {
+              sortModel: [{ field: 'name', sort: 'asc' }],
+            },
+          }} rows={rows}
+          columns={dishesColumns}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowEditStart={handleRowEditStart}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
+          components={{
+            Toolbar: EditToolbar,
+          }}
+          componentsProps={{
+            toolbar: { setRows, setRowModesModel },
+          }}
+          experimentalFeatures={{ newEditingApi: true }}
+          isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
+        />
+        {!!snackbar && (
+          <Snackbar
+            open
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            onClose={handleCloseSnackbar}
+            autoHideDuration={6000}
+          >
+            <Alert {...snackbar} onClose={handleCloseSnackbar} />
+          </Snackbar>
+        )}
+      </Box>
+    </div>
   );
 };
 
