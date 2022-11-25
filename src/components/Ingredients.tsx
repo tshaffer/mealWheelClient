@@ -28,7 +28,7 @@ import {
 import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 
-import { IngredientEntity, IngredientRowModel } from '../types';
+import { IngredientEntity } from '../types';
 import {
   getIngredients,
 } from '../selectors';

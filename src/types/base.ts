@@ -108,14 +108,9 @@ export interface DishRowModel {
   veggie: number;
 }
 
-export interface IngredientRowModel {
+export interface IngredientInDishRowModel {
   id: string;
   name: string,
-  type: string,
-  requiresAccompaniment: boolean;
-  side: number;
-  salad: number;
-  veggie: number;
 }
 
 export interface StartupParams {

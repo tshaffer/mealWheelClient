@@ -314,7 +314,7 @@ const Dishes = (props: DishesProps) => {
       const side = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Side;
       const salad = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Salad;
       const veggie = isNil(dish.accompanimentRequired) ? RequiredAccompanimentFlags.None : dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie;
-      const row: GridRowModel = {
+      const row: DishRowModel = {
         id: dish.id,
         name: dish.name,
         type: dish.type,

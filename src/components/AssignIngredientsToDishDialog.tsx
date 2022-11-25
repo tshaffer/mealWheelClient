@@ -12,7 +12,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { isNil } from 'lodash';
 
 import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
-import { DishEntity, IngredientEntity } from '../types';
+import { DishEntity, IngredientEntity, IngredientInDishRowModel } from '../types';
 
 import Box from '@mui/material/Box';
 
@@ -52,10 +52,11 @@ function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
 
   const handleAddRow = () => {
-    const id = uuidv4();
+    // const id = uuidv4();
+    const id = 'df9b7402-9219-4615-8a47-f27337794132';
     setRows((oldRows) => [...oldRows, {
       id,
-      name: '',
+      name: 'eggs',
       isNew: true
     }]);
     setRowModesModel((oldModel) => ({
@@ -156,20 +157,21 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
 
     // find matching ingredient
-    console.log('look for an ingredient entity with the name: ');
-    console.log(updatedIngredient.name);
+    // console.log('look for an ingredient entity with the name: ');
+    // console.log(updatedIngredient.name);
 
-    let matchingIngredient: IngredientEntity | null = null;
-    const ingredientName: string = updatedIngredient.name;
-    for (const ingredientEntity of allIngredients) {
-      if (ingredientName === ingredientEntity.name) {
-        matchingIngredient = ingredientEntity;
-      }
-    }
-    if (isNil(matchingIngredient)) {
-      setSnackbar({ children: 'Error: ingredient not found', severity: 'error' });
-      return;
-    }
+    // let matchingIngredient: IngredientEntity | null = null;
+    // const ingredientName: string = updatedIngredient.name;
+    // for (const ingredientEntity of allIngredients) {
+    //   if (ingredientName === ingredientEntity.name) {
+    //     matchingIngredient = ingredientEntity;
+    //   }
+    // }
+    // if (isNil(matchingIngredient)) {
+    //   setSnackbar({ children: 'Error: ingredient not found', severity: 'error' });
+    //   return;
+    // }
+
     // check for duplicates
     // const updatedIngredientName = updatedIngredient.name;
     // for (let ingredientIndex = 0; ingredientIndex < rows.length; ingredientIndex++) {
@@ -184,8 +186,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRow : row)));
 
     // check isNew - could be a change!!
-    props.onAddIngredientToDish(dishId, matchingIngredient);
-    return updatedRow;
+    // props.onAddIngredientToDish(dishId, matchingIngredient);
+    // return updatedRow;
   };
 
   const ingredientOptions: any[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
@@ -200,36 +202,22 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   console.log(ingredientOptions);
 
   const ingredientsInDishColumns: GridColumns = [
-    { field: 'name', headerName: 'Name', width: 240, editable: true },
+    // { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
-      field: 'label',
-      headerName: 'Ingredient Name',
-      width: 200,
-      editable: true,
-      // valueFormatter: ({ value }) => value ?? '',
-      // valueFormatter: ({ value }) => {
-      //   console.log('valueFormatter, value: ');
-      //   console.log(value);
-      //   return value ?? '';
-      // },
-      valueFormatter: (params: GridValueFormatterParams<string>) => {
-        console.log(params);
-        if (params.value == null) {
-          return '';
-        }
-        const valueFormatted = params.value.toString();
-        return valueFormatted;
+      field: 'name',
+      type: 'singleSelect',
+      valueOptions: ingredientOptions,
+      // https://github.com/mui/mui-x/issues/4437
+      valueFormatter: ({ id: rowId, value, field, api }) => {
+        const colDef = api.getColumn(field);
+        const option = colDef.valueOptions.find(
+          ({ value: optionValue }: any) => value === optionValue
+        );
+        return option.label;
       },
-
-      renderEditCell: (params) => (
-        <AutocompleteEditCell
-          {...params}
-          options={ingredientOptions}
-          freeSolo={false}
-          multiple={false}
-          disableClearable
-        />
-      ),
+      headerName: 'Ingredient Name',
+      width: 180,
+      editable: true,
     },
     {
       field: 'actions',
@@ -282,10 +270,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const getRows = () => {
     const rows: GridRowsProp = ingredientsInDish.map((ingredient: IngredientEntity) => {
-      const row: GridRowModel = {
+      const row: IngredientInDishRowModel = {
         id: ingredient.id,
         name: ingredient.name,
-        value: ingredient.id,
       };
       return row;
     });
