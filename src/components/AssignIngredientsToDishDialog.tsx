@@ -16,7 +16,7 @@ import { DishEntity, IngredientEntity } from '../types';
 
 import Box from '@mui/material/Box';
 
-import { DataGrid, GridCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -38,6 +38,7 @@ import {
 import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import { addIngredientToDish } from '../models';
+import { AutocompleteEditCell } from './AutocompleteEditCell';
 
 // table
 interface EditToolbarProps {
@@ -187,8 +188,49 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     return updatedRow;
   };
 
+  const ingredientOptions: any[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
+    return {
+      // value: ingredientEntity.id,
+      value: ingredientEntity.name,
+      label: ingredientEntity.name,
+    };
+  });
+
+  console.log('ingredientOptions');
+  console.log(ingredientOptions);
+
   const ingredientsInDishColumns: GridColumns = [
     { field: 'name', headerName: 'Name', width: 240, editable: true },
+    {
+      field: 'label',
+      headerName: 'Ingredient Name',
+      width: 200,
+      editable: true,
+      // valueFormatter: ({ value }) => value ?? '',
+      // valueFormatter: ({ value }) => {
+      //   console.log('valueFormatter, value: ');
+      //   console.log(value);
+      //   return value ?? '';
+      // },
+      valueFormatter: (params: GridValueFormatterParams<string>) => {
+        console.log(params);
+        if (params.value == null) {
+          return '';
+        }
+        const valueFormatted = params.value.toString();
+        return valueFormatted;
+      },
+
+      renderEditCell: (params) => (
+        <AutocompleteEditCell
+          {...params}
+          options={ingredientOptions}
+          freeSolo={false}
+          multiple={false}
+          disableClearable
+        />
+      ),
+    },
     {
       field: 'actions',
       type: 'actions',
@@ -243,9 +285,12 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       const row: GridRowModel = {
         id: ingredient.id,
         name: ingredient.name,
+        value: ingredient.id,
       };
       return row;
     });
+    console.log('getRows');
+    console.log(rows);
     return rows;
   };
 
