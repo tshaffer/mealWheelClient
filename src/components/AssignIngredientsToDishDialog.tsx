@@ -160,17 +160,17 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     // console.log('look for an ingredient entity with the name: ');
     // console.log(updatedIngredient.name);
 
-    // let matchingIngredient: IngredientEntity | null = null;
-    // const ingredientName: string = updatedIngredient.name;
-    // for (const ingredientEntity of allIngredients) {
-    //   if (ingredientName === ingredientEntity.name) {
-    //     matchingIngredient = ingredientEntity;
-    //   }
-    // }
-    // if (isNil(matchingIngredient)) {
-    //   setSnackbar({ children: 'Error: ingredient not found', severity: 'error' });
-    //   return;
-    // }
+    let matchingIngredient: IngredientEntity | null = null;
+    const ingredientName: string = updatedIngredient.name;
+    for (const ingredientEntity of allIngredients) {
+      if (ingredientName === ingredientEntity.name) {
+        matchingIngredient = ingredientEntity;
+      }
+    }
+    if (isNil(matchingIngredient)) {
+      setSnackbar({ children: 'Error: ingredient not found', severity: 'error' });
+      return;
+    }
 
     // check for duplicates
     // const updatedIngredientName = updatedIngredient.name;
@@ -186,8 +186,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRow : row)));
 
     // check isNew - could be a change!!
-    // props.onAddIngredientToDish(dishId, matchingIngredient);
-    // return updatedRow;
+    props.onAddIngredientToDish(dishId, matchingIngredient);
+    return updatedRow;
   };
 
   const ingredientOptions: any[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
