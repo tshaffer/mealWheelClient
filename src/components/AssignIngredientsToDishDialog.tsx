@@ -16,7 +16,7 @@ import { DishEntity, IngredientEntity } from '../types';
 
 import Box from '@mui/material/Box';
 
-import { DataGrid, GridCellParams, ValueOptions } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -51,8 +51,7 @@ function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
 
   const handleAddRow = () => {
-    const id = 'newIngredientInDish' + uuidv4();
-    // const id = '53d8be67-3993-40d4-868e-0b0c0455362b';
+    const id = uuidv4();
     setRows((oldRows) => [...oldRows, {
       id,
       name: '',
@@ -151,7 +150,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
     // check for empty name
     if (updatedIngredient.name === '') {
-      setSnackbar({ children: 'Error while saving user: name can\'t be empty.', severity: 'error' });
+      setSnackbar({ children: 'Error: ingredient can\'t be empty.', severity: 'error' });
       return;
     }
 
@@ -183,34 +182,10 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     const updatedRow = { ...updatedIngredient, isNew: false };
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRow : row)));
 
+    // check isNew - could be a change!!
     props.onAddIngredientToDish(dishId, matchingIngredient);
-
-    // const ingredient: IngredientEntity = {
-    //   id: updatedIngredient.id,
-    //   name: updatedIngredient.name,
-    //   showInGroceryList: updatedIngredient.showInGroceryList,
-    //   ingredients: [],
-    // };
-    // if (updatedIngredient.id.startsWith('newIngredient')) {
-    //   props.onAddIngredient(ingredient);
-    // } else {
-    //   props.onUpdateIngredient(updatedRow.id, ingredient);
-    // }
-
     return updatedRow;
   };
-
-  console.log('generate ingredientOptions');
-
-  // const ingredientOptions: ValueOptions[] = allIngredients.map((ingredient: IngredientEntity) => {
-  //   return {
-  //     value: ingredient.id,
-  //     label: ingredient.name,
-  //   };
-  // });
-
-  // console.log(allIngredients);
-  // console.log(ingredientOptions);
 
   const ingredientsInDishColumns: GridColumns = [
     { field: 'name', headerName: 'Name', width: 240, editable: true },
