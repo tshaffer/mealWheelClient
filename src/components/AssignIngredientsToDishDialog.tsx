@@ -150,6 +150,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const processRowUpdate = (updatedIngredient: GridRowModel) => {
 
+    console.log('PROCESS ROW UPDATE');
+
+    console.log('updatedIngredient:');
+    console.log(updatedIngredient);
+
     // check for empty name
     if (updatedIngredient.name === '') {
       setSnackbar({ children: 'Error: ingredient can\'t be empty.', severity: 'error' });
@@ -185,8 +190,18 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     const updatedRow = { ...updatedIngredient, isNew: false };
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRow : row)));
 
+    const ingredientEntity: IngredientEntity = {
+      id: matchingIngredient.id,
+      name: matchingIngredient.name,
+      showInGroceryList: matchingIngredient.showInGroceryList,
+      ingredients: matchingIngredient.ingredients,
+    };
     // check isNew - could be a change!!
-    props.onAddIngredientToDish(dishId, matchingIngredient);
+
+    console.log('ingredientEntity:');
+    console.log(ingredientEntity);
+
+    props.onAddIngredientToDish(dishId, ingredientEntity);
     return updatedRow;
   };
 
@@ -197,9 +212,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       label: ingredientEntity.name,
     };
   });
-
-  console.log('ingredientOptions');
-  console.log(ingredientOptions);
 
   const ingredientsInDishColumns: GridColumns = [
     // { field: 'name', headerName: 'Name', width: 240, editable: true },
@@ -288,6 +300,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const newRows: GridRowsProp = getRows();
   if (!rowsRead && newRows.length > 0) {
     setRowsRead(true);
+    console.log('SETROWS');
     setRows(newRows);
   }
 
@@ -296,6 +309,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   };
 
   const dishLabel: string = isNil(dish) ? 'Unknown dish' : dish.name;
+
+  console.log('reRender - rows = ');
+  console.log(rows);
 
   return (
     <Dialog onClose={handleClose} open={open}>

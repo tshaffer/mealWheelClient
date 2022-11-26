@@ -151,7 +151,6 @@ const Dishes = (props: DishesProps) => {
     // setSnackbar({ children: error.message, severity: 'error' });
   }, []);
 
-
   const processRowUpdate = (updatedDish: GridRowModel) => {
 
     // check for empty name
