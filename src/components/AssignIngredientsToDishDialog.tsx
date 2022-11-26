@@ -150,11 +150,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const processRowUpdate = (updatedIngredient: GridRowModel) => {
 
-    console.log('PROCESS ROW UPDATE');
-
-    console.log('updatedIngredient:');
-    console.log(updatedIngredient);
-
     // check for empty name
     if (updatedIngredient.name === '') {
       setSnackbar({ children: 'Error: ingredient can\'t be empty.', severity: 'error' });
@@ -162,9 +157,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
 
     // find matching ingredient
-    // console.log('look for an ingredient entity with the name: ');
-    // console.log(updatedIngredient.name);
-
     let matchingIngredient: IngredientEntity | null = null;
     const ingredientName: string = updatedIngredient.name;
     for (const ingredientEntity of allIngredients) {
@@ -191,12 +183,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     const updatedRowWithNewId = cloneDeep(updatedRow);
     updatedRowWithNewId.id = matchingIngredient.id;
 
-    console.log('processRowUpdate');
-    console.log('updatedRow');
-    console.log(updatedRow);
-    console.log('matchingIngredient');
-    console.log(matchingIngredient);
-
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRowWithNewId : row)));
 
     const ingredientEntity: IngredientEntity = {
@@ -207,16 +193,12 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     };
     // check isNew - could be a change!!
 
-    console.log('ingredientEntity:');
-    console.log(ingredientEntity);
-
     props.onAddIngredientToDish(dishId, ingredientEntity);
     return updatedRow;
   };
 
   const ingredientOptions: any[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
     return {
-      // value: ingredientEntity.id,
       value: ingredientEntity.name,
       label: ingredientEntity.name,
     };
@@ -297,8 +279,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       };
       return row;
     });
-    console.log('getRows');
-    console.log(rows);
     return rows;
   };
 
@@ -318,9 +298,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   };
 
   const dishLabel: string = isNil(dish) ? 'Unknown dish' : dish.name;
-
-  console.log('reRender - rows = ');
-  console.log(rows);
 
   return (
     <Dialog onClose={handleClose} open={open}>
