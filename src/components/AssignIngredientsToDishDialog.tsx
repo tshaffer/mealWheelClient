@@ -9,7 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 
 import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
 import { DishEntity, IngredientEntity, IngredientInDishRowModel } from '../types';
@@ -188,7 +188,16 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     // }
 
     const updatedRow = { ...updatedIngredient, isNew: false };
-    setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRow : row)));
+    const updatedRowWithNewId = cloneDeep(updatedRow);
+    updatedRowWithNewId.id = matchingIngredient.id;
+
+    console.log('processRowUpdate');
+    console.log('updatedRow');
+    console.log(updatedRow);
+    console.log('matchingIngredient');
+    console.log(matchingIngredient);
+
+    setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRowWithNewId : row)));
 
     const ingredientEntity: IngredientEntity = {
       id: matchingIngredient.id,
@@ -297,12 +306,12 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     return true;
   };
 
-  const newRows: GridRowsProp = getRows();
-  if (!rowsRead && newRows.length > 0) {
-    setRowsRead(true);
-    console.log('SETROWS');
-    setRows(newRows);
-  }
+  // const newRows: GridRowsProp = getRows();
+  // if (!rowsRead && newRows.length > 0) {
+  //   setRowsRead(true);
+  //   console.log('SETROWS');
+  //   setRows(newRows);
+  // }
 
   const handleClose = () => {
     onClose();
