@@ -12,6 +12,7 @@ import { cloneDeep } from 'lodash';
 // ------------------------------------
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
 export const ADD_INGREDIENT_TO_DISH = 'ADD_INGREDIENT_TO_DISH';
+export const REPLACE_INGREDIENT_IN_DISH = 'REPLACE_INGREDIENT_IN_DISH';
 export const SET_INGREDIENTS_BY_DISH = 'SET_INGREDIENTS_BY_DISH';
 
 // ------------------------------------
@@ -65,6 +66,28 @@ export const addIngredientToDish = (
   };
 };
 
+export interface ReplaceIngredientToDishPayload {
+  dishId: string;
+  existingIngredientId: string;
+  ingredientEntity: IngredientEntity;
+}
+
+export const replaceIngredientInDish = (
+  dishId: string,
+  existingIngredientId: string,
+  ingredientEntity: IngredientEntity,
+): any => {
+  return {
+    type: REPLACE_INGREDIENT_IN_DISH,
+    payload: {
+      dishId,
+      existingIngredientId,
+      ingredientEntity,
+    }
+  };
+};
+
+
 // ------------------------------------
 // Reducer
 // ------------------------------------
@@ -77,7 +100,7 @@ const initialState: IngredientsState =
 
 export const ingredientsStateReducer = (
   state: IngredientsState = initialState,
-  action: MealWheelModelBaseAction<AddIngredientsPayload & AddIngredientToDishPayload & SetIngredientsByDishPayload>
+  action: MealWheelModelBaseAction<AddIngredientsPayload & AddIngredientToDishPayload & ReplaceIngredientToDishPayload & SetIngredientsByDishPayload>
 ): IngredientsState => {
   switch (action.type) {
     case ADD_INGREDIENTS: {
@@ -90,6 +113,14 @@ export const ingredientsStateReducer = (
     case ADD_INGREDIENT_TO_DISH: {
       const newState = cloneDeep(state) as IngredientsState;
       newState.ingredientsByDish[action.payload.dishId].push(action.payload.ingredientEntity.id);
+      return newState;
+    }
+    case REPLACE_INGREDIENT_IN_DISH: {
+      const newState = cloneDeep(state) as IngredientsState;
+      let ingredientIdsInDish: string[] = newState.ingredientsByDish[action.payload.dishId];
+      ingredientIdsInDish = ingredientIdsInDish.filter(e => e !== action.payload.existingIngredientId);
+      ingredientIdsInDish.push(action.payload.ingredientEntity.id);
+      newState.ingredientsByDish[action.payload.dishId] = ingredientIdsInDish;
       return newState;
     }
     case SET_INGREDIENTS_BY_DISH: {

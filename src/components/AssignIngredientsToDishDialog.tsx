@@ -37,7 +37,7 @@ import {
 } from '@mui/x-data-grid-pro';
 import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
-import { addIngredientToDish } from '../models';
+import { addIngredientToDish, replaceIngredientInDish } from '../models';
 import { AutocompleteEditCell } from './AutocompleteEditCell';
 
 // dialog
@@ -53,6 +53,7 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
   allIngredients: IngredientEntity[];
   ingredientsInDish: IngredientEntity[];
   onAddIngredientToDish: (dishId: string, ingredient: IngredientEntity) => any;
+  onReplaceIngredientInDish: (dishId: string, existingIngredientId: string, newIngredient: IngredientEntity) => any;
 }
 
 const initialRows: GridRowsProp = [];
@@ -104,7 +105,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-    // handleAddRow(); - didn't work and save stopped working....
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
@@ -129,6 +129,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   }, []);
 
   const processRowUpdate = (updatedIngredient: GridRowModel) => {
+
+    console.log('processRowUpdate, updatedIngredient: ');
+    console.log(updatedIngredient);
 
     // check for empty name
     if (updatedIngredient.name === '') {
@@ -158,6 +161,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     //     return;
     //   }
     // }
+
+    // if updatedIngredient.isNew === true, add the ingredient to the dish
+    // if updatedIngredient.isNew === false, replace the old ingredient in this row with the new ingredient
+    // OR, could it just check to see if the id is 'placeholderIngredient'?
+    const addRow: boolean = updatedIngredient.isNew;
 
     const updatedRow = { ...updatedIngredient, isNew: false };
     const updatedRowWithNewId = cloneDeep(updatedRow);
@@ -194,7 +202,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     };
     // check isNew - could be a change!!
 
-    props.onAddIngredientToDish(dishId, ingredientEntity);
+    if (addRow) {
+      props.onAddIngredientToDish(dishId, ingredientEntity);
+    } else {
+      props.onReplaceIngredientInDish(dishId, updatedIngredient.id, ingredientEntity);
+    }
     return updatedRow;
   };
 
@@ -369,6 +381,7 @@ function mapStateToProps(state: any, ownProps: AssignIngredientsToDishDialogProp
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onAddIngredientToDish: addIngredientToDish,
+    onReplaceIngredientInDish: replaceIngredientInDish,
   }, dispatch);
 };
 
