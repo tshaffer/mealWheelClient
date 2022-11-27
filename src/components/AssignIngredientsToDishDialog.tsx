@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -17,7 +16,6 @@ import { DishEntity, IngredientEntity, IngredientInDishRowModel } from '../types
 import Box from '@mui/material/Box';
 
 import { DataGrid, GridCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
-import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -29,7 +27,6 @@ import {
   GridColumns,
   GridRowParams,
   MuiEvent,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
@@ -39,8 +36,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import { addIngredientToDish, replaceIngredientInDish } from '../models';
 import { AutocompleteEditCell } from './AutocompleteEditCell';
-
-// dialog
 
 export interface AssignIngredientsToDishDialogPropsFromParent {
   open: boolean;
@@ -58,11 +53,12 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
 
 const initialRows: GridRowsProp = [];
 
+const placeholderIngredientId = 'placeholderIngredientId';
+
 function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps) {
 
   const { open, dishId, dish, allIngredients, ingredientsInDish, onClose } = props;
 
-  const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
@@ -75,10 +71,10 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleAddRow = () => {
-    const id = 'placeholderIngredient';
+    const id = placeholderIngredientId;
     setRows((oldRows) => [...oldRows, {
-      id,
-      name: 'placeholderIngredient',
+      id: id,
+      name: id,
       isNew: true
     }]);
 
@@ -162,16 +158,12 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     //   }
     // }
 
-    // if updatedIngredient.isNew === true, add the ingredient to the dish
-    // if updatedIngredient.isNew === false, replace the old ingredient in this row with the new ingredient
-    // OR, could it just check to see if the id is 'placeholderIngredient'?
     const addRow: boolean = updatedIngredient.isNew;
 
     const updatedRow = { ...updatedIngredient, isNew: false };
     const updatedRowWithNewId = cloneDeep(updatedRow);
     updatedRowWithNewId.id = matchingIngredient.id;
 
-    // setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRowWithNewId : row)));
     const newRows = [];
     for (const row of rows) {
       if (row.id === updatedIngredient.id) {
@@ -182,8 +174,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
 
     const newestRows = [...newRows, {
-      id: 'placeholderIngredient',
-      name: 'placeholderIngredient',
+      id: placeholderIngredientId,
+      name: placeholderIngredientId,
       isNew: true
     }];
 
@@ -191,7 +183,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      ['placeholderIngredient']: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      [placeholderIngredientId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
     }));
 
     const ingredientEntity: IngredientEntity = {
@@ -200,7 +192,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       showInGroceryList: matchingIngredient.showInGroceryList,
       ingredients: matchingIngredient.ingredients,
     };
-    // check isNew - could be a change!!
 
     if (addRow) {
       props.onAddIngredientToDish(dishId, ingredientEntity);
@@ -217,7 +208,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     };
   });
   ingredientOptions.push({
-    value: 'placeholderIngredient',
+    value: placeholderIngredientId,
     label: 'Select ingredient',
   });
 
@@ -288,27 +279,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     },
   ];
 
-  const getRows = () => {
-    const rows: GridRowsProp = ingredientsInDish.map((ingredient: IngredientEntity) => {
-      const row: IngredientInDishRowModel = {
-        id: ingredient.id,
-        name: ingredient.name,
-      };
-      return row;
-    });
-    return rows;
-  };
-
   const getIsCellEditable = (params: GridCellParams): boolean => {
     return true;
   };
-
-  // const newRows: GridRowsProp = getRows();
-  // if (!rowsRead && newRows.length > 0) {
-  //   setRowsRead(true);
-  //   console.log('SETROWS');
-  //   setRows(newRows);
-  // }
 
   const handleClose = () => {
     onClose();
