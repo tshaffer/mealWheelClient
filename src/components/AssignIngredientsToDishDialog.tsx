@@ -61,7 +61,7 @@ function EditToolbar(props: EditToolbarProps) {
     }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'id' },
     }));
   };
 
@@ -158,9 +158,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
     // find matching ingredient
     let matchingIngredient: IngredientEntity | null = null;
-    const ingredientName: string = updatedIngredient.name;
+    const ingredientId: string = updatedIngredient.id;
     for (const ingredientEntity of allIngredients) {
-      if (ingredientName === ingredientEntity.name) {
+      if (ingredientId === ingredientEntity.id) {
         matchingIngredient = ingredientEntity;
       }
     }
@@ -182,6 +182,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     const updatedRow = { ...updatedIngredient, isNew: false };
     const updatedRowWithNewId = cloneDeep(updatedRow);
     updatedRowWithNewId.id = matchingIngredient.id;
+    updatedRowWithNewId.name = matchingIngredient.name;
 
     setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRowWithNewId : row)));
 
@@ -199,7 +200,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const ingredientOptions: any[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
     return {
-      value: ingredientEntity.name,
+      value: ingredientEntity.id,
       label: ingredientEntity.name,
     };
   });
@@ -207,7 +208,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const ingredientsInDishColumns: GridColumns = [
     // { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
-      field: 'name',
+      field: 'id',
       type: 'singleSelect',
       valueOptions: ingredientOptions,
       // https://github.com/mui/mui-x/issues/4437
@@ -318,7 +319,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
           <DataGrid
             initialState={{
               sorting: {
-                sortModel: [{ field: 'name', sort: 'asc' }],
+                sortModel: [{ field: 'id', sort: 'asc' }],
               },
             }} rows={rows}
             columns={ingredientsInDishColumns}
