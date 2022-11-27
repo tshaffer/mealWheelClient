@@ -215,18 +215,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   });
 
   const ingredientsInDishColumns: GridColumns = [
-    // { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
       field: 'name',
       headerName: 'Ingredient Name',
       width: 200,
       editable: true,
-      // valueFormatter: ({ value }) => value ?? '',
-      // valueFormatter: ({ value }) => {
-      //   console.log('valueFormatter, value: ');
-      //   console.log(value);
-      //   return value ?? '';
-      // },
       valueFormatter: (params: GridValueFormatterParams<string>) => {
         console.log(params);
         if (params.value == null) {
@@ -246,22 +239,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
         />
       ),
     },
-    // {
-    //   field: 'name',
-    //   type: 'singleSelect',
-    //   valueOptions: ingredientOptions,
-    //   // https://github.com/mui/mui-x/issues/4437
-    //   valueFormatter: ({ id: rowId, value, field, api }) => {
-    //     const colDef = api.getColumn(field);
-    //     const option = colDef.valueOptions.find(
-    //       ({ value: optionValue }: any) => value === optionValue
-    //     );
-    //     return option.label;
-    //   },
-    //   headerName: 'Ingredient Name',
-    //   width: 180,
-    //   editable: true,
-    // },
     {
       field: 'actions',
       type: 'actions',
@@ -342,11 +319,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
           }}
         >
           <DataGrid
-            initialState={{
-              sorting: {
-                sortModel: [{ field: 'name', sort: 'asc' }],
-              },
-            }} rows={rows}
+            rows={rows}
             columns={ingredientsInDishColumns}
             editMode="row"
             rowModesModel={rowModesModel}
@@ -354,9 +327,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
             onRowEditStop={handleRowEditStop}
             processRowUpdate={processRowUpdate}
             onProcessRowUpdateError={handleProcessRowUpdateError}
-            // componentsProps={{
-            //   toolbar: { setRows, setRowModesModel },
-            // }}
             experimentalFeatures={{ newEditingApi: true }}
             isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
           />
