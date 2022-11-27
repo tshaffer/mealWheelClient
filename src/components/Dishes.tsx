@@ -311,6 +311,27 @@ const Dishes = (props: DishesProps) => {
   const dishesColumns: GridColumns = [
     { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
+      field: 'type',
+      type: 'singleSelect',
+      valueOptions: [
+        mainOption,
+        saladOption,
+        sideOption,
+        vegOption,
+      ],
+      // https://github.com/mui/mui-x/issues/4437
+      valueFormatter: ({ id: rowId, value, field, api }) => {
+        const colDef = api.getColumn(field);
+        const option = colDef.valueOptions.find(
+          ({ value: optionValue }: any) => value === optionValue
+        );
+        return option.label;
+      },
+      headerName: 'Type',
+      width: 180,
+      editable: true,
+    },
+    {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
