@@ -163,7 +163,28 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     const updatedRowWithNewId = cloneDeep(updatedRow);
     updatedRowWithNewId.id = matchingIngredient.id;
 
-    setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRowWithNewId : row)));
+    // setRows(rows.map((row) => (row.id === updatedIngredient.id ? updatedRowWithNewId : row)));
+    const newRows = [];
+    for (const row of rows) {
+      if (row.id === updatedIngredient.id) {
+        newRows.push(updatedRowWithNewId);
+      } else {
+        newRows.push(row);
+      }
+    }
+
+    const newestRows = [...newRows, {
+      id: 'placeholderIngredient',
+      name: 'placeholderIngredient',
+      isNew: true
+    }];
+
+    setRows(newestRows);
+
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      ['placeholderIngredient']: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+    }));
 
     const ingredientEntity: IngredientEntity = {
       id: matchingIngredient.id,
@@ -312,9 +333,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
             onRowEditStop={handleRowEditStop}
             processRowUpdate={processRowUpdate}
             onProcessRowUpdateError={handleProcessRowUpdateError}
-            componentsProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
+            // componentsProps={{
+            //   toolbar: { setRows, setRowModesModel },
+            // }}
             experimentalFeatures={{ newEditingApi: true }}
             isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
           />
