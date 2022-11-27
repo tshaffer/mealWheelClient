@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
-import { cloneDeep, isNil } from 'lodash';
+import { cloneDeep, isNil, isString } from 'lodash';
 
 import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
 import { DishEntity, IngredientEntity, IngredientInDishRowModel } from '../types';
@@ -64,9 +64,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
   React.useEffect(() => {
-    console.log('React.usEffect() invoked');
-    handleAddRow();
-  }, []);
+    console.log('React.useEffect() invoked');
+    if (isString(dishId) && dishId !== '') {
+      handleAddRow();
+    }
+  }, [dishId]);
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
@@ -216,20 +218,50 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     // { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
       field: 'name',
-      type: 'singleSelect',
-      valueOptions: ingredientOptions,
-      // https://github.com/mui/mui-x/issues/4437
-      valueFormatter: ({ id: rowId, value, field, api }) => {
-        const colDef = api.getColumn(field);
-        const option = colDef.valueOptions.find(
-          ({ value: optionValue }: any) => value === optionValue
-        );
-        return option.label;
-      },
       headerName: 'Ingredient Name',
-      width: 180,
+      width: 200,
       editable: true,
+      // valueFormatter: ({ value }) => value ?? '',
+      // valueFormatter: ({ value }) => {
+      //   console.log('valueFormatter, value: ');
+      //   console.log(value);
+      //   return value ?? '';
+      // },
+      valueFormatter: (params: GridValueFormatterParams<string>) => {
+        console.log(params);
+        if (params.value == null) {
+          return '';
+        }
+        const valueFormatted = params.value.toString();
+        return valueFormatted;
+      },
+
+      renderEditCell: (params) => (
+        <AutocompleteEditCell
+          {...params}
+          options={ingredientOptions}
+          freeSolo={false}
+          multiple={false}
+          disableClearable
+        />
+      ),
     },
+    // {
+    //   field: 'name',
+    //   type: 'singleSelect',
+    //   valueOptions: ingredientOptions,
+    //   // https://github.com/mui/mui-x/issues/4437
+    //   valueFormatter: ({ id: rowId, value, field, api }) => {
+    //     const colDef = api.getColumn(field);
+    //     const option = colDef.valueOptions.find(
+    //       ({ value: optionValue }: any) => value === optionValue
+    //     );
+    //     return option.label;
+    //   },
+    //   headerName: 'Ingredient Name',
+    //   width: 180,
+    //   editable: true,
+    // },
     {
       field: 'actions',
       type: 'actions',
@@ -286,6 +318,10 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const handleClose = () => {
     onClose();
   };
+
+  if (isNil(dishId) || dishId === '') {
+    return null;
+  }
 
   const dishLabel: string = isNil(dish) ? 'Unknown dish' : dish.name;
 
