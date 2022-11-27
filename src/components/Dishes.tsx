@@ -199,7 +199,7 @@ const Dishes = (props: DishesProps) => {
     return updatedRow;
   };
 
-  const dishesColumns: GridColumns = [
+  const old_dishesColumns: GridColumns = [
     { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
       field: 'type',
@@ -250,6 +250,66 @@ const Dishes = (props: DishesProps) => {
       width: 90,
       editable: true,
     },
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              onClick={handleSaveClick(id)}
+              key={0}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+              key={0}
+            />,
+          ];
+        }
+
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+            key={0}
+          />,
+          <GridActionsCellItem
+            icon={<LocalGroceryStoreIcon />}
+            label="Ingredients"
+            className="textPrimary"
+            onClick={handleAssignIngredientsToDish(id)}
+            color="inherit"
+            key={0}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+            key={0}
+          />,
+        ];
+      },
+    },
+  ];
+
+  const dishesColumns: GridColumns = [
+    { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
       field: 'actions',
       type: 'actions',

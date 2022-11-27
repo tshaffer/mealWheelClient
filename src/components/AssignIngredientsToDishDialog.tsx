@@ -106,7 +106,33 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
+  React.useEffect(() => {
+    console.log('React.usEffect() invoked');
+    handleAddRow();
+  }, []);
+
   const handleCloseSnackbar = () => setSnackbar(null);
+
+  const handleAddRow = () => {
+    // const id = uuidv4();
+    // const id = 'df9b7402-9219-4615-8a47-f27337794132';
+    // setRows((oldRows) => [...oldRows, {
+    //   id,
+    //   name: 'eggs',
+    //   isNew: true
+    // }]);
+    const id = 'placeholderIngredient';
+    setRows((oldRows) => [...oldRows, {
+      id,
+      name: 'placeholderIngredient',
+      isNew: true
+    }]);
+
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+    }));
+  };
 
   const handleRowEditStart = (
     params: GridRowParams,
@@ -202,6 +228,10 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       value: ingredientEntity.name,
       label: ingredientEntity.name,
     };
+  });
+  ingredientOptions.push({
+    value: 'placeholderIngredient',
+    label: 'Select ingredient',
   });
 
   const ingredientsInDishColumns: GridColumns = [
