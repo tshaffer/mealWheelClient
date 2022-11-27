@@ -40,46 +40,6 @@ import Alert, { AlertProps } from '@mui/material/Alert';
 import { addIngredientToDish } from '../models';
 import { AutocompleteEditCell } from './AutocompleteEditCell';
 
-// table
-interface EditToolbarProps {
-  setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-  setRowModesModel: (
-    newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
-  ) => void;
-}
-
-function EditToolbar(props: EditToolbarProps) {
-  const { setRows, setRowModesModel } = props;
-
-  const handleAddRow = () => {
-    // const id = uuidv4();
-    const id = 'df9b7402-9219-4615-8a47-f27337794132';
-    setRows((oldRows) => [...oldRows, {
-      id,
-      name: 'eggs',
-      isNew: true
-    }]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
-  };
-
-  return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
-        Add ingredient
-      </Button>
-    </GridToolbarContainer>
-  );
-}
-
-
-
-
-
-
-
 // dialog
 
 export interface AssignIngredientsToDishDialogPropsFromParent {
@@ -114,13 +74,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleAddRow = () => {
-    // const id = uuidv4();
-    // const id = 'df9b7402-9219-4615-8a47-f27337794132';
-    // setRows((oldRows) => [...oldRows, {
-    //   id,
-    //   name: 'eggs',
-    //   isNew: true
-    // }]);
     const id = 'placeholderIngredient';
     setRows((oldRows) => [...oldRows, {
       id,
@@ -151,6 +104,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    // handleAddRow(); - didn't work and save stopped working....
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
@@ -358,9 +312,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
             onRowEditStop={handleRowEditStop}
             processRowUpdate={processRowUpdate}
             onProcessRowUpdateError={handleProcessRowUpdateError}
-            components={{
-              Toolbar: EditToolbar,
-            }}
             componentsProps={{
               toolbar: { setRows, setRowModesModel },
             }}
