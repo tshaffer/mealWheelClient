@@ -15,7 +15,7 @@ import { DishEntity, IngredientEntity, IngredientInDishRowModel } from '../types
 
 import Box from '@mui/material/Box';
 
-import { DataGrid, GridCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams, GridValueFormatterParams, useGridApiEventHandler } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -70,6 +70,62 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
   }, [dishId]);
 
+  const handleRowClick: GridEventListener<'rowClick'> = (
+    params, // GridRowParams
+    event, // MuiEvent<React.MouseEvent<HTMLElement>>
+    details,
+  ) => {
+    console.log('handleRowClickEvent: ');
+    console.log(params);
+    console.log(event);
+    console.log(details);
+  };
+  
+  // NOT SURE WHEN THIS IS INVOKED
+  const handleCellEditStop: GridEventListener<'cellEditStop'> = (
+    params,  // GridCellEditStopParams
+    event,   // MuiEvent<MuiBaseEvent>
+    details, // GridCallbackDetails
+  ) => {
+    console.log('handleCellEditStop: ');
+    console.log(params);
+    console.log(event);
+    console.log(details);
+  };  
+    
+  const handleCellKeyDown: GridEventListener<'cellKeyDown'> = (
+    params,  // GridCellParams
+    event,   // MuiEvent<React.KeyboardEvent<HTMLElement>>
+    details, // GridCallbackDetails
+  ) => {
+    console.log('handleCellKeyDown: ');
+    console.log(params);
+    console.log(event);
+    console.log(details);
+  };    
+    
+  const handleEditCellPropsChange: GridEventListener<'editCellPropsChange'> = (
+    params,  // GridEditCellPropsParams
+    event,   // MuiEvent<React.SyntheticEvent<HTMLElement> | {}>
+    details, // GridCallbackDetails
+  ) => {
+    console.log('handleEditCellPropsChange: ');
+    console.log(params);
+    console.log(event);
+    console.log(details);
+  };     
+  
+  const handleRowEditCommit: GridEventListener<'rowEditCommit'> = (
+    params,  // GridRowId
+    event,   // MuiEvent<MuiBaseEvent>
+    details, // GridCallbackDetails
+  ) => {
+    console.log('handleRowEditCommit: ');
+    console.log(params);
+    console.log(event);
+    console.log(details);
+  };         
+  
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleAddRow = () => {
@@ -221,7 +277,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       width: 200,
       editable: true,
       valueFormatter: (params: GridValueFormatterParams<string>) => {
-        console.log(params);
+        // console.log(params);
         if (params.value == null) {
           return '';
         }
@@ -329,6 +385,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
             onProcessRowUpdateError={handleProcessRowUpdateError}
             experimentalFeatures={{ newEditingApi: true }}
             isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
+            onRowClick={handleRowClick}
+            onCellEditStop={handleCellEditStop}
+            onCellKeyDown={handleCellKeyDown}
+            onEditCellPropsChange={handleEditCellPropsChange}
+            onRowEditCommit={handleRowEditCommit}
           />
           {!!snackbar && (
             <Snackbar
