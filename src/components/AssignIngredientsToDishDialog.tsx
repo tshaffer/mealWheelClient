@@ -59,6 +59,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const { open, dishId, dish, allIngredients, ingredientsInDish, onClose } = props;
 
+  const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
@@ -288,17 +289,37 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     },
   ];
 
-  const getIsCellEditable = (params: GridCellParams): boolean => {
-    return true;
+  const getRows = () => {
+    const rows: GridRowsProp = ingredientsInDish.map((ingredient: IngredientEntity) => {
+      const row: IngredientInDishRowModel = {
+        id: ingredient.id,
+        name: ingredient.name,
+      };
+      return row;
+    });
+    console.log('getRows');
+    console.log(rows);
+    return rows;
   };
 
-  const handleClose = () => {
-    onClose();
+  const getIsCellEditable = (params: GridCellParams): boolean => {
+    return true;
   };
 
   if (isNil(dishId) || dishId === '') {
     return null;
   }
+
+  const newRows: GridRowsProp = getRows();
+  if (!rowsRead && newRows.length > 0) {
+    setRowsRead(true);
+    console.log('SETROWS');
+    setRows(newRows);
+  }
+
+  const handleClose = () => {
+    onClose();
+  };
 
   const dishLabel: string = isNil(dish) ? 'Unknown dish' : dish.name;
 
