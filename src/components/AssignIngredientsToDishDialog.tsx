@@ -65,8 +65,21 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
   React.useEffect(() => {
+
     console.log('React.useEffect() invoked');
+
     if (isString(dishId) && dishId !== '') {
+      console.log('clear rows');
+      setRows([]);
+
+      const newRows: GridRowsProp = getRows();
+      // if (!rowsRead && newRows.length > 0) {
+      if (newRows.length > 0) {
+        console.log('initialize newRows');
+        setRowsRead(true);
+        setRows(newRows);
+      }
+
       handleAddRow();
     }
   }, [dishId]);
@@ -129,8 +142,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const processRowUpdate = (updatedIngredient: GridRowModel) => {
 
-    console.log('processRowUpdate, updatedIngredient: ');
-    console.log(updatedIngredient);
+    // console.log('processRowUpdate, updatedIngredient: ');
+    // console.log(updatedIngredient);
 
     // check for empty name
     if (updatedIngredient.name === '') {
@@ -222,7 +235,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       width: 200,
       editable: true,
       valueFormatter: (params: GridValueFormatterParams<string>) => {
-        console.log(params);
+        // console.log(params);
         if (params.value == null) {
           return '';
         }
@@ -297,8 +310,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       };
       return row;
     });
-    console.log('getRows');
-    console.log(rows);
+    // console.log('getRows');
+    // console.log(rows);
     return rows;
   };
 
@@ -310,12 +323,12 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     return null;
   }
 
-  const newRows: GridRowsProp = getRows();
-  if (!rowsRead && newRows.length > 0) {
-    setRowsRead(true);
-    console.log('SETROWS');
-    setRows(newRows);
-  }
+  // const newRows: GridRowsProp = getRows();
+  // if (!rowsRead && newRows.length > 0) {
+  //   console.log('initialize newRows');
+  //   setRowsRead(true);
+  //   setRows(newRows);
+  // }
 
   const handleClose = () => {
     onClose();
