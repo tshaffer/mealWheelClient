@@ -589,6 +589,7 @@ const Dishes = (props: DishesProps) => {
           }} rows={rows}
           columns={dishesColumns}
           editMode="row"
+          disableVirtualization
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
