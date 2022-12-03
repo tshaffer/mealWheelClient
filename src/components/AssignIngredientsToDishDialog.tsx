@@ -156,14 +156,14 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
 
     // check for duplicates
-    // const updatedIngredientName = updatedIngredient.name;
-    // for (let ingredientIndex = 0; ingredientIndex < rows.length; ingredientIndex++) {
-    //   const existingIngredient: IngredientEntity = rows[ingredientIndex];
-    //   if (updatedIngredient.id !== existingIngredient.id && existingIngredient.name === updatedIngredientName) {
-    //     setSnackbar({ children: 'Error while saving user: duplicate ingredient name', severity: 'error' });
-    //     return;
-    //   }
-    // }
+    const updatedIngredientName = updatedIngredient.name;
+    for (let ingredientIndex = 0; ingredientIndex < rows.length; ingredientIndex++) {
+      const existingIngredient: any = rows[ingredientIndex];
+      if (existingIngredient.name === updatedIngredientName) {
+        setSnackbar({ children: 'Error while saving user: duplicate ingredient name', severity: 'error' });
+        return;
+      }
+    }
 
     const addRow: boolean = updatedIngredient.isNew;
 
