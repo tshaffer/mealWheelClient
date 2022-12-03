@@ -199,261 +199,9 @@ const Dishes = (props: DishesProps) => {
     return updatedRow;
   };
 
-  const old_dishesColumns: GridColumns = [
-    { field: 'name', headerName: 'Name', width: 240, editable: true },
-    {
-      field: 'type',
-      type: 'singleSelect',
-      valueOptions: [
-        mainOption,
-        saladOption,
-        sideOption,
-        vegOption,
-      ],
-      // https://github.com/mui/mui-x/issues/4437
-      valueFormatter: ({ id: rowId, value, field, api }) => {
-        const colDef = api.getColumn(field);
-        const option = colDef.valueOptions.find(
-          ({ value: optionValue }: any) => value === optionValue
-        );
-        return option.label;
-      },
-      headerName: 'Type',
-      width: 180,
-      editable: true,
-    },
-    {
-      field: 'requiresAccompaniment',
-      type: 'boolean',
-      headerName: 'Requires accompaniment',
-      width: 180,
-      editable: true,
-    },
-    {
-      field: 'side',
-      type: 'boolean',
-      headerName: 'Side',
-      width: 90,
-      editable: true,
-    },
-    {
-      field: 'salad',
-      type: 'boolean',
-      headerName: 'Salad',
-      width: 90,
-      editable: true,
-    },
-    {
-      field: 'veggie',
-      type: 'boolean',
-      headerName: 'Veggie',
-      width: 90,
-      editable: true,
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-              key={0}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-              key={0}
-            />,
-          ];
-        }
-
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-            key={0}
-          />,
-          <GridActionsCellItem
-            icon={<LocalGroceryStoreIcon />}
-            label="Ingredients"
-            className="textPrimary"
-            onClick={handleAssignIngredientsToDish(id)}
-            color="inherit"
-            key={0}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-            key={0}
-          />,
-        ];
-      },
-    },
-  ];
-
-  const semi_working_dishesColumns: GridColumns = [
-    { field: 'name', headerName: 'Name', width: 240, editable: true },
-    // {
-    //   field: 'type',
-    //   type: 'singleSelect',
-    //   valueOptions: [
-    //     mainOption,
-    //     saladOption,
-    //     sideOption,
-    //     vegOption,
-    //   ],
-    //   // https://github.com/mui/mui-x/issues/4437
-    //   valueFormatter: ({ id: rowId, value, field, api }) => {
-    //     const colDef = api.getColumn(field);
-    //     const option = colDef.valueOptions.find(
-    //       ({ value: optionValue }: any) => value === optionValue
-    //     );
-    //     return option.label;
-    //   },
-    //   headerName: 'Type',
-    //   width: 180,
-    //   editable: true,
-    // },
-    {
-      field: 'requiresAccompaniment',
-      type: 'boolean',
-      headerName: 'Requires accompaniment',
-      width: 180,
-      editable: true,
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-              key={0}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-              key={0}
-            />,
-          ];
-        }
-
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-            key={0}
-          />,
-          <GridActionsCellItem
-            icon={<LocalGroceryStoreIcon />}
-            label="Ingredients"
-            className="textPrimary"
-            onClick={handleAssignIngredientsToDish(id)}
-            color="inherit"
-            key={0}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-            key={0}
-          />,
-        ];
-      },
-    },
-  ];
-
   const dishesColumns: GridColumns = [
     { field: 'name', headerName: 'Name', width: 240, editable: true },
     {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-              key={0}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-              key={0}
-            />,
-          ];
-        }
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-            key={0}
-          />,
-          <GridActionsCellItem
-            icon={<LocalGroceryStoreIcon />}
-            label="Ingredients"
-            className="textPrimary"
-            onClick={handleAssignIngredientsToDish(id)}
-            color="inherit"
-            key={0}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-            key={0}
-          />,
-        ];
-      },
-    },
-    {
       field: 'type',
       type: 'singleSelect',
       valueOptions: [
@@ -502,8 +250,63 @@ const Dishes = (props: DishesProps) => {
       width: 90,
       editable: true,
     },
-  ];
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              onClick={handleSaveClick(id)}
+              key={0}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+              key={0}
+            />,
+          ];
+        }
+
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+            key={0}
+          />,
+          <GridActionsCellItem
+            icon={<LocalGroceryStoreIcon />}
+            label="Ingredients"
+            className="textPrimary"
+            onClick={handleAssignIngredientsToDish(id)}
+            color="inherit"
+            key={0}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+            key={0}
+          />,
+        ];
+      },
+    },
+  ];
 
   const getRows = () => {
     const rows: GridRowsProp = props.dishes.map((dish: DishEntity) => {
