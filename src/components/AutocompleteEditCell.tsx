@@ -41,6 +41,7 @@ export function AutocompleteEditCell<
 
   return (
     <Autocomplete<T, Multiple, DisableClearable, FreeSolo>
+      autoHighlight={true}
       fullWidth
       disableClearable={disableClearable}
       multiple={multiple}
