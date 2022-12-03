@@ -1,3 +1,4 @@
+import { GridRowModel } from '@mui/x-data-grid';
 import {
   DefinedMealEntity,
   DishEntity,
@@ -108,7 +109,7 @@ export interface DishRowModel {
   veggie: number;
 }
 
-export interface IngredientInDishRowModel {
+export interface IngredientInDishRowModel extends GridRowModel{
   id: string;
   name: string,
 }

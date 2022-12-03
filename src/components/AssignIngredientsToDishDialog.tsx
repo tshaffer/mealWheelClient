@@ -51,7 +51,7 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
   onReplaceIngredientInDish: (dishId: string, existingIngredientId: string, newIngredient: IngredientEntity) => any;
 }
 
-const initialRows: GridRowsProp = [];
+const initialRows: IngredientInDishRowModel[] = [];
 
 const placeholderIngredientId = 'placeholderIngredientId';
 
@@ -60,7 +60,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const { open, dishId, dish, allIngredients, ingredientsInDish, onClose } = props;
 
   const [rowsRead, setRowsRead] = React.useState(false);
-  const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = React.useState<IngredientInDishRowModel[]>(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
@@ -72,7 +72,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       console.log('clear rows');
       setRows([]);
 
-      const newRows: GridRowsProp = getRows();
+      const newRows: IngredientInDishRowModel[] = getRows();
       // if (!rowsRead && newRows.length > 0) {
       if (newRows.length > 0) {
         console.log('initialize newRows');
@@ -189,13 +189,15 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       }
     }
 
-    const newestRows = [...newRows, {
-      id: placeholderIngredientId,
-      name: placeholderIngredientId,
-      isNew: true
-    }];
-
-    setRows(newestRows);
+    if (addRow) {
+      const newestRows = [...newRows, {
+        id: placeholderIngredientId,
+        name: placeholderIngredientId,
+        isNew: true
+      }];
+  
+      setRows(newestRows);  
+    }
 
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -303,7 +305,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   ];
 
   const getRows = () => {
-    const rows: GridRowsProp = ingredientsInDish.map((ingredient: IngredientEntity) => {
+    const rows: IngredientInDishRowModel[] = ingredientsInDish.map((ingredient: IngredientEntity) => {
       const row: IngredientInDishRowModel = {
         id: ingredient.id,
         name: ingredient.name,
@@ -322,13 +324,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   if (isNil(dishId) || dishId === '') {
     return null;
   }
-
-  // const newRows: GridRowsProp = getRows();
-  // if (!rowsRead && newRows.length > 0) {
-  //   console.log('initialize newRows');
-  //   setRowsRead(true);
-  //   setRows(newRows);
-  // }
 
   const handleClose = () => {
     onClose();
