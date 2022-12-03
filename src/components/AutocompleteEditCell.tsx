@@ -2,6 +2,10 @@ import { UseAutocompleteProps, AutocompleteValue, Autocomplete, TextField } from
 import { GridRenderEditCellParams, useGridApiContext } from '@mui/x-data-grid';
 import React from 'react';
 
+const myIsOptionEqualToValue = (option: any, value: any) => {
+  return option.value === value;
+};
+
 export function AutocompleteEditCell<
   T extends { value: string; label: string },
   Multiple extends boolean = false,
@@ -51,6 +55,7 @@ export function AutocompleteEditCell<
       value={options.find((o) => o.value === value)?.label || ''}
       onChange={handleValueChange}
       renderInput={(params) => <TextField {...params} />}
+      isOptionEqualToValue={myIsOptionEqualToValue}
     />
   );
 }

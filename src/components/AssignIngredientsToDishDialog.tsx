@@ -52,7 +52,7 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
 
 const initialRows: IngredientInDishRowModel[] = [];
 
-const placeholderIngredientId = 'placeholderIngredientId';
+const placeholderIngredientId = 'Select ingredient';
 
 function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps) {
 
@@ -186,8 +186,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
         name: placeholderIngredientId,
         isNew: true
       }];
-  
-      setRows(newestRows);  
+
+      setRows(newestRows);
     }
 
     setRowModesModel((oldModel) => ({
@@ -235,15 +235,20 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
         return valueFormatted;
       },
 
-      renderEditCell: (params) => (
-        <AutocompleteEditCell
-          {...params}
-          options={ingredientOptions}
-          freeSolo={false}
-          multiple={false}
-          disableClearable
-        />
-      ),
+      renderEditCell: (params) => {
+        console.log('renderEditCell');
+        console.log(params);
+        console.log(ingredientOptions);
+        return (
+          <AutocompleteEditCell
+            {...params}
+            options={ingredientOptions}
+            freeSolo={false}
+            multiple={false}
+            disableClearable
+          />
+        );
+      },
     },
     {
       field: 'actions',
