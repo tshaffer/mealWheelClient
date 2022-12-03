@@ -117,7 +117,6 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleAssignIngredientsToDish = (id: GridRowId) => () => {
-    console.log('handleAssignIngredientsToDish, dishId: ', id);
     setDishId(id.toString());
     setShowAssignIngredientsToDish(true);
   };
@@ -362,8 +361,6 @@ const Dishes = (props: DishesProps) => {
     setRowsRead(true);
     setRows(newRows);
   }
-
-  console.log('dishId: ', dishId);
 
   return (
     <div>

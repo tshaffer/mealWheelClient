@@ -71,8 +71,6 @@ const dateComparator = (scheduledMeal1: ScheduledMealEntity, scheduledMeal2: Sch
 export const loadScheduledMeals = () => {
   return (dispatch: any, getState: any) => {
 
-    console.log('execute loadScheduledMeals');
-
     dispatch(clearScheduledMeals());
 
     const state: MealWheelState = getState();
@@ -82,8 +80,6 @@ export const loadScheduledMeals = () => {
 
     return axios.get(path)
       .then((mealsResponse: any) => {
-
-        console.log('loadScheduledMeals: axios get completed');
 
         const scheduledMealEntities: ScheduledMealEntity[] = [];
         const rawScheduledMealEntities: any[] = (mealsResponse as any).data;
@@ -107,7 +103,6 @@ export const loadScheduledMeals = () => {
 
         // generate mealsToResolve
         const mealsToResolve: VerboseScheduledMeal[] = generateMealsToResolve(state, scheduledMealEntities);
-        console.log('loadScheduledMeals: invoke setMealsToResolve');
         dispatch(setMealsToResolve(mealsToResolve));
         if (mealsToResolve.length > 0) {
           dispatch(setMealIndex(0));
@@ -234,8 +229,6 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
         allIngredients.push(ingredient);
       }
     }
-
-    console.log(allIngredients);
 
     dispatch(setIngredientsInGroceryList(allIngredients));
   };

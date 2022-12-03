@@ -21,7 +21,6 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import {
-  GridRowsProp,
   GridRowModesModel,
   GridRowModes,
   GridColumns,
@@ -66,16 +65,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   React.useEffect(() => {
 
-    console.log('React.useEffect() invoked');
-
     if (isString(dishId) && dishId !== '') {
-      console.log('clear rows');
       setRows([]);
 
       const newRows: IngredientInDishRowModel[] = getRows();
-      // if (!rowsRead && newRows.length > 0) {
       if (newRows.length > 0) {
-        console.log('initialize newRows');
         setRowsRead(true);
         setRows(newRows);
       }
@@ -141,9 +135,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   }, []);
 
   const processRowUpdate = (updatedIngredient: GridRowModel) => {
-
-    // console.log('processRowUpdate, updatedIngredient: ');
-    // console.log(updatedIngredient);
 
     // check for empty name
     if (updatedIngredient.name === '') {
@@ -237,7 +228,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       width: 200,
       editable: true,
       valueFormatter: (params: GridValueFormatterParams<string>) => {
-        // console.log(params);
         if (params.value == null) {
           return '';
         }
@@ -312,8 +302,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       };
       return row;
     });
-    // console.log('getRows');
-    // console.log(rows);
     return rows;
   };
 

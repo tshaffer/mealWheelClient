@@ -30,8 +30,6 @@ const getStartupParams = () => {
 
   return (dispatch: any) => {
 
-    console.log(window.location.href);
-
     // updated code based on new form of url
     // const urlParts: string[] = window.location.href.split('/');
     // const indexOfGame = urlParts.lastIndexOf('game');
