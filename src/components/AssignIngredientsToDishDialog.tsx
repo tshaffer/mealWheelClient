@@ -216,6 +216,20 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       label: ingredientEntity.name,
     };
   });
+  ingredientOptions.sort((a: any, b: any) => {
+    const nameA = a.label.toUpperCase(); // ignore upper and lowercase
+    const nameB = b.label.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+
+    // names must be equal
+    return 0;
+  });
+
   ingredientOptions.push({
     value: placeholderIngredientId,
     label: 'Select ingredient',
@@ -236,9 +250,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       },
 
       renderEditCell: (params) => {
-        console.log('renderEditCell');
-        console.log(params);
-        console.log(ingredientOptions);
         return (
           <AutocompleteEditCell
             {...params}
