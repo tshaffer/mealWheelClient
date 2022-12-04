@@ -52,7 +52,8 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
 
 const initialRows: IngredientInDishRowModel[] = [];
 
-const placeholderIngredientId = 'Select ingredient';
+const placeholderIngredientId = 'placeholderIngredientId';
+const placeholderIngredientLabel = 'Select ingredient';
 
 function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps) {
 
@@ -62,7 +63,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const [rows, setRows] = React.useState<IngredientInDishRowModel[]>(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
-  const [selectIngredientValue, setSelectIngredientValue] = React.useState<string>('Select ingredient');
+  const [selectIngredientValue, setSelectIngredientValue] = React.useState<string>(placeholderIngredientLabel);
 
   React.useEffect(() => {
 
@@ -85,7 +86,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     const id = placeholderIngredientId;
     setRows((oldRows) => [...oldRows, {
       id: id,
-      name: id,
+      name: placeholderIngredientLabel,
       isNew: true
     }]);
 
@@ -184,7 +185,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     if (addRow) {
       const newestRows = [...newRows, {
         id: placeholderIngredientId,
-        name: placeholderIngredientId,
+        name: placeholderIngredientLabel,
         isNew: true
       }];
 
@@ -233,14 +234,14 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   ingredientOptions.push({
     value: placeholderIngredientId,
-    label: 'Select ingredient',
+    label: placeholderIngredientLabel,
   });
 
   const handleInputChange = (
     id: any,
     value: any,
   ) => {
-    if (id === 'Select ingredient') {
+    if (id === placeholderIngredientId) {
       setSelectIngredientValue(value);
     }
   };
@@ -260,6 +261,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       },
 
       renderEditCell: (params) => {
+        // console.log('renderEditCell, params:');
+        // console.log(params);
         return (
           <AutocompleteEditCell
             {...params}
@@ -280,7 +283,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       cellClassName: 'actions',
       getActions: ({ id }) => {
 
-        if (id === 'Select ingredient' && selectIngredientValue === 'Select ingredient') {
+        if (id === placeholderIngredientId && selectIngredientValue === placeholderIngredientLabel) {
           return [];
         }
         
@@ -334,6 +337,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       };
       return row;
     });
+    // console.log('getRows: ');
+    // console.log(rows);
     return rows;
   };
 
