@@ -62,6 +62,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const [rows, setRows] = React.useState<IngredientInDishRowModel[]>(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
+  const [selectIngredientValue, setSelectIngredientValue] = React.useState<string>('Select ingredient');
 
   React.useEffect(() => {
 
@@ -235,6 +236,15 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     label: 'Select ingredient',
   });
 
+  const handleInputChange = (
+    id: any,
+    value: any,
+  ) => {
+    if (id === 'Select ingredient') {
+      setSelectIngredientValue(value);
+    }
+  };
+
   const ingredientsInDishColumns: GridColumns = [
     {
       field: 'name',
@@ -254,6 +264,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
           <AutocompleteEditCell
             {...params}
             options={ingredientOptions}
+            onInputChange={handleInputChange}
             freeSolo={false}
             multiple={false}
             disableClearable
@@ -268,6 +279,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       width: 100,
       cellClassName: 'actions',
       getActions: ({ id }) => {
+
+        if (id === 'Select ingredient' && selectIngredientValue === 'Select ingredient') {
+          return [];
+        }
+        
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {

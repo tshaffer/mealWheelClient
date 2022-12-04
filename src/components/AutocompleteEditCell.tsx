@@ -8,6 +8,7 @@ const myIsOptionEqualToValue = (option: any, value: any) => {
 
 export function AutocompleteEditCell<
   T extends { value: string; label: string },
+  onInputChange,
   Multiple extends boolean = false,
   DisableClearable extends boolean = false,
   FreeSolo extends boolean = false
@@ -19,6 +20,7 @@ export function AutocompleteEditCell<
   disableClearable,
   multiple,
   freeSolo,
+  onInputChange,
 }: GridRenderEditCellParams & {
   options: UseAutocompleteProps<
     T,
@@ -26,11 +28,22 @@ export function AutocompleteEditCell<
     DisableClearable,
     FreeSolo
   >['options'];
+  onInputChange: any;
   disableClearable: DisableClearable;
   multiple: Multiple;
   freeSolo: FreeSolo;
 }) {
   const apiRef = useGridApiContext();
+  const onInputChangeCallback = onInputChange;
+
+  const handleInputChange = (
+    event: any,
+    value: any,
+    reason: any,
+  ) => {
+    onInputChangeCallback(id, value);
+  };
+
   const handleValueChange = (
     _: any,
     newValue: AutocompleteValue<T, Multiple, DisableClearable, FreeSolo>
@@ -54,6 +67,7 @@ export function AutocompleteEditCell<
       // @ts-expect-error i can't figure out how to use AutocompleteValue
       value={options.find((o) => o.value === value)?.label || ''}
       onChange={handleValueChange}
+      onInputChange={handleInputChange}
       renderInput={(params) => <TextField {...params} />}
       isOptionEqualToValue={myIsOptionEqualToValue}
     />
