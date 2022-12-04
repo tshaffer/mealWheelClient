@@ -3,7 +3,7 @@ import { GridRenderEditCellParams, useGridApiContext } from '@mui/x-data-grid';
 import React from 'react';
 
 const myIsOptionEqualToValue = (option: any, value: any) => {
-  return option.value === value;
+  return option.label === value;
 };
 
 export function AutocompleteEditCell<
