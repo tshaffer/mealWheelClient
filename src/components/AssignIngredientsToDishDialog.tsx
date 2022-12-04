@@ -261,8 +261,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       },
 
       renderEditCell: (params) => {
-        // console.log('renderEditCell, params:');
-        // console.log(params);
         return (
           <AutocompleteEditCell
             {...params}
@@ -337,8 +335,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
       };
       return row;
     });
-    // console.log('getRows: ');
-    // console.log(rows);
     return rows;
   };
 
