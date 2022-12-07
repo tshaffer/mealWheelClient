@@ -35,6 +35,8 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import { addIngredientToDish, replaceIngredientInDish } from '../models';
 import { AutocompleteEditCell } from './AutocompleteEditCell';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 export interface AssignIngredientsToDishDialogPropsFromParent {
   open: boolean;
@@ -368,7 +370,15 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
             },
           }}
         >
-          <DataGrid
+          <List>
+            <ListItem>
+              Item 1
+            </ListItem>
+            <ListItem>
+              Item 2
+            </ListItem>
+          </List>
+          {/* <DataGrid
             rows={rows}
             columns={ingredientsInDishColumns}
             editMode="row"
@@ -389,7 +399,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
             >
               <Alert {...snackbar} onClose={handleCloseSnackbar} />
             </Snackbar>
-          )}
+          )} */}
         </Box>
       </DialogContent>
       <DialogActions>
