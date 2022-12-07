@@ -39,6 +39,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { AutocompleteValue } from '@mui/material/useAutocomplete';
 
 export interface AssignIngredientsToDishDialogPropsFromParent {
   open: boolean;
@@ -356,6 +357,33 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const dishLabel: string = isNil(dish) ? 'Unknown dish' : dish.name;
 
+  const handleOpenAutoComplete = () => {
+    console.log('autocomplete open');
+  };
+
+  const handleAutoCompleteChange = (
+    _: any,
+    newValue: any,
+  ) => {
+    console.log('handleAutoCompleteChange open');
+    console.log(newValue);
+  };
+
+  const handleAutoCompleteInputChange = (
+    newValue: any,
+  ) => {
+    console.log('handleAutoCompleteInputChange open');
+    console.log(newValue);
+  };
+
+  const handleCloseAutoComplete = () => {
+    console.log('autocomplete close');
+  };
+
+  const handleAutoCompleteKeyDown = () => {
+    console.log('handleAutoCompleteKeyDown');
+  };
+
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Assign Ingredients to {dishLabel}</DialogTitle>
@@ -381,6 +409,11 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
                 options={ingredientOptions}
                 sx={{ width: 300 }}
                 renderInput={(params) => <TextField {...params} label="Ingredient" />}
+                onChange={handleAutoCompleteChange}
+                onInputChange={(event, value, reason) => handleAutoCompleteInputChange(value)}
+                onOpen={handleOpenAutoComplete}
+                onClose={handleCloseAutoComplete}
+                onKeyDown={handleAutoCompleteKeyDown}
               />
             </ListItem>
             <ListItem>
