@@ -37,6 +37,8 @@ import { addIngredientToDish, replaceIngredientInDish } from '../models';
 import { AutocompleteEditCell } from './AutocompleteEditCell';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 export interface AssignIngredientsToDishDialogPropsFromParent {
   open: boolean;
@@ -286,7 +288,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
         if (id === placeholderIngredientId && selectIngredientValue === placeholderIngredientLabel) {
           return [];
         }
-        
+
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
@@ -372,7 +374,14 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
         >
           <List>
             <ListItem>
-              Item 1
+              <Autocomplete
+                autoHighlight={true}
+                disablePortal
+                id="combo-box-demo"
+                options={ingredientOptions}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} label="Ingredient" />}
+              />
             </ListItem>
             <ListItem>
               Item 2
