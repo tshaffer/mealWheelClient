@@ -41,6 +41,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { AutocompleteValue } from '@mui/material/useAutocomplete';
 
+interface IngredientOption {
+  value: IngredientEntity | null;
+  label: string;
+}
+
 export interface AssignIngredientsToDishDialogPropsFromParent {
   open: boolean;
   dishId: string;
@@ -217,9 +222,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     return updatedRow;
   };
 
-  const ingredientOptions: any[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
+  const ingredientOptions: IngredientOption[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
     return {
-      value: ingredientEntity.name,
+      value: ingredientEntity,
       label: ingredientEntity.name,
     };
   });
@@ -238,7 +243,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   });
 
   ingredientOptions.push({
-    value: placeholderIngredientId,
+    value: null,
     label: placeholderIngredientLabel,
   });
 
@@ -251,86 +256,86 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
   };
 
-  const ingredientsInDishColumns: GridColumns = [
-    {
-      field: 'name',
-      headerName: 'Ingredient Name',
-      width: 200,
-      editable: true,
-      valueFormatter: (params: GridValueFormatterParams<string>) => {
-        if (params.value == null) {
-          return '';
-        }
-        const valueFormatted = params.value.toString();
-        return valueFormatted;
-      },
+  // const ingredientsInDishColumns: GridColumns = [
+  //   {
+  //     field: 'name',
+  //     headerName: 'Ingredient Name',
+  //     width: 200,
+  //     editable: true,
+  //     valueFormatter: (params: GridValueFormatterParams<string>) => {
+  //       if (params.value == null) {
+  //         return '';
+  //       }
+  //       const valueFormatted = params.value.toString();
+  //       return valueFormatted;
+  //     },
 
-      renderEditCell: (params) => {
-        return (
-          <AutocompleteEditCell
-            {...params}
-            options={ingredientOptions}
-            onInputChange={handleInputChange}
-            freeSolo={false}
-            multiple={false}
-            disableClearable
-          />
-        );
-      },
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
+  //     renderEditCell: (params) => {
+  //       return (
+  //         <AutocompleteEditCell
+  //           {...params}
+  //           options={ingredientOptions}
+  //           onInputChange={handleInputChange}
+  //           freeSolo={false}
+  //           multiple={false}
+  //           disableClearable
+  //         />
+  //       );
+  //     },
+  //   },
+  //   {
+  //     field: 'actions',
+  //     type: 'actions',
+  //     headerName: 'Actions',
+  //     width: 100,
+  //     cellClassName: 'actions',
+  //     getActions: ({ id }) => {
 
-        if (id === placeholderIngredientId && selectIngredientValue === placeholderIngredientLabel) {
-          return [];
-        }
+  //       if (id === placeholderIngredientId && selectIngredientValue === placeholderIngredientLabel) {
+  //         return [];
+  //       }
 
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+  //       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-              key={0}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-              key={0}
-            />,
-          ];
-        }
+  //       if (isInEditMode) {
+  //         return [
+  //           <GridActionsCellItem
+  //             icon={<SaveIcon />}
+  //             label="Save"
+  //             onClick={handleSaveClick(id)}
+  //             key={0}
+  //           />,
+  //           <GridActionsCellItem
+  //             icon={<CancelIcon />}
+  //             label="Cancel"
+  //             className="textPrimary"
+  //             onClick={handleCancelClick(id)}
+  //             color="inherit"
+  //             key={0}
+  //           />,
+  //         ];
+  //       }
 
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-            key={0}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-            key={0}
-          />,
-        ];
-      },
-    },
-  ];
+  //       return [
+  //         <GridActionsCellItem
+  //           icon={<EditIcon />}
+  //           label="Edit"
+  //           className="textPrimary"
+  //           onClick={handleEditClick(id)}
+  //           color="inherit"
+  //           key={0}
+  //         />,
+  //         <GridActionsCellItem
+  //           icon={<DeleteIcon />}
+  //           label="Delete"
+  //           onClick={handleDeleteClick(id)}
+  //           color="inherit"
+  //           key={0}
+  //         />,
+  //       ];
+  //     },
+  //   },
+  // ];
 
   const getRows = () => {
     const rows: IngredientInDishRowModel[] = ingredientsInDish.map((ingredient: IngredientEntity) => {
@@ -362,11 +367,27 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   };
 
   const handleAutoCompleteChange = (
-    _: any,
-    newValue: any,
+    selectedIngredient: IngredientOption,
+    existingIngredient: IngredientEntity,
   ) => {
-    console.log('handleAutoCompleteChange open');
-    console.log(newValue);
+    console.log('handleAutoCompleteChange');
+    console.log(selectedIngredient);
+    console.log(existingIngredient);
+
+    if (isNil(selectedIngredient)) {
+      return;
+    }
+
+    let newIngredient: IngredientEntity | null = null;
+    for (const ingredient of allIngredients) {
+      if (ingredient.id === (selectedIngredient.value as IngredientEntity).id) {
+        newIngredient = ingredient;
+        break;
+      }
+    }
+    if (!isNil(newIngredient)) {
+      props.onReplaceIngredientInDish(props.dishId, existingIngredient.id, newIngredient);
+    }
   };
 
   const handleAutoCompleteInputChange = (
@@ -383,6 +404,51 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const handleAutoCompleteKeyDown = () => {
     console.log('handleAutoCompleteKeyDown');
   };
+
+  const myIsOptionEqualToValue = (option: any, value: any) => {
+    if (isNil(option.value)) {
+      return (option.label === value.label);
+    } 
+    return option.value.id === value.value.id;
+  };
+  
+  const getRenderedIngredientSelect = (ingredient: IngredientEntity) => {
+    const ingredientOption: IngredientOption = { value: ingredient, label: ingredient.name };
+    return (
+      <ListItem key={ingredient.id}>
+        <Autocomplete
+          value={ingredientOption}
+          autoHighlight={true}
+          disablePortal
+          id="combo-box-demo"
+          options={ingredientOptions}
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Ingredient" />}
+          onChange={(event: any, newValue: IngredientOption | null) => {
+            handleAutoCompleteChange(newValue as IngredientOption, ingredient);
+          }}
+          onInputChange={(event, value, reason) => handleAutoCompleteInputChange(value)}
+          onOpen={handleOpenAutoComplete}
+          onClose={handleCloseAutoComplete}
+          onKeyDown={handleAutoCompleteKeyDown}
+          key={ingredient.id}
+          isOptionEqualToValue={myIsOptionEqualToValue}
+        />
+        <Button>
+          Delete
+        </Button>
+      </ListItem>
+    );
+  };
+
+  const getRenderedListOfIngredients = () => {
+    const listOfIngredients = ingredientsInDish.map((ingredient: IngredientEntity) => {
+      return getRenderedIngredientSelect(ingredient);
+    });
+    return listOfIngredients;
+  };
+
+  const renderedListOfIngredients = getRenderedListOfIngredients();
 
   return (
     <Dialog onClose={handleClose} open={open}>
@@ -401,24 +467,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
           }}
         >
           <List>
-            <ListItem>
-              <Autocomplete
-                autoHighlight={true}
-                disablePortal
-                id="combo-box-demo"
-                options={ingredientOptions}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="Ingredient" />}
-                onChange={handleAutoCompleteChange}
-                onInputChange={(event, value, reason) => handleAutoCompleteInputChange(value)}
-                onOpen={handleOpenAutoComplete}
-                onClose={handleCloseAutoComplete}
-                onKeyDown={handleAutoCompleteKeyDown}
-              />
-            </ListItem>
-            <ListItem>
-              Item 2
-            </ListItem>
+            {renderedListOfIngredients}
           </List>
           {/* <DataGrid
             rows={rows}
