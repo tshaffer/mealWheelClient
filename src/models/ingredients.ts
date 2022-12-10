@@ -6,6 +6,7 @@ import {
   IngredientsState,
 } from '../types';
 import { cloneDeep } from 'lodash';
+import { debug } from 'console';
 
 // ------------------------------------
 // Constants
@@ -13,6 +14,7 @@ import { cloneDeep } from 'lodash';
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
 export const ADD_INGREDIENT_TO_DISH = 'ADD_INGREDIENT_TO_DISH';
 export const REPLACE_INGREDIENT_IN_DISH = 'REPLACE_INGREDIENT_IN_DISH';
+export const DELETE_INGREDIENT_FROM_DISH = 'DELETE_INGREDIENT_FROM_DISH';
 export const SET_INGREDIENTS_BY_DISH = 'SET_INGREDIENTS_BY_DISH';
 
 // ------------------------------------
@@ -87,6 +89,24 @@ export const replaceIngredientInDish = (
   };
 };
 
+export interface DeleteIngredientFromDishPayload {
+  dishId: string;
+  ingredientId: string;
+}
+
+export const deleteIngredientFromDish = (
+  dishId: string,
+  ingredientId: string,
+): any => {
+  return {
+    type: DELETE_INGREDIENT_FROM_DISH,
+    payload: {
+      dishId,
+      ingredientId,
+    }
+  };
+};
+
 
 // ------------------------------------
 // Reducer
@@ -100,7 +120,7 @@ const initialState: IngredientsState =
 
 export const ingredientsStateReducer = (
   state: IngredientsState = initialState,
-  action: MealWheelModelBaseAction<AddIngredientsPayload & AddIngredientToDishPayload & ReplaceIngredientToDishPayload & SetIngredientsByDishPayload>
+  action: MealWheelModelBaseAction<AddIngredientsPayload & AddIngredientToDishPayload & ReplaceIngredientToDishPayload & SetIngredientsByDishPayload & DeleteIngredientFromDishPayload>
 ): IngredientsState => {
   switch (action.type) {
     case ADD_INGREDIENTS: {
@@ -121,6 +141,12 @@ export const ingredientsStateReducer = (
       ingredientIdsInDish = ingredientIdsInDish.filter(e => e !== action.payload.existingIngredientId);
       ingredientIdsInDish.push(action.payload.ingredientEntity.id);
       newState.ingredientsByDish[action.payload.dishId] = ingredientIdsInDish;
+      return newState;
+    }
+    case DELETE_INGREDIENT_FROM_DISH: {
+      const newState = cloneDeep(state) as IngredientsState;
+      const ingredientIdsInDish: string[] = newState.ingredientsByDish[action.payload.dishId];
+      newState.ingredientsByDish[action.payload.dishId] = ingredientIdsInDish.filter(e => e !== action.payload.ingredientId);
       return newState;
     }
     case SET_INGREDIENTS_BY_DISH: {

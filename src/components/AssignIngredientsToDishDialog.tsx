@@ -12,15 +12,17 @@ import { isNil } from 'lodash';
 
 import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
 import { DishEntity, IngredientEntity } from '../types';
+import { addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../models';
 
 import Box from '@mui/material/Box';
 
 import { AlertProps } from '@mui/material/Alert';
-import { addIngredientToDish, replaceIngredientInDish } from '../models';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 interface IngredientOption {
   value: IngredientEntity | null;
@@ -39,6 +41,7 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
   ingredientsInDish: IngredientEntity[];
   onAddIngredientToDish: (dishId: string, ingredient: IngredientEntity) => any;
   onReplaceIngredientInDish: (dishId: string, existingIngredientId: string, newIngredient: IngredientEntity) => any;
+  onDeleteIngredientFromDish: (dishId: string, ingredientId: string) => any;
 }
 
 const placeholderIngredientId = 'placeholderIngredientId';
@@ -144,6 +147,15 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     console.log('handleAutoCompleteKeyDown');
   };
 
+  const handleDeleteIngredient = (ingredient: IngredientEntity | null) => {
+    console.log('handleDeleteIngredient');
+    console.log(ingredient);
+
+    if (!isNil(ingredient)) {
+      props.onDeleteIngredientFromDish(props.dishId, ingredient.id);
+    }
+  };
+
   const myIsOptionEqualToValue = (option: any, value: any) => {
     if (isNil(option.value)) {
       return (option.label === value.label);
@@ -180,13 +192,16 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
           key={id}
           isOptionEqualToValue={myIsOptionEqualToValue}
         />
-        <Button>
-          Delete
-        </Button>
+        <IconButton
+          id={isNil(ingredient) ? '' : ingredient.id}
+          onClick={() => handleDeleteIngredient(ingredient)}
+        >
+          <DeleteIcon/>
+        </IconButton>
       </ListItem>
     );
+  };
 
-  }
   const getRenderedIngredientSelect = (ingredient: IngredientEntity): JSX.Element => {
     const ingredientOption: IngredientOption = { value: ingredient, label: ingredient.name };
     return getIngredientListItem(ingredientOption, ingredient.id, ingredient);
@@ -251,6 +266,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onAddIngredientToDish: addIngredientToDish,
     onReplaceIngredientInDish: replaceIngredientInDish,
+    onDeleteIngredientFromDish: deleteIngredientFromDish,
   }, dispatch);
 };
 
