@@ -101,6 +101,30 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     console.log('autocomplete open');
   };
 
+  const handleAutoCompleteChangeAddIngredient = (
+    selectedIngredient: IngredientOption,
+  ) => {
+    console.log('handleAutoCompleteChangeAddIngredient');
+    console.log(selectedIngredient);
+
+    if (isNil(selectedIngredient)) {
+      return;
+    }
+
+    let newIngredient: IngredientEntity | null = null;
+    for (const ingredient of allIngredients) {
+      if (ingredient.id === (selectedIngredient.value as IngredientEntity).id) {
+        newIngredient = ingredient;
+        break;
+      }
+    }
+
+    if (!isNil(newIngredient)) {
+      props.onReplaceIngredientInDish(props.dishId, newIngredient.id, newIngredient);
+    }
+
+  };
+
   const handleAutoCompleteChange = (
     selectedIngredient: IngredientOption,
     existingIngredient: IngredientEntity,
@@ -144,19 +168,57 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     if (isNil(option.value)) {
       return (option.label === value.label);
     }
+
+    if (isNil(option.value.id)) {
+      return false;
+    }
+    if (isNil(value) || isNil(value.value) || isNil(value.value.id)) {
+      return false;
+    }
+
     return option.value.id === value.value.id;
   };
 
-  const getRenderedIngredientSelect = (ingredient: IngredientEntity) => {
-    const ingredientOption: IngredientOption = { value: ingredient, label: ingredient.name };
+  const getPlaceholderSelect = (): JSX.Element => {
+    const ingredientOption: IngredientOption = { value: null, label: '' };
     return (
-      <ListItem key={ingredient.id}>
+      <ListItem key={'placeholder'}>
         <Autocomplete
+          options={ingredientOptions}
           value={ingredientOption}
           autoHighlight={true}
           disablePortal
           id="combo-box-demo"
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Ingredient" />}
+          onChange={(event: any, newValue: IngredientOption | null) => {
+            handleAutoCompleteChangeAddIngredient(newValue as IngredientOption);
+          }}
+          onInputChange={(event, value, reason) => handleAutoCompleteInputChange(value)}
+          onOpen={handleOpenAutoComplete}
+          onClose={handleCloseAutoComplete}
+          onKeyDown={handleAutoCompleteKeyDown}
+          key={'placeholder'}
+          isOptionEqualToValue={myIsOptionEqualToValue}
+        />
+        <Button>
+          Delete
+        </Button>
+      </ListItem>
+    );
+  };
+
+
+  const getRenderedIngredientSelect = (ingredient: IngredientEntity): JSX.Element => {
+    const ingredientOption: IngredientOption = { value: ingredient, label: ingredient.name };
+    return (
+      <ListItem key={ingredient.id}>
+        <Autocomplete
           options={ingredientOptions}
+          value={ingredientOption}
+          autoHighlight={true}
+          disablePortal
+          id="combo-box-demo"
           sx={{ width: 300 }}
           renderInput={(params) => <TextField {...params} label="Ingredient" />}
           onChange={(event: any, newValue: IngredientOption | null) => {
@@ -177,9 +239,20 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   };
 
   const getRenderedListOfIngredients = () => {
-    const listOfIngredients = ingredientsInDish.map((ingredient: IngredientEntity) => {
+    const listOfIngredients: JSX.Element[] = ingredientsInDish.map((ingredient: IngredientEntity) => {
       return getRenderedIngredientSelect(ingredient);
     });
+
+    const renderedPlaceholderSelect = getPlaceholderSelect();
+    listOfIngredients.push(renderedPlaceholderSelect);
+
+    // push placeholder to end of list
+    // listOfIngredients.push(
+    //   <ListItem>
+    //     Select ingredient
+    //   </ListItem>
+    // );
+
     return listOfIngredients;
   };
 
