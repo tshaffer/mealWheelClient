@@ -256,87 +256,6 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
   };
 
-  // const ingredientsInDishColumns: GridColumns = [
-  //   {
-  //     field: 'name',
-  //     headerName: 'Ingredient Name',
-  //     width: 200,
-  //     editable: true,
-  //     valueFormatter: (params: GridValueFormatterParams<string>) => {
-  //       if (params.value == null) {
-  //         return '';
-  //       }
-  //       const valueFormatted = params.value.toString();
-  //       return valueFormatted;
-  //     },
-
-  //     renderEditCell: (params) => {
-  //       return (
-  //         <AutocompleteEditCell
-  //           {...params}
-  //           options={ingredientOptions}
-  //           onInputChange={handleInputChange}
-  //           freeSolo={false}
-  //           multiple={false}
-  //           disableClearable
-  //         />
-  //       );
-  //     },
-  //   },
-  //   {
-  //     field: 'actions',
-  //     type: 'actions',
-  //     headerName: 'Actions',
-  //     width: 100,
-  //     cellClassName: 'actions',
-  //     getActions: ({ id }) => {
-
-  //       if (id === placeholderIngredientId && selectIngredientValue === placeholderIngredientLabel) {
-  //         return [];
-  //       }
-
-  //       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-  //       if (isInEditMode) {
-  //         return [
-  //           <GridActionsCellItem
-  //             icon={<SaveIcon />}
-  //             label="Save"
-  //             onClick={handleSaveClick(id)}
-  //             key={0}
-  //           />,
-  //           <GridActionsCellItem
-  //             icon={<CancelIcon />}
-  //             label="Cancel"
-  //             className="textPrimary"
-  //             onClick={handleCancelClick(id)}
-  //             color="inherit"
-  //             key={0}
-  //           />,
-  //         ];
-  //       }
-
-  //       return [
-  //         <GridActionsCellItem
-  //           icon={<EditIcon />}
-  //           label="Edit"
-  //           className="textPrimary"
-  //           onClick={handleEditClick(id)}
-  //           color="inherit"
-  //           key={0}
-  //         />,
-  //         <GridActionsCellItem
-  //           icon={<DeleteIcon />}
-  //           label="Delete"
-  //           onClick={handleDeleteClick(id)}
-  //           color="inherit"
-  //           key={0}
-  //         />,
-  //       ];
-  //     },
-  //   },
-  // ];
-
   const getRows = () => {
     const rows: IngredientInDishRowModel[] = ingredientsInDish.map((ingredient: IngredientEntity) => {
       const row: IngredientInDishRowModel = {
@@ -408,10 +327,10 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   const myIsOptionEqualToValue = (option: any, value: any) => {
     if (isNil(option.value)) {
       return (option.label === value.label);
-    } 
+    }
     return option.value.id === value.value.id;
   };
-  
+
   const getRenderedIngredientSelect = (ingredient: IngredientEntity) => {
     const ingredientOption: IngredientOption = { value: ingredient, label: ingredient.name };
     return (
