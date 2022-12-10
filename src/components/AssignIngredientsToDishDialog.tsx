@@ -171,7 +171,22 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     return option.value.id === value.value.id;
   };
 
+  const getRenderedDeleteIcon = (ingredient: IngredientEntity | null) => {
+    if (isNil(ingredient)) {
+      return null;
+    }
+    return (
+      <IconButton
+        id={ingredient.id}
+        onClick={() => handleDeleteIngredient(ingredient)}
+      >
+        <DeleteIcon />
+      </IconButton>
+    );
+  };
+
   const getIngredientListItem = (ingredientOption: IngredientOption, id: string, ingredient: IngredientEntity | null) => {
+    const renderedDeleteIcon = getRenderedDeleteIcon(ingredient);
     return (
       <ListItem key={id}>
         <Autocomplete
@@ -192,12 +207,8 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
           key={id}
           isOptionEqualToValue={myIsOptionEqualToValue}
         />
-        <IconButton
-          id={isNil(ingredient) ? '' : ingredient.id}
-          onClick={() => handleDeleteIngredient(ingredient)}
-        >
-          <DeleteIcon/>
-        </IconButton>
+        {renderedDeleteIcon}
+
       </ListItem>
     );
   };
