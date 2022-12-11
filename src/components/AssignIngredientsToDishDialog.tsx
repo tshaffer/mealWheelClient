@@ -2,20 +2,14 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { isNil } from 'lodash';
+
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-
-import { isNil } from 'lodash';
-
-import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
-import { DishEntity, IngredientEntity } from '../types';
-import { addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../models';
-
-import Box from '@mui/material/Box';
-
 import { AlertProps } from '@mui/material/Alert';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -23,6 +17,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+
+import { DishEntity, IngredientEntity } from '../types';
+import { addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../controllers';
+import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
 
 interface IngredientOption {
   value: IngredientEntity | null;
@@ -40,7 +38,7 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
   allIngredients: IngredientEntity[];
   ingredientsInDish: IngredientEntity[];
   onAddIngredientToDish: (dishId: string, ingredient: IngredientEntity) => any;
-  onReplaceIngredientInDish: (dishId: string, existingIngredientId: string, newIngredient: IngredientEntity) => any;
+  onReplaceIngredientInDish: (dishId: string, existingIngredientId: string, newIngredientId: string) => any;
   onDeleteIngredientFromDish: (dishId: string, ingredientId: string) => any;
 }
 
@@ -125,9 +123,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     }
     if (!isNil(newIngredient)) {
       if (!isNil(existingIngredient)) {
-        props.onReplaceIngredientInDish(props.dishId, existingIngredient.id, newIngredient);
+        props.onReplaceIngredientInDish(props.dishId, existingIngredient.id, newIngredient.id);
       } else {
-        props.onReplaceIngredientInDish(props.dishId, newIngredient.id, newIngredient);
+        props.onAddIngredientToDish(props.dishId, newIngredient);
       }
     }
   };

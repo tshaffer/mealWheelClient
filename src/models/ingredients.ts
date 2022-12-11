@@ -55,9 +55,9 @@ export interface AddIngredientToDishPayload {
   ingredientEntity: IngredientEntity;
 }
 
-export const addIngredientToDish = (
+export const addIngredientToDishRedux = (
   dishId: string,
-  ingredientEntity: IngredientEntity,
+  ingredientEntity: IngredientEntity, // TODO - change to ingredientId
 ): any => {
   return {
     type: ADD_INGREDIENT_TO_DISH,
@@ -71,20 +71,20 @@ export const addIngredientToDish = (
 export interface ReplaceIngredientToDishPayload {
   dishId: string;
   existingIngredientId: string;
-  ingredientEntity: IngredientEntity;
+  newIngredientId: string;
 }
 
-export const replaceIngredientInDish = (
+export const replaceIngredientInDishRedux = (
   dishId: string,
   existingIngredientId: string,
-  ingredientEntity: IngredientEntity,
+  newIngredientId: string,
 ): any => {
   return {
     type: REPLACE_INGREDIENT_IN_DISH,
     payload: {
       dishId,
       existingIngredientId,
-      ingredientEntity,
+      newIngredientId,
     }
   };
 };
@@ -94,7 +94,7 @@ export interface DeleteIngredientFromDishPayload {
   ingredientId: string;
 }
 
-export const deleteIngredientFromDish = (
+export const deleteIngredientFromDishRedux = (
   dishId: string,
   ingredientId: string,
 ): any => {
@@ -125,7 +125,7 @@ export const ingredientsStateReducer = (
   switch (action.type) {
     case ADD_INGREDIENTS: {
       const newState = cloneDeep(state) as IngredientsState;
-      action.payload.ingredients.forEach( (ingredient: IngredientEntity) => {
+      action.payload.ingredients.forEach((ingredient: IngredientEntity) => {
         newState.ingredientsById[ingredient.id] = ingredient;
       });
       return newState;
@@ -139,7 +139,7 @@ export const ingredientsStateReducer = (
       const newState = cloneDeep(state) as IngredientsState;
       let ingredientIdsInDish: string[] = newState.ingredientsByDish[action.payload.dishId];
       ingredientIdsInDish = ingredientIdsInDish.filter(e => e !== action.payload.existingIngredientId);
-      ingredientIdsInDish.push(action.payload.ingredientEntity.id);
+      ingredientIdsInDish.push(action.payload.newIngredientId);
       newState.ingredientsByDish[action.payload.dishId] = ingredientIdsInDish;
       return newState;
     }
