@@ -3,7 +3,7 @@ import axios from 'axios';
 import { apiUrlFragment, IngredientEntity, IngredientsByDish, MealWheelState, serverUrl } from '../types';
 
 import { getCurrentUser } from '../selectors';
-import { addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, replaceIngredientInDishRedux, setIngredientsByDishRedux } from '../models';
+import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, replaceIngredientInDishRedux, setIngredientsByDishRedux } from '../models';
 
 export const loadIngredients = () => {
 
@@ -39,9 +39,36 @@ export const loadIngredientsByDish = () => {
 export const addIngredient = (
   ingredient: IngredientEntity
 ): any => {
-  return ((dispatch: any, getState: any): Promise<string> => {
-    return Promise.resolve('success');
-  });
+  return (dispatch: any, getState: any) => {
+
+    const newIngredientMarker = 'newIngredient';
+    if (ingredient.id.startsWith(newIngredientMarker)) {
+      ingredient.id = ingredient.id.substring(newIngredientMarker.length);
+    }
+
+    dispatch(addIngredientRedux(ingredient));
+
+    // const path = serverUrl + apiUrlFragment + 'addIngredient';
+
+    // const addIngredientBody = {
+    //   id: ingredient.id,
+    //   name: ingredient.name,
+    //   ingredients: ingredient.ingredients,
+    //   showInGroceryList: ingredient.showInGroceryList
+    // };
+
+    // return axios.post(
+    //   path,
+    //   addIngredientBody
+    // ).then((response) => {
+    //   dispatch(addIngredientRedux(ingredient));
+    //   return null;
+    // }).catch((error) => {
+    //   console.log('error');
+    //   console.log(error);
+    //   return '';
+    // });
+  };
 };
 
 export const updateIngredient = (

@@ -54,30 +54,34 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
-  const ingredientOptions: IngredientOption[] = allIngredients.map((ingredientEntity: IngredientEntity) => {
-    return {
-      value: ingredientEntity,
-      label: ingredientEntity.name,
-    };
-  });
-  ingredientOptions.sort((a: any, b: any) => {
-    const nameA = a.label.toUpperCase(); // ignore upper and lowercase
-    const nameB = b.label.toUpperCase(); // ignore upper and lowercase
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
+  let ingredientOptions: IngredientOption[] = [];
 
-    // names must be equal
-    return 0;
-  });
+  if (open) {
+    ingredientOptions = allIngredients.map((ingredientEntity: IngredientEntity) => {
+      return {
+        value: ingredientEntity,
+        label: ingredientEntity.name,
+      };
+    });
+    ingredientOptions.sort((a: any, b: any) => {
+      const nameA = a.label.toUpperCase(); // ignore upper and lowercase
+      const nameB = b.label.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
 
-  ingredientOptions.push({
-    value: null,
-    label: placeholderIngredientLabel,
-  });
+      // names must be equal
+      return 0;
+    });
+
+    ingredientOptions.push({
+      value: null,
+      label: placeholderIngredientLabel,
+    });
+  }
 
   const handleInputChange = (
     id: any,
