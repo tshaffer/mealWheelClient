@@ -41,33 +41,32 @@ export const addIngredient = (
 ): any => {
   return (dispatch: any, getState: any) => {
 
+    // TODO - is this the right place to strip 'newIngredient'?
     const newIngredientMarker = 'newIngredient';
     if (ingredient.id.startsWith(newIngredientMarker)) {
       ingredient.id = ingredient.id.substring(newIngredientMarker.length);
     }
 
-    dispatch(addIngredientRedux(ingredient));
+    const path = serverUrl + apiUrlFragment + 'addIngredient';
 
-    // const path = serverUrl + apiUrlFragment + 'addIngredient';
+    const addIngredientBody = {
+      id: ingredient.id,
+      name: ingredient.name,
+      ingredients: ingredient.ingredients,
+      showInGroceryList: ingredient.showInGroceryList
+    };
 
-    // const addIngredientBody = {
-    //   id: ingredient.id,
-    //   name: ingredient.name,
-    //   ingredients: ingredient.ingredients,
-    //   showInGroceryList: ingredient.showInGroceryList
-    // };
-
-    // return axios.post(
-    //   path,
-    //   addIngredientBody
-    // ).then((response) => {
-    //   dispatch(addIngredientRedux(ingredient));
-    //   return null;
-    // }).catch((error) => {
-    //   console.log('error');
-    //   console.log(error);
-    //   return '';
-    // });
+    return axios.post(
+      path,
+      addIngredientBody
+    ).then((response) => {
+      dispatch(addIngredientRedux(ingredient));
+      return null;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return '';
+    });
   };
 };
 
