@@ -11,6 +11,7 @@ import { cloneDeep } from 'lodash';
 // Constants
 // ------------------------------------
 export const ADD_INGREDIENT = 'ADD_INGREDIENT';
+export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
 export const ADD_INGREDIENT_TO_DISH = 'ADD_INGREDIENT_TO_DISH';
 export const REPLACE_INGREDIENT_IN_DISH = 'REPLACE_INGREDIENT_IN_DISH';
@@ -20,7 +21,7 @@ export const SET_INGREDIENTS_BY_DISH = 'SET_INGREDIENTS_BY_DISH';
 // ------------------------------------
 // Actions
 // ------------------------------------
-export interface AddIngredientPayload {
+export interface IngredientPayload {
   ingredient: IngredientEntity;
 }
 
@@ -29,6 +30,17 @@ export const addIngredientRedux = (
 ): any => {
   return {
     type: ADD_INGREDIENT,
+    payload: {
+      ingredient,
+    }
+  };
+};
+
+export const updateIngredientRedux = (
+  ingredient: IngredientEntity
+): any => {
+  return {
+    type: UPDATE_INGREDIENT,
     payload: {
       ingredient,
     }
@@ -135,10 +147,11 @@ const initialState: IngredientsState =
 
 export const ingredientsStateReducer = (
   state: IngredientsState = initialState,
-  action: MealWheelModelBaseAction<AddIngredientPayload & AddIngredientsPayload & AddIngredientToDishPayload & ReplaceIngredientToDishPayload & SetIngredientsByDishPayload & DeleteIngredientFromDishPayload>
+  action: MealWheelModelBaseAction<IngredientPayload & AddIngredientsPayload & AddIngredientToDishPayload & ReplaceIngredientToDishPayload & SetIngredientsByDishPayload & DeleteIngredientFromDishPayload>
 ): IngredientsState => {
   switch (action.type) {
-    case ADD_INGREDIENT: {
+    case ADD_INGREDIENT:
+    case UPDATE_INGREDIENT:
       return {
         ...state,
         ingredientsById: {
@@ -146,7 +159,6 @@ export const ingredientsStateReducer = (
           [action.payload.ingredient.id]: action.payload.ingredient
         }
       };
-    }
     case ADD_INGREDIENTS: {
       const newState = cloneDeep(state) as IngredientsState;
       action.payload.ingredients.forEach((ingredient: IngredientEntity) => {

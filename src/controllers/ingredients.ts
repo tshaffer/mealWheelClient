@@ -3,7 +3,7 @@ import axios from 'axios';
 import { apiUrlFragment, IngredientEntity, IngredientsByDish, MealWheelState, serverUrl } from '../types';
 
 import { getCurrentUser } from '../selectors';
-import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, replaceIngredientInDishRedux, setIngredientsByDishRedux } from '../models';
+import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, replaceIngredientInDishRedux, setIngredientsByDishRedux, updateIngredientRedux } from '../models';
 
 export const loadIngredients = () => {
 
@@ -75,6 +75,26 @@ export const updateIngredient = (
   ingredient: IngredientEntity
 ): any => {
   return ((dispatch: any): any => {
+    const path = serverUrl + apiUrlFragment + 'updateIngredient';
+
+    const updateIngredientBody = {
+      id: ingredient.id,
+      name: ingredient.name,
+      ingredients: ingredient.ingredients,
+      showInGroceryList: ingredient.showInGroceryList
+    };
+
+    return axios.post(
+      path,
+      updateIngredientBody
+    ).then((response) => {
+      dispatch(updateIngredientRedux(ingredient));
+      return null;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return '';
+    });
   });
 };
 
