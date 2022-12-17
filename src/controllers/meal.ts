@@ -272,10 +272,10 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
     const mealId = uuidv4();
     const meal: MealEntity = {
       id: mealId,
-      mainDishId: selectedDish.id,
-      saladId,
-      veggieId,
-      sideId,
+      mainDish: getDish(mealWheelState, selectedDish.id) as DishEntity,
+      salad: saladId !== '' ? getDish(mealWheelState, saladId) as DishEntity : undefined,
+      veggie: veggieId !== '' ? getDish(mealWheelState, veggieId) as DishEntity : undefined,
+      side: sideId !== '' ? getDish(mealWheelState, sideId) as DishEntity : undefined,
     };
 
     mealEntities.push(meal);

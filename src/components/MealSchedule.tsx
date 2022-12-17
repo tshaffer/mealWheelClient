@@ -199,7 +199,6 @@ const MealSchedule = (props: MealScheduleProps) => {
         <AssignMealsToDatesDialog
           open={showAssignMealsToDates}
           onClose={handleCloseAssignMealsToDates}
-          pizza={''}
         />
       </div>
       <div>

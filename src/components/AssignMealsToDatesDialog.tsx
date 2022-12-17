@@ -8,6 +8,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import { MealEntity } from '../types';
+import { getUnassignedMeals } from '../selectors';
+import { List, ListItem, ListItemText } from '@mui/material';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
@@ -15,7 +18,7 @@ export interface AssignMealsToDatesDialogPropsFromParent {
 }
 
 export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogPropsFromParent {
-  pizza: string;
+  meals: MealEntity[];
 }
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
@@ -23,6 +26,31 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const handleClose = () => {
     props.onClose();
   };
+
+  const getRenderedListOfMealsItems = () => {
+    const renderedListOfMeals = props.meals.map((meal: MealEntity, index: number) => {
+      return (
+        <ListItem key={index}>
+          <ListItemText>
+            {meal.mainDish.name}
+          </ListItemText>
+        </ListItem>
+      );
+    });
+
+    return renderedListOfMeals;
+  };
+
+  const getRenderedListOfMeals = () => {
+    const listOfMealsItems = getRenderedListOfMealsItems();
+    return (
+      <List>
+        {listOfMealsItems}
+      </List>
+    );
+  };
+
+  const listOfMeals = getRenderedListOfMeals();
 
   return (
     <Dialog onClose={handleClose} open={props.open}>
@@ -40,7 +68,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
             },
           }}
         >
-          pizza
+          {listOfMeals}
         </Box>
       </DialogContent>
       <DialogActions>
@@ -52,6 +80,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
 function mapStateToProps(state: any, ownProps: AssignMealsToDatesDialogPropsFromParent) {
   return {
+    meals: getUnassignedMeals(state),
   };
 }
 

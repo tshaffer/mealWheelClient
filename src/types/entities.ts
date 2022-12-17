@@ -29,10 +29,14 @@ export interface DishEntity {
 
 export interface MealEntity {
   id: string;
-  mainDishId: string;
-  saladId: string;
-  veggieId: string;
-  sideId: string; 
+  mainDish: DishEntity;
+  salad?: DishEntity;
+  veggie?: DishEntity;
+  side?: DishEntity;
+  // mainDishId: string;
+  // saladId: string;
+  // veggieId: string;
+  // sideId: string; 
 }
 
 export interface DefinedMealEntity {

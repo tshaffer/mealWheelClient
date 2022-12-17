@@ -1,5 +1,5 @@
 import { isNil } from 'lodash';
-import { MealWheelState, ScheduledMealEntity, DefinedMealEntity } from '../types';
+import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity } from '../types';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
@@ -58,3 +58,6 @@ export const getScheduledMealsForDays = (state: MealWheelState, mealDate: Date, 
   return mealEntities;
 };
 
+export const getUnassignedMeals = (state: MealWheelState): MealEntity[] => {
+  return state.unassignedMealsState.meals;
+};
