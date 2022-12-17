@@ -56,6 +56,10 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     props.onClose();
   };
 
+  const handleAssignMealToDate = () => {
+    console.log('handleAssignMealToDate');
+  };
+
   const handleClickMealItem = (meal: MealEntity) => {
     setSelectedMeal(meal);
   };
@@ -165,6 +169,12 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           }}
         >
           {listOfMeals}
+          <Button
+            style={inlineBlockStyle}
+            onClick={handleAssignMealToDate}
+          >
+            Assign meal to date
+          </Button>
           {listOfDates}
         </Box>
       </DialogContent>
