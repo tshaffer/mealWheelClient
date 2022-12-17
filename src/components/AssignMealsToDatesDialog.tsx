@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -38,7 +38,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   React.useEffect(() => {
     const initialMealOnDates: MealOnDate[] = [];
-    const mealDate: Date = new Date();
+    let mealDate: Date = new Date();
     for (let i = 0; i < 7; i++) {
       const mealOnDate: MealOnDate = {
         id: i,
@@ -46,6 +46,8 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
         meal: null,
       };
       initialMealOnDates.push(mealOnDate);
+      mealDate = cloneDeep(mealDate);
+      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));  
     }
     setMealOnDates(initialMealOnDates);
   }, []);
@@ -62,32 +64,23 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     display: 'inline-block'
   };
 
-  const selectedMealStyle = {
-    color: 'red'
+  const selectedStyle = {
+    backgroundColor: 'rgb(211, 211, 211)'
   };
 
-  const unselectedMealStyle = {
-    color: 'black'
+  const unselectedStyle = {
+    backgroundColor: 'white'
   };
 
   const handleClickMealOnDateItem = (mealOnDate: MealOnDate) => {
     setSelectedMealOnDate(mealOnDate)
   };
 
-  const selectedMealOnDateStyle = {
-    color: 'green'
-  };
-
-  const unselectedMealOnDateStyle = {
-    color: 'black'
-  };
-
-
   const getRenderedListOfMealsItems = () => {
     const renderedListOfMeals = props.meals.map((meal: MealEntity, index: number) => {
-      let listItemStyle = unselectedMealStyle;
+      let listItemStyle = unselectedStyle;
       if (!isNil(selectedMeal) && meal.id === selectedMeal.id) {
-        listItemStyle = selectedMealStyle;
+        listItemStyle = selectedStyle;
       }
       return (
         <ListItem
@@ -120,9 +113,9 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
     const renderedListOfMealOnDates = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
       
-      let listItemStyle = unselectedMealOnDateStyle;
+      let listItemStyle = unselectedStyle;
       if (!isNil(selectedMealOnDate) && mealOnDate.id === selectedMealOnDate.id) {
-        listItemStyle = selectedMealOnDateStyle;
+        listItemStyle = selectedStyle;
       }
 
       return(
