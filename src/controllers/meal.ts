@@ -14,7 +14,8 @@ import {
   setMealIndex,
   setPendingMeal,
   setIngredientsInGroceryList,
-  addMeals
+  addMeals,
+  clearMeals
 } from '../models';
 import {
   getCurrentUser,
@@ -134,6 +135,7 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, o
       generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate);
 
     const allRandomMeals: MealEntity[] = cloneDeep(randomDishBasedMeals);
+    dispatch(clearMeals());
     dispatch(addMeals(allRandomMeals));
   };
 };

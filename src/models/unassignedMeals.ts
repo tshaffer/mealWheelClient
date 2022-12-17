@@ -6,6 +6,7 @@ import { MealWheelModelBaseAction } from './baseAction';
 // Constants
 // ------------------------------------
 export const ADD_MEALS = 'ADD_MEALS';
+export const CLEAR_MEALS = 'CLEAR_MEALS';
 
 // ------------------------------------
 // Actions
@@ -23,6 +24,13 @@ export const addMeals = (
     payload: {
       meals,
     }
+  };
+};
+
+export const clearMeals = (
+): any => {
+  return {
+    type: CLEAR_MEALS,
   };
 };
 
@@ -45,6 +53,8 @@ export const unassignedMealsStateReducer = (
       newState.meals = newState.meals.concat(action.payload.meals);
       return newState;
     }
+    case CLEAR_MEALS:
+      return initialState;
     default:
       return state;
   }
