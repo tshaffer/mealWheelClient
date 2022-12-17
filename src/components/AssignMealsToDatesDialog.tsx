@@ -15,6 +15,12 @@ import { List, ListItem, ListItemText } from '@mui/material';
 import { MealEntity } from '../types';
 import { getUnassignedMeals } from '../selectors';
 
+interface MealOnDate {
+  id: number;
+  date: Date;
+  meal: MealEntity | null;
+}
+
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
   onClose: () => void;
@@ -26,7 +32,23 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
+  const [mealOnDates, setMealOnDates] = React.useState<MealOnDate[]>([]);
   const [selectedMeal, setSelectedMeal] = React.useState<MealEntity | null>(null);
+  const [selectedMealOnDate, setSelectedMealOnDate] = React.useState<MealOnDate | null>(null);
+
+  React.useEffect(() => {
+    const initialMealOnDates: MealOnDate[] = [];
+    const mealDate: Date = new Date();
+    for (let i = 0; i < 7; i++) {
+      const mealOnDate: MealOnDate = {
+        id: i,
+        date: mealDate,
+        meal: null,
+      };
+      initialMealOnDates.push(mealOnDate);
+    }
+    setMealOnDates(initialMealOnDates);
+  }, []);
 
   const handleClose = () => {
     props.onClose();
@@ -43,6 +65,19 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const unselectedMealStyle = {
     color: 'black'
   };
+
+  const handleClickMealOnDateItem = (mealOnDate: MealOnDate) => {
+    setSelectedMealOnDate(mealOnDate)
+  };
+
+  const selectedMealOnDateStyle = {
+    color: 'green'
+  };
+
+  const unselectedMealOnDateStyle = {
+    color: 'black'
+  };
+
 
   const getRenderedListOfMealsItems = () => {
     const renderedListOfMeals = props.meals.map((meal: MealEntity, index: number) => {
@@ -75,26 +110,33 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     );
   };
 
-  const getRenderedListDateItems = () => {
-    const mealDate: Date = new Date();
-    const renderedListOfDates: any[] = [];
-    for (let dateIndex = 0; dateIndex < 7; dateIndex++) {
-      renderedListOfDates.push(
+  const getRenderedListOfMealOnDateItems = () => {
+
+    const renderedListOfMealOnDates = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
+      
+      let listItemStyle = unselectedMealOnDateStyle;
+      if (!isNil(selectedMealOnDate) && mealOnDate.id === selectedMealOnDate.id) {
+        listItemStyle = selectedMealOnDateStyle;
+      }
+
+      return(
         <ListItem
-          key={dateIndex}
+          key={mealOnDateIndex}
+          style={listItemStyle}
+          onClick={() => handleClickMealOnDateItem(mealOnDate)}
         >
           <ListItemText>
-            {mealDate.toDateString()}
+            {mealOnDate.date.toDateString()}
           </ListItemText>
         </ListItem>
       );
-      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
-    }
-    return renderedListOfDates;
+    });
+
+    return renderedListOfMealOnDates;
   };
 
   const getRenderedListOfDates = () => {
-    const listOfDateItems = getRenderedListDateItems();
+    const listOfDateItems = getRenderedListOfMealOnDateItems();
     return (
       <List>
         {listOfDateItems}
