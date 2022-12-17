@@ -58,6 +58,10 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     setSelectedMeal(meal);
   };
 
+  const inlineBlockStyle = {
+    display: 'inline-block'
+  };
+
   const selectedMealStyle = {
     color: 'red'
   };
@@ -104,7 +108,9 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const getRenderedListOfMeals = () => {
     const listOfMealsItems = getRenderedListOfMealsItems();
     return (
-      <List>
+      <List
+        style={inlineBlockStyle}
+      >
         {listOfMealsItems}
       </List>
     );
@@ -138,7 +144,9 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const getRenderedListOfDates = () => {
     const listOfDateItems = getRenderedListOfMealOnDateItems();
     return (
-      <List>
+      <List
+        style={inlineBlockStyle}
+      >
         {listOfDateItems}
       </List>
     );
