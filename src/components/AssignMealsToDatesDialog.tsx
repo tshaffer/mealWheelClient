@@ -75,7 +75,35 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     );
   };
 
+  const getRenderedListDateItems = () => {
+    const mealDate: Date = new Date();
+    const renderedListOfDates: any[] = [];
+    for (let dateIndex = 0; dateIndex < 7; dateIndex++) {
+      renderedListOfDates.push(
+        <ListItem
+          key={dateIndex}
+        >
+          <ListItemText>
+            {mealDate.toDateString()}
+          </ListItemText>
+        </ListItem>
+      );
+      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
+    }
+    return renderedListOfDates;
+  };
+
+  const getRenderedListOfDates = () => {
+    const listOfDateItems = getRenderedListDateItems();
+    return (
+      <List>
+        {listOfDateItems}
+      </List>
+    );
+  };
+
   const listOfMeals = getRenderedListOfMeals();
+  const listOfDates = getRenderedListOfDates();
 
   return (
     <Dialog onClose={handleClose} open={props.open}>
@@ -94,6 +122,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           }}
         >
           {listOfMeals}
+          {listOfDates}
         </Box>
       </DialogContent>
       <DialogActions>
