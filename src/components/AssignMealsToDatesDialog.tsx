@@ -2,15 +2,18 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { isNil } from 'lodash';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import { List, ListItem, ListItemText } from '@mui/material';
+
 import { MealEntity } from '../types';
 import { getUnassignedMeals } from '../selectors';
-import { List, ListItem, ListItemText } from '@mui/material';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
@@ -23,14 +26,36 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
+  const [selectedMeal, setSelectedMeal] = React.useState<MealEntity | null>(null);
+
   const handleClose = () => {
     props.onClose();
   };
 
+  const handleClickMealItem = (meal: MealEntity) => {
+    setSelectedMeal(meal);
+  };
+
+  const selectedMealStyle = {
+    color: 'red'
+  };
+
+  const unselectedMealStyle = {
+    color: 'black'
+  };
+
   const getRenderedListOfMealsItems = () => {
     const renderedListOfMeals = props.meals.map((meal: MealEntity, index: number) => {
+      let listItemStyle = unselectedMealStyle;
+      if (!isNil(selectedMeal) && meal.id === selectedMeal.id) {
+        listItemStyle = selectedMealStyle;
+      }
       return (
-        <ListItem key={index}>
+        <ListItem
+          key={index}
+          style={listItemStyle}
+          onClick={() => handleClickMealItem(meal)}
+        >
           <ListItemText>
             {meal.mainDish.name}
           </ListItemText>
