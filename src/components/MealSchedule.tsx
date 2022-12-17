@@ -26,6 +26,7 @@ import MealsStatusResolver from './MealsStatusResolver';
 import GenerateMenuDialog from './GenerateMenuDialog';
 import GenerateGroceryListDialog from './GenerateGroceryListDialog';
 import GroceryListDialog from './GroceryListDialog';
+import AssignMealsToDatesDialog from './AssignMealsToDatesDialog';
 
 const localizer = momentLocalizer(moment);
 
@@ -62,6 +63,7 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [selectedMealInCalendar, setSelectedMealInCalendar] = useState<CalendarEvent | null>(null);
 
   const [showGenerateMenu, setShowGenerateMenu] = React.useState(false);
+  const [showAssignMealsToDates, setShowAssignMealsToDates] = React.useState(false);
   const [showGenerateGroceryList, setShowGenerateGroceryList] = React.useState(false);
   const [showGroceryList, setShowGroceryList] = React.useState(false);
 
@@ -93,6 +95,11 @@ const MealSchedule = (props: MealScheduleProps) => {
 
   const handleCloseGenerateMenu = () => {
     setShowGenerateMenu(false);
+    setShowAssignMealsToDates(true);
+  };
+
+  const handleCloseAssignMealsToDates = () => {
+    setShowAssignMealsToDates(false);
   };
 
   const handleExecuteGenerateGroceryList = (startDate: Date, numberOfMealsToGenerate: number, showStaples: boolean) => {
@@ -179,12 +186,6 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
-  /*
-      <ScheduledMealsStatusResolver
-        onClose={handleCloseScheduledMealsStatusResolver}
-      />
-  */
-
   return (
     <div>
       <div>
@@ -192,6 +193,13 @@ const MealSchedule = (props: MealScheduleProps) => {
           open={showGenerateMenu}
           onClose={handleCloseGenerateMenu}
           onGenerateMenus={handleExecuteGenerateMenu}
+        />
+      </div>
+      <div>
+        <AssignMealsToDatesDialog
+          open={showAssignMealsToDates}
+          onClose={handleCloseAssignMealsToDates}
+          pizza={''}
         />
       </div>
       <div>

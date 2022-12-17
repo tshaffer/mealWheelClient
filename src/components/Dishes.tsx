@@ -39,6 +39,7 @@ import {
   updateDish
 } from '../controllers';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
+import TextField from '@mui/material/TextField';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -199,7 +200,13 @@ const Dishes = (props: DishesProps) => {
   };
 
   const dishesColumns: GridColumns = [
-    { field: 'name', headerName: 'Name', width: 240, editable: true },
+    {
+      field: 'name',
+      headerName: 'Name',
+      width: 240,
+      editable: true,
+      // renderCell: () => <TextField onKeyDown={(e: any) => e.stopPropagation()} />
+    },
     {
       field: 'type',
       type: 'singleSelect',

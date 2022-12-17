@@ -5,6 +5,7 @@ import {
   IngredientEntity,
   IngredientsByDish,
   IngredientsById,
+  MealEntity,
   ScheduledMealEntity,
   UserEntity,
   VerboseScheduledMeal,
@@ -27,8 +28,13 @@ export interface MealWheelState {
   ingredientsState: IngredientsState;
   scheduledMealsState: ScheduledMealsState;
   mealsResolutionState: MealsResolutionState;
+  unassignedMealsState: UnassignedMealsState;
   users: UsersMap;
   versionInfo: VersionInfo;
+}
+
+export interface UnassignedMealsState {
+  meals: MealEntity[];
 }
 
 export interface AppState {

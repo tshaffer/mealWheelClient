@@ -13,6 +13,7 @@ import { groceryListStateReducer } from './groceryList';
 import { ingredientsStateReducer } from './ingredients';
 import { mealsResolutionStateReducer } from './mealsResolution';
 import { scheduledMealsStateReducer } from './scheduledMeals';
+import { unassignedMealsStateReducer } from './unassignedMeals';
 import { usersReducer } from './users';
 import { versionInfoReducer } from './versionInfo';
 
@@ -30,6 +31,7 @@ export const rootReducer = combineReducers<MealWheelState>({
   ingredientsState: ingredientsStateReducer,
   mealsResolutionState: mealsResolutionStateReducer,
   scheduledMealsState: scheduledMealsStateReducer,
+  unassignedMealsState: unassignedMealsStateReducer,
   users: usersReducer,
   versionInfo: versionInfoReducer,
 });

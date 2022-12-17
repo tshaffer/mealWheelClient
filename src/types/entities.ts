@@ -27,6 +27,14 @@ export interface DishEntity {
   last: Date | null;
 }
 
+export interface MealEntity {
+  id: string;
+  mainDishId: string;
+  saladId: string;
+  veggieId: string;
+  sideId: string; 
+}
+
 export interface DefinedMealEntity {
   id: string;
   userId: string;

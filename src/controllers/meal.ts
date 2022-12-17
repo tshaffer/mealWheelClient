@@ -13,7 +13,8 @@ import {
   setMealsToResolve,
   setMealIndex,
   setPendingMeal,
-  setIngredientsInGroceryList
+  setIngredientsInGroceryList,
+  addMeals
 } from '../models';
 import {
   getCurrentUser,
@@ -43,7 +44,8 @@ import {
   MainDishEntity,
   BaseDishEntity,
   VerboseScheduledMeal,
-  IngredientEntity
+  IngredientEntity,
+  MealEntity
 } from '../types';
 
 export const loadDefinedMeals = () => {
@@ -114,74 +116,25 @@ export const loadScheduledMeals = () => {
 
 export const generateMeal = (mealId: string, mealDate: Date) => {
   return (dispatch: any, getState: any) => {
-    const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1, true);
-    const meal: ScheduledMealEntity = meals[0];
-    meal.id = mealId;
-    dispatch(updateScheduledMeal(mealId, meal));
+    // const mealWheelState: MealWheelState = getState() as MealWheelState;
+    // const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1, true);
+    // const meal: ScheduledMealEntity = meals[0];
+    // meal.id = mealId;
+    // dispatch(updateScheduledMeal(mealId, meal));
   };
 };
 
-// TODO - use of allRandomMeals / mealIndex
 export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
 
   return (dispatch: any, getState: any) => {
 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
-    let generatedMealCount: number = 0;
+    const randomDishBasedMeals: MealEntity[] =
+      generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate);
 
-    const randomDishBasedMeals: ScheduledMealEntity[] =
-      generateRandomDishBasedMeals(mealWheelState, startDate, numberOfMealsToGenerate, overwriteExistingMeals);
-    // const randomPredefinedMeals: ScheduledMealEntity[] = getRandomPredefinedMeals(mealWheelState, randomDishBasedMeals, 5);
-
-    // const allRandomMeals: ScheduledMealEntity[] = randomDishBasedMeals.concat(randomPredefinedMeals);
-    const allRandomMeals: ScheduledMealEntity[] = cloneDeep(randomDishBasedMeals);
-
-    let mealDate: Date = new Date(startDate);
-    while (generatedMealCount < numberOfMealsToGenerate) {
-
-      const mealIndex = Math.floor(Math.random() * allRandomMeals.length);
-      const scheduledMeal: ScheduledMealEntity = allRandomMeals[mealIndex];
-      scheduledMeal.dateScheduled = mealDate;
-
-      // check to see if there's a meal already scheduled for this date
-      const mealScheduledForThisDate: ScheduledMealEntity | null = getScheduledMealByDate(mealWheelState, mealDate);
-
-      /* overwriteExistingMeals pseudoCode
-        if overwriteExistingMeals
-          if mealScheduledForThisDate !== null
-            replace meal on this date
-          else
-            add meal on this date
-        else
-          if mealScheduledForThisDate !== null
-            skip this meal
-          else
-            add meal on this date
-
-        existing action creator: addScheduledMeal
-        required action creator: replaceScheuledMeal
-      */
-      if (overwriteExistingMeals) {
-        if (!isNil(mealScheduledForThisDate)) {
-          dispatch(updateScheduledMeal(mealScheduledForThisDate.id, allRandomMeals[mealIndex]));
-        } else {
-          dispatch(addScheduledMeal(allRandomMeals[mealIndex]));
-        }
-      } else {
-        if (isNil(mealScheduledForThisDate)) {
-          dispatch(addScheduledMeal(allRandomMeals[mealIndex]));
-        }
-      }
-
-      mealDate = new Date();
-      mealDate.setTime(scheduledMeal.dateScheduled.getTime() + (24 * 60 * 60 * 1000));
-
-      allRandomMeals.splice(mealIndex, 1);
-
-      generatedMealCount++;
-    }
+    const allRandomMeals: MealEntity[] = cloneDeep(randomDishBasedMeals);
+    dispatch(addMeals(allRandomMeals));
   };
 };
 
@@ -235,6 +188,103 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
 
 };
 
+const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number): MealEntity[] => {
+
+  const mealEntities: MealEntity[] = [];
+
+  const allMainDishIndices: number[] = [];
+  const allSaladIndices: number[] = [];
+  const allSideIndices: number[] = [];
+  const allVegIndices: number[] = [];
+
+  const selectedMainDishIndices: number[] = [];
+
+  const allDishes: DishEntity[] = mealWheelState.dishesState.dishes;
+  allDishes.forEach((dish: DishEntity, index: number) => {
+    switch (dish.type) {
+      case 'main':
+        allMainDishIndices.push(index);
+        break;
+      case 'salad':
+        allSaladIndices.push(index);
+        break;
+      case 'side':
+        allSideIndices.push(index);
+        break;
+      case 'veggie':
+        allVegIndices.push(index);
+        break;
+    }
+  });
+
+  // select random main dish items
+  while (selectedMainDishIndices.length < numMeals) {
+    const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
+    if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
+      selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+    }
+  }
+
+  for (const selectedMainDishIndex of selectedMainDishIndices) {
+
+    const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
+
+    let saladId: string = '';
+    let veggieId: string = '';
+    let sideId: string = '';
+
+    // if accompaniment to main is required, select it.
+    if (!isNil(selectedDish.accompanimentRequired) && selectedDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
+      const possibleAccompaniments: DishType[] = [];
+      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
+        possibleAccompaniments.push(DishType.Salad);
+      }
+      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
+        possibleAccompaniments.push(DishType.Side);
+      }
+      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
+        possibleAccompaniments.push(DishType.Veggie);
+      }
+      const numPossibleAccompaniments = possibleAccompaniments.length;
+      const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
+      const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
+
+      let accompanimentIndex = -1;
+      switch (accompanimentType) {
+        case DishType.Salad: {
+          accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
+          saladId = allDishes[accompanimentIndex].id;
+          break;
+        }
+        case DishType.Side: {
+          accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
+          sideId = allDishes[accompanimentIndex].id;
+          break;
+        }
+        case DishType.Veggie: {
+          accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
+          veggieId = allDishes[accompanimentIndex].id;
+          break;
+        }
+      }
+    }
+
+    const mealId = uuidv4();
+    const meal: MealEntity = {
+      id: mealId,
+      mainDishId: selectedDish.id,
+      saladId,
+      veggieId,
+      sideId,
+    };
+
+    mealEntities.push(meal);
+  }
+
+  return mealEntities;
+};
+
+
 const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadyScheduledMeals: ScheduledMealEntity[], numMeals: number): ScheduledMealEntity[] => {
 
   const allDefinedMeals: DefinedMealEntity[] = getDefinedMeals(mealWheelState);
@@ -283,7 +333,7 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
   return scheduledMealEntities;
 };
 
-const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate: Date, numMeals: number, overwriteExistingMeals: boolean): ScheduledMealEntity[] => {
+const oldgenerateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate: Date, numMeals: number, overwriteExistingMeals: boolean): ScheduledMealEntity[] => {
 
   const scheduledMealEntities: ScheduledMealEntity[] = [];
 
@@ -388,7 +438,6 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate:
 
   return scheduledMealEntities;
 };
-
 
 export const addScheduledMeal = (
   scheduledMeal: ScheduledMealEntity

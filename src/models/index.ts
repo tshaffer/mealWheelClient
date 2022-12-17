@@ -10,5 +10,6 @@ export * from './groceryList';
 export * from './ingredients';
 export * from './mealsResolution';
 export * from './scheduledMeals';
+export * from './unassignedMeals';
 export * from './users';
 export * from './versionInfo';
