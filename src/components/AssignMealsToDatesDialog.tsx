@@ -40,7 +40,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   React.useEffect(() => {
     setMealOnDates(props.mealOnDates);
-  }, [props.startDate]);
+  }, [props.startDate, props.mealOnDates]);
 
   const inlineBlockStyle = {
     display: 'inline-block'
@@ -230,7 +230,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     <Dialog
       open={props.open}
       onClose={handleClose}
-      PaperProps={{ sx: { width: '1000px', height: '750px' } }}
+      PaperProps={{ sx: { width: '1200px', height: '750px' } }}
       fullScreen={true}
     >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
