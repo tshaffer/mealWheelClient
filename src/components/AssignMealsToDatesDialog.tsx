@@ -48,22 +48,10 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       };
       initialMealOnDates.push(mealOnDate);
       mealDate = cloneDeep(mealDate);
-      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));  
+      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
     }
     setMealOnDates(initialMealOnDates);
   }, [props.startDate]);
-
-  const handleClose = () => {
-    props.onClose();
-  };
-
-  const handleAssignMealToDate = () => {
-    console.log('handleAssignMealToDate');
-  };
-
-  const handleClickMealItem = (meal: MealEntity) => {
-    setSelectedMeal(meal);
-  };
 
   const inlineBlockStyle = {
     display: 'inline-block'
@@ -77,8 +65,44 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     backgroundColor: 'white'
   };
 
+  const handleClose = () => {
+    props.onClose();
+  };
+
+  const getSelectedMeal = (): MealEntity | null => {
+    for (const meal of props.meals) {
+      if (!isNil(selectedMeal) && meal.id === selectedMeal.id) {
+        return meal;
+      }
+    }
+    return null;
+  };
+
+  const getSelectedMealOnDate = (): MealOnDate | null => {
+    for (const mealOnDate of mealOnDates) {
+      if (!isNil(selectedMealOnDate) && mealOnDate.id === selectedMealOnDate.id) {
+        return mealOnDate;
+      }
+    }
+    return null;
+  };
+
+  const handleAssignMealToDate = () => {
+    const selectedMeal = getSelectedMeal();
+    const selectedMealOnDate = getSelectedMealOnDate();
+    if (isNil(selectedMeal) || isNil(selectedMealOnDate)) {
+      return;
+    }
+
+    console.log('handleAssignMealToDate');
+  };
+
+  const handleClickMealItem = (meal: MealEntity) => {
+    setSelectedMeal(meal);
+  };
+
   const handleClickMealOnDateItem = (mealOnDate: MealOnDate) => {
-    setSelectedMealOnDate(mealOnDate)
+    setSelectedMealOnDate(mealOnDate);
   };
 
   const getRenderedListOfMealsItems = () => {
@@ -117,13 +141,13 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const getRenderedListOfMealOnDateItems = () => {
 
     const renderedListOfMealOnDates = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
-      
+
       let listItemStyle = unselectedStyle;
       if (!isNil(selectedMealOnDate) && mealOnDate.id === selectedMealOnDate.id) {
         listItemStyle = selectedStyle;
       }
 
-      return(
+      return (
         <ListItem
           key={mealOnDateIndex}
           style={listItemStyle}

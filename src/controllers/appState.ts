@@ -20,7 +20,6 @@ import { getVersions } from './versionInfo';
 import { loadDishes } from './dish';
 import { loadUsers, loginPersistentUser } from './user';
 import {
-  addScheduledMeal,
   loadDefinedMeals,
   loadScheduledMeals,
 } from './meal';
