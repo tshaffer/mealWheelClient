@@ -117,7 +117,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           onClick={() => handleClickMealItem(meal)}
         >
           <ListItemText>
-            {meal.mainDish.name}
+            {getFormattedMeal('', meal)}
           </ListItemText>
         </ListItem>
       );
@@ -137,20 +137,30 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     );
   };
 
+  const getFormattedMeal = (initialString: string, meal: MealEntity): string => {
+    
+    let formattedMealString: string = initialString;
+
+    formattedMealString += meal.mainDish.name;
+    if (!isNil(meal.salad)) {
+      formattedMealString += ', ' + meal.salad.name;
+    }
+    if (!isNil(meal.side)) {
+      formattedMealString += ', ' + meal.side.name;
+    }
+    if (!isNil(meal.veggie)) {
+      formattedMealString += ', ' + meal.veggie.name;
+    }
+
+    return formattedMealString;
+  };
+
   const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
     
     let formattedMealOnDate = mealOnDate.date.toDateString();
     if (!isNil(mealOnDate.meal)) {
-      formattedMealOnDate += ' : ' + mealOnDate.meal.mainDish.name;
-      if (!isNil(mealOnDate.meal.salad)) {
-        formattedMealOnDate += ', ' + mealOnDate.meal.salad.name;
-      }
-      if (!isNil(mealOnDate.meal.side)) {
-        formattedMealOnDate += ', ' + mealOnDate.meal.side.name;
-      }
-      if (!isNil(mealOnDate.meal.veggie)) {
-        formattedMealOnDate += ', ' + mealOnDate.meal.veggie.name;
-      }
+      formattedMealOnDate += ' : ';
+      formattedMealOnDate = getFormattedMeal(formattedMealOnDate, mealOnDate.meal);
     } else {
       formattedMealOnDate += ' : unassigned';
     }
