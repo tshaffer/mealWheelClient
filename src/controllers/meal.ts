@@ -466,6 +466,26 @@ export const assignMealToDate = (
   };
 };
 
+export const updateMealAssignedToDate = (
+  meal: MealEntity,
+  date: Date,
+) => {
+
+  return (dispatch: any, getState: any) => {
+
+    const mealWheelState: MealWheelState = getState();
+
+    const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(mealWheelState, date);
+    if (!isNil(scheduledMeal)) {
+      scheduledMeal.mainDishId = meal.mainDish.id;
+      scheduledMeal.saladId = isNil(meal.salad) ? '' : meal.salad.id;
+      scheduledMeal.sideId = isNil(meal.side) ? '' : meal.side.id;
+      scheduledMeal.veggieId = isNil(meal.veggie) ? '' : meal.veggie.id;
+      dispatch(updateScheduledMeal(scheduledMeal.id, scheduledMeal));
+    }
+  };
+};
+
 export const addScheduledMeal = (
   scheduledMeal: ScheduledMealEntity
 ): any => {
