@@ -441,7 +441,31 @@ const oldgenerateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDa
   return scheduledMealEntities;
 };
 
-// TEDTODO - uncalled?
+export const assignMealToDate = (
+  meal: MealEntity,
+  date: Date,
+) => {
+
+  return (dispatch: any, getState: any) => {
+
+    const mealWheelState: MealWheelState = getState();
+
+    const mealId = uuidv4();
+    const scheduledMeal: ScheduledMealEntity = {
+      id: mealId,
+      userId: getCurrentUser(mealWheelState) as string,
+      mainDishId: meal.mainDish.id,
+      saladId: isNil(meal.salad) ? '' : meal.salad.id,
+      veggieId: isNil(meal.veggie) ? '' : meal.veggie.id,
+      sideId: isNil(meal.side) ? '' : meal.side.id,
+      dateScheduled: date,
+      status: MealStatus.pending
+    };
+
+    dispatch(addScheduledMeal(scheduledMeal));
+  };
+};
+
 export const addScheduledMeal = (
   scheduledMeal: ScheduledMealEntity
 ): any => {

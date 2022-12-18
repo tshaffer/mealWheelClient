@@ -13,6 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { List, ListItem, ListItemText } from '@mui/material';
 
 import { MealEntity } from '../types';
+import { assignMealToDate } from '../controllers';
 import { getStartDate, getUnassignedMeals } from '../selectors';
 
 interface MealOnDate {
@@ -29,6 +30,7 @@ export interface AssignMealsToDatesDialogPropsFromParent {
 export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogPropsFromParent {
   meals: MealEntity[];
   startDate: Date;
+  onAssignMealToDate: (meal: MealEntity, date: Date) => void;
 }
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
@@ -88,13 +90,15 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   };
 
   const handleAssignMealToDate = () => {
+
+    console.log('handleAssignMealToDate');
+
     const selectedMeal = getSelectedMeal();
     const selectedMealOnDate = getSelectedMealOnDate();
     if (isNil(selectedMeal) || isNil(selectedMealOnDate)) {
       return;
     }
-
-    console.log('handleAssignMealToDate');
+    props.onAssignMealToDate(selectedMeal, selectedMealOnDate.date);
   };
 
   const handleClickMealItem = (meal: MealEntity) => {
@@ -219,6 +223,7 @@ function mapStateToProps(state: any, ownProps: AssignMealsToDatesDialogPropsFrom
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onAssignMealToDate: assignMealToDate,
   }, dispatch);
 };
 
