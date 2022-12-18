@@ -13,7 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { List, ListItem, ListItemText } from '@mui/material';
 
 import { MealEntity } from '../types';
-import { getUnassignedMeals } from '../selectors';
+import { getStartDate, getUnassignedMeals } from '../selectors';
 
 interface MealOnDate {
   id: number;
@@ -28,6 +28,7 @@ export interface AssignMealsToDatesDialogPropsFromParent {
 
 export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogPropsFromParent {
   meals: MealEntity[];
+  startDate: Date;
 }
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
@@ -38,7 +39,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   React.useEffect(() => {
     const initialMealOnDates: MealOnDate[] = [];
-    let mealDate: Date = new Date();
+    let mealDate: Date = cloneDeep(props.startDate);
     for (let i = 0; i < 7; i++) {
       const mealOnDate: MealOnDate = {
         id: i,
@@ -50,7 +51,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));  
     }
     setMealOnDates(initialMealOnDates);
-  }, []);
+  }, [props.startDate]);
 
   const handleClose = () => {
     props.onClose();
@@ -188,6 +189,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 function mapStateToProps(state: any, ownProps: AssignMealsToDatesDialogPropsFromParent) {
   return {
     meals: getUnassignedMeals(state),
+    startDate: getStartDate(state),
   };
 }
 
