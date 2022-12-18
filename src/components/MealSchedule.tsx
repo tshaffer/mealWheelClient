@@ -89,9 +89,11 @@ const MealSchedule = (props: MealScheduleProps) => {
     props.onGenerateMenu(startDate, numberOfMealsToGenerate);
   };
 
-  const handleCloseGenerateMenu = () => {
+  const handleCloseGenerateMenu = (generateMealsCancelled: boolean) => {
     setShowGenerateMenu(false);
-    setShowAssignMealsToDates(true);
+    if (!generateMealsCancelled) {
+      setShowAssignMealsToDates(true);
+    }
   };
 
   const handleCloseAssignMealsToDates = () => {

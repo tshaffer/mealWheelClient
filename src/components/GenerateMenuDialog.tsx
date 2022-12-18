@@ -24,7 +24,7 @@ import { getStartDate, getNumberOfMealsToGenerate } from '../selectors';
 export interface GenerateMenuDialogPropsFromParent {
   open: boolean;
   onGenerateMenus: (startDate: Date, numberOfMealsToGenerate: number) => void;
-  onClose: () => void;
+  onClose: (generateMealsCancelled: boolean) => void;
 }
 
 export interface GenerateMenuDialogProps extends GenerateMenuDialogPropsFromParent {
@@ -51,12 +51,12 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
   const handleGenerateMenu = () => {
     if (!isNil(props.startDate)) {
       onGenerateMenus(props.startDate, props.numberOfMealsToGenerate);
-      onClose();
+      onClose(false);
     }
   };
 
   const handleClose = () => {
-    onClose();
+    onClose(true);
   };
 
   return (
