@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity, MealOnDate, DishEntity } from '../types';
 import { getMainById, getSaladById, getSideById, getVeggieById } from './dish';
@@ -45,15 +45,18 @@ export const getScheduledMealByDate = (state: MealWheelState, targetMealDate: Da
 
 export const getScheduledMealsForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): ScheduledMealEntity[] => {
 
+  let localMealDate = cloneDeep(mealDate);
+
   const mealEntities: ScheduledMealEntity[] = [];
 
   for (let dayIndex = 0; dayIndex < numberOfDays; dayIndex++) {
 
-    const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, mealDate);
+    const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, localMealDate);
     if (!isNil(scheduledMeal)) {
       mealEntities.push(scheduledMeal);
     }
-    mealDate.setDate(mealDate.getDate() + 1);
+    localMealDate = cloneDeep(localMealDate);
+    localMealDate.setDate(localMealDate.getDate() + 1);
 
   }
 
@@ -62,11 +65,13 @@ export const getScheduledMealsForDays = (state: MealWheelState, mealDate: Date, 
 
 export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): MealOnDate[] => {
 
+  let localMealDate = cloneDeep(mealDate);
+
   const mealOnDates: MealOnDate[] = [];
 
   for (let dayIndex = 0; dayIndex < numberOfDays; dayIndex++) {
 
-    const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, mealDate);
+    const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, localMealDate);
     if (!isNil(scheduledMeal)) {
       const mainDish: DishEntity | null = getMainById(state, scheduledMeal.mainDishId);
       const salad: DishEntity | null = getSaladById(state, scheduledMeal.saladId);
@@ -80,18 +85,19 @@ export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, nu
         side: isNil(side) ? undefined : side,
       };
       const mealOnDate: MealOnDate = {
-        date: mealDate,
+        date: localMealDate,
         meal: mealEntity,
       };
       mealOnDates.push(mealOnDate);
     } else {
       const mealOnDate: MealOnDate = {
-        date: mealDate,
+        date: localMealDate,
         meal: null,
       };
       mealOnDates.push(mealOnDate);
     }
-    mealDate.setDate(mealDate.getDate() + 1);
+    localMealDate = cloneDeep(localMealDate);
+    localMealDate.setDate(localMealDate.getDate() + 1);
   }
 
   return mealOnDates;
