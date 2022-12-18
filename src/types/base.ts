@@ -156,3 +156,9 @@ export enum MealStatus {
   prepared = 1,
   different = 2,
 }
+
+export interface MealOnDate {
+  date: Date;
+  meal: MealEntity | null;
+}
+

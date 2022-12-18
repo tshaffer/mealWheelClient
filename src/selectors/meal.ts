@@ -1,5 +1,7 @@
 import { isNil } from 'lodash';
-import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity } from '../types';
+import { v4 as uuidv4 } from 'uuid';
+import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity, MealOnDate, DishEntity } from '../types';
+import { getMainById, getSaladById, getSideById, getVeggieById } from './dish';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
@@ -56,6 +58,44 @@ export const getScheduledMealsForDays = (state: MealWheelState, mealDate: Date, 
   }
 
   return mealEntities;
+};
+
+export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): MealOnDate[] => {
+
+  const mealOnDates: MealOnDate[] = [];
+
+  for (let dayIndex = 0; dayIndex < numberOfDays; dayIndex++) {
+
+    const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, mealDate);
+    if (!isNil(scheduledMeal)) {
+      const mainDish: DishEntity | null = getMainById(state, scheduledMeal.mainDishId);
+      const salad: DishEntity | null = getSaladById(state, scheduledMeal.saladId);
+      const side: DishEntity | null = getSideById(state, scheduledMeal.sideId);
+      const veggie: DishEntity | null = getVeggieById(state, scheduledMeal.veggieId);
+      const mealEntity: MealEntity = {
+        id: uuidv4(),
+        mainDish: mainDish as DishEntity,
+        salad: isNil(salad) ? undefined : salad,
+        veggie: isNil(veggie) ? undefined : veggie,
+        side: isNil(side) ? undefined : side,
+      };
+      const mealOnDate: MealOnDate = {
+        date: mealDate,
+        meal: mealEntity,
+      };
+      mealOnDates.push(mealOnDate);
+    } else {
+      const mealOnDate: MealOnDate = {
+        date: mealDate,
+        meal: null,
+      };
+      mealOnDates.push(mealOnDate);
+    }
+    mealDate.setDate(mealDate.getDate() + 1);
+  }
+
+  return mealOnDates;
+
 };
 
 export const getUnassignedMeals = (state: MealWheelState): MealEntity[] => {

@@ -12,24 +12,23 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import { List, ListItem, ListItemText } from '@mui/material';
 
-import { MealEntity } from '../types';
+import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
 import { assignMealToDate } from '../controllers';
-import { getStartDate, getUnassignedMeals } from '../selectors';
-
-interface MealOnDate {
-  id: number;
-  date: Date;
-  meal: MealEntity | null;
-}
+import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
   onClose: () => void;
 }
 
+// export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): MealOnDate[] => {
+
 export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogPropsFromParent {
   meals: MealEntity[];
   startDate: Date;
+  numberOfMealsToGenerate: number,
+  scheduledMeals: ScheduledMealEntity[];
+  mealOnDates: MealOnDate[];
   onAssignMealToDate: (meal: MealEntity, date: Date) => void;
 }
 
@@ -40,19 +39,21 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const [selectedMealOnDate, setSelectedMealOnDate] = React.useState<MealOnDate | null>(null);
 
   React.useEffect(() => {
-    const initialMealOnDates: MealOnDate[] = [];
-    let mealDate: Date = cloneDeep(props.startDate);
-    for (let i = 0; i < 7; i++) {
-      const mealOnDate: MealOnDate = {
-        id: i,
-        date: mealDate,
-        meal: null,
-      };
-      initialMealOnDates.push(mealOnDate);
-      mealDate = cloneDeep(mealDate);
-      mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
-    }
-    setMealOnDates(initialMealOnDates);
+    // const initialMealOnDates: MealOnDate[] = [];
+    // let mealDate: Date = cloneDeep(props.startDate);
+    // for (let i = 0; i < props.numberOfMealsToGenerate; i++) {
+    //   const mealOnDate: MealOnDate = {
+    //     date: mealDate,
+    //     meal: null,
+    //   };
+    //   initialMealOnDates.push(mealOnDate);
+    //   mealDate = cloneDeep(mealDate);
+    //   mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
+    // }
+    // setMealOnDates(initialMealOnDates);
+    console.log('props.mealOnDates');
+    console.log(props.mealOnDates);
+    setMealOnDates(props.mealOnDates);
   }, [props.startDate]);
 
   const inlineBlockStyle = {
@@ -82,7 +83,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   const getSelectedMealOnDate = (): MealOnDate | null => {
     for (const mealOnDate of mealOnDates) {
-      if (!isNil(selectedMealOnDate) && mealOnDate.id === selectedMealOnDate.id) {
+      if (!isNil(selectedMealOnDate) && getDatesEqual(mealOnDate.date, selectedMealOnDate.date)) {
         return mealOnDate;
       }
     }
@@ -107,6 +108,10 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   const handleClickMealOnDateItem = (mealOnDate: MealOnDate) => {
     setSelectedMealOnDate(mealOnDate);
+  };
+
+  const getDatesEqual = (date1: Date, date2: Date): boolean => {
+    return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
   };
 
   const getRenderedListOfMealsItems = () => {
@@ -147,7 +152,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     const renderedListOfMealOnDates = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
 
       let listItemStyle = unselectedStyle;
-      if (!isNil(selectedMealOnDate) && mealOnDate.id === selectedMealOnDate.id) {
+      if (!isNil(selectedMealOnDate) && getDatesEqual(mealOnDate.date, selectedMealOnDate.date)) {
         listItemStyle = selectedStyle;
       }
 
@@ -215,9 +220,15 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 }
 
 function mapStateToProps(state: any, ownProps: AssignMealsToDatesDialogPropsFromParent) {
+
+  const startDate: Date = getStartDate(state);
+  const numberOfMealsToGenerate: number = getNumberOfMealsToGenerate(state);
   return {
     meals: getUnassignedMeals(state),
-    startDate: getStartDate(state),
+    startDate,
+    numberOfMealsToGenerate,
+    scheduledMeals: getScheduledMealsForDays(state, startDate, numberOfMealsToGenerate),
+    mealOnDates: getMealsOnDatesForDays(state, startDate, numberOfMealsToGenerate),
   };
 }
 
