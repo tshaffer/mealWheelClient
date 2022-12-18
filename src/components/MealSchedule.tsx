@@ -48,7 +48,7 @@ end.setDate(end.getDate() + 1);
 
 export interface MealScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
-  onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => any;
+  onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number) => any;
   onGenerateGroceryList: (startDate: Date, numberOfMealsToGenerate: number, showStaples: boolean) => any;
   onUpdateMealStatus: (mealId: string, mealStatus: MealStatus) => any;
   onSetStartDate: (startDate: Date) => void;
@@ -85,12 +85,8 @@ const MealSchedule = (props: MealScheduleProps) => {
     setShowGenerateGroceryList(true);
   };
 
-  const handleExecuteGenerateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
-    console.log('handleExecuteGenerateMenu');
-    console.log(startDate);
-    console.log(numberOfMealsToGenerate);
-    console.log(overwriteExistingMeals);
-    props.onGenerateMenu(startDate, numberOfMealsToGenerate, overwriteExistingMeals);
+  const handleExecuteGenerateMenu = (startDate: Date, numberOfMealsToGenerate: number) => {
+    props.onGenerateMenu(startDate, numberOfMealsToGenerate);
   };
 
   const handleCloseGenerateMenu = () => {
@@ -103,9 +99,6 @@ const MealSchedule = (props: MealScheduleProps) => {
   };
 
   const handleExecuteGenerateGroceryList = (startDate: Date, numberOfMealsToGenerate: number, showStaples: boolean) => {
-    console.log('handleExecuteGenerateGroceryList');
-    console.log(startDate);
-    console.log(numberOfMealsToGenerate);
     props.onGenerateGroceryList(startDate, numberOfMealsToGenerate, showStaples);
     setShowGroceryList(true);
   };

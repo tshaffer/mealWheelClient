@@ -1,18 +1,11 @@
 import { GenerateMealsState } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
-/*
-  startDate: Date;
-  numberOfMealsToGenerate: number;
-  overwriteExistingMeals: boolean;
-*/
-
 // ------------------------------------
 // Constants
 // ------------------------------------
 const SET_START_DATE = 'SET_START_DATE';
 const SET_NUMBER_OF_MEALS_TO_GENERATE = 'SET_NUMBER_OF_MEALS_TO_GENERATE';
-const SET_OVERWRITE_EXISTING_MEALS = 'SET_OVERWRITE_EXISTING_MEALS';
 
 // ------------------------------------
 // Actions
@@ -46,20 +39,6 @@ export const setNumberOfMealsToGenerate = (
   };
 };
 
-export interface SetOverwriteExistingMealsPayload {
-  overwriteExistingMeals: boolean;
-}
-
-export const setOverwriteExistingMeals = (
-  overwriteExistingMeals: boolean): any => {
-  return {
-    type: SET_OVERWRITE_EXISTING_MEALS,
-    payload: {
-      overwriteExistingMeals,
-    }
-  };
-};
-
 // ------------------------------------
 // Reducer
 // ------------------------------------
@@ -68,12 +47,11 @@ const initialState: GenerateMealsState =
 {
   startDate: new Date(),
   numberOfMealsToGenerate: 7,
-  overwriteExistingMeals: true,
 };
 
 export const generateMealsStateReducer = (
   state: GenerateMealsState = initialState,
-  action: MealWheelModelBaseAction<SetStartDatePayload & SetNumberOfMealsToGeneratePayload & SetOverwriteExistingMealsPayload>
+  action: MealWheelModelBaseAction<SetStartDatePayload & SetNumberOfMealsToGeneratePayload>
 ): GenerateMealsState => {
   switch (action.type) {
     case SET_START_DATE:
@@ -86,12 +64,6 @@ export const generateMealsStateReducer = (
         ...state,
         numberOfMealsToGenerate: action.payload.numberOfMealsToGenerate,
       };
-    case SET_OVERWRITE_EXISTING_MEALS: {
-      return {
-        ...state,
-        overwriteExistingMeals: action.payload.overwriteExistingMeals
-      };
-    }
     default:
       return state;
   }

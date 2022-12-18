@@ -18,22 +18,20 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { isNil } from 'lodash';
 
-import { setStartDate, setNumberOfMealsToGenerate, setOverwriteExistingMeals } from '../models';
-import { getStartDate, getNumberOfMealsToGenerate, getOverwriteExistingMeals } from '../selectors';
+import { setStartDate, setNumberOfMealsToGenerate } from '../models';
+import { getStartDate, getNumberOfMealsToGenerate } from '../selectors';
 
 export interface GenerateMenuDialogPropsFromParent {
   open: boolean;
-  onGenerateMenus: (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => void;
+  onGenerateMenus: (startDate: Date, numberOfMealsToGenerate: number) => void;
   onClose: () => void;
 }
 
 export interface GenerateMenuDialogProps extends GenerateMenuDialogPropsFromParent {
   startDate: Date;
   numberOfMealsToGenerate: number;
-  overwriteExistingMeals: boolean;
   onSetStartDate: (startDate: Date) => void;
   onSetNumberOfMealsToGenerate: (numberOfMealsToGenerate: number) => void;
-  onSetOverwriteExistingMeals: (overwriteExistingMeals: boolean) => void;
 }
 
 function GenerateMenuDialog(props: GenerateMenuDialogProps) {
@@ -50,13 +48,9 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
     props.onSetNumberOfMealsToGenerate(numberOfMealsToGenerateEntry);
   };
 
-  const handleUpdateOverwriteExistingMeals = (event: React.ChangeEvent<HTMLInputElement>) => {
-    props.onSetOverwriteExistingMeals(event.target.checked);
-  };
-
   const handleGenerateMenu = () => {
     if (!isNil(props.startDate)) {
-      onGenerateMenus(props.startDate, props.numberOfMealsToGenerate, props.overwriteExistingMeals);
+      onGenerateMenus(props.startDate, props.numberOfMealsToGenerate);
       onClose();
     }
   };
@@ -92,20 +86,6 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
           value={props.numberOfMealsToGenerate}
           onChange={handleUpdateNumberOfMealsToGenerate}
         />
-        <br />
-        <FormGroup
-          sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-        >
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={props.overwriteExistingMeals}
-                onChange={handleUpdateOverwriteExistingMeals}
-              />
-            }
-            label="Overwrite existing meals"
-          />
-        </FormGroup>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
@@ -121,7 +101,6 @@ function mapStateToProps(state: any) {
   return {
     startDate: getStartDate(state),
     numberOfMealsToGenerate: getNumberOfMealsToGenerate(state),
-    overwriteExistingMeals: getOverwriteExistingMeals(state),
   };
 }
 
@@ -129,7 +108,6 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onSetStartDate: setStartDate,
     onSetNumberOfMealsToGenerate: setNumberOfMealsToGenerate,
-    onSetOverwriteExistingMeals: setOverwriteExistingMeals,
   }, dispatch);
 };
 

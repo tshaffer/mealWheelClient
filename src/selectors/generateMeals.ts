@@ -9,7 +9,3 @@ export const getStartDate = (state: MealWheelState): Date => {
 export const getNumberOfMealsToGenerate = (state: MealWheelState): number => {
   return state.generateMealsState.numberOfMealsToGenerate;
 };
-
-export const getOverwriteExistingMeals = (state: MealWheelState): boolean => {
-  return state.generateMealsState.overwriteExistingMeals;
-};

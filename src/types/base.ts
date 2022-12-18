@@ -81,7 +81,6 @@ export interface ScheduledMealsState {
 export interface GenerateMealsState {
   startDate: Date;
   numberOfMealsToGenerate: number;
-  overwriteExistingMeals: boolean;
 }
 
 export interface GenerateGroceryListState {

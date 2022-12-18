@@ -125,7 +125,7 @@ export const generateMeal = (mealId: string, mealDate: Date) => {
   };
 };
 
-export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number, overwriteExistingMeals: boolean) => {
+export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number) => {
 
   return (dispatch: any, getState: any) => {
 
@@ -330,112 +330,6 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
 
     scheduledMealEntities.push(scheduledMeal);
 
-  }
-
-  return scheduledMealEntities;
-};
-
-const oldgenerateRandomDishBasedMeals = (mealWheelState: MealWheelState, startDate: Date, numMeals: number, overwriteExistingMeals: boolean): ScheduledMealEntity[] => {
-
-  const scheduledMealEntities: ScheduledMealEntity[] = [];
-
-  const allMainDishIndices: number[] = [];
-  const allSaladIndices: number[] = [];
-  const allSideIndices: number[] = [];
-  const allVegIndices: number[] = [];
-
-  const selectedMainDishIndices: number[] = [];
-
-  const allDishes: DishEntity[] = mealWheelState.dishesState.dishes;
-  allDishes.forEach((dish: DishEntity, index: number) => {
-    switch (dish.type) {
-      case 'main':
-        allMainDishIndices.push(index);
-        break;
-      case 'salad':
-        allSaladIndices.push(index);
-        break;
-      case 'side':
-        allSideIndices.push(index);
-        break;
-      case 'veggie':
-        allVegIndices.push(index);
-        break;
-    }
-  });
-
-  // select random main dish items
-  while (selectedMainDishIndices.length < numMeals) {
-    const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
-    if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
-      selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-    }
-  }
-
-  let mealDate: Date = cloneDeep(startDate);
-
-  for (const selectedMainDishIndex of selectedMainDishIndices) {
-
-    const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
-
-    let saladId: string = '';
-    let veggieId: string = '';
-    let sideId: string = '';
-
-    // if accompaniment to main is required, select it.
-    if (!isNil(selectedDish.accompanimentRequired) && selectedDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
-      const possibleAccompaniments: DishType[] = [];
-      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
-        possibleAccompaniments.push(DishType.Salad);
-      }
-      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
-        possibleAccompaniments.push(DishType.Side);
-      }
-      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
-        possibleAccompaniments.push(DishType.Veggie);
-      }
-      const numPossibleAccompaniments = possibleAccompaniments.length;
-      const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
-      const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
-
-      let accompanimentIndex = -1;
-      switch (accompanimentType) {
-        case DishType.Salad: {
-          accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
-          saladId = allDishes[accompanimentIndex].id;
-          break;
-        }
-        case DishType.Side: {
-          accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
-          sideId = allDishes[accompanimentIndex].id;
-          break;
-        }
-        case DishType.Veggie: {
-          accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
-          veggieId = allDishes[accompanimentIndex].id;
-          break;
-        }
-      }
-    }
-
-    const mealId = uuidv4();
-    const scheduledMeal: ScheduledMealEntity = {
-      id: mealId,
-      userId: getCurrentUser(mealWheelState) as string,
-      mainDishId: selectedDish.id,
-      saladId,
-      veggieId,
-      sideId,
-      dateScheduled: mealDate,
-      status: MealStatus.pending
-    };
-
-    scheduledMealEntities.push(scheduledMeal);
-
-    // update property 'last' for all dishes in meal
-
-    mealDate = cloneDeep(mealDate);
-    mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
   }
 
   return scheduledMealEntities;
