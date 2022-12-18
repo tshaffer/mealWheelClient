@@ -137,6 +137,26 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     );
   };
 
+  const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
+    
+    let formattedMealOnDate = mealOnDate.date.toDateString();
+    if (!isNil(mealOnDate.meal)) {
+      formattedMealOnDate += ' : ' + mealOnDate.meal.mainDish.name;
+      if (!isNil(mealOnDate.meal.salad)) {
+        formattedMealOnDate += ', ' + mealOnDate.meal.salad.name;
+      }
+      if (!isNil(mealOnDate.meal.side)) {
+        formattedMealOnDate += ', ' + mealOnDate.meal.side.name;
+      }
+      if (!isNil(mealOnDate.meal.veggie)) {
+        formattedMealOnDate += ', ' + mealOnDate.meal.veggie.name;
+      }
+    } else {
+      formattedMealOnDate += ' : unassigned';
+    }
+    return formattedMealOnDate;
+  };
+
   const getRenderedListOfMealOnDateItems = () => {
 
     const renderedListOfMealOnDates = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
@@ -153,7 +173,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           onClick={() => handleClickMealOnDateItem(mealOnDate)}
         >
           <ListItemText>
-            {mealOnDate.date.toDateString()}
+            {getFormattedMealOnDate(mealOnDate)}
           </ListItemText>
         </ListItem>
       );
@@ -162,19 +182,19 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     return renderedListOfMealOnDates;
   };
 
-  const getRenderedListOfDates = () => {
-    const listOfDateItems = getRenderedListOfMealOnDateItems();
+  const getRenderedListOfMealOnDates = () => {
+    const listOfMealOnDateItems = getRenderedListOfMealOnDateItems();
     return (
       <List
         style={inlineBlockStyle}
       >
-        {listOfDateItems}
+        {listOfMealOnDateItems}
       </List>
     );
   };
 
   const listOfMeals = getRenderedListOfMeals();
-  const listOfDates = getRenderedListOfDates();
+  const listOfMealOnDates = getRenderedListOfMealOnDates();
 
   return (
     <Dialog
@@ -204,7 +224,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           >
             Assign meal to date
           </Button>
-          {listOfDates}
+          {listOfMealOnDates}
         </Box>
       </DialogContent>
       <DialogActions>
