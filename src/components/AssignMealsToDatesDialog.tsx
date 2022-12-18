@@ -13,7 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { List, ListItem, ListItemText } from '@mui/material';
 
 import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
-import { assignMealToDate, updateMealAssignedToDate } from '../controllers';
+import { assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
@@ -29,6 +29,7 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
   mealOnDates: MealOnDate[];
   onAssignMealToDate: (meal: MealEntity, date: Date) => void;
   onUpdateMealAssignedToDate: (meal: MealEntity, date: Date) => void;
+  onDeleteScheduledMeal: (id: string) => void;
 }
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
@@ -100,6 +101,19 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     setSelectedMealOnDate(mealOnDate);
   };
 
+  const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
+    console.log('clear assigned meal on: ', mealOnDate.date.toDateString());
+    if (!isNil(mealOnDate.meal)) {
+
+      // get scheduledMeal associated with this date
+      for (const scheduledMeal of props.scheduledMeals) {
+        if (getDatesEqual(scheduledMeal.dateScheduled, mealOnDate.date)) {
+          props.onDeleteScheduledMeal(scheduledMeal.id);
+        }
+      }
+    }
+  };
+
   const getDatesEqual = (date1: Date, date2: Date): boolean => {
     return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
   };
@@ -138,7 +152,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   };
 
   const getFormattedMeal = (initialString: string, meal: MealEntity): string => {
-    
+
     let formattedMealString: string = initialString;
 
     formattedMealString += meal.mainDish.name;
@@ -156,7 +170,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   };
 
   const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
-    
+
     let formattedMealOnDate = mealOnDate.date.toDateString();
     if (!isNil(mealOnDate.meal)) {
       formattedMealOnDate += ' : ';
@@ -185,6 +199,12 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           <ListItemText>
             {getFormattedMealOnDate(mealOnDate)}
           </ListItemText>
+          <Button
+            onClick={() => handleClearAssignedMealOnDate(mealOnDate)}
+            disabled={isNil(mealOnDate.meal)}
+          >
+            Clear Assigned Meal
+          </Button>
         </ListItem>
       );
     });
@@ -261,6 +281,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onAssignMealToDate: assignMealToDate,
     onUpdateMealAssignedToDate: updateMealAssignedToDate,
+    onDeleteScheduledMeal: deleteScheduledMeal,
   }, dispatch);
 };
 
