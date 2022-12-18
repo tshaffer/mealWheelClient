@@ -21,8 +21,6 @@ export interface AssignMealsToDatesDialogPropsFromParent {
   onClose: () => void;
 }
 
-// export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): MealOnDate[] => {
-
 export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogPropsFromParent {
   meals: MealEntity[];
   startDate: Date;
@@ -40,20 +38,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const [selectedMealOnDate, setSelectedMealOnDate] = React.useState<MealOnDate | null>(null);
 
   React.useEffect(() => {
-    // const initialMealOnDates: MealOnDate[] = [];
-    // let mealDate: Date = cloneDeep(props.startDate);
-    // for (let i = 0; i < props.numberOfMealsToGenerate; i++) {
-    //   const mealOnDate: MealOnDate = {
-    //     date: mealDate,
-    //     meal: null,
-    //   };
-    //   initialMealOnDates.push(mealOnDate);
-    //   mealDate = cloneDeep(mealDate);
-    //   mealDate.setTime(mealDate.getTime() + (24 * 60 * 60 * 1000));
-    // }
-    // setMealOnDates(initialMealOnDates);
-    console.log('props.mealOnDates');
-    console.log(props.mealOnDates);
     setMealOnDates(props.mealOnDates);
   }, [props.startDate]);
 
@@ -193,7 +177,12 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const listOfDates = getRenderedListOfDates();
 
   return (
-    <Dialog onClose={handleClose} open={props.open}>
+    <Dialog
+      open={props.open}
+      onClose={handleClose}
+      PaperProps={{ sx: { width: '1000px', height: '750px' } }}
+      fullScreen={true}
+    >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
         <Box
