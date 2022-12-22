@@ -205,7 +205,6 @@ const Dishes = (props: DishesProps) => {
       headerName: 'Name',
       width: 240,
       editable: true,
-      // renderCell: () => <TextField onKeyDown={(e: any) => e.stopPropagation()} />
     },
     {
       field: 'type',
@@ -396,7 +395,7 @@ const Dishes = (props: DishesProps) => {
           }} rows={rows}
           columns={dishesColumns}
           editMode="row"
-          disableVirtualization
+          // disableVirtualization
           rowModesModel={rowModesModel}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
