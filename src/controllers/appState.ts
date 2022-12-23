@@ -107,10 +107,17 @@ export const uploadFile = (formData: FormData): any => {
     const userId = getCurrentUser(state) as string;
     formData.set('userId', userId);
     const path = serverUrl + apiUrlFragment + 'mealWheelSpec';
-    axios.post(path, formData, {
-    }).then((response) => {
-      console.log(response);
-      console.log(response.statusText);
-    });
+    // return axios.post(path, formData, {
+    // }).then((response) => {
+    //   console.log(response);
+    //   console.log(response.statusText);
+    // }).catch((err) => {
+    //   console.log('uploadFile returned error');
+    //   console.log(err);
+    //   const errorList: string[] = err.response.data;
+    //   console.log('errorList:');
+    //   console.log(errorList);
+    // });
+    return axios.post(path, formData);
   };
 };

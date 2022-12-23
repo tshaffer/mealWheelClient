@@ -6,6 +6,7 @@ import {
   uploadFile,
 } from '../controllers';
 import { isNil } from 'lodash';
+import { Alert } from '@mui/material';
 
 export interface ToolsAndSettingsProps {
   onUploadFile: (formData: FormData) => any;
@@ -15,6 +16,9 @@ const ToolsAndSettings = (props: ToolsAndSettingsProps) => {
 
   const [selectedFile, setSelectedFile] = React.useState(null);
 
+  const [failBlog, setFailBlog] = React.useState(false);
+  const [errorList, setErrorList] = React.useState<string[]>([]);
+
   const handleFileChangeHandler = (e: any) => {
     setSelectedFile(e.target.files[0]);
   };
@@ -23,9 +27,32 @@ const ToolsAndSettings = (props: ToolsAndSettingsProps) => {
     if (!isNil(selectedFile)) {
       const data = new FormData();
       data.append('file', selectedFile);
-      props.onUploadFile(data);  
+      props.onUploadFile(data)
+        .then((response: any) => {
+          console.log(response);
+          console.log(response.statusText);
+        }).catch((err: any) => {
+          console.log('uploadFile returned error');
+          console.log(err);
+          // const errorList: string[] = err.response.data;
+          // console.log('errorList:');
+          // console.log(errorList);
+          setErrorList(err.response.data);
+          setFailBlog(true);
+        });
     }
   };
+
+  if (failBlog) {
+    return (
+      <Alert
+        severity="error"
+        onClose={() => {setFailBlog(false);}}
+      >
+        This is a error alert <strong>check it out!</strong>
+      </Alert>
+    );
+  }
 
   return (
     <div>
