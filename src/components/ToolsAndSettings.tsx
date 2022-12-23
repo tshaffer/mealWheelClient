@@ -16,7 +16,7 @@ const ToolsAndSettings = (props: ToolsAndSettingsProps) => {
 
   const [selectedFile, setSelectedFile] = React.useState(null);
 
-  const [failBlog, setFailBlog] = React.useState(false);
+  const [uploadError, setUploadError] = React.useState(false);
   const [errorList, setErrorList] = React.useState<string[]>([]);
 
   const handleFileChangeHandler = (e: any) => {
@@ -38,18 +38,34 @@ const ToolsAndSettings = (props: ToolsAndSettingsProps) => {
           // console.log('errorList:');
           // console.log(errorList);
           setErrorList(err.response.data);
-          setFailBlog(true);
+          setUploadError(true);
         });
     }
   };
 
-  if (failBlog) {
+  const renderErrors = () => {
+    const errors: any[] = errorList.map((errorItem: any, index: number) => {
+      return (
+        <React.Fragment key={index}>
+          {errorItem}
+          <br />
+        </React.Fragment>
+      );
+    });
+    return errors;
+  };
+
+  if (uploadError) {
+    const renderedErrors = renderErrors();
     return (
       <Alert
         severity="error"
-        onClose={() => {setFailBlog(false);}}
+        onClose={() => { setUploadError(false); }}
       >
-        This is a error alert <strong>check it out!</strong>
+        <div>
+          Errors encountered while parsing spec<br />
+          {renderedErrors}
+        </div>
       </Alert>
     );
   }
@@ -62,7 +78,7 @@ const ToolsAndSettings = (props: ToolsAndSettingsProps) => {
       <br />
     </div>
   );
-}
+};
 
 function mapStateToProps(state: any) {
   return {
