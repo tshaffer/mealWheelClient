@@ -16,6 +16,8 @@ import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
 import { assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
   onClose: () => void;
@@ -226,6 +228,10 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const listOfMeals = getRenderedListOfMeals();
   const listOfMealOnDates = getRenderedListOfMealOnDates();
 
+  const handleDragEnd = () => {
+    console.log('handleDragEnd');
+  };
+
   return (
     <Dialog
       open={props.open}
@@ -235,6 +241,37 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {props.meals.map((meal, index) => (
+                  <Draggable key={meal.id} draggableId={meal.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ListItem
+                          key={index}
+                          style={unselectedStyle}
+                        >
+                          <ListItemText>
+                            {getFormattedMeal('', meal)}
+                          </ListItemText>
+                        </ListItem>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
         <Box
           sx={{
             height: 500,
@@ -247,14 +284,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
             },
           }}
         >
-          {listOfMeals}
-          <Button
-            style={inlineBlockStyle}
-            onClick={handleAssignMealToDate}
-          >
-            Assign meal to date
-          </Button>
-          {listOfMealOnDates}
         </Box>
       </DialogContent>
       <DialogActions>
@@ -262,6 +291,47 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       </DialogActions>
     </Dialog>
   );
+
+  /*
+    return (
+      <Dialog
+        open={props.open}
+        onClose={handleClose}
+        PaperProps={{ sx: { width: '1200px', height: '750px' } }}
+        fullScreen={true}
+      >
+        <DialogTitle>Assign Meals to Dates</DialogTitle>
+        <DialogContent>
+          <Box
+            sx={{
+              height: 500,
+              width: '100%',
+              '& .actions': {
+                color: 'text.secondary',
+              },
+              '& .textPrimary': {
+                color: 'text.primary',
+              },
+            }}
+          >
+            {listOfMeals}
+            <Button
+              style={inlineBlockStyle}
+              onClick={handleAssignMealToDate}
+            >
+              Assign meal to date
+            </Button>
+            {listOfMealOnDates}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  */
+
+
 }
 
 function mapStateToProps(state: any, ownProps: AssignMealsToDatesDialogPropsFromParent) {
