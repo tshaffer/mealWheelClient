@@ -16,7 +16,7 @@ import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
 import { assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
@@ -228,8 +228,9 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const listOfMeals = getRenderedListOfMeals();
   const listOfMealOnDates = getRenderedListOfMealOnDates();
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (dropResult: DropResult) => {
     console.log('handleDragEnd');
+    console.log(dropResult);
   };
 
   return (
@@ -242,15 +243,15 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="droppable">
-            {(provided, snapshot) => (
+          <Droppable droppableId="meals">
+            {(provided) => (
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
                 {props.meals.map((meal, index) => (
                   <Draggable key={meal.id} draggableId={meal.id} index={index}>
-                    {(provided, snapshot) => (
+                    {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
@@ -262,6 +263,35 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
                         >
                           <ListItemText>
                             {getFormattedMeal('', meal)}
+                          </ListItemText>
+                        </ListItem>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              </div>
+            )}
+          </Droppable>
+          <Droppable droppableId='datesInSchedule'>
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {mealOnDates.map((mealOnDate: MealOnDate, index) => (
+                  <Draggable key={index.toString()} draggableId={index.toString()} index={index}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ListItem
+                          key={index}
+                          style={unselectedStyle}
+                        >
+                          <ListItemText>
+                            {mealOnDate.date.toDateString()}
                           </ListItemText>
                         </ListItem>
                       </div>
