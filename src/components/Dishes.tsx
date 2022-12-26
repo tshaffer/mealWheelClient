@@ -39,9 +39,9 @@ import {
   updateDish
 } from '../controllers';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
-import TextField from '@mui/material/TextField';
 
 interface EditToolbarProps {
+  setAddingDish: any;
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
   setRowModesModel: (
     newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
@@ -49,10 +49,11 @@ interface EditToolbarProps {
 }
 
 function EditToolbar(props: EditToolbarProps) {
-  const { setRows, setRowModesModel } = props;
+  const { setAddingDish, setRows, setRowModesModel } = props;
 
   const handleAddRow = () => {
-    const id = 'newDish' + uuidv4();
+    setAddingDish(true);
+    const id = uuidv4();
     setRows((oldRows) => [...oldRows, {
       id,
       name: '',
@@ -92,6 +93,7 @@ const initialRows: GridRowsProp = [];
 
 const Dishes = (props: DishesProps) => {
 
+  const [addingDish, setAddingDish] = React.useState<boolean>(false);
   const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
@@ -114,6 +116,7 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleEditClick = (id: GridRowId) => () => {
+    setAddingDish(false);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
@@ -131,10 +134,12 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
+    setAddingDish(false);
     setRows(rows.filter((row) => row.id !== id));
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
+    setAddingDish(false);
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -190,7 +195,8 @@ const Dishes = (props: DishesProps) => {
       accompanimentRequired: accompaniment,
       last: null, // TEDTODO - placeholder code.
     };
-    if (updatedDish.id.startsWith('newDish')) {
+
+    if (addingDish) {
       props.onAddDish(dish);
     } else {
       props.onUpdateDish(updatedRow.id, dish);
@@ -405,7 +411,7 @@ const Dishes = (props: DishesProps) => {
             Toolbar: EditToolbar,
           }}
           componentsProps={{
-            toolbar: { setRows, setRowModesModel },
+            toolbar: { setAddingDish, setRows, setRowModesModel },
           }}
           experimentalFeatures={{ newEditingApi: true }}
           isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
