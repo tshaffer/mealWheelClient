@@ -5,7 +5,7 @@ import {
   IngredientsByDish,
   IngredientsState,
 } from '../types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isArray, isNil } from 'lodash';
 
 // ------------------------------------
 // Constants
@@ -168,6 +168,12 @@ export const ingredientsStateReducer = (
     }
     case ADD_INGREDIENT_TO_DISH: {
       const newState = cloneDeep(state) as IngredientsState;
+      if (!Object.prototype.hasOwnProperty.call(newState.ingredientsByDish, action.payload.dishId)) {
+        newState.ingredientsByDish = {};
+      }
+      if (!isArray(newState.ingredientsByDish[action.payload.dishId])) {
+        newState.ingredientsByDish[action.payload.dishId] = [];
+      }
       newState.ingredientsByDish[action.payload.dishId].push(action.payload.ingredientEntity.id);
       return newState;
     }
