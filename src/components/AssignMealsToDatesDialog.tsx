@@ -279,28 +279,35 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
               </div>
             )}
           </Droppable>
-          <Droppable droppableId="meals" direction="horizontal">
+          <Droppable droppableId="meals" direction='horizontal'>
             {(provided) => (
               <div
+                className="drag-drop-list-container"
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
                 {props.meals.map((meal, index) => (
-                  <Draggable key={meal.id} draggableId={meal.id} index={index}>
+                  <Draggable
+                    key={meal.id}
+                    draggableId={meal.id}
+                    index={index}
+                  >
                     {(provided) => (
                       <div
+                        className="item-card"
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <ListItem
+                        {getFormattedMeal('', meal)}
+                        {/* <ListItem
                           key={index}
                           style={unselectedStyle}
                         >
                           <ListItemText>
                             {getFormattedMeal('', meal)}
                           </ListItemText>
-                        </ListItem>
+                        </ListItem> */}
                       </div>
                     )}
                   </Draggable>
