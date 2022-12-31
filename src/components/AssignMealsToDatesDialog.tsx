@@ -18,7 +18,7 @@ import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getSchedu
 
 import '../styles/MealWheel.css';
 
-import { DndProvider } from 'react-dnd';
+import { DndProvider, DragSourceMonitor, useDrag } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
@@ -232,8 +232,21 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const listOfMealOnDates = getRenderedListOfMealOnDates();
 
   const MovableItem = () => {
+    const [{ isDragging }, drag]: any = useDrag(
+      () => ({
+        type: 'unknown',  // TEDTODO
+        item: { name: 'Any custom name', type: 'Irrelevant, for now' },
+        collect: (monitor) => ({
+          isDragging: monitor.isDragging(),
+        }),
+      }),
+      // [name, type],  // TEDTODO
+    );
+
+    const opacity = isDragging ? 0.4 : 1;
+
     return (
-      <div className='movable-item'>
+      <div ref={drag} className='movable-item' style={{ opacity }}>
         We will move this item
       </div>
     );
@@ -265,10 +278,12 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
-        <div className="container">
-          <FirstColumn />
-          <SecondColumn />
-        </div>
+        <DndProvider backend={HTML5Backend}>
+          <div className="container">
+            <FirstColumn />
+            <SecondColumn />
+          </div>
+        </DndProvider>
         {/* <DndProvider backend={HTML5Backend}>
 
         </DndProvider> */}
