@@ -231,16 +231,23 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const listOfMeals = getRenderedListOfMeals();
   const listOfMealOnDates = getRenderedListOfMealOnDates();
 
-  const MovableItem = () => {
+  const MovableItem = ({ setIsFirstColumn }: any) => {
     const [{ isDragging }, drag]: any = useDrag(
       () => ({
-        type: 'unknown',  // TEDTODO
-        item: { name: 'Any custom name', type: 'Irrelevant, for now' },
+        type: 'pizza',
+        item: { name: 'Any custom name', type: 'Our first type' },
+        end: (item, monitor) => {
+          const dropResult: any = monitor.getDropResult();
+          if (dropResult && dropResult.name === 'Column 1') {
+            setIsFirstColumn(true);
+          } else {
+            setIsFirstColumn(false);
+          }
+        },
         collect: (monitor) => ({
           isDragging: monitor.isDragging(),
         }),
       }),
-      // [name, type],  // TEDTODO
     );
 
     const opacity = isDragging ? 0.4 : 1;
@@ -253,16 +260,10 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   };
 
   const Column = ({ children, className, title }: any) => {
-    const [{ canDrop, isOver }, drop] = useDrop({
+    const [, drop] = useDrop({
       accept: 'Our first type',
-      drop: () => ({ name: 'Some name' }),
-      collect: (monitor: any) => ({
-        isOver: monitor.isOver(),
-        canDrop: monitor.canDrop(),
-      }),
+      drop: () => ({ name: title }),
     });
-
-    console.log('options', { canDrop, isOver });
 
     return (
       <div ref={drop} className={className}>
@@ -271,23 +272,67 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       </div>
     );
   };
+  // const MovableItem = () => {
+  //   const [{ isDragging }, drag]: any = useDrag(
+  //     () => ({
+  //       type: 'unknown',  // TEDTODO
+  //       item: { name: 'Any custom name', type: 'Irrelevant, for now' },
+  //       collect: (monitor) => ({
+  //         isDragging: monitor.isDragging(),
+  //       }),
+  //     }),
+  //     // [name, type],  // TEDTODO
+  //   );
 
-  const FirstColumn = () => {
-    return (
-      <div className='column first-column'>
-        Column 1
-        <MovableItem />
-      </div>
-    );
-  };
+  //   const opacity = isDragging ? 0.4 : 1;
 
-  const SecondColumn = () => {
-    return (
-      <div className='column second-column'>
-        Column 2
-      </div>
-    );
-  };
+  //   return (
+  //     <div ref={drag} className='movable-item' style={{ opacity }}>
+  //       We will move this item
+  //     </div>
+  //   );
+  // };
+
+  // const Column = ({ children, className, title }: any) => {
+  //   const [{ canDrop, isOver }, drop] = useDrop({
+  //     accept: 'Our first type',
+  //     drop: () => ({ name: 'Some name' }),
+  //     collect: (monitor: any) => ({
+  //       isOver: monitor.isOver(),
+  //       canDrop: monitor.canDrop(),
+  //     }),
+  //   });
+
+  //   console.log('options', { canDrop, isOver });
+
+  //   return (
+  //     <div ref={drop} className={className}>
+  //       {title}
+  //       {children}
+  //     </div>
+  //   );
+  // };
+
+  // const FirstColumn = () => {
+  //   return (
+  //     <div className='column first-column'>
+  //       Column 1
+  //       <MovableItem />
+  //     </div>
+  //   );
+  // };
+
+  // const SecondColumn = () => {
+  //   return (
+  //     <div className='column second-column'>
+  //       Column 2
+  //     </div>
+  //   );
+  // };
+
+  const [isFirstColumn, setIsFirstColumn] = React.useState(true);
+
+  const Item = <MovableItem setIsFirstColumn={setIsFirstColumn}/>;
 
   return (
     <Dialog
@@ -302,10 +347,10 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           {/* Wrap components that will be "draggable" and "droppable" */}
           <DndProvider backend={HTML5Backend}>
             <Column title='Column 1' className='column first-column'>
-              {<MovableItem />}
+              {isFirstColumn && Item}
             </Column>
             <Column title='Column 2' className='column second-column'>
-              {null}
+              {!isFirstColumn && Item}
             </Column>
           </DndProvider>
         </div>
