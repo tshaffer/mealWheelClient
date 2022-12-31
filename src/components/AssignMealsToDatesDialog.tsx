@@ -20,6 +20,9 @@ import '../styles/MealWheel.css';
 
 import { DndProvider, DragSourceMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import DraggableMeal from './DraggableMeal';
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
+import DroppableDateInSchedule from './DroppableDateInSchedule';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
@@ -275,7 +278,50 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   const [isFirstColumn, setIsFirstColumn] = React.useState(true);
 
-  const Item = <MovableItem setIsFirstColumn={setIsFirstColumn}/>;
+  const Item = <MovableItem setIsFirstColumn={setIsFirstColumn} />;
+
+  const getDroppableDateInSchedule = (mealDate: Date): JSX.Element => {
+    return (
+      <DroppableDateInSchedule
+        dateInSchedule={mealDate}
+        accept={['']}
+        onDrop ={() => { console.log('poo'); } }
+      />
+    );
+  };
+
+  const getDroppableDatesInSchedule = (): JSX.Element[] => {
+
+    const droppableDatesInSchedule: JSX.Element[] = [];
+
+    const startDate: Date = props.startDate;
+    const numberOfMealsToGenerate: number = props.numberOfMealsToGenerate;
+
+    for (let mealIndex = 0; mealIndex < numberOfMealsToGenerate; mealIndex++) {
+      const mealDate = new Date(startDate.valueOf() + (24 * 60 * 60 * 1000 * mealIndex));
+      droppableDatesInSchedule.push(getDroppableDateInSchedule(mealDate));
+    }
+
+    return droppableDatesInSchedule;
+  };
+
+  const getDraggableMeal = (mealEntity: MealEntity): JSX.Element => {
+    return (
+      <DraggableMeal
+        meal={mealEntity}
+      />
+    );
+  };
+
+  const getDraggableMeals = (): JSX.Element[] => {
+    const draggableMealsJsx = props.meals.map((mealEntity: MealEntity, index: number) => {
+      return getDraggableMeal(mealEntity);
+    });
+    return draggableMealsJsx;
+  };
+
+  const droppableDatesInSchedule = getDroppableDatesInSchedule();
+  const draggableMeals = getDraggableMeals();
 
   return (
     <Dialog
@@ -286,7 +332,27 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
-        <div className="container">
+        <div>
+          <DndProvider backend={HTML5Backend}>
+            <div style={{ overflow: 'hidden', clear: 'both' }}>
+              {droppableDatesInSchedule}
+            </div>
+
+            <div style={{ overflow: 'hidden', clear: 'both' }}>
+              {draggableMeals}
+              {/* {boxes.map(({ name, type }, index) => (
+                <Box
+                  name={name}
+                  type={type}
+                  isDropped={isDropped(name)}
+                  key={index}
+                /> */}
+              {/* ))} */}
+            </div>
+
+          </DndProvider>
+        </div>
+        {/* <div className="container">
           <DndProvider backend={HTML5Backend}>
             <Column title='Column 1' className='column first-column'>
               {isFirstColumn && Item}
@@ -295,7 +361,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
               {!isFirstColumn && Item}
             </Column>
           </DndProvider>
-        </div>
+        </div> */}
 
         {/* <Box
           sx={{
