@@ -272,63 +272,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       </div>
     );
   };
-  // const MovableItem = () => {
-  //   const [{ isDragging }, drag]: any = useDrag(
-  //     () => ({
-  //       type: 'unknown',  // TEDTODO
-  //       item: { name: 'Any custom name', type: 'Irrelevant, for now' },
-  //       collect: (monitor) => ({
-  //         isDragging: monitor.isDragging(),
-  //       }),
-  //     }),
-  //     // [name, type],  // TEDTODO
-  //   );
-
-  //   const opacity = isDragging ? 0.4 : 1;
-
-  //   return (
-  //     <div ref={drag} className='movable-item' style={{ opacity }}>
-  //       We will move this item
-  //     </div>
-  //   );
-  // };
-
-  // const Column = ({ children, className, title }: any) => {
-  //   const [{ canDrop, isOver }, drop] = useDrop({
-  //     accept: 'Our first type',
-  //     drop: () => ({ name: 'Some name' }),
-  //     collect: (monitor: any) => ({
-  //       isOver: monitor.isOver(),
-  //       canDrop: monitor.canDrop(),
-  //     }),
-  //   });
-
-  //   console.log('options', { canDrop, isOver });
-
-  //   return (
-  //     <div ref={drop} className={className}>
-  //       {title}
-  //       {children}
-  //     </div>
-  //   );
-  // };
-
-  // const FirstColumn = () => {
-  //   return (
-  //     <div className='column first-column'>
-  //       Column 1
-  //       <MovableItem />
-  //     </div>
-  //   );
-  // };
-
-  // const SecondColumn = () => {
-  //   return (
-  //     <div className='column second-column'>
-  //       Column 2
-  //     </div>
-  //   );
-  // };
 
   const [isFirstColumn, setIsFirstColumn] = React.useState(true);
 
@@ -344,7 +287,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
         <div className="container">
-          {/* Wrap components that will be "draggable" and "droppable" */}
           <DndProvider backend={HTML5Backend}>
             <Column title='Column 1' className='column first-column'>
               {isFirstColumn && Item}
@@ -355,9 +297,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           </DndProvider>
         </div>
 
-        {/* <DndProvider backend={HTML5Backend}>
-
-        </DndProvider> */}
         {/* <Box
           sx={{
             height: 500,
