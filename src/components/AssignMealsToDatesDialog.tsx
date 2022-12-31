@@ -18,7 +18,7 @@ import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getSchedu
 
 import '../styles/MealWheel.css';
 
-import { DndProvider, DragSourceMonitor, useDrag } from 'react-dnd';
+import { DndProvider, DragSourceMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 export interface AssignMealsToDatesDialogPropsFromParent {
@@ -252,6 +252,26 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     );
   };
 
+  const Column = ({ children, className, title }: any) => {
+    const [{ canDrop, isOver }, drop] = useDrop({
+      accept: 'Our first type',
+      drop: () => ({ name: 'Some name' }),
+      collect: (monitor: any) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    });
+
+    console.log('options', { canDrop, isOver });
+
+    return (
+      <div ref={drop} className={className}>
+        {title}
+        {children}
+      </div>
+    );
+  };
+
   const FirstColumn = () => {
     return (
       <div className='column first-column'>
@@ -278,12 +298,18 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
-        <DndProvider backend={HTML5Backend}>
-          <div className="container">
-            <FirstColumn />
-            <SecondColumn />
-          </div>
-        </DndProvider>
+        <div className="container">
+          {/* Wrap components that will be "draggable" and "droppable" */}
+          <DndProvider backend={HTML5Backend}>
+            <Column title='Column 1' className='column first-column'>
+              {<MovableItem />}
+            </Column>
+            <Column title='Column 2' className='column second-column'>
+              {null}
+            </Column>
+          </DndProvider>
+        </div>
+
         {/* <DndProvider backend={HTML5Backend}>
 
         </DndProvider> */}
