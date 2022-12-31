@@ -16,6 +16,11 @@ import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
 import { assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 
+import '../styles/MealWheel.css';
+
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
   onClose: () => void;
@@ -226,6 +231,31 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const listOfMeals = getRenderedListOfMeals();
   const listOfMealOnDates = getRenderedListOfMealOnDates();
 
+  const MovableItem = () => {
+    return (
+      <div className='movable-item'>
+        We will move this item
+      </div>
+    );
+  };
+
+  const FirstColumn = () => {
+    return (
+      <div className='column first-column'>
+        Column 1
+        <MovableItem />
+      </div>
+    );
+  };
+
+  const SecondColumn = () => {
+    return (
+      <div className='column second-column'>
+        Column 2
+      </div>
+    );
+  };
+
   return (
     <Dialog
       open={props.open}
@@ -235,7 +265,14 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
-        <Box
+        <div className="container">
+          <FirstColumn />
+          <SecondColumn />
+        </div>
+        {/* <DndProvider backend={HTML5Backend}>
+
+        </DndProvider> */}
+        {/* <Box
           sx={{
             height: 500,
             width: '100%',
@@ -255,7 +292,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
             Assign meal to date
           </Button>
           {listOfMealOnDates}
-        </Box>
+        </Box> */}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Close</Button>
