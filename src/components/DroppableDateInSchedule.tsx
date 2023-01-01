@@ -31,7 +31,8 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
   const { accept, lastDroppedItem, onDrop } = props;
 
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept,
+    // accept,
+    accept: 'draggableMeal',
     drop: onDrop,
     collect: (monitor) => ({
       isOver: monitor.isOver(),
