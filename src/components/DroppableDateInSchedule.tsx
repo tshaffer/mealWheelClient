@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import type { CSSProperties } from 'react';
 import { useDrop } from 'react-dnd';
-import { MealEntity, MealOnDate } from '../types';
+import { DishEntity, MealEntity, MealOnDate } from '../types';
 import { isNil } from 'lodash';
 
 const style: CSSProperties = {
@@ -48,34 +48,53 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     backgroundColor = 'darkkhaki';
   }
 
-  const getFormattedMeal = (initialString: string, meal: MealEntity): string => {
-
-    let formattedMealString: string = initialString;
-
-    formattedMealString += meal.mainDish.name;
-    if (!isNil(meal.salad)) {
-      formattedMealString += ', ' + meal.salad.name;
-    }
-    if (!isNil(meal.side)) {
-      formattedMealString += ', ' + meal.side.name;
-    }
-    if (!isNil(meal.veggie)) {
-      formattedMealString += ', ' + meal.veggie.name;
-    }
-
-    return formattedMealString;
+  const getFormattedEmptyMeal = (): JSX.Element => {
+    return (
+      <React.Fragment>
+        {'Unassigned'}
+      </React.Fragment>
+    );
   };
 
-  const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
-
-    let formattedMealOnDate = mealOnDate.date.toDateString();
-    if (!isNil(mealOnDate.meal)) {
-      formattedMealOnDate += ' : ';
-      formattedMealOnDate = getFormattedMeal(formattedMealOnDate, mealOnDate.meal);
-    } else {
-      formattedMealOnDate += ' : unassigned';
+  const getFormattedAccompaniment = (dishEntity: DishEntity | undefined, dishLabel: string): JSX.Element | null => {
+    if (isNil(dishEntity)) {
+      return null;
     }
-    return formattedMealOnDate;
+    return (
+      <React.Fragment>
+        <br/>
+        {dishLabel + ': ' + dishEntity.name}
+      </React.Fragment>
+    );
+  };
+
+  const getFormattedNonEmptyMeal = (meal: MealEntity): JSX.Element => {
+    return (
+      <React.Fragment>
+        {'Main: ' + meal.mainDish.name}
+        {getFormattedAccompaniment(meal.salad, 'Salad')}
+        {getFormattedAccompaniment(meal.side, 'Side')}
+        {getFormattedAccompaniment(meal.veggie, 'Veggie')}
+      </React.Fragment>
+    );
+  };
+
+  const getFormattedMealOnDate = (mealOnDate: MealOnDate): JSX.Element => {
+
+    let formattedMeal: JSX.Element;
+
+    if (isNil(mealOnDate.meal)) {
+      formattedMeal = getFormattedEmptyMeal();
+    } else {
+      formattedMeal = getFormattedNonEmptyMeal(mealOnDate.meal);
+    }
+    return (
+      <div key={props.mealOnDate.date.toString()}>
+        {mealOnDate.date.toDateString()}
+        <br/>
+        {formattedMeal}
+      </div>
+    );
   };
 
   return (
