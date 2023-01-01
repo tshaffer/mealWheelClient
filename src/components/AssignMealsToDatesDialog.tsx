@@ -83,23 +83,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   //   return null;
   // };
 
-  // const handleAssignMealToDate = () => {
-
-  //   console.log('handleAssignMealToDate');
-
-  //   const selectedMeal = getSelectedMeal();
-  //   const selectedMealOnDate = getSelectedMealOnDate();
-  //   if (isNil(selectedMeal) || isNil(selectedMealOnDate)) {
-  //     return;
-  //   }
-
-  //   if (isNil(selectedMealOnDate.meal)) {
-  //     props.onAssignMealToDate(selectedMeal, selectedMealOnDate.date);
-  //   } else {
-  //     props.onUpdateMealAssignedToDate(selectedMeal, selectedMealOnDate.date);
-  //   }
-  // };
-
   // const handleClickMealItem = (meal: MealEntity) => {
   //   setSelectedMeal(meal);
   // };
@@ -121,9 +104,9 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   //   }
   // };
 
-  const getDatesEqual = (date1: Date, date2: Date): boolean => {
-    return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
-  };
+  // const getDatesEqual = (date1: Date, date2: Date): boolean => {
+  //   return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+  // };
 
   // const getRenderedListOfMealsItems = () => {
   //   const renderedListOfMeals = props.meals.map((meal: MealEntity, index: number) => {
@@ -279,6 +262,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const getDraggableMeal = (mealEntity: MealEntity): JSX.Element => {
     return (
       <DraggableMeal
+        key={mealEntity.id}
         meal={mealEntity}
       />
     );

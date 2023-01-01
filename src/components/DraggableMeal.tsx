@@ -35,7 +35,7 @@ function DraggableMeal(props: DraggableMealProps) {
   );
 
   return (
-    <div ref={drag} style={{ ...style, opacity }}>
+    <div key={props.meal.id} ref={drag} style={{ ...style, opacity }}>
       {props.meal.mainDish.name}
     </div>
   );
