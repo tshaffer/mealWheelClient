@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 import type { CSSProperties } from 'react';
 import { useDrop } from 'react-dnd';
 import { DishEntity, MealEntity, MealOnDate } from '../types';
 import { isNil } from 'lodash';
 import { Button } from '@mui/material';
+import MenuItemDescriptor from './MenuItemDescriptor';
 
 const style: CSSProperties = {
   height: '12rem',
@@ -50,6 +49,10 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     backgroundColor = 'darkkhaki';
   }
 
+  const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
+    props.onClearAssignedMealOnDate(mealOnDate);
+  };
+
   const getFormattedEmptyMeal = (): JSX.Element => {
     return (
       <React.Fragment>
@@ -70,20 +73,6 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
-  const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
-    // console.log('clear assigned meal on: ', mealOnDate.date.toDateString());
-    // if (!isNil(mealOnDate.meal)) {
-
-    //   // get scheduledMeal associated with this date
-    //   for (const scheduledMeal of props.scheduledMeals) {
-    //     if (getDatesEqual(scheduledMeal.dateScheduled, mealOnDate.date)) {
-    //       props.onDeleteScheduledMeal(scheduledMeal.id);
-    //     }
-    //   }
-    // }
-    props.onClearAssignedMealOnDate(mealOnDate);
-  };
-
   const getFormattedNonEmptyMeal = (mealOnDate: MealOnDate): JSX.Element => {
     const meal: MealEntity = mealOnDate.meal as unknown as MealEntity;
     return (
@@ -92,7 +81,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
         {getFormattedAccompaniment(meal.salad, 'Salad')}
         {getFormattedAccompaniment(meal.side, 'Side')}
         {getFormattedAccompaniment(meal.veggie, 'Veggie')}
-        <br/>
+        <br />
         <Button
           onClick={() => handleClearAssignedMealOnDate(mealOnDate)}
         >
@@ -121,25 +110,37 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
+  const renderMealOnDate = (mealOnDate: MealOnDate): JSX.Element => {
+    if (isNil(mealOnDate.meal)) {
+      const formattedMeal = getFormattedEmptyMeal();
+      return (
+        <div key={props.mealOnDate.date.toString()}>
+          {mealOnDate.date.toDateString()}
+          <br />
+          {formattedMeal}
+        </div>
+      );
+    }
+
+    return (
+      <React.Fragment key={props.mealOnDate.date.toString()}>
+        {mealOnDate.date.toDateString()}
+        <MenuItemDescriptor meal={props.mealOnDate.meal as MealEntity} />
+        <Button onClick={() => handleClearAssignedMealOnDate(mealOnDate)}>
+          Clear Assigned Meal
+        </Button>
+      </React.Fragment>
+    );
+  };
+
+  const renderedMealOnDate = renderMealOnDate(props.mealOnDate);
+
   return (
     <div ref={drop} style={{ ...style, backgroundColor }}>
-      <div key={props.mealOnDate.date.toString()}>
-        {getFormattedMealOnDate(props.mealOnDate)}
-      </div>
+      {renderedMealOnDate}
     </div>
   );
 }
 
-function mapStateToProps(state: any) {
-  return {
-  };
-}
-
-const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({
-  }, dispatch);
-};
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(DroppableDateInSchedule);
+export default DroppableDateInSchedule;
 

@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 import { MealEntity } from '../types';
+import MenuItemDescriptor from './MenuItemDescriptor';
 
 import type { CSSProperties } from 'react';
 
@@ -36,21 +35,12 @@ function DraggableMeal(props: DraggableMealProps) {
 
   return (
     <div key={props.meal.id} ref={drag} style={{ ...style, opacity }}>
-      {props.meal.mainDish.name}
+      <MenuItemDescriptor
+        meal={props.meal}
+      />
     </div>
   );
 }
 
-function mapStateToProps(state: any) {
-  return {
-  };
-}
-
-const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators({
-  }, dispatch);
-};
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(DraggableMeal);
+export default DraggableMeal;
 
