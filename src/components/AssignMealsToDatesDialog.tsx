@@ -91,22 +91,22 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   //   setSelectedMealOnDate(mealOnDate);
   // };
 
-  // const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
-  //   console.log('clear assigned meal on: ', mealOnDate.date.toDateString());
-  //   if (!isNil(mealOnDate.meal)) {
+  const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
+    console.log('clear assigned meal on: ', mealOnDate.date.toDateString());
+    if (!isNil(mealOnDate.meal)) {
 
-  //     // get scheduledMeal associated with this date
-  //     for (const scheduledMeal of props.scheduledMeals) {
-  //       if (getDatesEqual(scheduledMeal.dateScheduled, mealOnDate.date)) {
-  //         props.onDeleteScheduledMeal(scheduledMeal.id);
-  //       }
-  //     }
-  //   }
-  // };
+      // get scheduledMeal associated with this date
+      for (const scheduledMeal of props.scheduledMeals) {
+        if (getDatesEqual(scheduledMeal.dateScheduled, mealOnDate.date)) {
+          props.onDeleteScheduledMeal(scheduledMeal.id);
+        }
+      }
+    }
+  };
 
-  // const getDatesEqual = (date1: Date, date2: Date): boolean => {
-  //   return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
-  // };
+  const getDatesEqual = (date1: Date, date2: Date): boolean => {
+    return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+  };
 
   // const getRenderedListOfMealsItems = () => {
   //   const renderedListOfMeals = props.meals.map((meal: MealEntity, index: number) => {
@@ -140,36 +140,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   //     </List>
   //   );
   // };
-
-  const getFormattedMeal = (initialString: string, meal: MealEntity): string => {
-
-    let formattedMealString: string = initialString;
-
-    formattedMealString += meal.mainDish.name;
-    if (!isNil(meal.salad)) {
-      formattedMealString += ', ' + meal.salad.name;
-    }
-    if (!isNil(meal.side)) {
-      formattedMealString += ', ' + meal.side.name;
-    }
-    if (!isNil(meal.veggie)) {
-      formattedMealString += ', ' + meal.veggie.name;
-    }
-
-    return formattedMealString;
-  };
-
-  const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
-
-    let formattedMealOnDate = mealOnDate.date.toDateString();
-    if (!isNil(mealOnDate.meal)) {
-      formattedMealOnDate += ' : ';
-      formattedMealOnDate = getFormattedMeal(formattedMealOnDate, mealOnDate.meal);
-    } else {
-      formattedMealOnDate += ' : unassigned';
-    }
-    return formattedMealOnDate;
-  };
 
   // const getRenderedListOfMealOnDateItems = () => {
 
@@ -240,6 +210,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           mealOnDate={mealOnDate}
           accept={['draggableMeal']}
           onDrop={(item) => { handleDrop(item, mealOnDate); }}
+          onClearAssignedMealOnDate={(mealOnDate) => { handleClearAssignedMealOnDate(mealOnDate)}}
         />
       );
     });
