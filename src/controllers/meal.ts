@@ -29,6 +29,7 @@ import {
   getScheduledMealByDate,
   getScheduledMealsForDays,
   getSideById,
+  getUnassignedMeals,
   getVeggieById
 } from '../selectors';
 
@@ -137,6 +138,19 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number) =
     const allRandomMeals: MealEntity[] = cloneDeep(randomDishBasedMeals);
     dispatch(clearMeals());
     dispatch(addMeals(allRandomMeals));
+  };
+};
+
+export const addRandomMeals = (numberOfMealsToGenerate: number) => {
+
+  return (dispatch: any, getState: any) => {
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+
+    // const currentUnnassignedMeals: MealEntity[] = getUnassignedMeals(mealWheelState);
+
+    const newUnassignedMeals: MealEntity[] =
+      generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate);
+    dispatch(addMeals(newUnassignedMeals));
   };
 };
 
