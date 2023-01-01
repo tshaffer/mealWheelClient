@@ -233,12 +233,18 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   // const listOfMeals = getRenderedListOfMeals();
   // const listOfMealOnDates = getRenderedListOfMealOnDates();
 
+  const handleDrop = (item: any, mealDate: Date) => {
+    console.log('drop');
+    console.log(item);
+    console.log(mealDate);
+  };
+
   const getDroppableDateInSchedule = (mealDate: Date): JSX.Element => {
     return (
       <DroppableDateInSchedule
         dateInSchedule={mealDate}
-        accept={['']}
-        onDrop ={() => { console.log('poo'); } }
+        accept={['draggableMeal']}
+        onDrop ={(item) => { handleDrop(item, mealDate); } }
       />
     );
   };

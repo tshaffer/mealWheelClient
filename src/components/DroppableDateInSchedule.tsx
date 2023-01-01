@@ -22,17 +22,15 @@ const style: CSSProperties = {
 export interface DroppableDateInScheduleProps {
   dateInSchedule: Date;
   accept: string[]
-  lastDroppedItem?: any
   onDrop: (item: any) => void
 }
 
 function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
 
-  const { accept, lastDroppedItem, onDrop } = props;
+  const { accept, onDrop } = props;
 
   const [{ isOver, canDrop }, drop] = useDrop({
-    // accept,
-    accept: 'draggableMeal',
+    accept,
     drop: onDrop,
     collect: (monitor) => ({
       isOver: monitor.isOver(),
