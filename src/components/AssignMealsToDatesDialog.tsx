@@ -41,13 +41,13 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
-  // const [mealOnDates, setMealOnDates] = React.useState<MealOnDate[]>([]);
+  const [mealOnDates, setMealOnDates] = React.useState<MealOnDate[]>([]);
   // const [selectedMeal, setSelectedMeal] = React.useState<MealEntity | null>(null);
   // const [selectedMealOnDate, setSelectedMealOnDate] = React.useState<MealOnDate | null>(null);
 
-  // React.useEffect(() => {
-  //   setMealOnDates(props.mealOnDates);
-  // }, [props.startDate, props.mealOnDates]);
+  React.useEffect(() => {
+    setMealOnDates(props.mealOnDates);
+  }, [props.startDate, props.mealOnDates]);
 
   // const inlineBlockStyle = {
   //   display: 'inline-block'
@@ -176,17 +176,17 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     return formattedMealString;
   };
 
-  // const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
+  const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
 
-  //   let formattedMealOnDate = mealOnDate.date.toDateString();
-  //   if (!isNil(mealOnDate.meal)) {
-  //     formattedMealOnDate += ' : ';
-  //     formattedMealOnDate = getFormattedMeal(formattedMealOnDate, mealOnDate.meal);
-  //   } else {
-  //     formattedMealOnDate += ' : unassigned';
-  //   }
-  //   return formattedMealOnDate;
-  // };
+    let formattedMealOnDate = mealOnDate.date.toDateString();
+    if (!isNil(mealOnDate.meal)) {
+      formattedMealOnDate += ' : ';
+      formattedMealOnDate = getFormattedMeal(formattedMealOnDate, mealOnDate.meal);
+    } else {
+      formattedMealOnDate += ' : unassigned';
+    }
+    return formattedMealOnDate;
+  };
 
   // const getRenderedListOfMealOnDateItems = () => {
 
@@ -233,35 +233,47 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   // const listOfMeals = getRenderedListOfMeals();
   // const listOfMealOnDates = getRenderedListOfMealOnDates();
 
-  const handleDrop = (item: any, mealDate: Date) => {
-    console.log('drop');
-    console.log(item);
-    console.log(mealDate);
-  };
+  const assignMealToDate = (meal: MealEntity, mealOnDate: MealOnDate) => {
+    if (isNil(mealOnDate.meal)) {
+      props.onAssignMealToDate(meal, mealOnDate.date);
+    } else {
+      props.onUpdateMealAssignedToDate(meal, mealOnDate.date);
+    }
+};
 
-  const getDroppableDateInSchedule = (mealDate: Date): JSX.Element => {
-    return (
-      <DroppableDateInSchedule
-        dateInSchedule={mealDate}
-        accept={['draggableMeal']}
-        onDrop ={(item) => { handleDrop(item, mealDate); } }
-      />
-    );
+  const handleDrop = (meal: MealEntity, mealOnDate: MealOnDate) => {
+    console.log('drop');
+    console.log(meal);
+    console.log(mealOnDate);
+    assignMealToDate(meal, mealOnDate);
   };
 
   const getDroppableDatesInSchedule = (): JSX.Element[] => {
 
-    const droppableDatesInSchedule: JSX.Element[] = [];
+    const renderedListOfMealOnDates = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
+      return (
+        <DroppableDateInSchedule
+          key={mealOnDateIndex}
+          mealOnDate={mealOnDate}
+          accept={['draggableMeal']}
+          onDrop={(item) => { handleDrop(item, mealOnDate); }}
+        />
+      );
+    });
 
-    const startDate: Date = props.startDate;
-    const numberOfMealsToGenerate: number = props.numberOfMealsToGenerate;
+    return renderedListOfMealOnDates;
 
-    for (let mealIndex = 0; mealIndex < numberOfMealsToGenerate; mealIndex++) {
-      const mealDate = new Date(startDate.valueOf() + (24 * 60 * 60 * 1000 * mealIndex));
-      droppableDatesInSchedule.push(getDroppableDateInSchedule(mealDate));
-    }
+    // const droppableDatesInSchedule: JSX.Element[] = [];
 
-    return droppableDatesInSchedule;
+    // const startDate: Date = props.startDate;
+    // const numberOfMealsToGenerate: number = props.numberOfMealsToGenerate;
+
+    // for (let mealIndex = 0; mealIndex < numberOfMealsToGenerate; mealIndex++) {
+    //   const mealDate = new Date(startDate.valueOf() + (24 * 60 * 60 * 1000 * mealIndex));
+    //   droppableDatesInSchedule.push(getDroppableDateInSchedule(mealDate));
+    // }
+
+    // return droppableDatesInSchedule;
   };
 
   const getDraggableMeal = (mealEntity: MealEntity): JSX.Element => {

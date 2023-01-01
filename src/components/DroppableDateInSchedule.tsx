@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import type { CSSProperties } from 'react';
 import { useDrop } from 'react-dnd';
+import { MealEntity, MealOnDate } from '../types';
+import { isNil } from 'lodash';
 
 const style: CSSProperties = {
   height: '12rem',
@@ -20,7 +22,7 @@ const style: CSSProperties = {
 
 
 export interface DroppableDateInScheduleProps {
-  dateInSchedule: Date;
+  mealOnDate: MealOnDate;
   accept: string[]
   onDrop: (item: any) => void
 }
@@ -46,16 +48,41 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     backgroundColor = 'darkkhaki';
   }
 
+  const getFormattedMeal = (initialString: string, meal: MealEntity): string => {
+
+    let formattedMealString: string = initialString;
+
+    formattedMealString += meal.mainDish.name;
+    if (!isNil(meal.salad)) {
+      formattedMealString += ', ' + meal.salad.name;
+    }
+    if (!isNil(meal.side)) {
+      formattedMealString += ', ' + meal.side.name;
+    }
+    if (!isNil(meal.veggie)) {
+      formattedMealString += ', ' + meal.veggie.name;
+    }
+
+    return formattedMealString;
+  };
+
+  const getFormattedMealOnDate = (mealOnDate: MealOnDate): string => {
+
+    let formattedMealOnDate = mealOnDate.date.toDateString();
+    if (!isNil(mealOnDate.meal)) {
+      formattedMealOnDate += ' : ';
+      formattedMealOnDate = getFormattedMeal(formattedMealOnDate, mealOnDate.meal);
+    } else {
+      formattedMealOnDate += ' : unassigned';
+    }
+    return formattedMealOnDate;
+  };
+
   return (
     <div ref={drop} style={{ ...style, backgroundColor }}>
-      {props.dateInSchedule.toDateString()}
-      {/* {isActive
-        ? 'Release to drop'
-        : `This dustbin accepts: ${accept.join(', ')}`}
-
-      {lastDroppedItem && (
-        <p>Last dropped: {JSON.stringify(lastDroppedItem)}</p>
-      )} */}
+      <div key={props.mealOnDate.date.toString()}>
+        {getFormattedMealOnDate(props.mealOnDate)}
+      </div>
     </div>
   );
 }
