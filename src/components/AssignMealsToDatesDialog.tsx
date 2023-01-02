@@ -20,6 +20,7 @@ import { DndProvider, DragSourceMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableMeal from './DraggableMeal';
 import DroppableDateInSchedule from './DroppableDateInSchedule';
+import MealAssignmentSchedule from './MealAssignmentSchedule';
 
 const formatName = (name: any, count: any) => `${name} ID ${count}`;
 
@@ -127,6 +128,29 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   const handleDragStart = React.useCallback((event: any) => setDraggedEvent(event), []);
 
+  /*
+    <div className="height600">
+      <DragAndDropCalendar
+        defaultDate={defaultDate}
+        defaultView={Views.MONTH}
+        dragFromOutsideItem={
+          displayDragItemInCell ? dragFromOutsideItem : null
+        }
+        draggableAccessor="isDraggable"
+        eventPropGetter={eventPropGetter}
+        events={myEvents}
+        localizer={localizer}
+        onDropFromOutside={onDropFromOutside}
+        onDragOver={customOnDragOver}
+        onEventDrop={moveEvent}
+        onEventResize={resizeEvent}
+        onSelectSlot={newEvent}
+        resizable
+        selectable
+      />
+    </div>
+  */
+
   const renderDraggableMealsContainer = (): any => {
     return (
       <div className="inner">
@@ -155,7 +179,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       </div>);
   };
 
-  const droppableDatesInSchedule = getDroppableDatesInSchedule();
+  // const droppableDatesInSchedule = getDroppableDatesInSchedule();
   const draggableMeals = getDraggableMeals();
 
   const draggableMealsContainer = renderDraggableMealsContainer();
@@ -170,9 +194,11 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
         <div>
+          <MealAssignmentSchedule />
           <div style={{ overflow: 'hidden', clear: 'both' }}>
             {draggableMealsContainer}
           </div>
+          <MealAssignmentSchedule />
           {/* <DndProvider backend={HTML5Backend}>
             <div style={{ overflow: 'hidden', clear: 'both' }}>
               {droppableDatesInSchedule}
