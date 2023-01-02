@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { isNil, isString } from 'lodash';
 
+import { DndProvider, DragSourceMonitor, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
 import { DishType, DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import { getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
+
+const style: CSSProperties = {
+  border: '1px dashed gray',
+  // backgroundColor: 'white',
+  padding: '0.5rem 1rem',
+  marginRight: '1.5rem',
+  marginBottom: '1.5rem',
+  cursor: 'move',
+  float: 'left',
+};
+
 
 export interface MealInCalendarPropsFromParent {
   event: CalendarEvent;
@@ -42,7 +56,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
-  const renderAccompaniment = (accompanimentDish: DishEntity | null ) => {
+  const renderAccompaniment = (accompanimentDish: DishEntity | null) => {
 
     if (isNil(accompanimentDish)) {
       return null;
@@ -85,8 +99,22 @@ const MealInCalendar = (props: MealInCalendarProps) => {
   const mainDish = renderMainDish();
   const accompaniment = renderAccompaniments();
 
+  const [{ opacity }, drag] = useDrag(
+    () => ({
+      type: 'draggableMeal',
+      item: props.main,
+      collect: (monitor) => ({
+        opacity: monitor.isDragging() ? 0.4 : 1,
+      }),
+    }),
+  );
+
+
+  console.log('opacity');
+  console.log(opacity);
+  
   return (
-    <div>
+    <div ref={drag} style={{ ...style, opacity }}>
       {mainDish}
       {accompaniment}
     </div>
@@ -99,7 +127,7 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   const scheduledMealId: string = isNil(calendarEvent.scheduledMealId) ? '' :
     (isString(calendarEvent.scheduledMealId)) ? calendarEvent.scheduledMealId : '';
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
-  
+
   let main: DishEntity | null = null;
   let salad: DishEntity | null = null;
   let side: DishEntity | null = null;

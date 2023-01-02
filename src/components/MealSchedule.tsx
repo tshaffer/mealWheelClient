@@ -9,6 +9,9 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import { cloneDeep } from 'lodash';
 
+import { DndProvider, DragSourceMonitor, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
 import { MealStatus, ScheduledMealEntity } from '../types';
 import { generateGroceryList, generateMenu, updateMealStatus } from '../controllers';
 import { getScheduledMeals } from '../selectors';
@@ -225,22 +228,24 @@ const MealSchedule = (props: MealScheduleProps) => {
               to select a date/time range.
             </strong>
           </div>
-          <Calendar
-            selectable
-            localizer={localizer}
-            events={events}
-            defaultView='month'
-            views={allViews}
-            defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
-            onSelectEvent={event => handleOpen(event)}
-            onSelectSlot={event => handleOpen(event)}
-            startAccessor='start'
-            endAccessor='end'
-            titleAccessor='title'
-            components={{
-              event: MealInCalendar as any
-            }}
-          />
+          <DndProvider backend={HTML5Backend}>
+            <Calendar
+              selectable
+              localizer={localizer}
+              events={events}
+              defaultView='month'
+              views={allViews}
+              defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
+              onSelectEvent={event => handleOpen(event)}
+              onSelectSlot={event => handleOpen(event)}
+              startAccessor='start'
+              endAccessor='end'
+              titleAccessor='title'
+              components={{
+                event: MealInCalendar as any
+              }}
+            />
+          </DndProvider>
         </div>
         <Drawer
           BackdropProps={{ style: { opacity: 0 } }}
