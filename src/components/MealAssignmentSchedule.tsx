@@ -103,6 +103,9 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
         components={{
           event: MealInCalendar as any
         }}
+        // dragFromOutsideItem={
+        //   displayDragItemInCell ? dragFromOutsideItem : null
+        // }
         draggableAccessor={(event) => true}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}

@@ -22,7 +22,7 @@ import DraggableMeal from './DraggableMeal';
 import DroppableDateInSchedule from './DroppableDateInSchedule';
 import MealAssignmentSchedule from './MealAssignmentSchedule';
 
-const formatName = (name: any, count: any) => `${name} ID ${count}`;
+const formatName = (name: any, count: any) => `${name}`;
 
 
 export interface AssignMealsToDatesDialogPropsFromParent {
@@ -119,68 +119,64 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     );
   };
 
-  const getDraggableMeals = (): JSX.Element[] => {
+  const getDraggableMeals = (): any => {
     const draggableMealsJsx = props.meals.map((mealEntity: MealEntity, index: number) => {
-      return getDraggableMeal(mealEntity);
+      return (
+        <div
+          draggable="true"
+          key={mealEntity.id}
+          onDragStart={() =>
+            handleDragStart({ title: formatName(mealEntity.mainDish.name, index), name: mealEntity.mainDish.name })
+          }
+        >
+          {formatName(mealEntity.mainDish.name, index)}
+        </div>
+      );
     });
     return draggableMealsJsx;
   };
 
-  const handleDragStart = React.useCallback((event: any) => setDraggedEvent(event), []);
-
-  /*
-    <div className="height600">
-      <DragAndDropCalendar
-        defaultDate={defaultDate}
-        defaultView={Views.MONTH}
-        dragFromOutsideItem={
-          displayDragItemInCell ? dragFromOutsideItem : null
-        }
-        draggableAccessor="isDraggable"
-        eventPropGetter={eventPropGetter}
-        events={myEvents}
-        localizer={localizer}
-        onDropFromOutside={onDropFromOutside}
-        onDragOver={customOnDragOver}
-        onEventDrop={moveEvent}
-        onEventResize={resizeEvent}
-        onSelectSlot={newEvent}
-        resizable
-        selectable
-      />
-    </div>
-  */
-
-  const renderDraggableMealsContainer = (): any => {
-    return (
-      <div className="inner">
-        <h4>Outside Drag Sources</h4>
-        <p>
-          Lighter colored events, in the Calendar, have an `isDraggable` key
-          of `false`.
-        </p>
-        {Object.entries(counters).map(([name, count]) => (
-          <div
-            draggable="true"
-            key={name}
-            onDragStart={() =>
-              handleDragStart({ title: formatName(name, count), name })
-            }
-          >
-            {formatName(name, count)}
-          </div>
-        ))}
-        <div
-          draggable="true"
-          onDragStart={() => handleDragStart('undroppable')}
-        >
-          Draggable but not for calendar.
-        </div>
-      </div>);
+  // const oldhandleDragStart = React.useCallback((event: any) => setDraggedEvent(event), []);
+  const handleDragStart = (event: any) => {
+    console.log('handleDragStart');
+    console.log(event);
+    setDraggedEvent(event);
   };
 
-  // const droppableDatesInSchedule = getDroppableDatesInSchedule();
-  const draggableMeals = getDraggableMeals();
+  const renderDraggableMealsContainer = (): any => {
+    const draggableMeals = getDraggableMeals();
+    return (
+      <div className='inner'>
+        {draggableMeals}
+      </div>
+    );
+    // return (
+    //   <div className="inner">
+    //     <h4>Outside Drag Sources</h4>
+    //     <p>
+    //       Lighter colored events, in the Calendar, have an `isDraggable` key
+    //       of `false`.
+    //     </p>
+    //     {Object.entries(counters).map(([name, count]) => (
+    //       <div
+    //         draggable="true"
+    //         key={name}
+    //         onDragStart={() =>
+    //           handleDragStart({ title: formatName(name, count), name })
+    //         }
+    //       >
+    //         {formatName(name, count)}
+    //       </div>
+    //     ))}
+    //     <div
+    //       draggable="true"
+    //       onDragStart={() => handleDragStart('undroppable')}
+    //     >
+    //       Draggable but not for calendar.
+    //     </div>
+    //   </div>);
+
+  };
 
   const draggableMealsContainer = renderDraggableMealsContainer();
 
@@ -198,15 +194,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           <div style={{ overflow: 'hidden', clear: 'both' }}>
             {draggableMealsContainer}
           </div>
-          <MealAssignmentSchedule />
-          {/* <DndProvider backend={HTML5Backend}>
-            <div style={{ overflow: 'hidden', clear: 'both' }}>
-              {droppableDatesInSchedule}
-            </div>
-            <div style={{ overflow: 'hidden', clear: 'both' }}>
-              {draggableMealsContainer}
-            </div>
-          </DndProvider> */}
           <br />
           <Button onClick={handleSuggestMoreMeals}>
             Suggest more meals
