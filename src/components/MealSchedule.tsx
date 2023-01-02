@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import { Calendar, View } from 'react-big-calendar';
 import moment from 'moment';
+
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 
 import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -66,6 +70,8 @@ const MealSchedule = (props: MealScheduleProps) => {
   const [showAssignMealsToDates, setShowAssignMealsToDates] = React.useState(false);
   const [showGenerateGroceryList, setShowGenerateGroceryList] = React.useState(false);
   const [showGroceryList, setShowGroceryList] = React.useState(false);
+
+  const DnDCalendar = withDragAndDrop(Calendar);
 
   const handleCloseScheduledMealsStatusResolver = () => {
     console.log('handleCloseScheduledMealsStatusResolver');
@@ -181,6 +187,16 @@ const MealSchedule = (props: MealScheduleProps) => {
     }
   }
 
+  const handleDragStart = (...args: any[]) => {
+    console.log('handleDragStart');
+    console.log(args);
+  };
+
+  const handleEventDrop = (...args: any[]) => {
+    console.log('handleEventDrop');
+    console.log(args);
+  };
+
   return (
     <div>
       <div>
@@ -225,7 +241,27 @@ const MealSchedule = (props: MealScheduleProps) => {
               to select a date/time range.
             </strong>
           </div>
-          <Calendar
+          <DnDCalendar
+            draggableAccessor={(event) => true}
+            selectable
+            resizable={false}
+            localizer={localizer}
+            events={events}
+            defaultView='month'
+            views={allViews}
+            defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
+            onSelectEvent={event => handleOpen(event)}
+            onSelectSlot={event => handleOpen(event)}
+            // startAccessor='start'
+            // endAccessor='end'
+            // titleAccessor='title'
+            components={{
+              event: MealInCalendar as any
+            }}
+            onDragStart={handleDragStart}
+            onEventDrop={handleEventDrop}
+          />
+          {/* <Calendar
             selectable
             localizer={localizer}
             events={events}
@@ -240,7 +276,7 @@ const MealSchedule = (props: MealScheduleProps) => {
             components={{
               event: MealInCalendar as any
             }}
-          />
+          /> */}
         </div>
         <Drawer
           BackdropProps={{ style: { opacity: 0 } }}
