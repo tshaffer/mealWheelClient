@@ -192,6 +192,16 @@ const MealSchedule = (props: MealScheduleProps) => {
     console.log(args);
   };
 
+  const handleDragOver = (...args: any[]) => {
+    console.log('handleDragOver');
+    console.log(args);
+  };
+
+  const handleDropFromOutside = (...args: any[]) => {
+    console.log('handleDropFromOutside');
+    console.log(args);
+  };
+
   const handleEventDrop = (...args: any[]) => {
     console.log('handleEventDrop');
     console.log(args);
@@ -242,7 +252,6 @@ const MealSchedule = (props: MealScheduleProps) => {
             </strong>
           </div>
           <DnDCalendar
-            draggableAccessor={(event) => true}
             selectable
             resizable={false}
             localizer={localizer}
@@ -258,7 +267,10 @@ const MealSchedule = (props: MealScheduleProps) => {
             components={{
               event: MealInCalendar as any
             }}
+            draggableAccessor={(event) => true}
             onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDropFromOutside={handleDropFromOutside}
             onEventDrop={handleEventDrop}
           />
           {/* <Calendar
