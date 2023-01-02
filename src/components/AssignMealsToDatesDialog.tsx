@@ -16,13 +16,11 @@ import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getSchedu
 
 import '../styles/MealWheel.css';
 
-import { DndProvider, DragSourceMonitor, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableMeal from './DraggableMeal';
 import DroppableDateInSchedule from './DroppableDateInSchedule';
 import MealAssignmentSchedule from './MealAssignmentSchedule';
 
-const formatName = (name: any, count: any) => `${name}`;
+const formatName = (name: any) => `${name}`;
 
 
 export interface AssignMealsToDatesDialogPropsFromParent {
@@ -44,8 +42,7 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
-  const [counters, setCounters] = React.useState({ item1: 0, item2: 0 });
-  const [draggedEvent, setDraggedEvent] = React.useState();
+  const [draggedEvent, setDraggedEvent] = React.useState<MealEntity>();
   const [mealOnDates, setMealOnDates] = React.useState<MealOnDate[]>([]);
 
   React.useEffect(() => {
@@ -126,21 +123,20 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           draggable="true"
           key={mealEntity.id}
           onDragStart={() =>
-            handleDragStart({ title: formatName(mealEntity.mainDish.name, index), name: mealEntity.mainDish.name })
+            handleDragStart(mealEntity)
           }
         >
-          {formatName(mealEntity.mainDish.name, index)}
+          {formatName(mealEntity.mainDish.name)}
         </div>
       );
     });
     return draggableMealsJsx;
   };
 
-  // const oldhandleDragStart = React.useCallback((event: any) => setDraggedEvent(event), []);
-  const handleDragStart = (event: any) => {
+  const handleDragStart = (mealEntity: MealEntity) => {
     console.log('handleDragStart');
-    console.log(event);
-    setDraggedEvent(event);
+    console.log(mealEntity);
+    setDraggedEvent(mealEntity);
   };
 
   const renderDraggableMealsContainer = (): any => {
@@ -150,32 +146,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
         {draggableMeals}
       </div>
     );
-    // return (
-    //   <div className="inner">
-    //     <h4>Outside Drag Sources</h4>
-    //     <p>
-    //       Lighter colored events, in the Calendar, have an `isDraggable` key
-    //       of `false`.
-    //     </p>
-    //     {Object.entries(counters).map(([name, count]) => (
-    //       <div
-    //         draggable="true"
-    //         key={name}
-    //         onDragStart={() =>
-    //           handleDragStart({ title: formatName(name, count), name })
-    //         }
-    //       >
-    //         {formatName(name, count)}
-    //       </div>
-    //     ))}
-    //     <div
-    //       draggable="true"
-    //       onDragStart={() => handleDragStart('undroppable')}
-    //     >
-    //       Draggable but not for calendar.
-    //     </div>
-    //   </div>);
-
   };
 
   const draggableMealsContainer = renderDraggableMealsContainer();
