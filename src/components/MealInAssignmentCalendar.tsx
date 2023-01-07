@@ -8,6 +8,7 @@ import { DishType, DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import { getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
 import Button from '@mui/material/Button';
+import { deleteScheduledMeal } from '../controllers';
 
 export interface MealInAssignmentCalendarPropsFromParent {
   event: CalendarEvent;
@@ -18,6 +19,7 @@ export interface MealInAssignmentCalendarProps extends MealInAssignmentCalendarP
   salad: DishEntity | null;
   side: DishEntity | null;
   veggie: DishEntity | null;
+  onDeleteScheduledMeal: (id: string) => void;
 }
 
 const MealInAssignmentCalendar = (props: MealInAssignmentCalendarProps) => {
@@ -31,6 +33,12 @@ const MealInAssignmentCalendar = (props: MealInAssignmentCalendarProps) => {
         return 'Side';
       case DishType.Veggie:
         return 'Vegetable';
+    }
+  };
+
+  const handleDeleteScheduledEvent = () => {
+    if (!isNil(props.event.scheduledMealId)) {
+      props.onDeleteScheduledMeal(props.event.scheduledMealId);
     }
   };
 
@@ -92,12 +100,8 @@ const MealInAssignmentCalendar = (props: MealInAssignmentCalendarProps) => {
       {accompaniment}
       <Button
         color='inherit'
-        onClick={(event) => {
-          console.log('onClick');
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        }>
+        onClick={handleDeleteScheduledEvent}
+      >
         Clear
       </Button>
     </div>
@@ -133,6 +137,7 @@ function mapStateToProps(state: any, ownProps: MealInAssignmentCalendarPropsFrom
 
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
+    onDeleteScheduledMeal: deleteScheduledMeal,
   }, dispatch);
 };
 
