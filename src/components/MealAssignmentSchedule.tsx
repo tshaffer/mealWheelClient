@@ -10,7 +10,7 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 
 import { CalendarEvent } from './MealSchedule';
-import MealInCalendar from './MealInCalendar';
+import MealInAssignmentCalendar from './MealInAssignmentCalendar';
 import { ScheduledMealEntity } from '../types';
 import { getScheduledMeals, getStartDate } from '../selectors';
 import { isNil } from 'lodash';
@@ -99,7 +99,7 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
         views={allViews}
         defaultDate={new Date(props.startDate.getFullYear(), props.startDate.getMonth(), props.startDate.getDate())}
         components={{
-          event: MealInCalendar as any
+          event: MealInAssignmentCalendar as any
         }}
         // dragFromOutsideItem={
         //   displayDragItemInCell ? dragFromOutsideItem : null
