@@ -16,7 +16,7 @@ import { getScheduledMeals, getStartDate } from '../selectors';
 import { isNil } from 'lodash';
 
 const localizer = momentLocalizer(moment);
-const allViews: View[] = ['agenda', 'day', 'week', 'month'];
+const allViews: View[] = ['day', 'week', 'month'];
 
 export interface MealAssignmentScheduleProps {
   startDate: Date;
@@ -95,7 +95,7 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
         resizable={false}
         localizer={localizer}
         events={events}
-        defaultView='month'
+        defaultView='week'
         views={allViews}
         defaultDate={new Date(props.startDate.getFullYear(), props.startDate.getMonth(), props.startDate.getDate())}
         components={{
