@@ -25,6 +25,7 @@ end.setDate(end.getDate() + 1);
 
 export interface MealAssignmentScheduleProps {
   scheduledMeals: ScheduledMealEntity[];
+  onDropMealOnDate: (date: Date) => void;
 }
 
 const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
@@ -46,6 +47,7 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
   const handleDropFromOutside = (...args: any[]) => {
     console.log('handleDropFromOutside');
     console.log(args);
+    props.onDropMealOnDate(args[0].start);
   };
 
   const handleEventDrop = (...args: any[]) => {

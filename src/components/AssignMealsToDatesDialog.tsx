@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -16,12 +16,9 @@ import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getSchedu
 
 import '../styles/MealWheel.css';
 
-import DraggableMeal from './DraggableMeal';
-import DroppableDateInSchedule from './DroppableDateInSchedule';
 import MealAssignmentSchedule from './MealAssignmentSchedule';
 
 const formatName = (name: any) => `${name}`;
-
 
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
@@ -42,7 +39,7 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
-  const [draggedEvent, setDraggedEvent] = React.useState<MealEntity>();
+  const [draggedMeal, setDraggedMeal] = React.useState<MealEntity>();
   const [mealOnDates, setMealOnDates] = React.useState<MealOnDate[]>([]);
 
   React.useEffect(() => {
@@ -58,22 +55,21 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     props.onSuggestMoreMeals(4);
   };
 
-  const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
-    console.log('clear assigned meal on: ', mealOnDate.date.toDateString());
-    if (!isNil(mealOnDate.meal)) {
+  // const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
+  //   if (!isNil(mealOnDate.meal)) {
 
-      // get scheduledMeal associated with this date
-      for (const scheduledMeal of props.scheduledMeals) {
-        if (getDatesEqual(scheduledMeal.dateScheduled, mealOnDate.date)) {
-          props.onDeleteScheduledMeal(scheduledMeal.id);
-        }
-      }
-    }
-  };
+  //     // get scheduledMeal associated with this date
+  //     for (const scheduledMeal of props.scheduledMeals) {
+  //       if (getDatesEqual(scheduledMeal.dateScheduled, mealOnDate.date)) {
+  //         props.onDeleteScheduledMeal(scheduledMeal.id);
+  //       }
+  //     }
+  //   }
+  // };
 
-  const getDatesEqual = (date1: Date, date2: Date): boolean => {
-    return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
-  };
+  // const getDatesEqual = (date1: Date, date2: Date): boolean => {
+  //   return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+  // };
 
   const assignMealToDate = (meal: MealEntity, mealOnDate: MealOnDate) => {
     if (isNil(mealOnDate.meal)) {
@@ -81,39 +77,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     } else {
       props.onUpdateMealAssignedToDate(meal, mealOnDate.date);
     }
-  };
-
-  const handleDrop = (meal: MealEntity, mealOnDate: MealOnDate) => {
-    console.log('drop');
-    console.log(meal);
-    console.log(mealOnDate);
-    assignMealToDate(meal, mealOnDate);
-  };
-
-  const getDroppableDatesInSchedule = (): JSX.Element[] => {
-
-    const renderedListOfMealOnDates = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
-      return (
-        <DroppableDateInSchedule
-          key={mealOnDateIndex}
-          mealOnDate={mealOnDate}
-          accept={['draggableMeal']}
-          onDrop={(item) => { handleDrop(item, mealOnDate); }}
-          onClearAssignedMealOnDate={(mealOnDate) => { handleClearAssignedMealOnDate(mealOnDate); }}
-        />
-      );
-    });
-
-    return renderedListOfMealOnDates;
-  };
-
-  const getDraggableMeal = (mealEntity: MealEntity): JSX.Element => {
-    return (
-      <DraggableMeal
-        key={mealEntity.id}
-        meal={mealEntity}
-      />
-    );
   };
 
   const getDraggableMeals = (): any => {
@@ -136,7 +99,33 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   const handleDragStart = (mealEntity: MealEntity) => {
     console.log('handleDragStart');
     console.log(mealEntity);
-    setDraggedEvent(mealEntity);
+    setDraggedMeal(mealEntity);
+  };
+
+  const getMealOnDate = (date: Date): MealOnDate | null => {
+    
+    let matchedMealOnDate: MealOnDate | null = null;
+
+    mealOnDates.forEach((mealOnDate: MealOnDate) => {
+      const mDate: Date = mealOnDate.date;
+      if (mDate.getMonth() === date.getMonth() && mDate.getDate() == date.getDate()) {
+        matchedMealOnDate = mealOnDate;
+      }
+    });
+    return matchedMealOnDate;
+  };
+
+  const handleDropMealOnDate = (date: Date) => {
+    let mealOnDate: MealOnDate | null = getMealOnDate(date);
+    if (isNil(mealOnDate)) {
+      mealOnDate = {
+        meal: null,
+        date: cloneDeep(date),
+      };
+    }
+    if (!isNil(draggedMeal)) {
+      assignMealToDate(draggedMeal, mealOnDate);
+    }
   };
 
   const renderDraggableMealsContainer = (): any => {
@@ -160,7 +149,9 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
         <div>
-          <MealAssignmentSchedule />
+          <MealAssignmentSchedule
+            onDropMealOnDate = {handleDropMealOnDate}
+          />
           <div style={{ overflow: 'hidden', clear: 'both' }}>
             {draggableMealsContainer}
           </div>
