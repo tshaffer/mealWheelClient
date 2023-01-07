@@ -12,18 +12,14 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import { CalendarEvent } from './MealSchedule';
 import MealInCalendar from './MealInCalendar';
 import { ScheduledMealEntity } from '../types';
-import { getScheduledMeals } from '../selectors';
+import { getScheduledMeals, getStartDate } from '../selectors';
 import { isNil } from 'lodash';
 
 const localizer = momentLocalizer(moment);
 const allViews: View[] = ['agenda', 'day', 'week', 'month'];
 
-const now: number = Date.now();
-const start: Date = new Date(now);
-const end: Date = new Date(now);
-end.setDate(end.getDate() + 1);
-
 export interface MealAssignmentScheduleProps {
+  startDate: Date;
   scheduledMeals: ScheduledMealEntity[];
   onDropMealOnDate: (date: Date) => void;
 }
@@ -101,7 +97,7 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
         events={events}
         defaultView='month'
         views={allViews}
-        defaultDate={new Date(start.getFullYear(), start.getMonth(), start.getDate())}
+        defaultDate={new Date(props.startDate.getFullYear(), props.startDate.getMonth(), props.startDate.getDate())}
         components={{
           event: MealInCalendar as any
         }}
@@ -120,6 +116,7 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
 
 function mapStateToProps(state: any) {
   return {
+    startDate: getStartDate(state),
     scheduledMeals: getScheduledMeals(state),
   };
 }
