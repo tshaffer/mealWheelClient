@@ -18,8 +18,6 @@ import '../styles/MealWheel.css';
 
 import MealAssignmentSchedule from './MealAssignmentSchedule';
 
-const formatName = (name: any) => `${name}`;
-
 export interface AssignMealsToDatesDialogPropsFromParent {
   open: boolean;
   onClose: () => void;
@@ -79,6 +77,22 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     }
   };
 
+  const getFormattedMeal = (meal: MealEntity): string => {
+
+    let formattedMealString: string = meal.mainDish.name;
+    if (!isNil(meal.salad)) {
+      formattedMealString += ', ' + meal.salad.name;
+    }
+    if (!isNil(meal.side)) {
+      formattedMealString += ', ' + meal.side.name;
+    }
+    if (!isNil(meal.veggie)) {
+      formattedMealString += ', ' + meal.veggie.name;
+    }
+
+    return formattedMealString;
+  };
+
   const getDraggableMeals = (): any => {
     const draggableMealsJsx = props.meals.map((mealEntity: MealEntity, index: number) => {
       return (
@@ -89,7 +103,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
             handleDragStart(mealEntity)
           }
         >
-          {formatName(mealEntity.mainDish.name)}
+          {getFormattedMeal(mealEntity)}
         </div>
       );
     });
