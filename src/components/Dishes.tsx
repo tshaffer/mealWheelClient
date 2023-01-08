@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import Box from '@mui/material/Box';
 
-import { DataGrid, GridCellParams } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,6 +13,10 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
+import Snackbar from '@mui/material/Snackbar';
+import Alert, { AlertProps } from '@mui/material/Alert';
+
+import { DataGrid, GridCellParams } from '@mui/x-data-grid';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -27,8 +30,14 @@ import {
   GridRowId,
   GridRowModel,
 } from '@mui/x-data-grid-pro';
-import Snackbar from '@mui/material/Snackbar';
-import Alert, { AlertProps } from '@mui/material/Alert';
+
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 import { DishEntity, DishRowModel, DishType, RequiredAccompanimentFlags } from '../types';
 import {
@@ -374,61 +383,112 @@ const Dishes = (props: DishesProps) => {
     setRows(newRows);
   }
 
+  function createData(
+    name: string,
+    calories: number,
+    fat: number,
+    carbs: number,
+    protein: number,
+  ) {
+    return { name, calories, fat, carbs, protein };
+  }
+  
+  const example_rows: any[] = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+    createData('Gingerbread', 356, 16.0, 49, 3.9),
+  ];
+
   return (
-    <div>
-      <AssignIngredientsToDishDialog
-        open={showAssignIngredientsToDish}
-        dishId={dishId}
-        onClose={handleCloseAssignIngredientsToDish}
-      />
-      <Box
-        sx={{
-          height: 500,
-          width: '100%',
-          '& .actions': {
-            color: 'text.secondary',
-          },
-          '& .textPrimary': {
-            color: 'text.primary',
-          },
-        }}
-      >
-        <DataGrid
-          initialState={{
-            sorting: {
-              sortModel: [{ field: 'name', sort: 'asc' }],
-            },
-          }} rows={rows}
-          columns={dishesColumns}
-          editMode="row"
-          // disableVirtualization
-          rowModesModel={rowModesModel}
-          onRowEditStart={handleRowEditStart}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={handleProcessRowUpdateError}
-          components={{
-            Toolbar: EditToolbar,
-          }}
-          componentsProps={{
-            toolbar: { setAddingDish, setRows, setRowModesModel },
-          }}
-          experimentalFeatures={{ newEditingApi: true }}
-          isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
-        />
-        {!!snackbar && (
-          <Snackbar
-            open
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            onClose={handleCloseSnackbar}
-            autoHideDuration={6000}
-          >
-            <Alert {...snackbar} onClose={handleCloseSnackbar} />
-          </Snackbar>
-        )}
-      </Box>
-    </div>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell align="right">Calories</TableCell>
+            <TableCell align="right">Fat&nbsp;(g)</TableCell>
+            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {example_rows.map((row: any) => (
+            <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right">{row.calories}</TableCell>
+              <TableCell align="right">{row.fat}</TableCell>
+              <TableCell align="right">{row.carbs}</TableCell>
+              <TableCell align="right">{row.protein}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
+
+  // dontreturn (
+  //   <div>
+  //     <AssignIngredientsToDishDialog
+  //       open={showAssignIngredientsToDish}
+  //       dishId={dishId}
+  //       onClose={handleCloseAssignIngredientsToDish}
+  //     />
+  //     <Box
+  //       sx={{
+  //         height: 500,
+  //         width: '100%',
+  //         '& .actions': {
+  //           color: 'text.secondary',
+  //         },
+  //         '& .textPrimary': {
+  //           color: 'text.primary',
+  //         },
+  //       }}
+  //     >
+  //       <DataGrid
+  //         initialState={{
+  //           sorting: {
+  //             sortModel: [{ field: 'name', sort: 'asc' }],
+  //           },
+  //         }} rows={rows}
+  //         columns={dishesColumns}
+  //         editMode="row"
+  //         // disableVirtualization
+  //         rowModesModel={rowModesModel}
+  //         onRowEditStart={handleRowEditStart}
+  //         onRowEditStop={handleRowEditStop}
+  //         processRowUpdate={processRowUpdate}
+  //         onProcessRowUpdateError={handleProcessRowUpdateError}
+  //         components={{
+  //           Toolbar: EditToolbar,
+  //         }}
+  //         componentsProps={{
+  //           toolbar: { setAddingDish, setRows, setRowModesModel },
+  //         }}
+  //         experimentalFeatures={{ newEditingApi: true }}
+  //         isCellEditable={(params: GridCellParams) => { return getIsCellEditable(params); }}
+  //       />
+  //       {!!snackbar && (
+  //         <Snackbar
+  //           open
+  //           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+  //           onClose={handleCloseSnackbar}
+  //           autoHideDuration={6000}
+  //         >
+  //           <Alert {...snackbar} onClose={handleCloseSnackbar} />
+  //         </Snackbar>
+  //       )}
+  //     </Box>
+  //   </div>
+  // );
+
 };
 
 function mapStateToProps(state: any) {
