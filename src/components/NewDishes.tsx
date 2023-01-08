@@ -25,6 +25,7 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import TextField from '@mui/material/TextField';
 
 interface Data {
   // calories: number;
@@ -215,7 +216,7 @@ const DishesTableHead = (props: TableProps) => {
             >
               {headCell.label}
               {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
+                <Box component='span' sx={visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </Box>
               ) : null}
@@ -308,24 +309,31 @@ const NewDishes = (props: NewDishesProps) => {
                   <TableRow
                     hover
                     onClick={(event) => handleClick(event, row.name)}
-                    role="checkbox"
+                    role='checkbox'
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.name}
                     selected={isItemSelected}
                   >
                     <TableCell
-                      component="th"
+                      component='th'
                       id={labelId}
-                      scope="row"
-                      padding="none"
+                      scope='row'
+                      padding='none'
                     >
-                      {row.name}
+                      <TextField
+                        sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+                        type='string'
+                        label='Dish name'
+                        value={row.name}
+                      // onChange={(event) => setDishName(event.target.value)}
+                      />
+                      {/* {row.name} */}
                     </TableCell>
-                    <TableCell align="right">{row.requiresAccompaniment.toString()}</TableCell>
-                    <TableCell align="right">{row.requiresSalad.toString()}</TableCell>
-                    <TableCell align="right">{row.requiresSide.toString()}</TableCell>
-                    <TableCell align="right">{row.requiresVeggie.toString()}</TableCell>
+                    <TableCell align='right'>{row.requiresAccompaniment.toString()}</TableCell>
+                    <TableCell align='right'>{row.requiresSalad.toString()}</TableCell>
+                    <TableCell align='right'>{row.requiresSide.toString()}</TableCell>
+                    <TableCell align='right'>{row.requiresVeggie.toString()}</TableCell>
                   </TableRow>
                 );
               })}
