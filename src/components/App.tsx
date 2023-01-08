@@ -39,6 +39,8 @@ import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
 
+import EnhancedTable from './ExampleMuiTable';
+
 export interface AppProps {
   appInitialized: boolean;
   users: UsersMap,
@@ -231,7 +233,8 @@ const App = (props: AppProps) => {
           <MealSchedule />
         </div>
         <div id='dishesContent' style={dishesTabContentStyle}>
-          <Dishes />
+          {/* <Dishes /> */}
+          <EnhancedTable/>
         </div>
         <div id='ingredientsContent' style={ingredientsTabContentStyle}>
           <Ingredients />
