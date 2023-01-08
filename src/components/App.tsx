@@ -34,6 +34,7 @@ import {
   getUsers,
 } from '../selectors';
 import Dishes from './Dishes';
+import NewDishes from './NewDishes';
 import Ingredients from './Ingredients';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
@@ -234,7 +235,8 @@ const App = (props: AppProps) => {
         </div>
         <div id='dishesContent' style={dishesTabContentStyle}>
           {/* <Dishes /> */}
-          <EnhancedTable/>
+          {/* <EnhancedTable/> */}
+          <NewDishes/>
         </div>
         <div id='ingredientsContent' style={ingredientsTabContentStyle}>
           <Ingredients />
