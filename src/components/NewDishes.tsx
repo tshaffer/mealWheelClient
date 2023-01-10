@@ -22,11 +22,14 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
 
 interface Data {
   name: string;
@@ -261,6 +264,14 @@ const NewDishes = (props: NewDishesProps) => {
     setSelected(newSelected);
   };
 
+  const handleEditClick = (dishName: string) => {
+    console.log('Edit ' + dishName);
+  };
+
+  const handleDeleteClick = (dishName: string) => {
+    console.log('Delete ' + dishName);
+  };
+
   const handleToggleRequiresAccompaniment = (event: any) => {
     console.log('handleToggleRequiresAccompaniment');
     console.log(event.target.checked);
@@ -384,8 +395,18 @@ const NewDishes = (props: NewDishesProps) => {
                       />
                     </TableCell>
                     <TableCell align='center'>
-                      <Button>Edit</Button>
-                      <Button>Delete</Button>
+                      <IconButton
+                        id={row.name}
+                        onClick={() => handleEditClick(row.name)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        id={row.name}
+                        onClick={() => handleDeleteClick(row.name)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 );
