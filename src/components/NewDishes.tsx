@@ -30,6 +30,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import Select from 'react-select';
 
 interface Data {
   name: string;
@@ -272,6 +273,10 @@ const NewDishes = (props: NewDishesProps) => {
     console.log('Delete ' + dishName);
   };
 
+  const handleTypeChange = (selectedDishType: any) => {
+    console.log('handleTypeChange, selected dish type is:', selectedDishType);
+  };
+
   const handleToggleRequiresAccompaniment = (event: any) => {
     console.log('handleToggleRequiresAccompaniment');
     console.log(event.target.checked);
@@ -296,6 +301,13 @@ const NewDishes = (props: NewDishesProps) => {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  const mainOption = { value: 'main', label: 'Main' };
+  const saladOption = { value: 'salad', label: 'Salad' };
+  const sideOption = { value: 'side', label: 'Side' };
+  const vegOption = { value: 'veggie', label: 'Veggie' };
+
+  const dishTypeOptions = [mainOption, saladOption, sideOption, vegOption];
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -356,14 +368,10 @@ const NewDishes = (props: NewDishesProps) => {
                       padding='none'
                       align='center'
                     >
-                      <TextField
-                        sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-                        type='string'
-                        label='Type'
-                        value={row.type}
-                        disabled
-                        variant='standard'
-                      // onChange={(event) => setDishName(event.target.value)}
+                      <Select
+                        options={dishTypeOptions}
+                        onChange={handleTypeChange}
+                        placeholder={'Dish Type'}
                       />
                     </TableCell>
                     <TableCell align='center'>
