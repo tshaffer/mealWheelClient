@@ -26,20 +26,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 interface Data {
-  // calories: number;
-  // carbs: number;
-  // fat: number;
-  // // name: string;
-  // protein: number;
-
   name: string;
+  type: DishType;
   requiresAccompaniment: boolean;
   requiresSalad: boolean;
   requiresSide: boolean;
   requiresVeggie: boolean;
-  type: DishType;
 }
 
 function createData(
@@ -49,12 +44,6 @@ function createData(
   requiresSide: boolean,
   requiresVeggie: boolean,
   type: DishType,
-
-  // name: string,
-  // calories: number,
-  // fat: number,
-  // carbs: number,
-  // protein: number,
 ): Data {
   return {
     name,
@@ -63,10 +52,6 @@ function createData(
     requiresSide,
     requiresVeggie,
     type,
-    // calories,
-    // fat,
-    // carbs,
-    // protein,
   };
 }
 
@@ -76,19 +61,6 @@ const rows = [
   createData('Chips', false, false, false, false, DishType.Side),
   createData('Broccoli', false, false, false, false, DishType.Veggie),
   createData('Caesar', false, false, false, false, DishType.Salad),
-  // createData('Cupcake', 305, 3.7, 67, 4.3),
-  // createData('Donut', 452, 25.0, 51, 4.9),
-  // createData('Eclair', 262, 16.0, 24, 6.0),
-  // createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  // createData('Gingerbread', 356, 16.0, 49, 3.9),
-  // createData('Honeycomb', 408, 3.2, 87, 6.5),
-  // createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  // createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  // createData('KitKat', 518, 26.0, 65, 7.0),
-  // createData('Lollipop', 392, 0.2, 98, 0.0),
-  // createData('Marshmallow', 318, 0, 81, 2.0),
-  // createData('Nougat', 360, 19.0, 9, 37.0),
-  // createData('Oreo', 437, 18.0, 63, 4.0),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -144,6 +116,12 @@ const headCells: readonly HeadCell[] = [
     numeric: false,
     disablePadding: true,
     label: 'Main',
+  },
+  {
+    id: 'type',
+    numeric: false,
+    disablePadding: true,
+    label: 'Type',
   },
   {
     id: 'requiresAccompaniment',
@@ -205,7 +183,8 @@ const DishesTableHead = (props: TableProps) => {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            // align={headCell.numeric ? 'right' : 'left'}
+            align={'center'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -223,6 +202,13 @@ const DishesTableHead = (props: TableProps) => {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell
+          key={'actions'}
+          align={'center'}
+          padding={'none'}
+        >
+          Actions
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -275,6 +261,25 @@ const NewDishes = (props: NewDishesProps) => {
     setSelected(newSelected);
   };
 
+  const handleToggleRequiresAccompaniment = (event: any) => {
+    console.log('handleToggleRequiresAccompaniment');
+    console.log(event.target.checked);
+  };
+
+  const handleToggleRequiresSalad = (event: any) => {
+    console.log('handleToggleRequiresSalad');
+    console.log(event.target.checked);
+  };
+
+  const handleToggleRequiresSide = (event: any) => {
+    console.log('handleToggleRequiresSide');
+    console.log(event.target.checked);
+  };
+
+  const handleToggleRequiresVeggie = (event: any) => {
+    console.log('handleToggleRequiresVeggie');
+    console.log(event.target.checked);
+  };
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -320,20 +325,68 @@ const NewDishes = (props: NewDishesProps) => {
                       id={labelId}
                       scope='row'
                       padding='none'
+                      align='center'
                     >
                       <TextField
                         sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
                         type='string'
                         label='Dish name'
                         value={row.name}
+                        disabled
+                        variant='standard'
                       // onChange={(event) => setDishName(event.target.value)}
                       />
-                      {/* {row.name} */}
                     </TableCell>
-                    <TableCell align='right'>{row.requiresAccompaniment.toString()}</TableCell>
-                    <TableCell align='right'>{row.requiresSalad.toString()}</TableCell>
-                    <TableCell align='right'>{row.requiresSide.toString()}</TableCell>
-                    <TableCell align='right'>{row.requiresVeggie.toString()}</TableCell>
+                    <TableCell
+                      // component='th'
+                      // id={labelId}
+                      // scope='row'
+                      // padding='none'
+                      padding='none'
+                      align='center'
+                    >
+                      <TextField
+                        sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+                        type='string'
+                        label='Type'
+                        value={row.type}
+                        disabled
+                        variant='standard'
+                      // onChange={(event) => setDishName(event.target.value)}
+                      />
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Checkbox
+                        color="primary"
+                        checked={row.requiresAccompaniment}
+                        onChange={handleToggleRequiresAccompaniment}
+                      />
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Checkbox
+                        color="primary"
+                        checked={row.requiresSalad}
+                        onChange={handleToggleRequiresSalad}
+                      />
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Checkbox
+                        color="primary"
+                        checked={row.requiresSide}
+                        onChange={handleToggleRequiresSide}
+                      />
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Checkbox
+                        color="primary"
+                        checked={row.requiresVeggie}
+                        onChange={handleToggleRequiresVeggie}
+                      />
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Button>Edit</Button>
+                      <Button>Delete</Button>
+                    </TableCell>
                   </TableRow>
                 );
               })}
