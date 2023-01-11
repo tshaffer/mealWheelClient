@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addDish, updateDish } from '../controllers';
 import { getDishes } from '../selectors';
-import { DishEntity, DishType } from '../types';
+import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -31,8 +31,10 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import Select from 'react-select';
+import { isNil } from 'lodash';
 
-interface Data {
+interface DishEntityTableData {
+  id: string;
   name: string;
   type: DishType;
   requiresAccompaniment: boolean;
@@ -41,31 +43,40 @@ interface Data {
   requiresVeggie: boolean;
 }
 
-function createData(
-  name: string,
-  requiresAccompaniment: boolean,
-  requiresSalad: boolean,
-  requiresSide: boolean,
-  requiresVeggie: boolean,
-  type: DishType,
-): Data {
-  return {
-    name,
-    requiresAccompaniment,
-    requiresSalad,
-    requiresSide,
-    requiresVeggie,
-    type,
-  };
-}
+// interface Data {
+//   name: string;
+//   type: DishType;
+//   requiresAccompaniment: boolean;
+//   requiresSalad: boolean;
+//   requiresSide: boolean;
+//   requiresVeggie: boolean;
+// }
 
-const rows = [
-  createData('Burgers', false, false, false, false, DishType.Main),
-  createData('Carbonara', true, false, true, false, DishType.Main),
-  createData('Chips', false, false, false, false, DishType.Side),
-  createData('Broccoli', false, false, false, false, DishType.Veggie),
-  createData('Caesar', false, false, false, false, DishType.Salad),
-];
+// function createData(
+//   name: string,
+//   requiresAccompaniment: boolean,
+//   requiresSalad: boolean,
+//   requiresSide: boolean,
+//   requiresVeggie: boolean,
+//   type: DishType,
+// ): Data {
+//   return {
+//     name,
+//     requiresAccompaniment,
+//     requiresSalad,
+//     requiresSide,
+//     requiresVeggie,
+//     type,
+//   };
+// }
+
+// const rows = [
+//   createData('Burgers', false, false, false, false, DishType.Main),
+//   createData('Carbonara', true, false, true, false, DishType.Main),
+//   createData('Chips', false, false, false, false, DishType.Side),
+//   createData('Broccoli', false, false, false, false, DishType.Veggie),
+//   createData('Caesar', false, false, false, false, DishType.Salad),
+// ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -109,7 +120,7 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: keyof DishEntityTableData;
   label: string;
   numeric: boolean;
 }
@@ -155,12 +166,14 @@ const headCells: readonly HeadCell[] = [
 
 interface TableProps {
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof DishEntityTableData) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
 }
+
+const initialRows: DishEntityTableData[] = [];
 
 export interface NewDishesProps {
   dishes: DishEntity[];
@@ -177,7 +190,7 @@ const DishesTableHead = (props: TableProps) => {
     props;
 
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof DishEntityTableData) => (event: React.MouseEvent<unknown>) => {
       props.onRequestSort(event, property);
     };
 
@@ -187,7 +200,6 @@ const DishesTableHead = (props: TableProps) => {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            // align={headCell.numeric ? 'right' : 'left'}
             align={'center'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -220,16 +232,44 @@ const DishesTableHead = (props: TableProps) => {
 
 const NewDishes = (props: NewDishesProps) => {
 
+  const [rowsRead, setRowsRead] = React.useState(false);
+  const [rows, setRows] = React.useState<DishEntityTableData[]>(initialRows);
+
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
+  const [orderBy, setOrderBy] = React.useState<keyof DishEntityTableData>('name');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(15);
+
+  const mainOption = { value: 'main', label: 'Main' };
+  const saladOption = { value: 'salad', label: 'Salad' };
+  const sideOption = { value: 'side', label: 'Side' };
+  const vegOption = { value: 'veggie', label: 'Veggie' };
+  const dishTypeOptions = [mainOption, saladOption, sideOption, vegOption];
+
+  const getRows = (): DishEntityTableData[] => {
+    const rows: DishEntityTableData[] = props.dishes.map((dish: DishEntity) => {
+      const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+      const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+      const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+      const row: DishEntityTableData = {
+        id: dish.id,
+        name: dish.name,
+        type: dish.type,
+        requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
+        requiresSide,
+        requiresSalad,
+        requiresVeggie,
+      };
+      return row;
+    });
+    return rows;
+  };
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data,
+    property: keyof DishEntityTableData,
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -302,12 +342,11 @@ const NewDishes = (props: NewDishesProps) => {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const mainOption = { value: 'main', label: 'Main' };
-  const saladOption = { value: 'salad', label: 'Salad' };
-  const sideOption = { value: 'side', label: 'Side' };
-  const vegOption = { value: 'veggie', label: 'Veggie' };
-
-  const dishTypeOptions = [mainOption, saladOption, sideOption, vegOption];
+  const newRows: DishEntityTableData[] = getRows();
+  if (!rowsRead && newRows.length > 0) {
+    setRowsRead(true);
+    setRows(newRows);
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
