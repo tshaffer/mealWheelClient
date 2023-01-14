@@ -36,6 +36,7 @@ import { isNil } from 'lodash';
 import MenuItem from '@mui/material/MenuItem';
 
 interface DishEntityTableData {
+  dish: DishEntity;
   id: string;
   name: string;
   type: DishType;
@@ -61,8 +62,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-  a: { [key in Key]: boolean | string },
-  b: { [key in Key]: boolean | string },
+  a: { [key in Key]: boolean | string | DishEntity },
+  b: { [key in Key]: boolean | string | DishEntity },
 ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -208,6 +209,7 @@ const NewDishes = (props: NewDishesProps) => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
+  const [addingDish, setAddingDish] = React.useState<boolean>(false);
 
   const mainOption = { value: 'main', label: 'Main' };
   const saladOption = { value: 'salad', label: 'Salad' };
@@ -221,6 +223,7 @@ const NewDishes = (props: NewDishesProps) => {
       const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
       const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
       const row: DishEntityTableData = {
+        dish,
         id: dish.id,
         name: dish.name,
         type: dish.type,
@@ -282,15 +285,25 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleSaveClick = () => {
-    setEditingDishId('');
+    if (editingDishId !== '') {
+      if (addingDish) {
+        // props.onAddDish(dish);
+        console.log('add dish');
+      } else {
+        props.onUpdateDish(updatedRow.id, dish);
+      }
+      setEditingDishId('');
+    }
   };
 
   const handleCancelClick = () => {
     setEditingDishId('');
   };
 
-  const handleTypeChange = (selectedDishType: any) => {
-    console.log('handleTypeChange, selected dish type is:', selectedDishType);
+  const handleDishTypeChange = (event: any) => {
+    console.log('handleTypeChange, selected dish type is:', event);
+
+    const updatedDishType: DishType = event.target.value;
   };
 
   const handleToggleRequiresAccompaniment = (event: any) => {
@@ -361,8 +374,9 @@ const NewDishes = (props: NewDishesProps) => {
           align='center'
         >
           <Select
-            onChange={handleTypeChange}
+            onChange={handleDishTypeChange}
             placeholder={'Dish Type'}
+            value={row.type}
           >
             <MenuItem value={'main'}>Main</MenuItem>
             <MenuItem value={'salad'}>Salad</MenuItem>
@@ -455,8 +469,9 @@ const NewDishes = (props: NewDishesProps) => {
           align='center'
         >
           <Select
-            onChange={handleTypeChange}
+            onChange={handleDishTypeChange}
             placeholder={'Dish Type'}
+            value={row.type}
             disabled
           >
             <MenuItem value={'main'}>Main</MenuItem>
