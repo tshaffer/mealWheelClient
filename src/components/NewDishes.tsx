@@ -26,6 +26,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -271,6 +272,10 @@ const NewDishes = (props: NewDishesProps) => {
     }
 
     setSelected(newSelected);
+  };
+
+  const handleAddRow = () => {
+    console.log('handleAddRow');
   };
 
   const handleEditClick = (dishEntityData: DishRow) => {
@@ -642,6 +647,11 @@ const NewDishes = (props: NewDishesProps) => {
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         {/* Toolbar that includes Add Dish button? */}
+        <div>
+          <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
+            Add dish
+          </Button>
+        </div>
         <Table
           sx={{ minWidth: 750 }}
           size={'small'}
