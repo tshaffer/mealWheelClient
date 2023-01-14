@@ -202,7 +202,7 @@ const NewDishes = (props: NewDishesProps) => {
 
   const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState<DishEntityTableData[]>(initialRows);
-  const [editingDishId, setEditingDishId] = React.useState<string>('');
+  const [currentEditDish, setCurrentEditDish] = React.useState<DishEntityTableData | null>(null);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishEntityTableData>('name');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -275,29 +275,29 @@ const NewDishes = (props: NewDishesProps) => {
     setSelected(newSelected);
   };
 
-  const handleEditClick = (dishId: string) => {
-    console.log('Edit ' + dishId);
-    setEditingDishId(dishId);
+  const handleEditClick = (dishEntityData: DishEntityTableData) => {
+    setCurrentEditDish(dishEntityData);
   };
 
-  const handleDeleteClick = (dishId: string) => {
-    console.log('Delete ' + dishId);
+  const handleDeleteClick = (dishEntityData: DishEntityTableData) => {
+    console.log('Delete ' + dishEntityData.dish.id);
+    setCurrentEditDish(null);
   };
 
   const handleSaveClick = () => {
-    if (editingDishId !== '') {
+    if (!isNil(currentEditDish)) {
       if (addingDish) {
         // props.onAddDish(dish);
         console.log('add dish');
       } else {
-        props.onUpdateDish(updatedRow.id, dish);
+        props.onUpdateDish(currentEditDish.dish.id, currentEditDish.dish);
       }
-      setEditingDishId('');
+      setCurrentEditDish(null);
     }
   };
 
   const handleCancelClick = () => {
-    setEditingDishId('');
+    setCurrentEditDish(null);
   };
 
   const handleDishTypeChange = (event: any) => {
@@ -515,13 +515,13 @@ const NewDishes = (props: NewDishesProps) => {
         <TableCell align='center'>
           <IconButton
             id={row.name}
-            onClick={() => handleEditClick(row.id)}
+            onClick={() => handleEditClick(row)}
           >
             <EditIcon />
           </IconButton>
           <IconButton
             id={row.name}
-            onClick={() => handleDeleteClick(row.id)}
+            onClick={() => handleDeleteClick(row)}
           >
             <DeleteIcon />
           </IconButton>
@@ -554,7 +554,7 @@ const NewDishes = (props: NewDishesProps) => {
                 // const isItemSelected = isSelected(row.name);
                 // const labelId = `enhanced-table-checkbox-${index}`;
                 let renderedRow;
-                if (editingDishId === row.id) {
+                if (!isNil(currentEditDish) && currentEditDish.dish.id === row.id) {
                   renderedRow = renderEditingRow(row);
                 } else {
                   renderedRow = renderInactiveRow(row);
