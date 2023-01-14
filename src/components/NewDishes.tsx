@@ -43,41 +43,6 @@ interface DishEntityTableData {
   requiresVeggie: boolean;
 }
 
-// interface Data {
-//   name: string;
-//   type: DishType;
-//   requiresAccompaniment: boolean;
-//   requiresSalad: boolean;
-//   requiresSide: boolean;
-//   requiresVeggie: boolean;
-// }
-
-// function createData(
-//   name: string,
-//   requiresAccompaniment: boolean,
-//   requiresSalad: boolean,
-//   requiresSide: boolean,
-//   requiresVeggie: boolean,
-//   type: DishType,
-// ): Data {
-//   return {
-//     name,
-//     requiresAccompaniment,
-//     requiresSalad,
-//     requiresSide,
-//     requiresVeggie,
-//     type,
-//   };
-// }
-
-// const rows = [
-//   createData('Burgers', false, false, false, false, DishType.Main),
-//   createData('Carbonara', true, false, true, false, DishType.Main),
-//   createData('Chips', false, false, false, false, DishType.Side),
-//   createData('Broccoli', false, false, false, false, DishType.Veggie),
-//   createData('Caesar', false, false, false, false, DishType.Salad),
-// ];
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
