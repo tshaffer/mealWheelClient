@@ -30,8 +30,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-import Select from 'react-select';
+import Select from '@mui/material/Select';
+
 import { isNil } from 'lodash';
+import MenuItem from '@mui/material/MenuItem';
 
 interface DishEntityTableData {
   id: string;
@@ -279,6 +281,14 @@ const NewDishes = (props: NewDishesProps) => {
     console.log('Delete ' + dishId);
   };
 
+  const handleSaveClick = () => {
+    setEditingDishId('');
+  };
+
+  const handleCancelClick = () => {
+    setEditingDishId('');
+  };
+
   const handleTypeChange = (selectedDishType: any) => {
     console.log('handleTypeChange, selected dish type is:', selectedDishType);
   };
@@ -313,6 +323,99 @@ const NewDishes = (props: NewDishesProps) => {
     setRowsRead(true);
     setRows(newRows);
   }
+
+  const renderEditingRow = (row: DishEntityTableData) => {
+    const isItemSelected = true;
+    return (
+      <TableRow
+        hover
+        onClick={(event) => handleClick(event, row.name)}
+        role='checkbox'
+        aria-checked={isItemSelected}
+        tabIndex={-1}
+        key={row.name}
+        selected={isItemSelected}
+      >
+        <TableCell
+          component='th'
+          // id={labelId}
+          scope='row'
+          padding='none'
+          align='center'
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Dish name'
+            value={row.name}
+            variant='standard'
+          // onChange={(event) => setDishName(event.target.value)}
+          />
+        </TableCell>
+        <TableCell
+          // component='th'
+          // id={labelId}
+          // scope='row'
+          // padding='none'
+          padding='none'
+          align='center'
+        >
+          <Select
+            onChange={handleTypeChange}
+            placeholder={'Dish Type'}
+          >
+            <MenuItem value={'main'}>Main</MenuItem>
+            <MenuItem value={'salad'}>Salad</MenuItem>
+            <MenuItem value={'side'}>Side</MenuItem>
+            <MenuItem value={'veggie'}>Veggie</MenuItem>
+          </Select>
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresAccompaniment}
+            onChange={handleToggleRequiresAccompaniment}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresSalad}
+            onChange={handleToggleRequiresSalad}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresSide}
+            onChange={handleToggleRequiresSide}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresVeggie}
+            onChange={handleToggleRequiresVeggie}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <IconButton
+            id={row.name}
+            onClick={() => handleSaveClick()}
+          >
+            <SaveIcon />
+          </IconButton>
+          <IconButton
+            id={row.name}
+            onClick={() => handleCancelClick()}
+          >
+            <CancelIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
 
   const renderInactiveRow = (row: DishEntityTableData) => {
     const isItemSelected = false;
@@ -352,105 +455,22 @@ const NewDishes = (props: NewDishesProps) => {
           align='center'
         >
           <Select
-            options={dishTypeOptions}
             onChange={handleTypeChange}
             placeholder={'Dish Type'}
-          />
-        </TableCell>
-        <TableCell align='center'>
-          <Checkbox
-            color="primary"
-            checked={row.requiresAccompaniment}
-            onChange={handleToggleRequiresAccompaniment}
-          />
-        </TableCell>
-        <TableCell align='center'>
-          <Checkbox
-            color="primary"
-            checked={row.requiresSalad}
-            onChange={handleToggleRequiresSalad}
-          />
-        </TableCell>
-        <TableCell align='center'>
-          <Checkbox
-            color="primary"
-            checked={row.requiresSide}
-            onChange={handleToggleRequiresSide}
-          />
-        </TableCell>
-        <TableCell align='center'>
-          <Checkbox
-            color="primary"
-            checked={row.requiresVeggie}
-            onChange={handleToggleRequiresVeggie}
-          />
-        </TableCell>
-        <TableCell align='center'>
-          <IconButton
-            id={row.name}
-            onClick={() => handleEditClick(row.id)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            id={row.name}
-            onClick={() => handleDeleteClick(row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    );
-  };
-
-  const renderEditingRow = (row: DishEntityTableData) => {
-    const isItemSelected = true;
-    return (
-      <TableRow
-        hover
-        onClick={(event) => handleClick(event, row.name)}
-        role='checkbox'
-        aria-checked={isItemSelected}
-        tabIndex={-1}
-        key={row.name}
-        selected={isItemSelected}
-      >
-        <TableCell
-          component='th'
-          // id={labelId}
-          scope='row'
-          padding='none'
-          align='center'
-        >
-          <TextField
-            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-            type='string'
-            label='Dish name'
-            value={row.name}
             disabled
-            variant='standard'
-          // onChange={(event) => setDishName(event.target.value)}
-          />
-        </TableCell>
-        <TableCell
-          // component='th'
-          // id={labelId}
-          // scope='row'
-          // padding='none'
-          padding='none'
-          align='center'
-        >
-          <Select
-            options={dishTypeOptions}
-            onChange={handleTypeChange}
-            placeholder={'Dish Type'}
-          />
+          >
+            <MenuItem value={'main'}>Main</MenuItem>
+            <MenuItem value={'salad'}>Salad</MenuItem>
+            <MenuItem value={'side'}>Side</MenuItem>
+            <MenuItem value={'veggie'}>Veggie</MenuItem>
+          </Select>
         </TableCell>
         <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresAccompaniment}
             onChange={handleToggleRequiresAccompaniment}
+            disabled
           />
         </TableCell>
         <TableCell align='center'>
@@ -458,6 +478,7 @@ const NewDishes = (props: NewDishesProps) => {
             color="primary"
             checked={row.requiresSalad}
             onChange={handleToggleRequiresSalad}
+            disabled
           />
         </TableCell>
         <TableCell align='center'>
@@ -465,6 +486,7 @@ const NewDishes = (props: NewDishesProps) => {
             color="primary"
             checked={row.requiresSide}
             onChange={handleToggleRequiresSide}
+            disabled
           />
         </TableCell>
         <TableCell align='center'>
@@ -472,6 +494,7 @@ const NewDishes = (props: NewDishesProps) => {
             color="primary"
             checked={row.requiresVeggie}
             onChange={handleToggleRequiresVeggie}
+            disabled
           />
         </TableCell>
         <TableCell align='center'>
