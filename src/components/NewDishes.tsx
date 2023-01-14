@@ -343,24 +343,96 @@ const NewDishes = (props: NewDishesProps) => {
     }
   };
 
-  const handleToggleRequiresAccompaniment = (event: any) => {
+  const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
     console.log('handleToggleRequiresAccompaniment');
-    console.log(event.target.checked);
+
+    // get index of row getting edited.
+    let selectedIndex = -1;
+    const id = selectedDishRow.dish.id;
+    rows.forEach((row, index) => {
+      if (row.dish.id === id) {
+        selectedIndex = index;
+      }
+    });
+
+    if (selectedIndex !== -1) {
+      const newRows = cloneDeep(rows);
+      const selectedRow: DishRow = newRows[selectedIndex];
+      selectedRow.requiresAccompaniment = requiresAccompaniment;
+      setRows(newRows);
+
+      setCurrentEditDish(selectedRow);
+    }
+
   };
 
-  const handleToggleRequiresSalad = (event: any) => {
+  const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
     console.log('handleToggleRequiresSalad');
-    console.log(event.target.checked);
+
+    // get index of row getting edited.
+    let selectedIndex = -1;
+    const id = selectedDishRow.dish.id;
+    rows.forEach((row, index) => {
+      if (row.dish.id === id) {
+        selectedIndex = index;
+      }
+    });
+
+    if (selectedIndex !== -1) {
+      const newRows = cloneDeep(rows);
+      const selectedRow: DishRow = newRows[selectedIndex];
+      selectedRow.requiresSalad = requiresSalad;
+      setRows(newRows);
+
+      setCurrentEditDish(selectedRow);
+    }
+
   };
 
-  const handleToggleRequiresSide = (event: any) => {
+  const handleToggleRequiresSide = (selectedDishRow: DishRow, requiresSide: boolean) => {
     console.log('handleToggleRequiresSide');
-    console.log(event.target.checked);
+
+    // get index of row getting edited.
+    let selectedIndex = -1;
+    const id = selectedDishRow.dish.id;
+    rows.forEach((row, index) => {
+      if (row.dish.id === id) {
+        selectedIndex = index;
+      }
+    });
+
+    if (selectedIndex !== -1) {
+      const newRows = cloneDeep(rows);
+      const selectedRow: DishRow = newRows[selectedIndex];
+      selectedRow.requiresSide = requiresSide;
+      setRows(newRows);
+
+      setCurrentEditDish(selectedRow);
+    }
+
   };
 
-  const handleToggleRequiresVeggie = (event: any) => {
+  const handleToggleRequiresVeggie = (selectedDishRow: DishRow, requiresVeggie: boolean) => {
     console.log('handleToggleRequiresVeggie');
-    console.log(event.target.checked);
+
+    // get index of row getting edited.
+    let selectedIndex = -1;
+    const id = selectedDishRow.dish.id;
+    rows.forEach((row, index) => {
+      if (row.dish.id === id) {
+        selectedIndex = index;
+      }
+    });
+
+    if (selectedIndex !== -1) {
+      const newRows = cloneDeep(rows);
+      const selectedRow: DishRow = newRows[selectedIndex];
+      selectedRow.requiresVeggie = requiresVeggie;
+      setRows(newRows);
+
+      setCurrentEditDish(selectedRow);
+    }
+
   };
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
@@ -425,28 +497,32 @@ const NewDishes = (props: NewDishesProps) => {
           <Checkbox
             color="primary"
             checked={row.requiresAccompaniment}
-            onChange={handleToggleRequiresAccompaniment}
+            onChange={(event) => handleToggleRequiresAccompaniment(row, event.target.checked)}
+            disabled={row.type !== DishType.Main}
           />
         </TableCell>
         <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresSalad}
-            onChange={handleToggleRequiresSalad}
+            onChange={(event) => handleToggleRequiresSalad(row, event.target.checked)}
+            disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
           />
         </TableCell>
         <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresSide}
-            onChange={handleToggleRequiresSide}
+            onChange={(event) => handleToggleRequiresSide(row, event.target.checked)}
+            disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
           />
         </TableCell>
         <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresVeggie}
-            onChange={handleToggleRequiresVeggie}
+            onChange={(event) => handleToggleRequiresVeggie(row, event.target.checked)}
+            disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
           />
         </TableCell>
         <TableCell align='center'>
@@ -520,7 +596,6 @@ const NewDishes = (props: NewDishesProps) => {
           <Checkbox
             color="primary"
             checked={row.requiresAccompaniment}
-            onChange={handleToggleRequiresAccompaniment}
             disabled
           />
         </TableCell>
@@ -528,7 +603,6 @@ const NewDishes = (props: NewDishesProps) => {
           <Checkbox
             color="primary"
             checked={row.requiresSalad}
-            onChange={handleToggleRequiresSalad}
             disabled
           />
         </TableCell>
@@ -536,7 +610,6 @@ const NewDishes = (props: NewDishesProps) => {
           <Checkbox
             color="primary"
             checked={row.requiresSide}
-            onChange={handleToggleRequiresSide}
             disabled
           />
         </TableCell>
@@ -544,7 +617,6 @@ const NewDishes = (props: NewDishesProps) => {
           <Checkbox
             color="primary"
             checked={row.requiresVeggie}
-            onChange={handleToggleRequiresVeggie}
             disabled
           />
         </TableCell>
