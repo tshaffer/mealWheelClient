@@ -32,7 +32,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import Select from '@mui/material/Select';
 
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import MenuItem from '@mui/material/MenuItem';
 
 interface DishRow {
@@ -298,10 +298,24 @@ const NewDishes = (props: NewDishesProps) => {
     setCurrentEditDish(null);
   };
 
-  const handleDishTypeChange = (event: any) => {
-    console.log('handleTypeChange, selected dish type is:', event);
+  const handleDishTypeChange = (selectedDishRow: DishRow, updatedDishType: DishType) => {
 
-    const updatedDishType: DishType = event.target.value;
+    // get index of row getting edited.
+    let selectedIndex = -1;
+    const id = selectedDishRow.dish.id;
+    rows.forEach((row, index) => {
+      if (row.dish.id === id) {
+        selectedIndex = index;
+      }
+    });
+
+    if (selectedIndex !== -1) {
+      const newRows = cloneDeep(rows);
+      const selectedRow: DishRow = newRows[selectedIndex];
+      selectedRow.type = updatedDishType;
+      setRows(newRows);
+    }
+
   };
 
   const handleToggleRequiresAccompaniment = (event: any) => {
@@ -372,7 +386,8 @@ const NewDishes = (props: NewDishesProps) => {
           align='center'
         >
           <Select
-            onChange={handleDishTypeChange}
+            // onChange={handleDishTypeChange}
+            onChange={(event) => handleDishTypeChange(row, event.target.value as DishType)}
             placeholder={'Dish Type'}
             value={row.type}
           >
@@ -467,7 +482,6 @@ const NewDishes = (props: NewDishesProps) => {
           align='center'
         >
           <Select
-            onChange={handleDishTypeChange}
             placeholder={'Dish Type'}
             value={row.type}
             disabled
