@@ -199,7 +199,7 @@ const NewDishes = (props: NewDishesProps) => {
 
   const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState<DishEntityTableData[]>(initialRows);
-
+  const [editingDishId, setEditingDishId] = React.useState<string>('');
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishEntityTableData>('name');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -270,12 +270,13 @@ const NewDishes = (props: NewDishesProps) => {
     setSelected(newSelected);
   };
 
-  const handleEditClick = (dishName: string) => {
-    console.log('Edit ' + dishName);
+  const handleEditClick = (dishId: string) => {
+    console.log('Edit ' + dishId);
+    setEditingDishId(dishId);
   };
 
-  const handleDeleteClick = (dishName: string) => {
-    console.log('Delete ' + dishName);
+  const handleDeleteClick = (dishId: string) => {
+    console.log('Delete ' + dishId);
   };
 
   const handleTypeChange = (selectedDishType: any) => {
@@ -313,6 +314,184 @@ const NewDishes = (props: NewDishesProps) => {
     setRows(newRows);
   }
 
+  const renderInactiveRow = (row: DishEntityTableData) => {
+    const isItemSelected = false;
+    return (
+      <TableRow
+        hover
+        onClick={(event) => handleClick(event, row.name)}
+        role='checkbox'
+        aria-checked={isItemSelected}
+        tabIndex={-1}
+        key={row.name}
+        selected={isItemSelected}
+      >
+        <TableCell
+          component='th'
+          // id={labelId}
+          scope='row'
+          padding='none'
+          align='center'
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Dish name'
+            value={row.name}
+            disabled
+            variant='standard'
+          // onChange={(event) => setDishName(event.target.value)}
+          />
+        </TableCell>
+        <TableCell
+          // component='th'
+          // id={labelId}
+          // scope='row'
+          // padding='none'
+          padding='none'
+          align='center'
+        >
+          <Select
+            options={dishTypeOptions}
+            onChange={handleTypeChange}
+            placeholder={'Dish Type'}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresAccompaniment}
+            onChange={handleToggleRequiresAccompaniment}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresSalad}
+            onChange={handleToggleRequiresSalad}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresSide}
+            onChange={handleToggleRequiresSide}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresVeggie}
+            onChange={handleToggleRequiresVeggie}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <IconButton
+            id={row.name}
+            onClick={() => handleEditClick(row.id)}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            id={row.name}
+            onClick={() => handleDeleteClick(row.id)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  const renderEditingRow = (row: DishEntityTableData) => {
+    const isItemSelected = true;
+    return (
+      <TableRow
+        hover
+        onClick={(event) => handleClick(event, row.name)}
+        role='checkbox'
+        aria-checked={isItemSelected}
+        tabIndex={-1}
+        key={row.name}
+        selected={isItemSelected}
+      >
+        <TableCell
+          component='th'
+          // id={labelId}
+          scope='row'
+          padding='none'
+          align='center'
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Dish name'
+            value={row.name}
+            disabled
+            variant='standard'
+          // onChange={(event) => setDishName(event.target.value)}
+          />
+        </TableCell>
+        <TableCell
+          // component='th'
+          // id={labelId}
+          // scope='row'
+          // padding='none'
+          padding='none'
+          align='center'
+        >
+          <Select
+            options={dishTypeOptions}
+            onChange={handleTypeChange}
+            placeholder={'Dish Type'}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresAccompaniment}
+            onChange={handleToggleRequiresAccompaniment}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresSalad}
+            onChange={handleToggleRequiresSalad}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresSide}
+            onChange={handleToggleRequiresSide}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.requiresVeggie}
+            onChange={handleToggleRequiresVeggie}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <IconButton
+            id={row.name}
+            onClick={() => handleEditClick(row.id)}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            id={row.name}
+            onClick={() => handleDeleteClick(row.id)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -333,95 +512,16 @@ const NewDishes = (props: NewDishesProps) => {
           <TableBody>
             {stableSort(rows, getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
-                const isItemSelected = isSelected(row.name);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.name)}
-                    role='checkbox'
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.name}
-                    selected={isItemSelected}
-                  >
-                    <TableCell
-                      component='th'
-                      id={labelId}
-                      scope='row'
-                      padding='none'
-                      align='center'
-                    >
-                      <TextField
-                        sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-                        type='string'
-                        label='Dish name'
-                        value={row.name}
-                        disabled
-                        variant='standard'
-                      // onChange={(event) => setDishName(event.target.value)}
-                      />
-                    </TableCell>
-                    <TableCell
-                      // component='th'
-                      // id={labelId}
-                      // scope='row'
-                      // padding='none'
-                      padding='none'
-                      align='center'
-                    >
-                      <Select
-                        options={dishTypeOptions}
-                        onChange={handleTypeChange}
-                        placeholder={'Dish Type'}
-                      />
-                    </TableCell>
-                    <TableCell align='center'>
-                      <Checkbox
-                        color="primary"
-                        checked={row.requiresAccompaniment}
-                        onChange={handleToggleRequiresAccompaniment}
-                      />
-                    </TableCell>
-                    <TableCell align='center'>
-                      <Checkbox
-                        color="primary"
-                        checked={row.requiresSalad}
-                        onChange={handleToggleRequiresSalad}
-                      />
-                    </TableCell>
-                    <TableCell align='center'>
-                      <Checkbox
-                        color="primary"
-                        checked={row.requiresSide}
-                        onChange={handleToggleRequiresSide}
-                      />
-                    </TableCell>
-                    <TableCell align='center'>
-                      <Checkbox
-                        color="primary"
-                        checked={row.requiresVeggie}
-                        onChange={handleToggleRequiresVeggie}
-                      />
-                    </TableCell>
-                    <TableCell align='center'>
-                      <IconButton
-                        id={row.name}
-                        onClick={() => handleEditClick(row.name)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        id={row.name}
-                        onClick={() => handleDeleteClick(row.name)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
+              .map((row: DishEntityTableData, index) => {
+                // const isItemSelected = isSelected(row.name);
+                // const labelId = `enhanced-table-checkbox-${index}`;
+                let renderedRow;
+                if (editingDishId === row.id) {
+                  renderedRow = renderEditingRow(row);
+                } else {
+                  renderedRow = renderInactiveRow(row);
+                }
+                return renderedRow;
               })}
             {emptyRows > 0 && (
               <TableRow
