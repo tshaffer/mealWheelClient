@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { addDish, updateDish } from '../controllers';
-import { getDishes } from '../selectors';
-import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
+import { cloneDeep, isNil } from 'lodash';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -31,10 +29,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import Select from '@mui/material/Select';
 
-import { cloneDeep, isNil } from 'lodash';
 import MenuItem from '@mui/material/MenuItem';
+
+import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
+import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
+import { addDish, updateDish } from '../controllers';
+import { getDishes } from '../selectors';
 
 interface DishRow {
   dish: DishEntity;
@@ -211,6 +214,9 @@ const NewDishes = (props: NewDishesProps) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(75);
   const [addingDish, setAddingDish] = React.useState<boolean>(false);
 
+  const [showAssignIngredientsToDish, setShowAssignIngredientsToDish] = React.useState(false);
+  const [dishId, setDishId] = React.useState('');
+
   const mainOption = { value: 'main', label: 'Main' };
   const saladOption = { value: 'salad', label: 'Salad' };
   const sideOption = { value: 'side', label: 'Side' };
@@ -306,6 +312,16 @@ const NewDishes = (props: NewDishesProps) => {
   const handleEditClick = (dishEntityData: DishRow) => {
     setCurrentEditDish(dishEntityData);
   };
+
+  const handleAssignIngredientsToDish = (dishEntityData: DishRow) => {
+    setDishId(dishEntityData.dish.id);
+    setShowAssignIngredientsToDish(true);
+  };
+
+  const handleCloseAssignIngredientsToDish = () => {
+    setShowAssignIngredientsToDish(false);
+  };
+
 
   const handleDeleteClick = (dishEntityData: DishRow) => {
     console.log('Delete ' + dishEntityData.dish.id);
@@ -707,6 +723,13 @@ const NewDishes = (props: NewDishesProps) => {
           </IconButton>
           <IconButton
             id={row.name}
+            onClick={() => handleAssignIngredientsToDish(row)}
+            // onClick={() => console.log('eat pizza')}
+          >
+            <LocalGroceryStoreIcon />
+          </IconButton>
+          <IconButton
+            id={row.name}
             onClick={() => handleDeleteClick(row)}
           >
             <DeleteIcon />
@@ -717,55 +740,61 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        {/* Toolbar that includes Add Dish button? */}
-        <div>
-          <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
-            Add dish
-          </Button>
-        </div>
-        <Table
-          sx={{ minWidth: 750 }}
-          size={'small'}
-        >
+    <div>
+      <AssignIngredientsToDishDialog
+        open={showAssignIngredientsToDish}
+        dishId={dishId}
+        onClose={handleCloseAssignIngredientsToDish}
+      />
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          {/* Toolbar that includes Add Dish button? */}
+          <div>
+            <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
+              Add dish
+            </Button>
+          </div>
+          <Table
+            sx={{ minWidth: 750 }}
+            size={'small'}
+          >
 
-          <DishesTableHead
-            numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-          />
-          <TableBody>
-            {stableSort(rows, getComparator(order, orderBy))
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row: DishRow, index) => {
-                // const isItemSelected = isSelected(row.name);
-                // const labelId = `enhanced-table-checkbox-${index}`;
-                let renderedRow;
-                if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
-                  renderedRow = renderEditingRow(row);
-                } else {
-                  renderedRow = renderInactiveRow(row);
-                }
-                return renderedRow;
-              })}
-            {emptyRows > 0 && (
-              <TableRow
-                style={{
-                  height: (dense ? 33 : 53) * emptyRows,
-                }}
-              >
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Paper>
-    </Box>
-  );
+            <DishesTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(rows, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row: DishRow, index) => {
+                  // const isItemSelected = isSelected(row.name);
+                  // const labelId = `enhanced-table-checkbox-${index}`;
+                  let renderedRow;
+                  if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
+                    renderedRow = renderEditingRow(row);
+                  } else {
+                    renderedRow = renderInactiveRow(row);
+                  }
+                  return renderedRow;
+                })}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: (dense ? 33 : 53) * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Box>
+    </div>);
 };
 
 function mapStateToProps(state: any) {
