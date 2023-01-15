@@ -12,15 +12,10 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -672,18 +667,22 @@ const NewDishes = (props: NewDishesProps) => {
           />
         </TableCell>
         <TableCell align='center'>
-          <IconButton
-            id={row.name}
-            onClick={() => handleSaveClick()}
-          >
-            <SaveIcon />
-          </IconButton>
-          <IconButton
-            id={row.name}
-            onClick={() => handleCancelClick()}
-          >
-            <CancelIcon />
-          </IconButton>
+          <Tooltip title="Save">
+            <IconButton
+              id={row.name}
+              onClick={() => handleSaveClick()}
+            >
+              <SaveIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Cancel">
+            <IconButton
+              id={row.name}
+              onClick={() => handleCancelClick()}
+            >
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
         </TableCell>
       </TableRow>
     );
@@ -766,24 +765,30 @@ const NewDishes = (props: NewDishesProps) => {
           />
         </TableCell>
         <TableCell align='center'>
-          <IconButton
-            id={row.name}
-            onClick={() => handleEditClick(row)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            id={row.name}
-            onClick={() => handleAssignIngredientsToDish(row)}
-          >
-            <LocalGroceryStoreIcon />
-          </IconButton>
-          <IconButton
-            id={row.name}
-            onClick={() => handleDeleteClick(row)}
-          >
-            <DeleteIcon />
-          </IconButton>
+          <Tooltip title="Edit">
+            <IconButton
+              id={row.name}
+              onClick={() => handleEditClick(row)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Assign Ingredients to Dish">
+            <IconButton
+              id={row.name}
+              onClick={() => handleAssignIngredientsToDish(row)}
+            >
+              <LocalGroceryStoreIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              id={row.name}
+              onClick={() => handleDeleteClick(row)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </TableCell>
       </TableRow>
     );
