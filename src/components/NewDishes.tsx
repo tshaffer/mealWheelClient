@@ -212,7 +212,7 @@ const NewDishes = (props: NewDishesProps) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(75);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [addingDish, setAddingDish] = React.useState<boolean>(false);
 
   const [showAssignIngredientsToDish, setShowAssignIngredientsToDish] = React.useState(false);
@@ -283,6 +283,15 @@ const NewDishes = (props: NewDishesProps) => {
     }
 
     setSelected(newSelected);
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleAddRow = () => {
@@ -803,44 +812,55 @@ const NewDishes = (props: NewDishesProps) => {
               Add dish
             </Button>
           </div>
-          <Table
-            sx={{ minWidth: 750 }}
-            size={'small'}
-          >
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              size={'small'}
+            >
 
-            <DishesTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: DishRow, index) => {
-                  // const isItemSelected = isSelected(row.name);
-                  // const labelId = `enhanced-table-checkbox-${index}`;
-                  let renderedRow;
-                  if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
-                    renderedRow = renderEditingRow(row);
-                  } else {
-                    renderedRow = renderInactiveRow(row);
-                  }
-                  return renderedRow;
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              <DishesTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row: DishRow, index) => {
+                    // const isItemSelected = isSelected(row.name);
+                    // const labelId = `enhanced-table-checkbox-${index}`;
+                    let renderedRow;
+                    if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
+                      renderedRow = renderEditingRow(row);
+                    } else {
+                      renderedRow = renderInactiveRow(row);
+                    }
+                    return renderedRow;
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
           {!!snackbar && (
             <Snackbar
               open
