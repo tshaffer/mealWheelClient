@@ -322,7 +322,6 @@ const NewDishes = (props: NewDishesProps) => {
     setShowAssignIngredientsToDish(false);
   };
 
-
   const handleDeleteClick = (dishEntityData: DishRow) => {
     console.log('Delete ' + dishEntityData.dish.id);
     setCurrentEditDish(null);
@@ -392,6 +391,26 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleCancelClick = () => {
+
+    if (!isNil(currentEditDish) && !isNil(currentEditDish.dish) && (currentEditDish.dish.id === '')) {
+      // new dish - discard row
+
+      // get index of row getting edited.
+      let selectedIndex = -1;
+      const id = '';
+      rows.forEach((row, index) => {
+        if (row.dish.id === id) {
+          selectedIndex = index;
+        }
+      });
+
+      if (selectedIndex !== -1) {
+        const newRows = cloneDeep(rows);
+        newRows.splice(selectedIndex, 1);
+        setRows(newRows);
+      }
+
+    }
     setCurrentEditDish(null);
   };
 
@@ -724,7 +743,6 @@ const NewDishes = (props: NewDishesProps) => {
           <IconButton
             id={row.name}
             onClick={() => handleAssignIngredientsToDish(row)}
-            // onClick={() => console.log('eat pizza')}
           >
             <LocalGroceryStoreIcon />
           </IconButton>
