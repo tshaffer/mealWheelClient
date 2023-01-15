@@ -137,12 +137,9 @@ const headCells: readonly HeadCell[] = [
 ];
 
 interface TableProps {
-  numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof DishRow) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
-  rowCount: number;
 }
 
 const initialRows: DishRow[] = [];
@@ -151,19 +148,16 @@ export interface NewDishesProps {
   dishes: DishEntity[];
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
-
-  // onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-
 }
 
 const DishesTableHead = (props: TableProps) => {
 
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { order, orderBy, onRequestSort } =
     props;
 
   const createSortHandler =
     (property: keyof DishRow) => (event: React.MouseEvent<unknown>) => {
-      props.onRequestSort(event, property);
+      onRequestSort(event, property);
     };
 
   return (
@@ -211,9 +205,7 @@ const NewDishes = (props: NewDishesProps) => {
   const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [addingDish, setAddingDish] = React.useState<boolean>(false);
 
   const [showAssignIngredientsToDish, setShowAssignIngredientsToDish] = React.useState(false);
   const [dishId, setDishId] = React.useState('');
@@ -817,14 +809,10 @@ const NewDishes = (props: NewDishesProps) => {
               sx={{ minWidth: 750 }}
               size={'small'}
             >
-
               <DishesTableHead
-                numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
               />
               <TableBody>
                 {stableSort(rows, getComparator(order, orderBy))
@@ -843,7 +831,7 @@ const NewDishes = (props: NewDishesProps) => {
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
-                      height: (dense ? 33 : 53) * emptyRows,
+                      height: (33) * emptyRows,
                     }}
                   >
                     <TableCell colSpan={6} />
