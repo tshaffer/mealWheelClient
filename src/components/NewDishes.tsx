@@ -38,7 +38,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 interface DishRow {
   dish: DishEntity;
-  name: string;
+  name: string
   type: DishType;
   requiresAccompaniment: boolean;
   requiresSalad: boolean;
@@ -275,7 +275,32 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleAddRow = () => {
+
     console.log('handleAddRow');
+
+    const dish: DishEntity = {
+      id: '',
+      name: '',
+      type: DishType.Main,
+      last: null,
+    };
+
+    const dishRow: DishRow = {
+      dish,
+      name: 'AAAA',
+      type: DishType.Main,
+      requiresAccompaniment: false,
+      requiresSalad: false,
+      requiresSide: false,
+      requiresVeggie: false,
+    };
+
+    const newRows = cloneDeep(rows);
+    newRows.push(dishRow);
+    setRows(newRows);
+
+    setCurrentEditDish(dishRow);
+
   };
 
   const handleEditClick = (dishEntityData: DishRow) => {
@@ -287,36 +312,63 @@ const NewDishes = (props: NewDishesProps) => {
     setCurrentEditDish(null);
   };
 
+  const getAccompanimentRequired = (dishRow: DishRow): RequiredAccompanimentFlags => {
+    switch (dishRow.type) {
+      case DishType.Main: {
+        let accompanimentValue: RequiredAccompanimentFlags = RequiredAccompanimentFlags.None;
+        if (dishRow.requiresSalad) {
+          accompanimentValue = RequiredAccompanimentFlags.Salad;
+        }
+        if (dishRow.requiresSide) {
+          accompanimentValue += RequiredAccompanimentFlags.Side;
+        }
+        if (dishRow.requiresVeggie) {
+          accompanimentValue += RequiredAccompanimentFlags.Veggie;
+        }
+        return accompanimentValue;
+      }
+      case DishType.Salad:
+      case DishType.Side:
+      case DishType.Veggie:
+        return RequiredAccompanimentFlags.None;
+    }
+  };
+
   const handleSaveClick = () => {
     if (!isNil(currentEditDish)) {
-      if (addingDish) {
-        // props.onAddDish(dish);
-        console.log('add dish');
+      if (currentEditDish.dish.id === '') {
+        const newDish: DishEntity = {
+          id: '',
+          name: currentEditDish.name,
+          type: currentEditDish.type,
+          accompanimentRequired: getAccompanimentRequired(currentEditDish),
+          last: null,
+        };
+        props.onAddDish(newDish)
+          .then((newDishId: string) => {
+
+            // get index of row getting edited.
+            let selectedIndex = -1;
+            const id = '';
+            rows.forEach((row, index) => {
+              if (row.dish.id === id) {
+                selectedIndex = index;
+              }
+            });
+
+            if (selectedIndex !== -1) {
+              const newRows = cloneDeep(rows);
+              const selectedRow: DishRow = newRows[selectedIndex];
+              selectedRow.dish.id = newDishId;
+              setRows(newRows);
+            }
+
+          });
       } else {
         const updatedDish: DishEntity = cloneDeep(currentEditDish.dish);
         updatedDish.name = currentEditDish.name;
         updatedDish.type = currentEditDish.type;
-        switch (currentEditDish.type) {
-          case DishType.Main: {
-            let accompanimentValue: RequiredAccompanimentFlags = RequiredAccompanimentFlags.None;
-            if (currentEditDish.requiresSalad) {
-              accompanimentValue = RequiredAccompanimentFlags.Salad;
-            }
-            if (currentEditDish.requiresSide) {
-              accompanimentValue += RequiredAccompanimentFlags.Side;
-            }
-            if (currentEditDish.requiresVeggie) {
-              accompanimentValue += RequiredAccompanimentFlags.Veggie;
-            }
-            updatedDish.accompanimentRequired = accompanimentValue;
-            break;
-          }
-          case DishType.Salad:
-          case DishType.Side:
-          case DishType.Veggie:
-            updatedDish.accompanimentRequired = RequiredAccompanimentFlags.None;
-            break;
-        }
+        updatedDish.accompanimentRequired = getAccompanimentRequired(currentEditDish);
         props.onUpdateDish(currentEditDish.dish.id, updatedDish);
       }
       setCurrentEditDish(null);
@@ -496,9 +548,9 @@ const NewDishes = (props: NewDishesProps) => {
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
             label='Dish name'
-            value={row.name}
+            // value={row.name}
             variant='standard'
-            onChange={(event) => handleUpdateDishName(row, event.target.value)}
+            // onChange={(event) => handleUpdateDishName(row, event.target.value)}
           />
         </TableCell>
         <TableCell
