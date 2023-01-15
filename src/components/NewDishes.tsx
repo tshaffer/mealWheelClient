@@ -327,6 +327,28 @@ const NewDishes = (props: NewDishesProps) => {
     setCurrentEditDish(null);
   };
 
+  const handleUpdateDishName = (selectedDishRow: DishRow, dishName: string) => {
+
+    // get index of row getting edited.
+    let selectedIndex = -1;
+    const id = selectedDishRow.dish.id;
+    rows.forEach((row, index) => {
+      if (row.dish.id === id) {
+        selectedIndex = index;
+      }
+    });
+
+    if (selectedIndex !== -1) {
+      const newRows = cloneDeep(rows);
+      const selectedRow: DishRow = newRows[selectedIndex];
+      selectedRow.name = dishName;
+      setRows(newRows);
+
+      setCurrentEditDish(selectedRow);
+    }
+
+  };
+
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
 
     // get index of row getting edited.
@@ -476,7 +498,7 @@ const NewDishes = (props: NewDishesProps) => {
             label='Dish name'
             value={row.name}
             variant='standard'
-          // onChange={(event) => setDishName(event.target.value)}
+            onChange={(event) => handleUpdateDishName(row, event.target.value)}
           />
         </TableCell>
         <TableCell
