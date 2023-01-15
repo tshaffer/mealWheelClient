@@ -31,7 +31,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import Select from '@mui/material/Select';
-
+import Snackbar from '@mui/material/Snackbar';
+import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
 import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
@@ -217,6 +218,8 @@ const NewDishes = (props: NewDishesProps) => {
   const [showAssignIngredientsToDish, setShowAssignIngredientsToDish] = React.useState(false);
   const [dishId, setDishId] = React.useState('');
 
+  const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
+
   const mainOption = { value: 'main', label: 'Main' };
   const saladOption = { value: 'salad', label: 'Salad' };
   const sideOption = { value: 'side', label: 'Side' };
@@ -241,6 +244,8 @@ const NewDishes = (props: NewDishesProps) => {
     });
     return rows;
   };
+
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -350,7 +355,25 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleSaveClick = () => {
+
     if (!isNil(currentEditDish)) {
+
+      // check for empty name
+      if (currentEditDish.name === '') {
+        setSnackbar({ children: 'Error while saving user: name can\'t be empty.', severity: 'error' });
+        return;
+      }
+
+      // check for duplicate dish names.
+      const updatedDishName = currentEditDish.name;
+      for (let dishIndex = 0; dishIndex < rows.length; dishIndex++) {
+        const existingDish: DishEntity = props.dishes[dishIndex];
+        if (currentEditDish.dish.id !== existingDish.id && existingDish.name === updatedDishName) {
+          setSnackbar({ children: 'Error while saving user: duplicate dish name', severity: 'error' });
+          return;
+        }
+      }
+
       if (currentEditDish.dish.id === '') {
         const newDish: DishEntity = {
           id: '',
@@ -810,6 +833,17 @@ const NewDishes = (props: NewDishesProps) => {
               )}
             </TableBody>
           </Table>
+          {!!snackbar && (
+            <Snackbar
+              open
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              onClose={handleCloseSnackbar}
+              autoHideDuration={6000}
+            >
+              <Alert {...snackbar} onClose={handleCloseSnackbar} />
+            </Snackbar>
+          )}
+
         </Paper>
       </Box>
     </div>);
