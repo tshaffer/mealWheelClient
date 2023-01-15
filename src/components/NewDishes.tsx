@@ -198,33 +198,6 @@ const DishesTableHead = (props: TableProps) => {
   );
 };
 
-interface MyInputInterface {
-  value: any;
-  onChange: any;
-}
-
-const MyInput = ({ value, onChange }: MyInputInterface) => {
-  return (
-    <div>
-      {/* <input value={value} onChange={onChange} /> */}
-      <input/>
-    </div>
-  );
-};
-
-
-const MyComponent = () => {
-  const [value, setValue] = React.useState('');
-  return (
-    <div>
-      <MyInput
-        value={value}
-        onChange={(event: any) => setValue(event.target.value)}
-      />
-    </div>
-  );
-};
-
 const NewDishes = (props: NewDishesProps) => {
 
   const [rowsRead, setRowsRead] = React.useState(false);
@@ -406,12 +379,6 @@ const NewDishes = (props: NewDishesProps) => {
     setCurrentEditDish(null);
   };
 
-  // const handleBlur = (event: any) => {
-  //   console.log('handleBlur');
-  //   console.log(event);
-  //   console.log(event.target.value);
-  // };
-
   const handleUpdateDishName = (selectedDishRow: DishRow, dishName: string) => {
 
     // get index of row getting edited.
@@ -577,19 +544,12 @@ const NewDishes = (props: NewDishesProps) => {
           padding='none'
           align='center'
         >
-          {/* <MyInput
-            value={row.name}
-            onChange={(event: any) => handleUpdateDishName(row, event.target.value)}
-          /> */}
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
             label='Dish name'
-            // value={row.name}
             defaultValue={row.name}
             variant='standard'
-            // onChange={(event) => handleUpdateDishName(row, event.target.value)}
-            // onBlur={handleBlur}
             onBlur={(event) => handleUpdateDishName(row, event.target.value)}
           />
         </TableCell>
@@ -686,11 +646,9 @@ const NewDishes = (props: NewDishesProps) => {
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
             label='Dish name'
-            // value={row.name}
             defaultValue={row.name}
             disabled
             variant='standard'
-          // onChange={(event) => setDishName(event.target.value)}
           />
         </TableCell>
         <TableCell
