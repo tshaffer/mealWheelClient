@@ -360,16 +360,24 @@ const NewDishes = (props: NewDishesProps) => {
 
       // check for empty name
       if (currentEditDish.name === '') {
-        setSnackbar({ children: 'Error while saving user: name can\'t be empty.', severity: 'error' });
+        setSnackbar({ children: 'Error while saving dish: name can\'t be empty.', severity: 'error' });
         return;
       }
 
       // check for duplicate dish names.
       const updatedDishName = currentEditDish.name;
-      for (let dishIndex = 0; dishIndex < rows.length; dishIndex++) {
+      for (let dishIndex = 0; dishIndex < props.dishes.length; dishIndex++) {
         const existingDish: DishEntity = props.dishes[dishIndex];
         if (currentEditDish.dish.id !== existingDish.id && existingDish.name === updatedDishName) {
-          setSnackbar({ children: 'Error while saving user: duplicate dish name', severity: 'error' });
+          setSnackbar({ children: 'Error while saving dish: duplicate dish name', severity: 'error' });
+          return;
+        }
+      }
+
+      // if requiresAccompaniment, ensure that one is specified
+      if (currentEditDish.requiresAccompaniment) {
+        if (!currentEditDish.requiresSalad && !currentEditDish.requiresSide && !currentEditDish.requiresVeggie) {
+          setSnackbar({ children: 'Error while saving dish: accompaniment required.', severity: 'error' });
           return;
         }
       }
