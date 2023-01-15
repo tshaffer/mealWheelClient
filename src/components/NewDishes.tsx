@@ -207,12 +207,6 @@ const NewDishes = (props: NewDishesProps) => {
 
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
-  const mainOption = { value: 'main', label: 'Main' };
-  const saladOption = { value: 'salad', label: 'Salad' };
-  const sideOption = { value: 'side', label: 'Side' };
-  const vegOption = { value: 'veggie', label: 'Veggie' };
-  const dishTypeOptions = [mainOption, saladOption, sideOption, vegOption];
-
   const getRows = (): DishRow[] => {
     const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
       const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
@@ -243,35 +237,6 @@ const NewDishes = (props: NewDishesProps) => {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -282,8 +247,6 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleAddRow = () => {
-
-    console.log('handleAddRow');
 
     const dish: DishEntity = {
       id: '',
@@ -485,7 +448,6 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
-    console.log('handleToggleRequiresAccompaniment');
 
     // get index of row getting edited.
     let selectedIndex = -1;
@@ -508,7 +470,6 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
-    console.log('handleToggleRequiresSalad');
 
     // get index of row getting edited.
     let selectedIndex = -1;
@@ -531,7 +492,6 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleToggleRequiresSide = (selectedDishRow: DishRow, requiresSide: boolean) => {
-    console.log('handleToggleRequiresSide');
 
     // get index of row getting edited.
     let selectedIndex = -1;
@@ -554,7 +514,6 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleToggleRequiresVeggie = (selectedDishRow: DishRow, requiresVeggie: boolean) => {
-    console.log('handleToggleRequiresVeggie');
 
     // get index of row getting edited.
     let selectedIndex = -1;
@@ -576,7 +535,6 @@ const NewDishes = (props: NewDishesProps) => {
 
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -592,9 +550,7 @@ const NewDishes = (props: NewDishesProps) => {
     return (
       <TableRow
         hover
-        onClick={(event) => handleClick(event, row.name)}
         role='checkbox'
-        aria-checked={isItemSelected}
         tabIndex={-1}
         key={row.name}
         selected={isItemSelected}
@@ -694,9 +650,7 @@ const NewDishes = (props: NewDishesProps) => {
     return (
       <TableRow
         hover
-        onClick={(event) => handleClick(event, row.name)}
         role='checkbox'
-        aria-checked={isItemSelected}
         tabIndex={-1}
         key={row.name}
         selected={isItemSelected}
@@ -803,7 +757,6 @@ const NewDishes = (props: NewDishesProps) => {
       />
       <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
-          {/* Toolbar that includes Add Dish button? */}
           <div>
             <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
               Add dish
@@ -822,9 +775,7 @@ const NewDishes = (props: NewDishesProps) => {
               <TableBody>
                 {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row: DishRow, index) => {
-                    // const isItemSelected = isSelected(row.name);
-                    // const labelId = `enhanced-table-checkbox-${index}`;
+                  .map((row: DishRow) => {
                     let renderedRow;
                     if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
                       renderedRow = renderEditingRow(row);
