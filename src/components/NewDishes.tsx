@@ -34,8 +34,9 @@ import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, updateDish } from '../controllers';
 import { getDishes } from '../selectors';
+import TedInput from './TedInput';
 
-interface DishRow {
+export interface DishRow {
   dish: DishEntity;
   name: string
   type: DishType;
@@ -191,6 +192,7 @@ const DishesTableHead = (props: TableProps) => {
   );
 };
 
+
 const NewDishes = (props: NewDishesProps) => {
 
   const [rowsRead, setRowsRead] = React.useState(false);
@@ -198,9 +200,9 @@ const NewDishes = (props: NewDishesProps) => {
   const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  // const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(80);
 
   const [showAssignIngredientsToDish, setShowAssignIngredientsToDish] = React.useState(false);
   const [dishId, setDishId] = React.useState('');
@@ -382,7 +384,7 @@ const NewDishes = (props: NewDishesProps) => {
 
   const handleCancelClick = () => {
 
-    if (!isNil(currentEditDish) && !isNil(currentEditDish.dish) && (currentEditDish.dish.id === '')) {
+    if (!isNil(currentEditDish) && (currentEditDish.dish.id === '')) {
       // new dish - discard row
 
       // get index of row getting edited.
@@ -400,11 +402,48 @@ const NewDishes = (props: NewDishesProps) => {
         setRows(newRows);
       }
 
+    } else if (!isNil(currentEditDish)) {
+      // existing dish - restore dish to prior state
+
+      // get index of row that was getting edited.
+      let selectedIndex = -1;
+      const id = currentEditDish.dish.id;
+      rows.forEach((row, index) => {
+        if (row.dish.id === id) {
+          selectedIndex = index;
+        }
+      });
+
+      // get dishEntity before changes
+      if (selectedIndex !== -1) {
+        const newRows = cloneDeep(rows);
+        const selectedRow: DishRow = newRows[selectedIndex];
+        for (let index = 0; index < props.dishes.length; index++) {
+          const dishEntity: DishEntity = props.dishes[index];
+          if (dishEntity.id === currentEditDish.dish.id) {
+            selectedRow.name = dishEntity.name;
+            selectedRow.type = dishEntity.type;
+            selectedRow.requiresAccompaniment = (dishEntity.accompanimentRequired !== RequiredAccompanimentFlags.None);
+            selectedRow.requiresSalad = isNil(dishEntity.accompanimentRequired) ? false : (dishEntity.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+            selectedRow.requiresSide = isNil(dishEntity.accompanimentRequired) ? false : (dishEntity.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+            selectedRow.requiresVeggie = isNil(dishEntity.accompanimentRequired) ? false : (dishEntity.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+            setRows(newRows);
+            console.log('setRows');
+            console.log(newRows);
+          }
+        }
+      }
     }
+
+    console.log('setCurrentEditDish to null');
     setCurrentEditDish(null);
   };
 
   const handleUpdateDishName = (selectedDishRow: DishRow, dishName: string) => {
+
+    // selectedDishRow.name = dishName;
+
+    // const newRows = cloneDeep(rows);
 
     // get index of row getting edited.
     let selectedIndex = -1;
@@ -562,14 +601,21 @@ const NewDishes = (props: NewDishesProps) => {
           padding='none'
           align='center'
         >
-          <TextField
+          <TedInput
+            row={row}
+            value={row.name}
+            onChange={handleUpdateDishName}
+            // onChange={(event) => handleUpdateDishName(row, (event as any).target.value)}
+          />
+
+          {/* <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
             label='Dish name'
             defaultValue={row.name}
             variant='standard'
             onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-          />
+          /> */}
         </TableCell>
         <TableCell
           // component='th'
@@ -647,12 +693,14 @@ const NewDishes = (props: NewDishesProps) => {
 
   const renderInactiveRow = (row: DishRow) => {
     const isItemSelected = false;
+    console.log('inside renderInactiveRow');
+    console.log(row.name);
     return (
       <TableRow
         hover
         role='checkbox'
         tabIndex={-1}
-        key={row.name}
+        key={row.dish.id}
         selected={isItemSelected}
       >
         <TableCell
@@ -748,6 +796,9 @@ const NewDishes = (props: NewDishesProps) => {
     );
   };
 
+  console.log('re-render table');
+  console.log(rows);
+
   return (
     <div>
       <AssignIngredientsToDishDialog
@@ -780,6 +831,8 @@ const NewDishes = (props: NewDishesProps) => {
                     if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
                       renderedRow = renderEditingRow(row);
                     } else {
+                      console.log('renderInactiveRow');
+                      console.log(row);
                       renderedRow = renderInactiveRow(row);
                     }
                     return renderedRow;
