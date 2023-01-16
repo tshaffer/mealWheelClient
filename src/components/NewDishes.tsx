@@ -405,25 +405,7 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleUpdateDishName = (selectedDishRow: DishRow, dishName: string) => {
-
-    // get index of row getting edited.
-    let selectedIndex = -1;
-    const id = selectedDishRow.dish.id;
-    rows.forEach((row, index) => {
-      if (row.dish.id === id) {
-        selectedIndex = index;
-      }
-    });
-
-    if (selectedIndex !== -1) {
-      const newRows = cloneDeep(rows);
-      const selectedRow: DishRow = newRows[selectedIndex];
-      selectedRow.name = dishName;
-      setRows(newRows);
-
-      setCurrentEditDish(selectedRow);
-    }
-
+    selectedDishRow.name = dishName;
   };
 
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
