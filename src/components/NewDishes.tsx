@@ -198,7 +198,6 @@ const NewDishes = (props: NewDishesProps) => {
   const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -206,6 +205,12 @@ const NewDishes = (props: NewDishesProps) => {
   const [dishId, setDishId] = React.useState('');
 
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
+
+  interface IdToNumberMap {
+    [id: string]: number;
+  }
+
+  let dishIdToDishRowIndex: IdToNumberMap = {};
 
   const getRows = (): DishRow[] => {
     const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
@@ -410,23 +415,14 @@ const NewDishes = (props: NewDishesProps) => {
 
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
 
-    // get index of row getting edited.
-    let selectedIndex = -1;
-    const id = selectedDishRow.dish.id;
-    rows.forEach((row, index) => {
-      if (row.dish.id === id) {
-        selectedIndex = index;
-      }
-    });
+    const clonedRows = cloneDeep(rows);
+    const selectedIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
+    const selectedRow: DishRow = clonedRows[selectedIndex];
+    selectedRow.type = updatedDishType;
+    setRows(clonedRows);
 
-    if (selectedIndex !== -1) {
-      const newRows = cloneDeep(rows);
-      const selectedRow: DishRow = newRows[selectedIndex];
-      selectedRow.type = updatedDishType;
-      setRows(newRows);
+    setCurrentEditDish(selectedRow);
 
-      setCurrentEditDish(selectedRow);
-    }
   };
 
   const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
@@ -626,7 +622,6 @@ const NewDishes = (props: NewDishesProps) => {
     );
   };
 
-
   const renderInactiveRow = (row: DishRow) => {
     const isItemSelected = false;
     return (
@@ -730,6 +725,29 @@ const NewDishes = (props: NewDishesProps) => {
     );
   };
 
+  const renderSortedTableContents = () => {
+
+    dishIdToDishRowIndex = {};
+    const sortedDishes = stableSort(rows, getComparator(order, orderBy));
+    const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    return (
+      <React.Fragment>
+        {pagedSortedDishes
+          .map((row: DishRow, index: number) => {
+            let renderedRow;
+            if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
+              renderedRow = renderEditingRow(row);
+            } else {
+              renderedRow = renderInactiveRow(row);
+            }
+
+            dishIdToDishRowIndex[row.dish.id] = page * rowsPerPage + index;
+            return renderedRow;
+          })}
+      </React.Fragment>
+    );
+  };
+
   return (
     <div>
       <AssignIngredientsToDishDialog
@@ -755,17 +773,22 @@ const NewDishes = (props: NewDishesProps) => {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
+                {renderSortedTableContents()}
+                {/* {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row: DishRow) => {
+                  .map((row: DishRow, index: number) => {
                     let renderedRow;
                     if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
-                      renderedRow = renderEditingRow(row);
+                      renderedRow = renderEditingRow(row, index);
                     } else {
                       renderedRow = renderInactiveRow(row);
                     }
+                    console.log('id');
+                    console.log(row.dish.id);
+                    console.log('row');
+                    console.log(row);
                     return renderedRow;
-                  })}
+                  })} */}
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
