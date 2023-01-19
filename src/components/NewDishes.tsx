@@ -262,7 +262,7 @@ const NewDishes = (props: NewDishesProps) => {
 
     const dishRow: DishRow = {
       dish,
-      name: 'AAAA',
+      name: '',
       type: DishType.Main,
       requiresAccompaniment: false,
       requiresSalad: false,
