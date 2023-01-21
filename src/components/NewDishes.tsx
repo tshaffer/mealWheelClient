@@ -409,7 +409,36 @@ const NewDishes = (props: NewDishesProps) => {
         setRows(newRows);
       }
 
+    } else {
+
+      // revert to row before edits
+      //    dishEntity hasn't been updated yet
+
+      if (!isNil(currentEditDish)) {
+        const selectedDishRowIndex = dishIdToDishRowIndex[currentEditDish.dish.id];
+        const selectedDishRow: DishRow = rows[selectedDishRowIndex];
+        const unmodifiedDishEntity: DishEntity = selectedDishRow.dish;
+        selectedDishRow.name = unmodifiedDishEntity.name;
+        selectedDishRow.type = unmodifiedDishEntity.type;
+        if (isNil(unmodifiedDishEntity.accompanimentRequired)) {
+          selectedDishRow.requiresAccompaniment = false;
+          selectedDishRow.requiresSalad = false;
+          selectedDishRow.requiresSide = false;
+          selectedDishRow.requiresVeggie = false;
+        } else {
+          selectedDishRow.requiresAccompaniment = unmodifiedDishEntity.accompanimentRequired !== RequiredAccompanimentFlags.None;
+          selectedDishRow.requiresSalad = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+          selectedDishRow.requiresSide = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+          selectedDishRow.requiresVeggie = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+        }
+        const clonedRows = cloneDeep(rows);
+        rows[selectedDishRowIndex] = selectedDishRow;
+        setRows(clonedRows);
+
+      }
+
     }
+
     setCurrentEditDish(null);
   };
 
