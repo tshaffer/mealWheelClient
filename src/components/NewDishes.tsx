@@ -390,14 +390,16 @@ const NewDishes = (props: NewDishesProps) => {
     if (!isNil(currentEditDish) && !isNil(currentEditDish.dish) && (currentEditDish.dish.id === '')) {
       // new dish - discard row
 
+      const selectedIndex = dishIdToDishRowIndex[''];
+
       // get index of row getting edited.
-      let selectedIndex = -1;
-      const id = '';
-      rows.forEach((row, index) => {
-        if (row.dish.id === id) {
-          selectedIndex = index;
-        }
-      });
+      // let selectedIndex = -1;
+      // const id = '';
+      // rows.forEach((row, index) => {
+      //   if (row.dish.id === id) {
+      //     selectedIndex = index;
+      //   }
+      // });
 
       if (selectedIndex !== -1) {
         const newRows = cloneDeep(rows);
