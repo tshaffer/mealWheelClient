@@ -357,20 +357,22 @@ const NewDishes = (props: NewDishesProps) => {
         props.onAddDish(newDish)
           .then((newDishId: string) => {
 
-            // get index of row getting edited.
-            let selectedIndex = -1;
-            const id = '';
-            rows.forEach((row, index) => {
-              if (row.dish.id === id) {
-                selectedIndex = index;
-              }
-            });
+            const selectedDishRowIndex = dishIdToDishRowIndex[''];
 
-            if (selectedIndex !== -1) {
-              const newRows = cloneDeep(rows);
-              const selectedRow: DishRow = newRows[selectedIndex];
+            // // get index of row getting edited.
+            // let selectedIndex = -1;
+            // const id = '';
+            // rows.forEach((row, index) => {
+            //   if (row.dish.id === id) {
+            //     selectedIndex = index;
+            //   }
+            // });
+
+            if (selectedDishRowIndex !== -1) {
+              const clonedRows = cloneDeep(rows);
+              const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
               selectedRow.dish.id = newDishId;
-              setRows(newRows);
+              setRows(clonedRows);
             }
 
           });
@@ -417,8 +419,8 @@ const NewDishes = (props: NewDishesProps) => {
 
   const updateSelectedRowProperty = (selectedDishRow: DishRow, propertyName: string, propertyValue: any): DishRow => {
     const clonedRows = cloneDeep(rows);
-    const selectedIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
-    const selectedRow: DishRow = clonedRows[selectedIndex];
+    const selectedDishRowIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
+    const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
     (selectedRow as any)[propertyName] = propertyValue;
     setRows(clonedRows);
     return selectedRow;
