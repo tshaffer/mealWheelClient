@@ -356,25 +356,13 @@ const NewDishes = (props: NewDishesProps) => {
         };
         props.onAddDish(newDish)
           .then((newDishId: string) => {
-
             const selectedDishRowIndex = dishIdToDishRowIndex[''];
-
-            // // get index of row getting edited.
-            // let selectedIndex = -1;
-            // const id = '';
-            // rows.forEach((row, index) => {
-            //   if (row.dish.id === id) {
-            //     selectedIndex = index;
-            //   }
-            // });
-
             if (selectedDishRowIndex !== -1) {
               const clonedRows = cloneDeep(rows);
               const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
               selectedRow.dish.id = newDishId;
               setRows(clonedRows);
             }
-
           });
       } else {
         const updatedDish: DishEntity = cloneDeep(currentEditDish.dish);
@@ -393,16 +381,6 @@ const NewDishes = (props: NewDishesProps) => {
       // new dish - discard row
 
       const selectedIndex = dishIdToDishRowIndex[''];
-
-      // get index of row getting edited.
-      // let selectedIndex = -1;
-      // const id = '';
-      // rows.forEach((row, index) => {
-      //   if (row.dish.id === id) {
-      //     selectedIndex = index;
-      //   }
-      // });
-
       if (selectedIndex !== -1) {
         const newRows = cloneDeep(rows);
         newRows.splice(selectedIndex, 1);
@@ -456,116 +434,28 @@ const NewDishes = (props: NewDishesProps) => {
   };
 
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
-
-    // const clonedRows = cloneDeep(rows);
-    // const selectedIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
-    // const selectedRow: DishRow = clonedRows[selectedIndex];
-    // selectedRow.type = updatedDishType;
-    // setRows(clonedRows);
-
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
     setCurrentEditDish(selectedRow);
-
   };
 
   const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
-
-    // get index of row getting edited.
-    // let selectedIndex = -1;
-    // const id = selectedDishRow.dish.id;
-    // rows.forEach((row, index) => {
-    //   if (row.dish.id === id) {
-    //     selectedIndex = index;
-    //   }
-    // });
-
-    // if (selectedIndex !== -1) {
-    //   const newRows = cloneDeep(rows);
-    //   const selectedRow: DishRow = newRows[selectedIndex];
-    //   selectedRow.requiresAccompaniment = requiresAccompaniment;
-    //   setRows(newRows);
-
-    //   setCurrentEditDish(selectedRow);
-    // }
-
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresAccompaniment', requiresAccompaniment);
     setCurrentEditDish(selectedRow);
-
   };
 
   const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
-
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSalad', requiresSalad);
     setCurrentEditDish(selectedRow);
-
-    // // get index of row getting edited.
-    // let selectedIndex = -1;
-    // const id = selectedDishRow.dish.id;
-    // rows.forEach((row, index) => {
-    //   if (row.dish.id === id) {
-    //     selectedIndex = index;
-    //   }
-    // });
-
-    // if (selectedIndex !== -1) {
-    //   const newRows = cloneDeep(rows);
-    //   const selectedRow: DishRow = newRows[selectedIndex];
-    //   selectedRow.requiresSalad = requiresSalad;
-    //   setRows(newRows);
-
-    //   setCurrentEditDish(selectedRow);
-    // }
-
   };
 
   const handleToggleRequiresSide = (selectedDishRow: DishRow, requiresSide: boolean) => {
-
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSide', requiresSide);
     setCurrentEditDish(selectedRow);
-
-    // get index of row getting edited.
-    // let selectedIndex = -1;
-    // const id = selectedDishRow.dish.id;
-    // rows.forEach((row, index) => {
-    //   if (row.dish.id === id) {
-    //     selectedIndex = index;
-    //   }
-    // });
-
-    // if (selectedIndex !== -1) {
-    //   const newRows = cloneDeep(rows);
-    //   const selectedRow: DishRow = newRows[selectedIndex];
-    //   selectedRow.requiresSide = requiresSide;
-    //   setRows(newRows);
-
-    //   setCurrentEditDish(selectedRow);
-    // }
-
   };
 
   const handleToggleRequiresVeggie = (selectedDishRow: DishRow, requiresVeggie: boolean) => {
-
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresVeggie', requiresVeggie);
     setCurrentEditDish(selectedRow);
-
-    // // get index of row getting edited.
-    // let selectedIndex = -1;
-    // const id = selectedDishRow.dish.id;
-    // rows.forEach((row, index) => {
-    //   if (row.dish.id === id) {
-    //     selectedIndex = index;
-    //   }
-    // });
-
-    // if (selectedIndex !== -1) {
-    //   const newRows = cloneDeep(rows);
-    //   const selectedRow: DishRow = newRows[selectedIndex];
-    //   selectedRow.requiresVeggie = requiresVeggie;
-    //   setRows(newRows);
-
-    //   setCurrentEditDish(selectedRow);
-    // }
-
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -786,13 +676,9 @@ const NewDishes = (props: NewDishesProps) => {
     for (let index = 0; index < rows.length; index++) {
       dishIdToDishRowIndex[rows[index].dish.id] = index;
     }
-    console.log('buildDishIdToDishRowIndex: ', dishIdToDishRowIndex);
-    console.log(rows);
   };
 
   const renderSortedTableContents = () => {
-
-    // dishIdToDishRowIndex = {};
     buildDishIdToDishRowIndex();
     const sortedDishes = stableSort(rows, getComparator(order, orderBy));
     const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -806,8 +692,6 @@ const NewDishes = (props: NewDishesProps) => {
             } else {
               renderedRow = renderInactiveRow(row);
             }
-
-            // dishIdToDishRowIndex[row.dish.id] = page * rowsPerPage + index; // looks like an index into the already sorted dishes.
             return renderedRow;
           })}
       </React.Fragment>
@@ -840,21 +724,6 @@ const NewDishes = (props: NewDishesProps) => {
               />
               <TableBody>
                 {renderSortedTableContents()}
-                {/* {stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row: DishRow, index: number) => {
-                    let renderedRow;
-                    if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
-                      renderedRow = renderEditingRow(row, index);
-                    } else {
-                      renderedRow = renderInactiveRow(row);
-                    }
-                    console.log('id');
-                    console.log(row.dish.id);
-                    console.log('row');
-                    console.log(row);
-                    return renderedRow;
-                  })} */}
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
