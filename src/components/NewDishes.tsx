@@ -413,14 +413,26 @@ const NewDishes = (props: NewDishesProps) => {
     selectedDishRow.name = dishName;
   };
 
-  const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
-
+  const updateSelectedRowProperty = (selectedDishRow: DishRow, propertyName: string, propertyValue: any): DishRow => {
     const clonedRows = cloneDeep(rows);
     const selectedIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
     const selectedRow: DishRow = clonedRows[selectedIndex];
-    selectedRow.type = updatedDishType;
+    // if (Object.prototype.hasOwnProperty.call(selectedRow, propertyName)) {
+    (selectedRow as any)[propertyName] = propertyValue;
+    // }
     setRows(clonedRows);
+    return selectedRow;
+  };
 
+  const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
+
+    // const clonedRows = cloneDeep(rows);
+    // const selectedIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
+    // const selectedRow: DishRow = clonedRows[selectedIndex];
+    // selectedRow.type = updatedDishType;
+    // setRows(clonedRows);
+
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
     setCurrentEditDish(selectedRow);
 
   };
@@ -725,9 +737,20 @@ const NewDishes = (props: NewDishesProps) => {
     );
   };
 
+  // TEDTODO - only invoke this when necesssary
+  const buildDishIdToDishRowIndex = () => {
+    dishIdToDishRowIndex = {};
+    for (let index = 0; index < rows.length; index++) {
+      dishIdToDishRowIndex[rows[index].dish.id] = index;
+    }
+    console.log('buildDishIdToDishRowIndex: ', dishIdToDishRowIndex);
+    console.log(rows);
+  };
+
   const renderSortedTableContents = () => {
 
-    dishIdToDishRowIndex = {};
+    // dishIdToDishRowIndex = {};
+    buildDishIdToDishRowIndex();
     const sortedDishes = stableSort(rows, getComparator(order, orderBy));
     const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
@@ -741,7 +764,7 @@ const NewDishes = (props: NewDishesProps) => {
               renderedRow = renderInactiveRow(row);
             }
 
-            dishIdToDishRowIndex[row.dish.id] = page * rowsPerPage + index;
+            // dishIdToDishRowIndex[row.dish.id] = page * rowsPerPage + index; // looks like an index into the already sorted dishes.
             return renderedRow;
           })}
       </React.Fragment>
