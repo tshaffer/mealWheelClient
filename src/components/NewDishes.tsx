@@ -417,9 +417,7 @@ const NewDishes = (props: NewDishesProps) => {
     const clonedRows = cloneDeep(rows);
     const selectedIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
     const selectedRow: DishRow = clonedRows[selectedIndex];
-    // if (Object.prototype.hasOwnProperty.call(selectedRow, propertyName)) {
     (selectedRow as any)[propertyName] = propertyValue;
-    // }
     setRows(clonedRows);
     return selectedRow;
   };
@@ -440,88 +438,100 @@ const NewDishes = (props: NewDishesProps) => {
   const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
 
     // get index of row getting edited.
-    let selectedIndex = -1;
-    const id = selectedDishRow.dish.id;
-    rows.forEach((row, index) => {
-      if (row.dish.id === id) {
-        selectedIndex = index;
-      }
-    });
+    // let selectedIndex = -1;
+    // const id = selectedDishRow.dish.id;
+    // rows.forEach((row, index) => {
+    //   if (row.dish.id === id) {
+    //     selectedIndex = index;
+    //   }
+    // });
 
-    if (selectedIndex !== -1) {
-      const newRows = cloneDeep(rows);
-      const selectedRow: DishRow = newRows[selectedIndex];
-      selectedRow.requiresAccompaniment = requiresAccompaniment;
-      setRows(newRows);
+    // if (selectedIndex !== -1) {
+    //   const newRows = cloneDeep(rows);
+    //   const selectedRow: DishRow = newRows[selectedIndex];
+    //   selectedRow.requiresAccompaniment = requiresAccompaniment;
+    //   setRows(newRows);
 
-      setCurrentEditDish(selectedRow);
-    }
+    //   setCurrentEditDish(selectedRow);
+    // }
+
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresAccompaniment', requiresAccompaniment);
+    setCurrentEditDish(selectedRow);
 
   };
 
   const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
 
-    // get index of row getting edited.
-    let selectedIndex = -1;
-    const id = selectedDishRow.dish.id;
-    rows.forEach((row, index) => {
-      if (row.dish.id === id) {
-        selectedIndex = index;
-      }
-    });
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSalad', requiresSalad);
+    setCurrentEditDish(selectedRow);
 
-    if (selectedIndex !== -1) {
-      const newRows = cloneDeep(rows);
-      const selectedRow: DishRow = newRows[selectedIndex];
-      selectedRow.requiresSalad = requiresSalad;
-      setRows(newRows);
+    // // get index of row getting edited.
+    // let selectedIndex = -1;
+    // const id = selectedDishRow.dish.id;
+    // rows.forEach((row, index) => {
+    //   if (row.dish.id === id) {
+    //     selectedIndex = index;
+    //   }
+    // });
 
-      setCurrentEditDish(selectedRow);
-    }
+    // if (selectedIndex !== -1) {
+    //   const newRows = cloneDeep(rows);
+    //   const selectedRow: DishRow = newRows[selectedIndex];
+    //   selectedRow.requiresSalad = requiresSalad;
+    //   setRows(newRows);
+
+    //   setCurrentEditDish(selectedRow);
+    // }
 
   };
 
   const handleToggleRequiresSide = (selectedDishRow: DishRow, requiresSide: boolean) => {
 
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSide', requiresSide);
+    setCurrentEditDish(selectedRow);
+
     // get index of row getting edited.
-    let selectedIndex = -1;
-    const id = selectedDishRow.dish.id;
-    rows.forEach((row, index) => {
-      if (row.dish.id === id) {
-        selectedIndex = index;
-      }
-    });
+    // let selectedIndex = -1;
+    // const id = selectedDishRow.dish.id;
+    // rows.forEach((row, index) => {
+    //   if (row.dish.id === id) {
+    //     selectedIndex = index;
+    //   }
+    // });
 
-    if (selectedIndex !== -1) {
-      const newRows = cloneDeep(rows);
-      const selectedRow: DishRow = newRows[selectedIndex];
-      selectedRow.requiresSide = requiresSide;
-      setRows(newRows);
+    // if (selectedIndex !== -1) {
+    //   const newRows = cloneDeep(rows);
+    //   const selectedRow: DishRow = newRows[selectedIndex];
+    //   selectedRow.requiresSide = requiresSide;
+    //   setRows(newRows);
 
-      setCurrentEditDish(selectedRow);
-    }
+    //   setCurrentEditDish(selectedRow);
+    // }
 
   };
 
   const handleToggleRequiresVeggie = (selectedDishRow: DishRow, requiresVeggie: boolean) => {
 
-    // get index of row getting edited.
-    let selectedIndex = -1;
-    const id = selectedDishRow.dish.id;
-    rows.forEach((row, index) => {
-      if (row.dish.id === id) {
-        selectedIndex = index;
-      }
-    });
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresVeggie', requiresVeggie);
+    setCurrentEditDish(selectedRow);
 
-    if (selectedIndex !== -1) {
-      const newRows = cloneDeep(rows);
-      const selectedRow: DishRow = newRows[selectedIndex];
-      selectedRow.requiresVeggie = requiresVeggie;
-      setRows(newRows);
+    // // get index of row getting edited.
+    // let selectedIndex = -1;
+    // const id = selectedDishRow.dish.id;
+    // rows.forEach((row, index) => {
+    //   if (row.dish.id === id) {
+    //     selectedIndex = index;
+    //   }
+    // });
 
-      setCurrentEditDish(selectedRow);
-    }
+    // if (selectedIndex !== -1) {
+    //   const newRows = cloneDeep(rows);
+    //   const selectedRow: DishRow = newRows[selectedIndex];
+    //   selectedRow.requiresVeggie = requiresVeggie;
+    //   setRows(newRows);
+
+    //   setCurrentEditDish(selectedRow);
+    // }
 
   };
 
