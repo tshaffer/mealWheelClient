@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
-import { Calendar, View } from 'react-big-calendar';
+import { Calendar, DateLocalizer, Navigate, View, Views } from 'react-big-calendar';
 import moment from 'moment';
 
 import { momentLocalizer } from 'react-big-calendar';
@@ -14,9 +14,68 @@ import MealInAssignmentCalendar from './MealInAssignmentCalendar';
 import { ScheduledMealEntity } from '../types';
 import { getScheduledMeals, getStartDate } from '../selectors';
 import { isNil } from 'lodash';
+import * as dates from 'date-arithmetic';
 
-const localizer = momentLocalizer(moment);
-const allViews: View[] = ['day', 'week', 'month'];
+const localizer: DateLocalizer = momentLocalizer(moment);
+const allViews: View[] = [Views.DAY, Views.WEEK, Views.MONTH];
+export interface MyWeekProps {
+  date: Date;
+  localizer: any;
+  max: Date;
+  min: Date;
+  scrollToTime: Date;
+}
+
+const MyWeek = (props: MyWeekProps) => {
+
+  console.log('MyWeek');
+  console.log(props);
+
+  const title = (date: Date) => {
+    return `My awesome week: ${date.toLocaleDateString()}`;
+  };
+
+  const range = (date: Date, lObj: any) => {
+    const localizer = lObj.localizer;
+    const start = date;
+    const end = dates.add(start, 2, 'day');
+  
+    let current = start;
+    const range = [];
+  
+    while (localizer.lte(current, end, 'day')) {
+      range.push(current);
+      current = localizer.add(current, 1, 'day');
+    }
+  
+    return range;
+  };
+
+  const navigate = (date: any, action: any, lObj: any) => {
+    const localizer = lObj.localizer;
+    switch (action) {
+      case Navigate.PREVIOUS:
+        return localizer.add(date, -3, 'day');
+  
+      case Navigate.NEXT:
+        return localizer.add(date, 3, 'day');
+  
+      default:
+        return date;
+    }
+  };
+
+  return (
+    <div>
+      pizza
+    </div>
+  );
+};
+
+const myViews: any = {
+  month: true,
+  week: MyWeek,
+};
 
 export interface MealAssignmentScheduleProps {
   startDate: Date;
@@ -95,8 +154,8 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
         resizable={false}
         localizer={localizer}
         events={events}
-        defaultView='week'
-        views={allViews}
+        defaultView={Views.WEEK}
+        views={myViews}
         defaultDate={new Date(props.startDate.getFullYear(), props.startDate.getMonth(), props.startDate.getDate())}
         components={{
           event: MealInAssignmentCalendar as any
