@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
-import { Calendar, DateLocalizer, Navigate, View, Views } from 'react-big-calendar';
+import { Calendar, DateLocalizer, Navigate, TimeGrid, View, Views } from 'react-big-calendar';
 import moment from 'moment';
 
 import { momentLocalizer } from 'react-big-calendar';
@@ -18,59 +18,139 @@ import * as dates from 'date-arithmetic';
 
 const localizer: DateLocalizer = momentLocalizer(moment);
 const allViews: View[] = [Views.DAY, Views.WEEK, Views.MONTH];
-export interface MyWeekProps {
+
+interface mWeekProps {
   date: Date;
   localizer: any;
-  max: Date;
-  min: Date;
-  scrollToTime: Date;
+  max: any;
+  min: any;
+  scrollToTime: any;
 }
 
-const MyWeek = (props: MyWeekProps) => {
+function MyWeek({
+  date,
+  localizer,
+  max = localizer.endOf(new Date(), 'day'),
+  min = localizer.startOf(new Date(), 'day'),
+  scrollToTime = localizer.startOf(new Date(), 'day'),
+  ...props
+}) {
 
-  console.log('MyWeek');
-  console.log(props);
-
-  const title = (date: Date) => {
-    return `My awesome week: ${date.toLocaleDateString()}`;
-  };
-
-  const range = (date: Date, lObj: any) => {
-    const localizer = lObj.localizer;
-    const start = date;
-    const end = dates.add(start, 2, 'day');
-  
-    let current = start;
-    const range = [];
-  
-    while (localizer.lte(current, end, 'day')) {
-      range.push(current);
-      current = localizer.add(current, 1, 'day');
-    }
-  
-    return range;
-  };
-
-  const navigate = (date: any, action: any, lObj: any) => {
-    const localizer = lObj.localizer;
-    switch (action) {
-      case Navigate.PREVIOUS:
-        return localizer.add(date, -3, 'day');
-  
-      case Navigate.NEXT:
-        return localizer.add(date, 3, 'day');
-  
-      default:
-        return date;
-    }
-  };
+  const currRange = React.useMemo(
+    () => MyWeek.range(date, { localizer }),
+    [date, localizer]
+  );
 
   return (
-    <div>
-      pizza
-    </div>
+    <TimeGrid
+      date={date}
+      eventOffset={15}
+      localizer={localizer}
+      max={props.max}
+      min={props.min}
+      range={currRange}
+      scrollToTime={props.scrollToTime}
+      {...props}
+    />
   );
+}
+
+MyWeek.propTypes = {
+  date: Date,
+  localizer: momentLocalizer,
+  max: Date,
+  min: Date,
+  scrollToTime: Date,
 };
+
+MyWeek.range = (date: Date, lObj: any) => {
+  const localizer = lObj.localizer;
+  const start = date;
+  const end = dates.add(start, 2, 'day');
+
+  let current = start;
+  const range = [];
+
+  while (localizer.lte(current, end, 'day')) {
+    range.push(current);
+    current = localizer.add(current, 1, 'day');
+  }
+
+  return range;
+};
+
+MyWeek.navigate = (date: Date, action: any, lObj: any) => {
+  const localizer = lObj.localizer;
+  switch (action) {
+    case Navigate.PREVIOUS:
+      return localizer.add(date, -3, 'day');
+
+    case Navigate.NEXT:
+      return localizer.add(date, 3, 'day');
+
+    default:
+      return date;
+  }
+};
+
+MyWeek.title = (date: Date) => {
+  return `My awesome week: ${date.toLocaleDateString()}`;
+};
+
+
+// export interface MyWeekProps {
+//   date: Date;
+//   localizer: any;
+//   max: Date;
+//   min: Date;
+//   scrollToTime: Date;
+// }
+
+// const MyWeek = (props: MyWeekProps) => {
+
+//   console.log('MyWeek');
+//   console.log(props);
+
+//   const title = (date: Date) => {
+//     return `My awesome week: ${date.toLocaleDateString()}`;
+//   };
+
+//   const range = (date: Date, lObj: any) => {
+//     const localizer = lObj.localizer;
+//     const start = date;
+//     const end = dates.add(start, 2, 'day');
+
+//     let current = start;
+//     const range = [];
+
+//     while (localizer.lte(current, end, 'day')) {
+//       range.push(current);
+//       current = localizer.add(current, 1, 'day');
+//     }
+
+//     return range;
+//   };
+
+//   const navigate = (date: any, action: any, lObj: any) => {
+//     const localizer = lObj.localizer;
+//     switch (action) {
+//       case Navigate.PREVIOUS:
+//         return localizer.add(date, -3, 'day');
+
+//       case Navigate.NEXT:
+//         return localizer.add(date, 3, 'day');
+
+//       default:
+//         return date;
+//     }
+//   };
+
+//   return (
+//     <div>
+//       pizza
+//     </div>
+//   );
+// };
 
 const myViews: any = {
   month: true,
@@ -84,6 +164,17 @@ export interface MealAssignmentScheduleProps {
 }
 
 const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
+
+  const { defaultDate, views } = React.useMemo(
+    () => ({
+      defaultDate: new Date(2015, 3, 1),
+      views: {
+        month: true,
+        week: MyWeek,
+      },
+    }),
+    []
+  );
 
   const DnDCalendar = withDragAndDrop(Calendar);
 
@@ -149,7 +240,15 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
 
   return (
     <div style={{ height: '50vh' }}>
-      <DnDCalendar
+      <Calendar
+        defaultDate={defaultDate}
+        defaultView={Views.WEEK}
+        events={events}
+        localizer={localizer}
+        views={views}
+      />
+
+      {/* <DnDCalendar
         selectable
         resizable={false}
         localizer={localizer}
@@ -168,7 +267,7 @@ const MealAssignmentSchedule = (props: MealAssignmentScheduleProps) => {
         onDragOver={handleDragOver}
         onDropFromOutside={handleDropFromOutside}
         onEventDrop={handleEventDrop}
-      />
+      /> */}
     </div>
   );
 };
