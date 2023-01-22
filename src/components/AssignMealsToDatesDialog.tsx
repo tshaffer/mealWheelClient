@@ -51,7 +51,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   };
 
   const handleSuggestMoreMeals = () => {
-    console.log('handleSuggestMoreMeals');
     props.onSuggestMoreMeals(4);
   };
 

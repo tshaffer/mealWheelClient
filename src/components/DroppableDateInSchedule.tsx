@@ -8,8 +8,7 @@ import { Button } from '@mui/material';
 import MenuItemDescriptor from './MenuItemDescriptor';
 
 const style: CSSProperties = {
-  height: '12rem',
-  width: '12rem',
+  height: '92px',
   marginRight: '1.5rem',
   marginBottom: '1.5rem',
   color: 'white',
