@@ -8,6 +8,7 @@ import Select from 'react-select';
 import { UiState, UserEntity, UsersMap } from '../types';
 import {
   initializeApp,
+  loadUserData,
   setStartupAppState
 } from '../controllers';
 import { getAppInitialized, getUsers } from '../selectors';
@@ -21,6 +22,7 @@ export interface LoginProps {
   onSetUser: (userId: string) => any;
   onSetUiState: (uiState: UiState) => any;
   onSetStartupAppState: () => any;
+  onLoadUserData: () => any;
 }
 
 const Login = (props: LoginProps) => {
@@ -72,7 +74,8 @@ const Login = (props: LoginProps) => {
     localStorage.setItem('userId', selectedUser.id);
     props.onSetUser(selectedUser.id);
     props.onSetStartupAppState();
-
+    props.onLoadUserData();
+    
     navigate('/app');
   };
 
@@ -125,6 +128,7 @@ function mapStateToProps(state: any) {
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators({
     onInitializeApp: initializeApp,
+    onLoadUserData: loadUserData,
     onSetUser: setUser,
     onSetUiState: setUiState,
     onSetStartupAppState: setStartupAppState,

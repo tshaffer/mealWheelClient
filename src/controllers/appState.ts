@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { isNil } from 'lodash';
 import {
+  clearDefinedMeals,
+  clearDishes,
+  clearIngredients,
+  clearIngredientsByDish,
+  clearScheduledMeals,
   setAppInitialized,
   setUiState,
 } from '../models';
@@ -56,6 +61,7 @@ const getStartupParams = () => {
   };
 };
 
+// TEDTODO - make sure it always returns a Promise
 export const initializeApp = () => {
 
   return (dispatch: any) => {
@@ -72,23 +78,34 @@ export const initializeApp = () => {
         if (isNil(loggedInUser)) {
           dispatch(setUiState(UiState.SelectUser));
           dispatch(setAppInitialized());
+          return Promise.resolve();
         } else {
-
-          return dispatch(loadDishes())
+          return dispatch(loadUserData())
             .then(() => {
-              dispatch(loadDefinedMeals());
-            }).then(() => {
-              dispatch(loadScheduledMeals());
-            }).then(() => {
-              dispatch(loadIngredients());
-            }).then(() => {
-              dispatch(loadIngredientsByDish());
-            }).then(() => {
               dispatch(setUiState(UiState.Other));
               dispatch(setAppInitialized());
             });
         }
+      });
+  };
+};
 
+export const loadUserData = (): any => {
+  return (dispatch: any) => {
+    dispatch(clearDishes());
+    dispatch(clearDefinedMeals());
+    dispatch(clearScheduledMeals());
+    dispatch(clearIngredients);
+    dispatch(clearIngredientsByDish);
+    return dispatch(loadDishes())
+      .then(() => {
+        dispatch(loadDefinedMeals());
+      }).then(() => {
+        dispatch(loadScheduledMeals());
+      }).then(() => {
+        dispatch(loadIngredients());
+      }).then(() => {
+        dispatch(loadIngredientsByDish());
       });
   };
 };

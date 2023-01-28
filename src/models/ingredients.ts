@@ -5,11 +5,13 @@ import {
   IngredientsByDish,
   IngredientsState,
 } from '../types';
-import { cloneDeep, isArray, isNil } from 'lodash';
+import { cloneDeep, isArray } from 'lodash';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
+export const CLEAR_INGREDIENTS = 'CLEAR_INGREDIENTS';
+export const CLEAR_INGREDIENTS_BY_DISH = 'CLEAR_INGREDIENTS_BY_DISH';
 export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
@@ -21,6 +23,19 @@ export const SET_INGREDIENTS_BY_DISH = 'SET_INGREDIENTS_BY_DISH';
 // ------------------------------------
 // Actions
 // ------------------------------------
+
+export const clearIngredients = (): any => {
+  return {
+    type: CLEAR_INGREDIENTS,
+  };
+};
+
+export const clearIngredientsByDish = (): any => {
+  return {
+    type: CLEAR_INGREDIENTS_BY_DISH,
+  };
+};
+
 export interface IngredientPayload {
   ingredient: IngredientEntity;
 }
@@ -193,6 +208,12 @@ export const ingredientsStateReducer = (
     }
     case SET_INGREDIENTS_BY_DISH: {
       return { ...state, ingredientsByDish: action.payload.ingredientsByDish };
+    }
+    case CLEAR_INGREDIENTS: {
+      return { ...state, ingredientsById: {}};
+    }
+    case CLEAR_INGREDIENTS_BY_DISH: {
+      return { ...state, ingredientsByDish: {}};
     }
     default:
       return state;

@@ -5,6 +5,7 @@ import { MealWheelModelBaseAction } from './baseAction';
 // ------------------------------------
 // Constants
 // ------------------------------------
+export const CLEAR_DISHES = 'CLEAR_DISHES';
 export const ADD_DISH = 'ADD_DISH';
 export const ADD_DISHES = 'ADD_DISHES';
 export const UPDATE_DISH = 'UPDATE_DISH';
@@ -12,6 +13,13 @@ export const UPDATE_DISH = 'UPDATE_DISH';
 // ------------------------------------
 // Actions
 // ------------------------------------
+
+export const clearDishes = (): any => {
+  return {
+    type: CLEAR_DISHES,
+  };
+};
+
 
 export interface AddDishPayload {
   id: string;
@@ -97,6 +105,8 @@ export const dishesStateReducer = (
       console.log(updatedDishes);
       return newState;
     }
+    case CLEAR_DISHES: 
+      return initialState;
     default:
       return state;
   }
