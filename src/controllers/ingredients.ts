@@ -9,7 +9,10 @@ export const loadIngredients = () => {
 
   return (dispatch: any, getState: any) => {
 
-    const path = serverUrl + apiUrlFragment + 'ingredients';
+    const state: MealWheelState = getState();
+    const id = getCurrentUser(state);
+
+    const path = serverUrl + apiUrlFragment + 'ingredients?id=' + id;
 
     return axios.get(path)
       .then((ingredientsResponse: any) => {
@@ -36,6 +39,28 @@ export const loadIngredientsByDish = () => {
   };
 };
 
+
+// onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number) => any;
+// type loadIngredientsByDishType = (dispatch: any, getState: any) => void;
+// type foo = (path: string) => Promise<void>;
+
+// export const loadIngredientsByDish = (): loadIngredientsByDishType  => {
+
+//   return (dispatch: any, getState: any): foo => {
+
+//     const state: MealWheelState = getState();
+//     const id = getCurrentUser(state);
+
+//     const path = serverUrl + apiUrlFragment + 'ingredientsByDish?id=' + id;
+
+//     return axios.get(path)
+//       .then((ingredientsByDishResponse: any) => {
+//         const ingredientsByDish: IngredientsByDish = (ingredientsByDishResponse as any).data;
+//         dispatch(setIngredientsByDishRedux(ingredientsByDish));
+//       });
+//   };
+// };
+
 export const addIngredient = (
   ingredient: IngredientEntity
 ): any => {
@@ -51,6 +76,7 @@ export const addIngredient = (
 
     const addIngredientBody = {
       id: ingredient.id,
+      userId: getCurrentUser(getState()),
       name: ingredient.name,
       ingredients: ingredient.ingredients,
       showInGroceryList: ingredient.showInGroceryList
@@ -74,11 +100,12 @@ export const updateIngredient = (
   id: string,
   ingredient: IngredientEntity
 ): any => {
-  return ((dispatch: any): any => {
+  return ((dispatch: any, getState: any): any => {
     const path = serverUrl + apiUrlFragment + 'updateIngredient';
 
     const updateIngredientBody = {
       id: ingredient.id,
+      userId: getCurrentUser(getState()),
       name: ingredient.name,
       ingredients: ingredient.ingredients,
       showInGroceryList: ingredient.showInGroceryList

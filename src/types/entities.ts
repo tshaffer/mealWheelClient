@@ -77,6 +77,7 @@ export interface VerboseScheduledMeal extends ScheduledMealEntity {
 
 export interface IngredientEntity {
   id: string;
+  userId: string;
   name: string;
   showInGroceryList: boolean;
   ingredients: IngredientEntity[];

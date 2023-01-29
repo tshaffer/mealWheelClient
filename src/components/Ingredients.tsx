@@ -149,6 +149,7 @@ const Ingredients = (props: IngredientsProps) => {
 
     const ingredient: IngredientEntity = {
       id: updatedIngredient.id,
+      userId: updatedIngredient.userId,
       name: updatedIngredient.name,
       showInGroceryList: updatedIngredient.showInGroceryList,
       ingredients: [],
@@ -224,6 +225,8 @@ const Ingredients = (props: IngredientsProps) => {
     const rows: GridRowsProp = props.ingredients.map((ingredient: IngredientEntity) => {
       const row: GridRowModel = {
         id: ingredient.id,
+        // TEDTODO - is this okay?
+        userId: ingredient.userId,
         name: ingredient.name,
         showInGroceryList: ingredient.showInGroceryList,
       };
