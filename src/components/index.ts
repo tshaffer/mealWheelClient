@@ -2,7 +2,6 @@ export * from './AboutDialog';
 export * from './App';
 export * from './AssignIngredientsToDishDialog';
 export * from './AssignMealsToDatesDialog';
-export * from './Dishes';
 export * from './DraggableMeal';
 export * from './DroppableDateInSchedule';
 export * from './GenerateGroceryListDialog';

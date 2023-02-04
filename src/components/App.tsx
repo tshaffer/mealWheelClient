@@ -16,7 +16,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-
 import {
   UiState,
   UsersMap,
@@ -35,13 +34,10 @@ import {
   getUsers,
 } from '../selectors';
 import Dishes from './Dishes';
-import NewDishes from './NewDishes';
 import Ingredients from './Ingredients';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
-
-import EnhancedTable from './ExampleMuiTable';
 
 export interface AppProps {
   appInitialized: boolean;
@@ -237,7 +233,7 @@ const App = (props: AppProps) => {
         <div id='dishesContent' style={dishesTabContentStyle}>
           {/* <Dishes /> */}
           {/* <EnhancedTable/> */}
-          <NewDishes />
+          <Dishes />
         </div>
         <div id='ingredientsContent' style={ingredientsTabContentStyle}>
           <Ingredients />
