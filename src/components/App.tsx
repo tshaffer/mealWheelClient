@@ -176,7 +176,6 @@ const App = (props: AppProps) => {
               </IconButton>
               <Button
                 color='inherit'
-                // onClick={handleSignout}
                 onClick={handleShowAccount}
                 sx={{ marginLeft: 'auto' }}
               >
@@ -285,6 +284,7 @@ const App = (props: AppProps) => {
         <AccountDialog
           open={showAccount}
           onClose={handleCloseAccount}
+          onSignout={handleSignout}
         />
       </div>
       {toolbar}

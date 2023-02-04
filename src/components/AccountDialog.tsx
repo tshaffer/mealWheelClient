@@ -13,6 +13,7 @@ import { isNil } from 'lodash';
 
 export interface AccountDialogPropsFromParent {
   open: boolean;
+  onSignout: () => void;
   onClose: () => void;
 }
 
@@ -23,14 +24,15 @@ export interface AccountDialogProps extends AccountDialogPropsFromParent {
 
 function AccountDialog(props: AccountDialogProps) {
 
-  const { open, onClose } = props;
+  const { open, onSignout, onClose } = props;
 
   const handleClose = () => {
     onClose();
   };
 
   const handleSignout = () => {
-    console.log('handleSignout');
+    onSignout();
+    onClose();
   };
 
   let currentUserName: string = 'Nobody';
