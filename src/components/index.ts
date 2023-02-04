@@ -1,4 +1,5 @@
 export * from './AboutDialog';
+export * from './AccountDialog';
 export * from './App';
 export * from './AssignIngredientsToDishDialog';
 export * from './AssignMealsToDatesDialog';

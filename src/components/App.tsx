@@ -39,6 +39,7 @@ import Ingredients from './Ingredients';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
+import AccountDialog from './AccountDialog';
 import Box from '@mui/material/Box';
 import { isNil } from 'lodash';
 
@@ -56,6 +57,7 @@ const App = (props: AppProps) => {
   const [redirectTarget, setRedirectTarget] = React.useState('');
 
   const [showAbout, setShowAbout] = React.useState(false);
+  const [showAccount, setShowAccount] = React.useState(false);
 
   const [selectedTab, setSelectedTab] = React.useState<string>('mealScheduleTabSelect');
 
@@ -136,6 +138,14 @@ const App = (props: AppProps) => {
     setShowAbout(false);
   };
 
+  const handleShowAccount = () => {
+    setShowAccount(true);
+  };
+
+  const handleCloseAccount = () => {
+    setShowAccount(false);
+  };
+
   function handleSelectTab(evt: any) {
     setSelectedTab(evt.target.id);
   }
@@ -166,7 +176,8 @@ const App = (props: AppProps) => {
               </IconButton>
               <Button
                 color='inherit'
-                onClick={handleSignout}
+                // onClick={handleSignout}
+                onClick={handleShowAccount}
                 sx={{ marginLeft: 'auto' }}
               >
                 {currentUserName}
@@ -268,6 +279,12 @@ const App = (props: AppProps) => {
         <AboutDialog
           open={showAbout}
           onClose={handleCloseAbout}
+        />
+      </div>
+      <div>
+        <AccountDialog
+          open={showAccount}
+          onClose={handleCloseAccount}
         />
       </div>
       {toolbar}
