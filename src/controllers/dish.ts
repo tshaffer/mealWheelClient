@@ -2,11 +2,11 @@ import axios from 'axios';
 import { getCurrentUser } from '../selectors';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addDishesRedux, addDishRedux, MealWheelDispatch, updateDishRedux } from '../models';
+import { addDishesRedux, addDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, updateDishRedux } from '../models';
 
-import { apiUrlFragment, BaseDishEntity, DishEntity, MealWheelState, serverUrl } from '../types';
+import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../types';
 
-export const loadDishes = () => {
+export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
 
     const state: MealWheelState = getState();
@@ -24,8 +24,8 @@ export const loadDishes = () => {
 
 export const addDish = (
   dish: DishEntity
-): any => {
-  return ((dispatch: MealWheelDispatch, getState: any): Promise<string> => {
+): MealWheelStringPromiseThunkAction => {
+  return (dispatch: MealWheelDispatch, getState: any): Promise<string> => {
 
     const path = serverUrl + apiUrlFragment + 'addDish';
 
@@ -49,15 +49,15 @@ export const addDish = (
       return '';
     });
 
-  });
+  };
 };
 
 
 export const updateDish = (
   id: string,
   dish: DishEntity
-): any => {
-  return ((dispatch: MealWheelDispatch): any => {
+): MealWheelVoidPromiseThunkAction => {
+  return (dispatch: MealWheelDispatch): any => {
 
     const path = serverUrl + apiUrlFragment + 'updateDish';
 
@@ -78,6 +78,6 @@ export const updateDish = (
       return;
     });
 
-  });
+  };
 };
 

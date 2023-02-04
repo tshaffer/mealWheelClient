@@ -6,7 +6,11 @@ import {
   clearIngredients,
   clearIngredientsByDish,
   clearScheduledMeals,
+  MealWheelAnyPromiseThunkAction,
+  MealWheelAnyThunkAction,
   MealWheelDispatch,
+  MealWheelVoidPromiseThunkAction,
+  MealWheelVoidThunkAction,
   setAppInitialized,
   setUiState,
 } from '../models';
@@ -31,7 +35,7 @@ import {
 } from './meal';
 import { loadIngredients, loadIngredientsByDish } from './ingredients';
 
-const getStartupParams = () => {
+const getStartupParams = (): MealWheelAnyThunkAction => {
 
   return (dispatch: MealWheelDispatch) => {
 
@@ -63,14 +67,14 @@ const getStartupParams = () => {
 };
 
 // TEDTODO - make sure it always returns a Promise
-export const initializeApp = () => {
+export const initializeApp = (): MealWheelAnyPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch) => {
 
     dispatch(getVersions());
 
-    const startupParams: StartupParams = dispatch(getStartupParams());
-    dispatch(loadUsers())
+    // const startupParams: StartupParams = dispatch(getStartupParams());
+    return dispatch(loadUsers())
       .then(() => {
 
         dispatch(setUiState(UiState.SelectUser));
@@ -91,7 +95,7 @@ export const initializeApp = () => {
   };
 };
 
-export const loadUserData = (): any => {
+export const loadUserData = (): MealWheelAnyPromiseThunkAction => {
   return (dispatch: MealWheelDispatch) => {
     dispatch(clearDishes());
     dispatch(clearDefinedMeals());
@@ -111,7 +115,7 @@ export const loadUserData = (): any => {
   };
 };
 
-export const setStartupAppState = () => {
+export const setStartupAppState = (): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     // const state: MealWheelState = getState();
     // const startPage: StartPage = getStartPage(state);
@@ -119,7 +123,7 @@ export const setStartupAppState = () => {
   };
 };
 
-export const uploadFile = (formData: FormData): any => {
+export const uploadFile = (formData: FormData): MealWheelVoidPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     const state: MealWheelState = getState();
     const userId = getCurrentUser(state) as string;

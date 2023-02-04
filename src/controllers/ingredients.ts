@@ -3,9 +3,9 @@ import axios from 'axios';
 import { apiUrlFragment, IngredientEntity, IngredientsByDish, MealWheelState, serverUrl } from '../types';
 
 import { getCurrentUser } from '../selectors';
-import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, MealWheelDispatch, replaceIngredientInDishRedux, setIngredientsByDishRedux, updateIngredientRedux } from '../models';
+import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, MealWheelDispatch, MealWheelStringOrNullPromiseThunkAction, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, replaceIngredientInDishRedux, setIngredientsByDishRedux, updateIngredientRedux } from '../models';
 
-export const loadIngredients = () => {
+export const loadIngredients = (): MealWheelVoidPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
@@ -22,7 +22,7 @@ export const loadIngredients = () => {
   };
 };
 
-export const loadIngredientsByDish = () => {
+export const loadIngredientsByDish = (): MealWheelVoidPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
@@ -63,7 +63,7 @@ export const loadIngredientsByDish = () => {
 
 export const addIngredient = (
   ingredient: IngredientEntity
-): any => {
+): MealWheelStringOrNullPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
 
     // TODO - is this the right place to strip 'newIngredient'?
@@ -99,8 +99,8 @@ export const addIngredient = (
 export const updateIngredient = (
   id: string,
   ingredient: IngredientEntity
-): any => {
-  return ((dispatch: MealWheelDispatch, getState: any): any => {
+): MealWheelStringOrNullPromiseThunkAction => {
+  return (dispatch: MealWheelDispatch, getState: any): any => {
     const path = serverUrl + apiUrlFragment + 'updateIngredient';
 
     const updateIngredientBody = {
@@ -122,13 +122,13 @@ export const updateIngredient = (
       console.log(error);
       return '';
     });
-  });
+  };
 };
 
 export const addIngredientToDish = (
   dishId: string,
   ingredientEntity: IngredientEntity,
-) => {
+): MealWheelStringPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
@@ -156,7 +156,7 @@ export const addIngredientToDish = (
 
 export const replaceIngredientInDish = (
   dishId: string, existingIngredientId: string, newIngredientId: string
-) => {
+): MealWheelVoidPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
@@ -177,7 +177,7 @@ export const replaceIngredientInDish = (
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      return '';
+      return;
     });
   };
 };
@@ -185,7 +185,7 @@ export const replaceIngredientInDish = (
 export const deleteIngredientFromDish = (
   dishId: string,
   ingredientId: string,
-) => {
+): MealWheelVoidPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
@@ -205,7 +205,7 @@ export const deleteIngredientFromDish = (
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      return '';
+      return;
     });
   };
 };

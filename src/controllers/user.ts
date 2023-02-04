@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { MealWheelState, UiState, UserEntity, UsersMap } from '../types';
-import { addUser, MealWheelDispatch, setUiState, setUser } from '../models';
+import { addUser, MealWheelAnyPromiseThunkAction, MealWheelAnyThunkAction, MealWheelDispatch, MealWheelVoidPromiseThunkAction, setUiState, setUser } from '../models';
 
 import { apiUrlFragment, serverUrl } from '../index';
 import { isNil, isString } from 'lodash';
 
-export const loadUsers = () => {
+export const loadUsers = (): MealWheelVoidPromiseThunkAction => {
   return (dispatch: MealWheelDispatch) => {
 
     const path = serverUrl + apiUrlFragment + 'users';
@@ -45,7 +45,7 @@ export const loadUsers = () => {
   };
 };
 
-export const loginPersistentUser = () => {
+export const loginPersistentUser = (): MealWheelAnyThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
 
     const storedUserId = localStorage.getItem('userId');

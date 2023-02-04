@@ -1,8 +1,8 @@
-import { MealWheelDispatch, removeMealToResolve, setMealIndex, setPendingMeal } from '../models';
+import { MealWheelDispatch, MealWheelVoidThunkAction, removeMealToResolve, setMealIndex, setPendingMeal } from '../models';
 import { getMealIndex, getMealsToResolve } from '../selectors';
 import { MealWheelState, VerboseScheduledMeal } from '../types';
 
-export const resolveMeal = (meal: VerboseScheduledMeal) => {
+export const resolveMeal = (meal: VerboseScheduledMeal): MealWheelVoidThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
