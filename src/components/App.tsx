@@ -38,6 +38,7 @@ import Ingredients from './Ingredients';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
+import Box from '@mui/material/Box';
 
 export interface AppProps {
   appInitialized: boolean;
@@ -139,28 +140,36 @@ const App = (props: AppProps) => {
   const renderToolbar = () => {
     return (
       <div className='root'>
-        <AppBar position='static'>
-          <Toolbar>
-            <IconButton
-              className='menuButton'
-              color='inherit'
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant='h6' noWrap>
-              Meal Wheel
-            </Typography>
-            <IconButton
-              className='menuButton'
-              color='inherit'
-              onClick={handleShowAbout}
-            >
-              <InfoIcon />
-            </IconButton>
-            <Button color='inherit' onClick={handleSignout}>Logout</Button>
-          </Toolbar>
-        </AppBar>
-      </div>
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar position='static'>
+            <Toolbar>
+              <IconButton
+                className='menuButton'
+                color='inherit'
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant='h6' noWrap>
+                Meal Wheel
+              </Typography>
+              <IconButton
+                className='menuButton'
+                color='inherit'
+                onClick={handleShowAbout}
+              >
+                <InfoIcon />
+              </IconButton>
+              <Button
+                sx={{ marginLeft: 'auto' }}
+                color='inherit'
+                onClick={handleSignout}
+              >
+                Logout
+              </Button>
+            </Toolbar>
+          </AppBar>
+        </Box>
+      </div >
     );
   };
 
