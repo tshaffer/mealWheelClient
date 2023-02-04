@@ -39,6 +39,8 @@ import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import { Container, Stack } from '@mui/material';
 
 export interface AppProps {
   appInitialized: boolean;
@@ -159,13 +161,18 @@ const App = (props: AppProps) => {
               >
                 <InfoIcon />
               </IconButton>
-              <Button
-                sx={{ marginLeft: 'auto' }}
-                color='inherit'
-                onClick={handleSignout}
-              >
-                Logout
-              </Button>
+              <Stack direction='row' spacing={2} sx={{ marginLeft: 'auto' }}>
+                <Typography>
+                  Crap Shack
+                </Typography>
+                <Button
+                  color='inherit'
+                  onClick={handleSignout}
+                >
+                  Logout
+                </Button>
+
+              </Stack>
             </Toolbar>
           </AppBar>
         </Box>
