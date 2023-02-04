@@ -13,6 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
 import { addRandomMeals, assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
+import { MealWheelDispatch } from '../models';
 
 import '../styles/MealWheel.css';
 
@@ -167,7 +168,7 @@ function mapStateToProps(state: any, ownProps: AssignMealsToDatesDialogPropsFrom
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onAssignMealToDate: assignMealToDate,
     onUpdateMealAssignedToDate: updateMealAssignedToDate,

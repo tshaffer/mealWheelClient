@@ -15,7 +15,8 @@ import {
   setPendingMeal,
   setIngredientsInGroceryList,
   addMeals,
-  clearMeals
+  clearMeals,
+  MealWheelDispatch
 } from '../models';
 import {
   getCurrentUser,
@@ -51,7 +52,7 @@ import {
 } from '../types';
 
 export const loadDefinedMeals = () => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     dispatch(clearDefinedMeals());
 
@@ -73,7 +74,7 @@ const dateComparator = (scheduledMeal1: ScheduledMealEntity, scheduledMeal2: Sch
 };
 
 export const loadScheduledMeals = () => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     dispatch(clearScheduledMeals());
 
@@ -117,7 +118,7 @@ export const loadScheduledMeals = () => {
 };
 
 export const generateMeal = (mealId: string, mealDate: Date) => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     // const mealWheelState: MealWheelState = getState() as MealWheelState;
     // const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1, true);
     // const meal: ScheduledMealEntity = meals[0];
@@ -128,7 +129,7 @@ export const generateMeal = (mealId: string, mealDate: Date) => {
 
 export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
@@ -143,7 +144,7 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number) =
 
 export const addRandomMeals = (numberOfMealsToGenerate: number) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
     // const currentUnnassignedMeals: MealEntity[] = getUnassignedMeals(mealWheelState);
@@ -162,7 +163,7 @@ export const addToUniqueDishes = (uniqueDishes: any, dishId: string): void => {
 
 export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: number, showStaples: boolean) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const state: MealWheelState = getState();
 
@@ -354,7 +355,7 @@ export const assignMealToDate = (
   date: Date,
 ) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const mealWheelState: MealWheelState = getState();
 
@@ -379,7 +380,7 @@ export const updateMealAssignedToDate = (
   date: Date,
 ) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const mealWheelState: MealWheelState = getState();
 
@@ -397,7 +398,7 @@ export const updateMealAssignedToDate = (
 export const addScheduledMeal = (
   scheduledMeal: ScheduledMealEntity
 ): any => {
-  return ((dispatch: any): any => {
+  return ((dispatch: MealWheelDispatch): any => {
 
     const path = serverUrl + apiUrlFragment + 'addScheduledMeal';
 
@@ -427,7 +428,7 @@ export const updateScheduledMeal = (
   id: string,
   meal: ScheduledMealEntity
 ): any => {
-  return ((dispatch: any): any => {
+  return ((dispatch: MealWheelDispatch): any => {
 
     dispatch(updateScheduledMealRedux(id, meal));
     // dispatch(setScheduledMealsToResolve());
@@ -460,7 +461,7 @@ export const updateScheduledMeal = (
 export const deleteScheduledMeal = (
   id: string,
 ) => {
-  return ((dispatch: any): any => {
+  return ((dispatch: MealWheelDispatch): any => {
 
     dispatch(deleteScheduledMealRedux(id));
 
@@ -488,7 +489,7 @@ export const updateMainInMeal = (
   mealId: string,
   newMainId: string,
 ): any => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newMain: MainDishEntity | null = getDish(mealWheelState, newMainId) as MainDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
@@ -503,7 +504,7 @@ export const updateSideInMeal = (
   mealId: string,
   newSideId: string,
 ): any => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newSide: BaseDishEntity | null = getDish(mealWheelState, newSideId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
@@ -522,7 +523,7 @@ export const updateSaladInMeal = (
   mealId: string,
   newSaladId: string,
 ): any => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newSalad: BaseDishEntity | null = getDish(mealWheelState, newSaladId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
@@ -541,7 +542,7 @@ export const updateVeggieInMeal = (
   mealId: string,
   newVeggieId: string,
 ): any => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newVeggie: BaseDishEntity | null = getDish(mealWheelState, newVeggieId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
@@ -560,7 +561,7 @@ export const updateMealStatus = (
   mealId: string,
   mealStatus: MealStatus,
 ): any => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {

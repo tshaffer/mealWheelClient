@@ -19,7 +19,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
 import { VerboseScheduledMeal, DishEntity } from '../types';
-import { setPendingMeal } from '../models';
+import { MealWheelDispatch, setPendingMeal } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
   previousDayEnabled: boolean;
@@ -379,7 +379,7 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
 }
 
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onSetPendingMeal: setPendingMeal,
   }, dispatch);

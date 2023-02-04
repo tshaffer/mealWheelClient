@@ -6,6 +6,7 @@ import {
   clearIngredients,
   clearIngredientsByDish,
   clearScheduledMeals,
+  MealWheelDispatch,
   setAppInitialized,
   setUiState,
 } from '../models';
@@ -32,7 +33,7 @@ import { loadIngredients, loadIngredientsByDish } from './ingredients';
 
 const getStartupParams = () => {
 
-  return (dispatch: any) => {
+  return (dispatch: MealWheelDispatch) => {
 
     // updated code based on new form of url
     // const urlParts: string[] = window.location.href.split('/');
@@ -64,7 +65,7 @@ const getStartupParams = () => {
 // TEDTODO - make sure it always returns a Promise
 export const initializeApp = () => {
 
-  return (dispatch: any) => {
+  return (dispatch: MealWheelDispatch) => {
 
     dispatch(getVersions());
 
@@ -91,7 +92,7 @@ export const initializeApp = () => {
 };
 
 export const loadUserData = (): any => {
-  return (dispatch: any) => {
+  return (dispatch: MealWheelDispatch) => {
     dispatch(clearDishes());
     dispatch(clearDefinedMeals());
     dispatch(clearScheduledMeals());
@@ -111,15 +112,15 @@ export const loadUserData = (): any => {
 };
 
 export const setStartupAppState = () => {
-  return (dispatch: any, getState: any) => {
-    const state: MealWheelState = getState();
-    const startPage: StartPage = getStartPage(state);
+  return (dispatch: MealWheelDispatch, getState: any) => {
+    // const state: MealWheelState = getState();
+    // const startPage: StartPage = getStartPage(state);
     dispatch(setUiState(UiState.Other));
   };
 };
 
 export const uploadFile = (formData: FormData): any => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
     const state: MealWheelState = getState();
     const userId = getCurrentUser(state) as string;
     formData.set('userId', userId);

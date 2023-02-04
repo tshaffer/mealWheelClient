@@ -3,11 +3,11 @@ import axios from 'axios';
 import { apiUrlFragment, IngredientEntity, IngredientsByDish, MealWheelState, serverUrl } from '../types';
 
 import { getCurrentUser } from '../selectors';
-import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, replaceIngredientInDishRedux, setIngredientsByDishRedux, updateIngredientRedux } from '../models';
+import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, MealWheelDispatch, replaceIngredientInDishRedux, setIngredientsByDishRedux, updateIngredientRedux } from '../models';
 
 export const loadIngredients = () => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const state: MealWheelState = getState();
     const id = getCurrentUser(state);
@@ -24,7 +24,7 @@ export const loadIngredients = () => {
 
 export const loadIngredientsByDish = () => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const state: MealWheelState = getState();
     const id = getCurrentUser(state);
@@ -41,12 +41,12 @@ export const loadIngredientsByDish = () => {
 
 
 // onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number) => any;
-// type loadIngredientsByDishType = (dispatch: any, getState: any) => void;
+// type loadIngredientsByDishType = (dispatch: MealWheelDispatch, getState: any) => void;
 // type foo = (path: string) => Promise<void>;
 
 // export const loadIngredientsByDish = (): loadIngredientsByDishType  => {
 
-//   return (dispatch: any, getState: any): foo => {
+//   return (dispatch: MealWheelDispatch, getState: any): foo => {
 
 //     const state: MealWheelState = getState();
 //     const id = getCurrentUser(state);
@@ -64,7 +64,7 @@ export const loadIngredientsByDish = () => {
 export const addIngredient = (
   ingredient: IngredientEntity
 ): any => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     // TODO - is this the right place to strip 'newIngredient'?
     const newIngredientMarker = 'newIngredient';
@@ -100,7 +100,7 @@ export const updateIngredient = (
   id: string,
   ingredient: IngredientEntity
 ): any => {
-  return ((dispatch: any, getState: any): any => {
+  return ((dispatch: MealWheelDispatch, getState: any): any => {
     const path = serverUrl + apiUrlFragment + 'updateIngredient';
 
     const updateIngredientBody = {
@@ -130,7 +130,7 @@ export const addIngredientToDish = (
   ingredientEntity: IngredientEntity,
 ) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const path = serverUrl + apiUrlFragment + 'addIngredientToDish';
 
@@ -158,7 +158,7 @@ export const replaceIngredientInDish = (
   dishId: string, existingIngredientId: string, newIngredientId: string
 ) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const path = serverUrl + apiUrlFragment + 'replaceIngredientInDish';
 
@@ -187,7 +187,7 @@ export const deleteIngredientFromDish = (
   ingredientId: string,
 ) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const path = serverUrl + apiUrlFragment + 'deleteIngredientFromDish';
 

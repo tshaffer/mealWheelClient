@@ -21,6 +21,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { DishEntity, IngredientEntity } from '../types';
 import { addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../controllers';
 import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
+import { MealWheelDispatch } from '../models';
 
 interface IngredientOption {
   value: IngredientEntity | null;
@@ -275,7 +276,7 @@ function mapStateToProps(state: any, ownProps: AssignIngredientsToDishDialogProp
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onAddIngredientToDish: addIngredientToDish,
     onReplaceIngredientInDish: replaceIngredientInDish,

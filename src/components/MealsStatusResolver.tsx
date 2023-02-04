@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { deleteScheduledMeal, resolveMeal, updateScheduledMeal } from '../controllers';
 import { getPendingMeal, getMealsToResolve, getMealIndex } from '../selectors';
 import { VerboseScheduledMeal, ScheduledMealEntity, MealStatus } from '../types';
-import { clearMealsToResolve, setMealIndexAndPendingMeal } from '../models';
+import { clearMealsToResolve, MealWheelDispatch, setMealIndexAndPendingMeal } from '../models';
 
 import MealStatusResolver from './MealStatusResolver';
 
@@ -106,7 +106,7 @@ function mapStateToProps(state: any) {
 }
 
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onSetMealIndexAndPendingMeal: setMealIndexAndPendingMeal,
     onUpdateMeal: updateScheduledMeal,

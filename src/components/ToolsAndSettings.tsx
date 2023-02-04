@@ -7,6 +7,7 @@ import {
 } from '../controllers';
 import { isNil } from 'lodash';
 import { Alert } from '@mui/material';
+import { MealWheelDispatch } from '../models';
 
 export interface ToolsAndSettingsProps {
   onUploadFile: (formData: FormData) => any;
@@ -85,7 +86,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onUploadFile: uploadFile,
   }, dispatch);

@@ -18,6 +18,7 @@ import Drawer from '@mui/material/Drawer';
 
 import MealPropertySheet from './MealPropertySheet';
 import {
+  MealWheelDispatch,
   setGroceryListStartDate,
   setStartDate,
 } from '../models';
@@ -266,7 +267,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onGenerateMenu: generateMenu,
     onGenerateGroceryList: generateGroceryList,

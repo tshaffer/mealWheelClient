@@ -47,6 +47,7 @@ import {
   addDish,
   updateDish
 } from '../controllers';
+import { MealWheelDispatch } from '../models';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 
 interface EditToolbarProps {
@@ -392,7 +393,7 @@ const Dishes = (props: DishesProps) => {
   // ) {
   //   return { name, calories, fat, carbs, protein };
   // }
-  
+
   // const example_rows: any[] = [
   //   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
   //   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
@@ -497,7 +498,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onAddDish: addDish,
     onUpdateDish: updateDish,

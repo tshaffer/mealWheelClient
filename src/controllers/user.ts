@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { MealWheelState, UiState, UserEntity, UsersMap } from '../types';
-import { addUser, setUiState, setUser } from '../models';
+import { addUser, MealWheelDispatch, setUiState, setUser } from '../models';
 
 import { apiUrlFragment, serverUrl } from '../index';
 import { isNil, isString } from 'lodash';
 
 export const loadUsers = () => {
-  return (dispatch: any) => {
+  return (dispatch: MealWheelDispatch) => {
 
     const path = serverUrl + apiUrlFragment + 'users';
 
@@ -46,7 +46,7 @@ export const loadUsers = () => {
 };
 
 export const loginPersistentUser = () => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     const storedUserId = localStorage.getItem('userId');
     if (!isString(storedUserId)) {

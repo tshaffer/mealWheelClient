@@ -7,6 +7,7 @@ import { isNil, isString } from 'lodash';
 import { DishType, DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import { getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
+import { MealWheelDispatch } from '../models';
 
 export interface MealInCalendarPropsFromParent {
   event: CalendarEvent;
@@ -42,7 +43,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
-  const renderAccompaniment = (accompanimentDish: DishEntity | null ) => {
+  const renderAccompaniment = (accompanimentDish: DishEntity | null) => {
 
     if (isNil(accompanimentDish)) {
       return null;
@@ -99,7 +100,7 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   const scheduledMealId: string = isNil(calendarEvent.scheduledMealId) ? '' :
     (isString(calendarEvent.scheduledMealId)) ? calendarEvent.scheduledMealId : '';
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
-  
+
   let main: DishEntity | null = null;
   let salad: DishEntity | null = null;
   let side: DishEntity | null = null;
@@ -120,7 +121,7 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
   }, dispatch);
 };

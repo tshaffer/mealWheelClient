@@ -26,6 +26,7 @@ import {
   initializeApp,
 } from '../controllers';
 import {
+  MealWheelDispatch,
   setUiState,
   setUser,
 } from '../models';
@@ -236,7 +237,7 @@ const App = (props: AppProps) => {
         <div id='dishesContent' style={dishesTabContentStyle}>
           {/* <Dishes /> */}
           {/* <EnhancedTable/> */}
-          <NewDishes/>
+          <NewDishes />
         </div>
         <div id='ingredientsContent' style={ingredientsTabContentStyle}>
           <Ingredients />
@@ -272,7 +273,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onInitializeApp: initializeApp,
     onSetUser: setUser,

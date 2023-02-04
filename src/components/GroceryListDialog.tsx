@@ -11,6 +11,7 @@ import DialogContent from '@mui/material/DialogContent';
 import TextField from '@mui/material/TextField';
 import { IngredientEntity } from '../types';
 import { getGroceryListIngredients } from '../selectors';
+import { MealWheelDispatch } from '../models';
 
 export interface GroceryListDialogPropsFromParent {
   open: boolean;
@@ -72,7 +73,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
   }, dispatch);
 };

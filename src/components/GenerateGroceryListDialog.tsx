@@ -16,7 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { isNil } from 'lodash';
 
-import { setGroceryListStartDate, setNumberOfMealsInGroceryList } from '../models';
+import { MealWheelDispatch, setGroceryListStartDate, setNumberOfMealsInGroceryList } from '../models';
 import { getGroceryListStartDate, getNumberOfMealsInGroceryList } from '../selectors';
 import { getShowStaples } from '../selectors';
 import { FormGroup, FormControlLabel } from '@mui/material';
@@ -126,7 +126,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onSetStartDate: setGroceryListStartDate,
     onSetNumberOfMealsInGroceryList: setNumberOfMealsInGroceryList,

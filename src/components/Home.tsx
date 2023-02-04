@@ -13,6 +13,7 @@ import {
   getAppInitialized,
   getAppState,
 } from '../selectors';
+import { MealWheelDispatch } from '../models';
 
 export interface HomeProps {
   appInitialized: boolean;
@@ -29,7 +30,7 @@ const Home = (props: HomeProps) => {
     }
   }, [props.appInitialized]);
 
-  
+
   const divStyle = {
     height: '98vh',
   };
@@ -59,7 +60,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onInitializeApp: initializeApp,
   }, dispatch);

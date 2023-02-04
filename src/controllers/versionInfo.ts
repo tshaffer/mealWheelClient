@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { setClientVersion, setServerVersion } from '../models';
+import { MealWheelDispatch, setClientVersion, setServerVersion } from '../models';
 
 import { apiUrlFragment, serverUrl } from '../index';
 
 import { version } from '../version';
 
 export const getServerVersion = () => {
-  return (dispatch: any) => {
+  return (dispatch: MealWheelDispatch) => {
     const path = serverUrl + apiUrlFragment + 'version';
     return axios.get(path)
       .then((versionResponse: any) => {
@@ -16,7 +16,7 @@ export const getServerVersion = () => {
 };
 
 export const getVersions = () => {
-  return (dispatch: any) => {
+  return (dispatch: MealWheelDispatch) => {
     dispatch(setClientVersion(version));
     dispatch(getServerVersion());
   };

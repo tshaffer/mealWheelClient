@@ -44,6 +44,7 @@ import {
 } from '../controllers';
 
 import NewDishDialog from './NewDishDialog';
+import { MealWheelDispatch } from '../models';
 
 export interface MealPropertySheetPropsFromParent {
   scheduledMealId: string;
@@ -413,7 +414,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onUpdateMainInMeal: updateMainInMeal,
     onUpdateSideInMeal: updateSideInMeal,

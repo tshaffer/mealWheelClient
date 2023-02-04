@@ -18,7 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { isNil } from 'lodash';
 
-import { setStartDate, setNumberOfMealsToGenerate } from '../models';
+import { setStartDate, setNumberOfMealsToGenerate, MealWheelDispatch } from '../models';
 import { getStartDate, getNumberOfMealsToGenerate } from '../selectors';
 
 export interface GenerateMenuDialogPropsFromParent {
@@ -104,7 +104,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onSetStartDate: setStartDate,
     onSetNumberOfMealsToGenerate: setNumberOfMealsToGenerate,

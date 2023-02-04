@@ -12,7 +12,7 @@ import {
   setStartupAppState
 } from '../controllers';
 import { getAppInitialized, getUsers } from '../selectors';
-import { setUiState, setUser } from '../models';
+import { MealWheelDispatch, setUiState, setUser } from '../models';
 import { isNil } from 'lodash';
 
 export interface LoginProps {
@@ -75,7 +75,7 @@ const Login = (props: LoginProps) => {
     props.onSetUser(selectedUser.id);
     props.onSetStartupAppState();
     props.onLoadUserData();
-    
+
     navigate('/app');
   };
 
@@ -125,7 +125,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onInitializeApp: initializeApp,
     onLoadUserData: loadUserData,

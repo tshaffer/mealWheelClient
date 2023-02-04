@@ -1,10 +1,10 @@
-import { removeMealToResolve, setMealIndex, setPendingMeal } from '../models';
+import { MealWheelDispatch, removeMealToResolve, setMealIndex, setPendingMeal } from '../models';
 import { getMealIndex, getMealsToResolve } from '../selectors';
 import { MealWheelState, VerboseScheduledMeal } from '../types';
 
 export const resolveMeal = (meal: VerboseScheduledMeal) => {
 
-  return (dispatch: any, getState: any) => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
 
     let state: MealWheelState = getState();
     const mealIndex: number = getMealIndex(state);

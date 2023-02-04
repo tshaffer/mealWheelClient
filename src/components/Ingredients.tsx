@@ -36,6 +36,7 @@ import {
   addIngredient,
   updateIngredient
 } from '../controllers';
+import { MealWheelDispatch } from '../models';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -311,7 +312,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onAddIngredient: addIngredient,
     onUpdateIngredient: updateIngredient,

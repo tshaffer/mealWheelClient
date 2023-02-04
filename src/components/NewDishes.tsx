@@ -34,6 +34,7 @@ import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, updateDish } from '../controllers';
 import { getDishes } from '../selectors';
+import { MealWheelDispatch } from '../models';
 
 interface DishRow {
   dish: DishEntity;
@@ -61,9 +62,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-  a: { [key in Key]: boolean | string | DishEntity },
-  b: { [key in Key]: boolean | string | DishEntity },
-) => number {
+    a: { [key in Key]: boolean | string | DishEntity },
+    b: { [key in Key]: boolean | string | DishEntity },
+  ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -767,7 +768,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onAddDish: addDish,
     onUpdateDish: updateDish,
