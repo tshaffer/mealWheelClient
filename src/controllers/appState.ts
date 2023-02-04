@@ -95,8 +95,8 @@ export const loadUserData = (): any => {
     dispatch(clearDishes());
     dispatch(clearDefinedMeals());
     dispatch(clearScheduledMeals());
-    dispatch(clearIngredients);
-    dispatch(clearIngredientsByDish);
+    dispatch(clearIngredients());
+    dispatch(clearIngredientsByDish());
     return dispatch(loadDishes())
       .then(() => {
         dispatch(loadDefinedMeals());
