@@ -31,6 +31,7 @@ import {
 } from '../models';
 import {
   getAppInitialized,
+  getCurrentUser,
   getUsers,
 } from '../selectors';
 import Dishes from './Dishes';
@@ -39,11 +40,11 @@ import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import { Container, Stack } from '@mui/material';
+import { isNil } from 'lodash';
 
 export interface AppProps {
   appInitialized: boolean;
+  currentUser: string | null;
   users: UsersMap,
   onInitializeApp: () => any;
   onSetUiState: (uiState: UiState) => any;
@@ -139,6 +140,8 @@ const App = (props: AppProps) => {
     setSelectedTab(evt.target.id);
   }
 
+  const currentUserName: string = isNil(props.currentUser) ? 'None' : props.users[props.currentUser].userName;
+
   const renderToolbar = () => {
     return (
       <div className='root'>
@@ -161,18 +164,13 @@ const App = (props: AppProps) => {
               >
                 <InfoIcon />
               </IconButton>
-              <Stack direction='row' spacing={2} sx={{ marginLeft: 'auto' }}>
-                <Typography>
-                  Crap Shack
-                </Typography>
-                <Button
-                  color='inherit'
-                  onClick={handleSignout}
-                >
-                  Logout
-                </Button>
-
-              </Stack>
+              <Button
+                color='inherit'
+                onClick={handleSignout}
+                sx={{ marginLeft: 'auto' }}
+              >
+                {currentUserName}
+              </Button>
             </Toolbar>
           </AppBar>
         </Box>
@@ -281,6 +279,7 @@ const App = (props: AppProps) => {
 function mapStateToProps(state: any) {
   return {
     appInitialized: getAppInitialized(state),
+    currentUser: getCurrentUser(state),
     users: getUsers(state),
   };
 }
