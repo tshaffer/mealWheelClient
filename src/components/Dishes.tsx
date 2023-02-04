@@ -40,6 +40,7 @@ interface DishRow {
   dish: DishEntity;
   name: string
   type: DishType;
+  minimumInterval: number;
   requiresAccompaniment: boolean;
   requiresSalad: boolean;
   requiresSide: boolean;
@@ -62,8 +63,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-    a: { [key in Key]: boolean | string | DishEntity },
-    b: { [key in Key]: boolean | string | DishEntity },
+    a: { [key in Key]: boolean | string | number | DishEntity },
+    b: { [key in Key]: boolean | string | number | DishEntity },
   ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -105,6 +106,12 @@ const headCells: readonly HeadCell[] = [
     numeric: false,
     disablePadding: true,
     label: 'Type',
+  },
+  {
+    id: 'minimumInterval',
+    numeric: true,
+    disablePadding: true,
+    label: 'Minimum interval in days (0 for no minimum)',
   },
   {
     id: 'requiresAccompaniment',
@@ -222,6 +229,7 @@ const Dishes = (props: DishesProps) => {
         dish,
         name: dish.name,
         type: dish.type,
+        minimumInterval: 5,
         requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
         requiresSide,
         requiresSalad,
@@ -265,6 +273,7 @@ const Dishes = (props: DishesProps) => {
       dish,
       name: '',
       type: DishType.Main,
+      minimumInterval: 5,
       requiresAccompaniment: false,
       requiresSalad: false,
       requiresSide: false,
@@ -514,6 +523,22 @@ const Dishes = (props: DishesProps) => {
             <MenuItem value={'veggie'}>Veggie</MenuItem>
           </Select>
         </TableCell>
+        <TableCell>
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='number'
+            label='Min interval'
+            defaultValue={5}
+            variant='standard'
+            InputProps={{
+              inputProps: {
+                min: 0
+              }
+            }}
+          // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
+          />
+
+        </TableCell>
         <TableCell align='center'>
           <Checkbox
             color="primary"
@@ -613,6 +638,18 @@ const Dishes = (props: DishesProps) => {
             <MenuItem value={'veggie'}>Veggie</MenuItem>
           </Select>
         </TableCell>
+
+        <TableCell>
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='number'
+            label='Min interval'
+            defaultValue={5}
+            disabled
+            variant='standard'
+          />
+        </TableCell>
+
         <TableCell align='center'>
           <Checkbox
             color="primary"

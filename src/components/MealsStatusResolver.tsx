@@ -25,7 +25,7 @@ export interface MealsStatusResolverProps extends MealsStatusResolverPropsFromPa
 }
 
 const MealsStatusResolver = (props: MealsStatusResolverProps) => {
-
+  
   const { mealIndex, mealsToResolve, onSetMealIndexAndPendingMeal } = props;
 
   const handlePreviousDay = () => {
