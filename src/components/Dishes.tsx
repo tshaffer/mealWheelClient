@@ -266,6 +266,7 @@ const Dishes = (props: DishesProps) => {
       id: '',
       name: '',
       type: DishType.Main,
+      minimumInterval: 5,
       last: null,
     };
 
@@ -361,6 +362,7 @@ const Dishes = (props: DishesProps) => {
           id: '',
           name: currentEditDish.name,
           type: currentEditDish.type,
+          minimumInterval: currentEditDish.minimumInterval,
           accompanimentRequired: getAccompanimentRequired(currentEditDish),
           last: null,
         };

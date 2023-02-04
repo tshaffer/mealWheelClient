@@ -12,6 +12,7 @@ export interface BaseDishEntity {
   userId: string;
   name: string;
   type: DishType;
+  minimumInterval: number;
   last: Date | null;
 }
 
@@ -23,6 +24,7 @@ export interface DishEntity {
   id: string;
   name: string;
   type: DishType;
+  minimumInterval: number;
   accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
   last: Date | null;
 }

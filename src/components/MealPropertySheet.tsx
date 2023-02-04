@@ -156,6 +156,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       id: dishId,
       name: dishName,
       type: dishTypeFromDialog,
+      minimumInterval: 5,
       accompanimentRequired: requiredAccompanimentFlags,
       last: null,
     };
