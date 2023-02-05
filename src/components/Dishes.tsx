@@ -545,7 +545,6 @@ const Dishes = (props: DishesProps) => {
                 min: 0
               }
             }}
-          // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
           />
 
         </TableCell>

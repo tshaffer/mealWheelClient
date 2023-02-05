@@ -22,6 +22,7 @@ function NewDishDialog(props: NewDishDialogProps) {
   const { open, onClose } = props;
 
   const [dishName, setDishName] = React.useState('');
+  const [minimumInterval, setMinimumInterval] = React.useState(5);
   const [requiredAccompanimentFlags, setRequiredAccompanimentFlags] = React.useState(RequiredAccompanimentFlags.None);
 
   const getTypeLabelFromType = (): string => {
@@ -50,13 +51,12 @@ function NewDishDialog(props: NewDishDialogProps) {
     return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Veggie) !== 0;
   };
 
-
   const handleAddNewDish = () => {
     if (props.dishType === DishType.Main) {
-      props.onAddDish(dishName, props.dishType, 5, requiredAccompanimentFlags);
+      props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentFlags);
     }
     else {
-      props.onAddDish(dishName, props.dishType, 5);
+      props.onAddDish(dishName, props.dishType, minimumInterval);
     }
   };
 
@@ -148,6 +148,18 @@ function NewDishDialog(props: NewDishDialogProps) {
             label="Dish name"
             value={dishName}
             onChange={(event) => setDishName(event.target.value)}
+          />
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='number'
+            label='Min interval'
+            value={minimumInterval}
+            onChange={(event) => setMinimumInterval(parseInt(event.target.value, 10))}
+            InputProps={{
+              inputProps: {
+                min: 0
+              }
+            }}
           />
           {requiresAccompanimentJsx}
         </div>
