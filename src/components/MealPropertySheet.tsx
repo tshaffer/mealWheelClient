@@ -146,7 +146,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  const handleAddDish = (dishName: string, dishTypeFromDialog: DishType, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => {
+  const handleAddDish = (dishName: string, dishTypeFromDialog: DishType, minimumInterval: number, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => {
     console.log('handleAddDish: ', dishTypeFromDialog);
     console.log(dishName);
     console.log(requiredAccompanimentFlags);
@@ -156,7 +156,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       id: dishId,
       name: dishName,
       type: dishTypeFromDialog,
-      minimumInterval: 5,
+      minimumInterval,
       accompanimentRequired: requiredAccompanimentFlags,
       last: null,
     };

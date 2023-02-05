@@ -8,7 +8,7 @@ import { DishType, RequiredAccompanimentFlags } from '../types';
 
 export interface NewDishDialogPropsFromParent {
   open: boolean;
-  onAddDish: (dishName: string, dishType: DishType, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => void;
+  onAddDish: (dishName: string, dishType: DishType, minimumInterval: number, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => void;
   onClose: () => void;
   dishType: DishType;
 }
@@ -53,10 +53,10 @@ function NewDishDialog(props: NewDishDialogProps) {
 
   const handleAddNewDish = () => {
     if (props.dishType === DishType.Main) {
-      props.onAddDish(dishName, props.dishType, requiredAccompanimentFlags);
+      props.onAddDish(dishName, props.dishType, 5, requiredAccompanimentFlags);
     }
     else {
-      props.onAddDish(dishName, props.dishType);
+      props.onAddDish(dishName, props.dishType, 5);
     }
   };
 

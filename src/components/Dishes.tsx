@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { cloneDeep, isNil } from 'lodash';
+import { cloneDeep, isNil, isNumber, isString } from 'lodash';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -229,7 +229,7 @@ const Dishes = (props: DishesProps) => {
         dish,
         name: dish.name,
         type: dish.type,
-        minimumInterval: 5,
+        minimumInterval: dish.minimumInterval,
         requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
         requiresSide,
         requiresSalad,
@@ -380,6 +380,7 @@ const Dishes = (props: DishesProps) => {
         const updatedDish: DishEntity = cloneDeep(currentEditDish.dish);
         updatedDish.name = currentEditDish.name;
         updatedDish.type = currentEditDish.type;
+        updatedDish.minimumInterval = currentEditDish.minimumInterval;
         updatedDish.accompanimentRequired = getAccompanimentRequired(currentEditDish);
         props.onUpdateDish(currentEditDish.dish.id, updatedDish);
       }
@@ -447,6 +448,12 @@ const Dishes = (props: DishesProps) => {
 
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
+    setCurrentEditDish(selectedRow);
+  };
+
+  const handleUpdateMinimumInterval = (selectedDishRow: DishRow, minimumIntervalInput: string) => {
+    const minimumInterval = parseInt(minimumIntervalInput, 10);
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'minimumInterval', minimumInterval);
     setCurrentEditDish(selectedRow);
   };
 
@@ -530,8 +537,9 @@ const Dishes = (props: DishesProps) => {
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='number'
             label='Min interval'
-            defaultValue={5}
+            defaultValue={row.minimumInterval}
             variant='standard'
+            onBlur={(event) => handleUpdateMinimumInterval(row, event.target.value)}
             InputProps={{
               inputProps: {
                 min: 0
@@ -646,7 +654,7 @@ const Dishes = (props: DishesProps) => {
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='number'
             label='Min interval'
-            defaultValue={5}
+            defaultValue={row.minimumInterval}
             disabled
             variant='standard'
           />
