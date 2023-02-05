@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCurrentUser } from '../selectors';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addDishesRedux, addDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, updateDishRedux } from '../models';
+import { addDishesRedux, addDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, updateDishRedux } from '../models';
 
 import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../types';
 
@@ -81,3 +81,12 @@ export const updateDish = (
   };
 };
 
+export const updateDishLastProperty = (
+  dishEntity: DishEntity,
+  last: Date
+): MealWheelVoidThunkAction => {
+  return (dispatch: MealWheelDispatch): any => {
+    dishEntity.last = last;
+    dispatch(updateDish(dishEntity.id, dishEntity));
+  };
+};

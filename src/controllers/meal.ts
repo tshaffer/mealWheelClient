@@ -52,6 +52,7 @@ import {
   IngredientEntity,
   MealEntity
 } from '../types';
+import { updateDishLastProperty } from './dish';
 
 export const loadDefinedMeals = (): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
@@ -352,12 +353,32 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
   return scheduledMealEntities;
 };
 
+const updateMealDishesLastProperty = (
+  meal: MealEntity,
+  date: Date,
+): any => {
+  return (dispatch: MealWheelDispatch,) => {
+    dispatch(updateDishLastProperty(meal.mainDish, date));
+    if (!isNil(meal.salad)) {
+      dispatch(updateDishLastProperty(meal.salad, date));
+    }
+    if (!isNil(meal.veggie)) {
+      dispatch(updateDishLastProperty(meal.veggie, date));
+    }
+    if (!isNil(meal.side)) {
+      dispatch(updateDishLastProperty(meal.side, date));
+    }
+  };
+};
+
 export const assignMealToDate = (
   meal: MealEntity,
   date: Date,
 ): MealWheelVoidThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
+
+    dispatch(updateMealDishesLastProperty(meal, date));
 
     const mealWheelState: MealWheelState = getState();
 
@@ -383,6 +404,8 @@ export const updateMealAssignedToDate = (
 ): MealWheelVoidThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
+
+    dispatch(updateMealDishesLastProperty(meal, date));
 
     const mealWheelState: MealWheelState = getState();
 
