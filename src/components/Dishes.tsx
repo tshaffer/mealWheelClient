@@ -41,6 +41,7 @@ interface DishRow {
   name: string
   type: DishType;
   minimumInterval: number;
+  last: Date | null;
   requiresAccompaniment: boolean;
   requiresSalad: boolean;
   requiresSide: boolean;
@@ -63,8 +64,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-    a: { [key in Key]: boolean | string | number | DishEntity },
-    b: { [key in Key]: boolean | string | number | DishEntity },
+    a: { [key in Key]: boolean | string | number | DishEntity | Date | null },
+    b: { [key in Key]: boolean | string | number | DishEntity | Date | null },
   ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -229,6 +230,7 @@ const Dishes = (props: DishesProps) => {
         dish,
         name: dish.name,
         type: dish.type,
+        last: dish.last,
         minimumInterval: dish.minimumInterval,
         requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
         requiresSide,
@@ -275,6 +277,7 @@ const Dishes = (props: DishesProps) => {
       name: '',
       type: DishType.Main,
       minimumInterval: 5,
+      last: null,
       requiresAccompaniment: false,
       requiresSalad: false,
       requiresSide: false,
@@ -411,6 +414,8 @@ const Dishes = (props: DishesProps) => {
         const unmodifiedDishEntity: DishEntity = selectedDishRow.dish;
         selectedDishRow.name = unmodifiedDishEntity.name;
         selectedDishRow.type = unmodifiedDishEntity.type;
+        selectedDishRow.minimumInterval = unmodifiedDishEntity.minimumInterval;
+        selectedDishRow.last = unmodifiedDishEntity.last;
         if (isNil(unmodifiedDishEntity.accompanimentRequired)) {
           selectedDishRow.requiresAccompaniment = false;
           selectedDishRow.requiresSalad = false;
