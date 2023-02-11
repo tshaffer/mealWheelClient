@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 import { DishEntity, IngredientEntity } from '../types';
 import { addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../controllers';
-import { getDish, getIngredients, getIngredientsByDish } from '../selectors';
+import { getDishById, getIngredients, getIngredientsByDish } from '../selectors';
 import { MealWheelDispatch } from '../models';
 
 interface IngredientOption {
@@ -270,7 +270,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
 
 function mapStateToProps(state: any, ownProps: AssignIngredientsToDishDialogPropsFromParent) {
   return {
-    dish: getDish(state, ownProps.dishId),
+    dish: getDishById(state, ownProps.dishId),
     allIngredients: getIngredients(state),
     ingredientsInDish: getIngredientsByDish(state, ownProps.dishId),
   };

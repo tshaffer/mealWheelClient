@@ -4,7 +4,7 @@ export const getDishes = (state: MealWheelState): DishEntity[] => {
   return state.dishesState.dishes;
 };
 
-export const getDish = (state: MealWheelState, dishId: string): DishEntity | null => {
+export const getDishById = (state: MealWheelState, dishId: string): DishEntity | null => {
   // FIX TO USE MAP
   const dishes = getDishes(state);
   for (const dish of dishes) {
@@ -57,7 +57,7 @@ export const getVeggies = (state: MealWheelState): DishEntity[] => {
   return getDishesOfType(state, DishType.Veggie);
 };
 
-export const getVeggieById = (state: MealWheelState, id: string) : DishEntity | null =>{
+export const getVeggieById = (state: MealWheelState, id: string): DishEntity | null => {
   const veggies: DishEntity[] = getVeggies(state);
   for (const veggie of veggies) {
     if (veggie.id === id) {
@@ -67,7 +67,7 @@ export const getVeggieById = (state: MealWheelState, id: string) : DishEntity | 
   return null;
 };
 
-export const getSideById = (state: MealWheelState, id: string) : DishEntity | null =>{
+export const getSideById = (state: MealWheelState, id: string): DishEntity | null => {
   const sides: DishEntity[] = getSides(state);
   for (const side of sides) {
     if (side.id === id) {
@@ -77,7 +77,7 @@ export const getSideById = (state: MealWheelState, id: string) : DishEntity | nu
   return null;
 };
 
-export const getSaladById = (state: MealWheelState, id: string) : DishEntity | null =>{
+export const getSaladById = (state: MealWheelState, id: string): DishEntity | null => {
   const salads: DishEntity[] = getSalads(state);
   for (const salad of salads) {
     if (salad.id === id) {
@@ -87,7 +87,7 @@ export const getSaladById = (state: MealWheelState, id: string) : DishEntity | n
   return null;
 };
 
-export const getMainById = (state: MealWheelState, id: string) : DishEntity | null =>{
+export const getMainById = (state: MealWheelState, id: string): DishEntity | null => {
   const mains: DishEntity[] = getMains(state);
   for (const main of mains) {
     if (main.id === id) {
