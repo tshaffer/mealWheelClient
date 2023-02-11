@@ -137,7 +137,7 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number): 
     const mealWheelState: MealWheelState = getState() as MealWheelState;
 
     const randomDishBasedMeals: MealEntity[] =
-      generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate);
+      generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate, startDate);
 
     const allRandomMeals: MealEntity[] = cloneDeep(randomDishBasedMeals);
     dispatch(clearMeals());
@@ -145,7 +145,7 @@ export const generateMenu = (startDate: Date, numberOfMealsToGenerate: number): 
   };
 };
 
-export const addRandomMeals = (numberOfMealsToGenerate: number): MealWheelVoidThunkAction => {
+export const addRandomMeals = (numberOfMealsToGenerate: number, startDate: Date): MealWheelVoidThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
@@ -153,7 +153,7 @@ export const addRandomMeals = (numberOfMealsToGenerate: number): MealWheelVoidTh
     // const currentUnnassignedMeals: MealEntity[] = getUnassignedMeals(mealWheelState);
 
     const newUnassignedMeals: MealEntity[] =
-      generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate);
+      generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate, startDate);
     dispatch(addMeals(newUnassignedMeals));
   };
 };
@@ -208,7 +208,7 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
 
 };
 
-const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number): MealEntity[] => {
+const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number, startDate: Date): MealEntity[] => {
 
   const mealEntities: MealEntity[] = [];
 
@@ -240,70 +240,111 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
   // select random main dish items
   while (selectedMainDishIndices.length < numMeals) {
     const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
+
+    // don't add this main dish if it has already been added
     if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
-      selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+
+      // selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+      // }
+
+      // don't add this main dish if it was last suggested within a number of days < minimum days between assignments
+      const mainDish: DishEntity | null = getMainById(mealWheelState, allDishes[allMainDishIndices[mainDishIndex]].id);
+      if (!isNil(mainDish)) {
+        if (!isNil(mainDish.last)) {
+          const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
+          if (earliestTimeToRecommend < startDate.getTime()) {
+            selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+          } else {
+            // validate code is exercised
+            debugger;
+          }
+        } else {
+          selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+        }
+      }
     }
   }
 
   for (const selectedMainDishIndex of selectedMainDishIndices) {
 
-    const selectedDish: DishEntity = allDishes[selectedMainDishIndex];
+    const mainDish: DishEntity = allDishes[selectedMainDishIndex];
 
     let saladId: string = '';
-    let veggieId: string = '';
-    let sideId: string = '';
+    const veggieId: string = '';
+    const sideId: string = '';
 
-    // if accompaniment to main is required, select it.
-    if (!isNil(selectedDish.accompanimentRequired) && selectedDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
+    // if accompaniment to main is required, procure it.
+
+    // get list of possible accompaniment types for this main dish
+    if (!isNil(mainDish.accompanimentRequired) && mainDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
       const possibleAccompaniments: DishType[] = [];
-      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
+      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
         possibleAccompaniments.push(DishType.Salad);
       }
-      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
+      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
         possibleAccompaniments.push(DishType.Side);
       }
-      if (selectedDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
+      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
         possibleAccompaniments.push(DishType.Veggie);
       }
       const numPossibleAccompaniments = possibleAccompaniments.length;
-      const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
-      const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
 
-      let accompanimentIndex = -1;
-      switch (accompanimentType) {
-        case DishType.Salad: {
-          accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
-          saladId = allDishes[accompanimentIndex].id;
-          break;
+      // select accompaniment from the possible accompaniments
+      // don't select one that has been used within the minimum time between uses
+      let accompanimentSelected = false;
+      while (!accompanimentSelected) {
+        const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
+        const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
+        let accompanimentIndex = -1;
+        switch (accompanimentType) {
+          case DishType.Salad: {
+            accompanimentIndex = allSaladIndices[Math.floor(Math.random() * allSaladIndices.length)];
+            saladId = allDishes[accompanimentIndex].id;
+            const salad: DishEntity | null = getSaladById(mealWheelState, saladId);
+            if (!isNil(salad)) {
+              if (!isNil(salad.last)) {
+                const earliestTimeToRecommend: number = salad.last.getTime() + (salad.minimumInterval * (1000 * 3600 * 24));
+                if (earliestTimeToRecommend < startDate.getTime()) {
+                  accompanimentSelected = true;
+                } else {
+                  debugger;
+                }
+              } else {
+                accompanimentSelected = true;
+              }
+
+            }
+            break;
+          }
+          case DishType.Side: {
+            break;
+          }
+          case DishType.Veggie: {
+            break;
+          }
         }
-        case DishType.Side: {
-          accompanimentIndex = allSideIndices[Math.floor(Math.random() * allSideIndices.length)];
-          sideId = allDishes[accompanimentIndex].id;
-          break;
-        }
-        case DishType.Veggie: {
-          accompanimentIndex = allVegIndices[Math.floor(Math.random() * allVegIndices.length)];
-          veggieId = allDishes[accompanimentIndex].id;
-          break;
-        }
+      }
+
+      if (accompanimentSelected) {
+        const mealId = uuidv4();
+        const meal: MealEntity = {
+          id: mealId,
+          mainDish: getDish(mealWheelState, mainDish.id) as DishEntity,
+          salad: saladId !== '' ? getDish(mealWheelState, saladId) as DishEntity : undefined,
+          veggie: veggieId !== '' ? getDish(mealWheelState, veggieId) as DishEntity : undefined,
+          side: sideId !== '' ? getDish(mealWheelState, sideId) as DishEntity : undefined,
+        };
+
+        mealEntities.push(meal);
       }
     }
 
-    const mealId = uuidv4();
-    const meal: MealEntity = {
-      id: mealId,
-      mainDish: getDish(mealWheelState, selectedDish.id) as DishEntity,
-      salad: saladId !== '' ? getDish(mealWheelState, saladId) as DishEntity : undefined,
-      veggie: veggieId !== '' ? getDish(mealWheelState, veggieId) as DishEntity : undefined,
-      side: sideId !== '' ? getDish(mealWheelState, sideId) as DishEntity : undefined,
-    };
-
-    mealEntities.push(meal);
+    return mealEntities;
   }
 
   return mealEntities;
-};
 
+};
 
 const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadyScheduledMeals: ScheduledMealEntity[], numMeals: number): ScheduledMealEntity[] => {
 

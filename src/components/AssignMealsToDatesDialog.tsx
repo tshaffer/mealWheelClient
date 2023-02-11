@@ -36,7 +36,7 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
   onAssignMealToDate: (meal: MealEntity, date: Date) => void;
   onUpdateMealAssignedToDate: (meal: MealEntity, date: Date) => void;
   onDeleteScheduledMeal: (id: string) => void;
-  onSuggestMoreMeals: (numberOfMeals: number) => void;
+  onSuggestMoreMeals: (numberOfMeals: number, startDate: Date) => void;
 }
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
@@ -52,7 +52,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
   };
 
   const handleSuggestMoreMeals = () => {
-    props.onSuggestMoreMeals(4);
+    props.onSuggestMoreMeals(4, props.startDate);
   };
 
   const handleClearAssignedMealOnDate = (mealOnDate: MealOnDate) => {
@@ -96,7 +96,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           mealOnDate={mealOnDate}
           accept={['draggableMeal']}
           onDrop={(item) => { handleDrop(item, mealOnDate); }}
-          onClearAssignedMealOnDate={(mealOnDate) => { handleClearAssignedMealOnDate(mealOnDate) }}
+          onClearAssignedMealOnDate={(mealOnDate) => { handleClearAssignedMealOnDate(mealOnDate); }}
         />
       );
     });

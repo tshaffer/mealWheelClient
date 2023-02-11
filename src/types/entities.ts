@@ -25,8 +25,8 @@ export interface DishEntity {
   name: string;
   type: DishType;
   minimumInterval: number;
-  accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
   last: Date | null;
+  accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
 }
 
 export interface MealEntity {
