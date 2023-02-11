@@ -1,4 +1,4 @@
-import { GenerateGroceryListState } from '../types';
+import { GenerateGroceryListStateRedux } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -13,7 +13,7 @@ const SET_SHOW_STAPLES = 'SET_SHOW_STAPLES';
 // ------------------------------------
 
 interface SetGroceryListStartDatePayload {
-  startDate: Date;
+  startDateAsStr: string;
 }
 
 export const setGroceryListStartDate = (
@@ -21,7 +21,7 @@ export const setGroceryListStartDate = (
   return {
     type: SET_GROCERY_LIST_START_DATE,
     payload: {
-      startDate,
+      startDateAsStr: startDate.toDateString(),
     }
   };
 };
@@ -59,22 +59,22 @@ export const setShowStaples = (
 // Reducer
 // ------------------------------------
 
-const initialState: GenerateGroceryListState =
+const initialState: GenerateGroceryListStateRedux =
 {
-  startDate: new Date(),
+  startDateAsStr: (new Date()).toDateString(),
   numberOfMealsInGroceryList: 7,
   showStaples: false,
 };
 
 export const generateGroceryListStateReducer = (
-  state: GenerateGroceryListState = initialState,
+  state: GenerateGroceryListStateRedux = initialState,
   action: MealWheelModelBaseAction<SetGroceryListStartDatePayload & SetNumberOfMealsInGroceryListPayload & SetShowStaplesPayload>
-): GenerateGroceryListState => {
+): GenerateGroceryListStateRedux => {
   switch (action.type) {
     case SET_GROCERY_LIST_START_DATE:
       return {
         ...state,
-        startDate: action.payload.startDate,
+        startDateAsStr: action.payload.startDateAsStr,
       };
     case SET_NUMBER_OF_MEALS_IN_GROCERY_LIST:
       return {

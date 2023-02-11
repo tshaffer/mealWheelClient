@@ -1,7 +1,7 @@
 import { GridRowModel } from '@mui/x-data-grid';
 import {
   DefinedMealEntity,
-  DishEntity,
+  DishEntityRedux,
   IngredientEntity,
   IngredientsByDish,
   IngredientsById,
@@ -22,8 +22,8 @@ export interface MealWheelState {
   appState: AppState;
   dishesState: DishesState;
   definedMealsState: DefinedMealsState;
-  generateGroceryListState: GenerateGroceryListState;
-  generateMealsState: GenerateMealsState;
+  generateGroceryListState: GenerateGroceryListStateRedux;
+  generateMealsState: GenerateMealsStateRedux;
   groceryListState: GroceryListState;
   ingredientsState: IngredientsState;
   scheduledMealsState: ScheduledMealsState;
@@ -57,7 +57,7 @@ export interface VersionInfo {
 
 export interface DishesState {
   // dishes: DishesMap;
-  dishes: DishEntity[];
+  dishes: DishEntityRedux[];
 }
 
 // export interface DishesMap {
@@ -78,12 +78,25 @@ export interface ScheduledMealsState {
   scheduledMealsToResolve: ScheduledMealEntity[];
 }
 
-export interface GenerateMealsState {
-  startDate: Date;
+export interface GenerateMealsStateRedux {
+  // startDate: Date;
+  startDateAsStr: string;
   numberOfMealsToGenerate: number;
 }
 
-export interface GenerateGroceryListState {
+export interface GenerateMealsStateMongo {
+  startDate: Date;
+  // startDateAsStr: string;
+  numberOfMealsToGenerate: number;
+}
+
+export interface GenerateGroceryListStateRedux {
+  startDateAsStr: string;
+  numberOfMealsInGroceryList: number;
+  showStaples: boolean;
+}
+
+export interface GenerateGroceryListStateMongo {
   startDate: Date;
   numberOfMealsInGroceryList: number;
   showStaples: boolean;
@@ -156,8 +169,12 @@ export enum MealStatus {
   different = 2,
 }
 
-export interface MealOnDate {
-  date: Date;
+export interface MealOnDateRedux {
+  dateAsStr: string;
   meal: MealEntity | null;
 }
 
+export interface MealOnDateMongo {
+  date: Date;
+  meal: MealEntity | null;
+}

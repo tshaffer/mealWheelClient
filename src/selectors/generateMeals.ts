@@ -3,7 +3,11 @@ import {
 } from '../types';
 
 export const getStartDate = (state: MealWheelState): Date => {
-  return state.generateMealsState.startDate;
+  console.log('getStartDate');
+  console.log(state.generateMealsState.startDateAsStr);
+  const startDate: Date = new Date(state.generateMealsState.startDateAsStr);
+  console.log(startDate);
+  return startDate;
 };
 
 export const getNumberOfMealsToGenerate = (state: MealWheelState): number => {

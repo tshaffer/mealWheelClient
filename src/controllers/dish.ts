@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { addDishesRedux, addDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, updateDishRedux } from '../models';
 
-import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../types';
+import { apiUrlFragment, DishEntityMongo, MealWheelState, serverUrl } from '../types';
 
 export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
@@ -16,14 +16,14 @@ export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
 
     return axios.get(path)
       .then((dishesResponse: any) => {
-        const dishEntities: DishEntity[] = (dishesResponse as any).data;
+        const dishEntities: DishEntityMongo[] = (dishesResponse as any).data;
         dispatch(addDishesRedux(dishEntities));
       });
   };
 };
 
 export const addDish = (
-  dish: DishEntity
+  dish: DishEntityMongo
 ): MealWheelStringPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any): Promise<string> => {
 
@@ -55,7 +55,7 @@ export const addDish = (
 
 export const updateDish = (
   id: string,
-  dish: DishEntity
+  dish: DishEntityMongo
 ): MealWheelVoidPromiseThunkAction => {
   return (dispatch: MealWheelDispatch): any => {
 
@@ -82,7 +82,7 @@ export const updateDish = (
 };
 
 export const updateDishLastProperty = (
-  dishEntity: DishEntity,
+  dishEntity: DishEntityMongo,
   last: Date
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch): any => {

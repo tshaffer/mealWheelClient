@@ -24,6 +24,7 @@ import {
   getCurrentUser,
   getDefinedMeals,
   getDishById,
+  getDishes,
   getIngredientById,
   getIngredientIdsByDish,
   getMainById,
@@ -38,7 +39,7 @@ import {
 
 import {
   apiUrlFragment,
-  DishEntity,
+  DishEntityMongo,
   DishType,
   MealStatus,
   MealWheelState,
@@ -47,7 +48,7 @@ import {
   serverUrl,
   ScheduledMealEntity,
   MainDishEntity,
-  BaseDishEntity,
+  BaseDishEntityMongo,
   VerboseScheduledMeal,
   IngredientEntity,
   MealEntity
@@ -219,8 +220,8 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
   const selectedMainDishIndices: number[] = [];
 
-  const allDishes: DishEntity[] = mealWheelState.dishesState.dishes;
-  allDishes.forEach((dish: DishEntity, index: number) => {
+  const allDishes: DishEntityMongo[] = getDishes(mealWheelState);
+  allDishes.forEach((dish: DishEntityMongo, index: number) => {
     switch (dish.type) {
       case 'main':
         allMainDishIndices.push(index);
@@ -248,7 +249,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
       // }
 
       // don't add this main dish if it was last suggested within a number of days < minimum days between assignments
-      const mainDish: DishEntity | null = getMainById(mealWheelState, allDishes[allMainDishIndices[mainDishIndex]].id);
+      const mainDish: DishEntityMongo | null = getMainById(mealWheelState, allDishes[allMainDishIndices[mainDishIndex]].id);
       if (!isNil(mainDish)) {
         if (!isNil(mainDish.last)) {
           const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
@@ -267,7 +268,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
   for (const selectedMainDishIndex of selectedMainDishIndices) {
 
-    const mainDish: DishEntity = allDishes[selectedMainDishIndex];
+    const mainDish: DishEntityMongo = allDishes[selectedMainDishIndex];
 
     let saladId: string | null = null;
     let veggieId: string | null = null;
@@ -325,10 +326,10 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
     const mealId = uuidv4();
     const meal: MealEntity = {
       id: mealId,
-      mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
-      salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntity : undefined,
-      veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntity : undefined,
-      side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntity : undefined,
+      mainDish: getDishById(mealWheelState, mainDish.id) as DishEntityMongo,
+      salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntityMongo : undefined,
+      veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntityMongo : undefined,
+      side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntityMongo : undefined,
     };
 
     mealEntities.push(meal);
@@ -345,11 +346,11 @@ const getAccompanimentIndex = (
   startDate: Date
 ): string | null => {
 
-  const allDishes: DishEntity[] = mealWheelState.dishesState.dishes;
+  const allDishes: DishEntityMongo[] = getDishes(mealWheelState);
 
   const accompanimentIndex = accompanimentIndices[Math.floor(Math.random() * accompanimentIndices.length)];
   const accompanimentId = allDishes[accompanimentIndex].id;
-  const accompaniment: DishEntity | null = getDishById(mealWheelState, accompanimentId);
+  const accompaniment: DishEntityMongo | null = getDishById(mealWheelState, accompanimentId);
   if (!isNil(accompaniment)) {
     if (!isNil(accompaniment.last)) {
       const earliestTimeToRecommend: number = accompaniment.last.getTime() + (accompaniment.minimumInterval * (1000 * 3600 * 24));
@@ -593,7 +594,7 @@ export const updateSideInMeal = (
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const newSide: BaseDishEntity | null = getDishById(mealWheelState, newSideId) as BaseDishEntity;
+    const newSide: BaseDishEntityMongo | null = getDishById(mealWheelState, newSideId) as BaseDishEntityMongo;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
       if (!isNil(newSide)) {
@@ -612,7 +613,7 @@ export const updateSaladInMeal = (
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const newSalad: BaseDishEntity | null = getDishById(mealWheelState, newSaladId) as BaseDishEntity;
+    const newSalad: BaseDishEntityMongo | null = getDishById(mealWheelState, newSaladId) as BaseDishEntityMongo;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
       if (!isNil(newSalad)) {
@@ -631,7 +632,7 @@ export const updateVeggieInMeal = (
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const newVeggie: BaseDishEntity | null = getDishById(mealWheelState, newVeggieId) as BaseDishEntity;
+    const newVeggie: BaseDishEntityMongo | null = getDishById(mealWheelState, newVeggieId) as BaseDishEntityMongo;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
       if (!isNil(newVeggie)) {
@@ -672,21 +673,21 @@ const generateMealsToResolve = (state: MealWheelState, scheduledMeals: Scheduled
       if (scheduledMeal.status === MealStatus.pending) {
         scheduledMealsToResolve.push(scheduledMeal);
 
-        const main: DishEntity | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
+        const main: DishEntityMongo | null = isNil(scheduledMeal.mainDishId) ? null : getMainById(state, scheduledMeal.mainDishId);
         const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
-          isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
+          isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntityMongo).name;
 
-        const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
+        const veggie: DishEntityMongo | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
         const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
-          isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
+          isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntityMongo).name;
 
-        const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
+        const side: DishEntityMongo | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
         const sideName: string = isNil(scheduledMeal.sideId) ? '' :
-          isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
+          isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntityMongo).name;
 
-        const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
+        const salad: DishEntityMongo | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
         const saladName: string = isNil(scheduledMeal.saladId) ? '' :
-          isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
+          isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntityMongo).name;
 
         const verboseScheduledMeal: VerboseScheduledMeal = {
           ...scheduledMeal,

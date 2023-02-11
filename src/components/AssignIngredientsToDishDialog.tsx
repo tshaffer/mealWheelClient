@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
-import { DishEntity, IngredientEntity } from '../types';
+import { DishEntityMongo, IngredientEntity } from '../types';
 import { addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../controllers';
 import { getDishById, getIngredients, getIngredientsByDish } from '../selectors';
 import { MealWheelDispatch } from '../models';
@@ -35,7 +35,7 @@ export interface AssignIngredientsToDishDialogPropsFromParent {
 }
 
 export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToDishDialogPropsFromParent {
-  dish: DishEntity | null;
+  dish: DishEntityMongo | null;
   allIngredients: IngredientEntity[];
   ingredientsInDish: IngredientEntity[];
   onAddIngredientToDish: (dishId: string, ingredient: IngredientEntity) => any;

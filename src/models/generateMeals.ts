@@ -1,4 +1,4 @@
-import { GenerateMealsState } from '../types';
+import { GenerateMealsStateRedux } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -12,7 +12,7 @@ const SET_NUMBER_OF_MEALS_TO_GENERATE = 'SET_NUMBER_OF_MEALS_TO_GENERATE';
 // ------------------------------------
 
 export interface SetStartDatePayload {
-  startDate: Date;
+  startDateAsStr: string;
 }
 
 export const setStartDate = (
@@ -20,7 +20,7 @@ export const setStartDate = (
   return {
     type: SET_START_DATE,
     payload: {
-      startDate,
+      startDateAsStr: startDate.toDateString(),
     }
   };
 };
@@ -43,21 +43,21 @@ export const setNumberOfMealsToGenerate = (
 // Reducer
 // ------------------------------------
 
-const initialState: GenerateMealsState =
+const initialState: GenerateMealsStateRedux =
 {
-  startDate: new Date(),
+  startDateAsStr: (new Date()).toDateString(),
   numberOfMealsToGenerate: 7,
 };
 
 export const generateMealsStateReducer = (
-  state: GenerateMealsState = initialState,
+  state: GenerateMealsStateRedux = initialState,
   action: MealWheelModelBaseAction<SetStartDatePayload & SetNumberOfMealsToGeneratePayload>
-): GenerateMealsState => {
+): GenerateMealsStateRedux => {
   switch (action.type) {
     case SET_START_DATE:
       return {
         ...state,
-        startDate: action.payload.startDate,
+        startDateAsStr: action.payload.startDateAsStr,
       };
     case SET_NUMBER_OF_MEALS_TO_GENERATE:
       return {

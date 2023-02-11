@@ -7,7 +7,21 @@ export interface UserEntity {
   email: string;
 }
 
-export interface BaseDishEntity {
+export interface BaseDishEntityRedux {
+  id: string;
+  userId: string;
+  name: string;
+  type: DishType;
+  minimumInterval: number;
+  // last: Date | null;
+  lastAsStr: string | null;
+}
+
+export interface MainDishEntity extends BaseDishEntityRedux {
+  accompanimentRequired: RequiredAccompanimentFlags;
+}
+
+export interface BaseDishEntityMongo {
   id: string;
   userId: string;
   name: string;
@@ -16,25 +30,37 @@ export interface BaseDishEntity {
   last: Date | null;
 }
 
-export interface MainDishEntity extends BaseDishEntity {
+export interface MainDishEntity extends BaseDishEntityMongo {
   accompanimentRequired: RequiredAccompanimentFlags;
 }
 
-export interface DishEntity {
+export interface DishEntityMongo {
   id: string;
   name: string;
   type: DishType;
   minimumInterval: number;
   last: Date | null;
+  // lastAsStr: string | null;
+  accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
+}
+
+
+export interface DishEntityRedux {
+  id: string;
+  name: string;
+  type: DishType;
+  minimumInterval: number;
+  // last: Date | null;
+  lastAsStr: string | null;
   accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
 }
 
 export interface MealEntity {
   id: string;
-  mainDish: DishEntity;
-  salad?: DishEntity;
-  veggie?: DishEntity;
-  side?: DishEntity;
+  mainDish: DishEntityMongo;
+  salad?: DishEntityMongo;
+  veggie?: DishEntityMongo;
+  side?: DishEntityMongo;
   // mainDishId: string;
   // saladId: string;
   // veggieId: string;
@@ -67,13 +93,13 @@ export interface ScheduledMealEntity {
 }
 
 export interface VerboseScheduledMeal extends ScheduledMealEntity {
-  main: DishEntity | null;
+  main: DishEntityMongo | null;
   mainName: string;
-  salad: DishEntity | null;
+  salad: DishEntityMongo | null;
   saladName: string;
-  veggie: DishEntity | null;
+  veggie: DishEntityMongo | null;
   veggieName: string;
-  side: DishEntity | null;
+  side: DishEntityMongo | null;
   sideName: string;
 }
 
