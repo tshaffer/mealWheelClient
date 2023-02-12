@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'lodash';
 
-import { DishEntityMongo, MealEntity } from '../types';
+import { DishEntity, MealEntity } from '../types';
 
 export interface MenuItemProps {
   meal: MealEntity;
@@ -12,7 +12,7 @@ const MenuItemDescriptor = (props: MenuItemProps) => {
 
   const { meal } = props;
 
-  const renderDish = (dishEntity: DishEntityMongo | undefined, dishLabel: string, insertBreak: boolean): JSX.Element | null => {
+  const renderDish = (dishEntity: DishEntity | undefined, dishLabel: string, insertBreak: boolean): JSX.Element | null => {
     if (isNil(dishEntity)) {
       return null;
     }

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import type { CSSProperties } from 'react';
 import { useDrop } from 'react-dnd';
-import { DishEntityMongo, MealEntity, MealOnDateMongo } from '../types';
+import { DishEntity, MealEntity, MealOnDate } from '../types';
 import { isNil } from 'lodash';
 import { Button } from '@mui/material';
 import MenuItemDescriptor from './MenuItemDescriptor';
@@ -21,10 +21,10 @@ const style: CSSProperties = {
 
 
 export interface DroppableDateInScheduleProps {
-  mealOnDate: MealOnDateMongo;
+  mealOnDate: MealOnDate;
   accept: string[];
   onDrop: (item: any) => void;
-  onClearAssignedMealOnDateMongo: (mealOnDate: MealOnDateMongo) => any;
+  onClearAssignedMealOnDateMongo: (mealOnDate: MealOnDate) => any;
 }
 
 function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
@@ -48,7 +48,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     backgroundColor = 'darkkhaki';
   }
 
-  const handleClearAssignedMealOnDateMongo = (mealOnDate: MealOnDateMongo) => {
+  const handleClearAssignedMealOnDateMongo = (mealOnDate: MealOnDate) => {
     props.onClearAssignedMealOnDateMongo(mealOnDate);
   };
 
@@ -60,7 +60,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
-  const getFormattedAccompaniment = (dishEntity: DishEntityMongo | undefined, dishLabel: string): JSX.Element | null => {
+  const getFormattedAccompaniment = (dishEntity: DishEntity | undefined, dishLabel: string): JSX.Element | null => {
     if (isNil(dishEntity)) {
       return null;
     }
@@ -72,7 +72,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
-  const getFormattedNonEmptyMeal = (mealOnDate: MealOnDateMongo): JSX.Element => {
+  const getFormattedNonEmptyMeal = (mealOnDate: MealOnDate): JSX.Element => {
     const meal: MealEntity = mealOnDate.meal as unknown as MealEntity;
     return (
       <React.Fragment>
@@ -91,7 +91,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
-  const getFormattedMealOnDateMongo = (mealOnDate: MealOnDateMongo): JSX.Element => {
+  const getFormattedMealOnDateMongo = (mealOnDate: MealOnDate): JSX.Element => {
 
     let formattedMeal: JSX.Element;
 
@@ -109,7 +109,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
-  const renderMealOnDateMongo = (mealOnDate: MealOnDateMongo): JSX.Element => {
+  const renderMealOnDateMongo = (mealOnDate: MealOnDate): JSX.Element => {
     if (isNil(mealOnDate.meal)) {
       const formattedMeal = getFormattedEmptyMeal();
       return (

@@ -84,7 +84,7 @@ export interface GenerateMealsStateRedux {
   numberOfMealsToGenerate: number;
 }
 
-export interface GenerateMealsStateMongo {
+export interface GenerateMealsState {
   startDate: Date;
   // startDateAsStr: string;
   numberOfMealsToGenerate: number;
@@ -96,7 +96,7 @@ export interface GenerateGroceryListStateRedux {
   showStaples: boolean;
 }
 
-export interface GenerateGroceryListStateMongo {
+export interface GenerateGroceryListState {
   startDate: Date;
   numberOfMealsInGroceryList: number;
   showStaples: boolean;
@@ -127,7 +127,7 @@ export interface DishRowModel {
   veggie: number;
 }
 
-export interface IngredientInDishRowModel extends GridRowModel{
+export interface IngredientInDishRowModel extends GridRowModel {
   id: string;
   name: string,
 }
@@ -174,7 +174,7 @@ export interface MealOnDateRedux {
   meal: MealEntity | null;
 }
 
-export interface MealOnDateMongo {
+export interface MealOnDate {
   date: Date;
   meal: MealEntity | null;
 }

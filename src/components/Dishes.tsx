@@ -30,14 +30,14 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
-import { DishEntityMongo, DishType, RequiredAccompanimentFlags } from '../types';
+import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, updateDish } from '../controllers';
 import { getDishes } from '../selectors';
 import { MealWheelDispatch } from '../models';
 
 interface DishRow {
-  dish: DishEntityMongo;
+  dish: DishEntity;
   name: string
   type: DishType;
   minimumInterval: number;
@@ -64,8 +64,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-    a: { [key in Key]: boolean | string | number | DishEntityMongo | Date | null },
-    b: { [key in Key]: boolean | string | number | DishEntityMongo | Date | null },
+    a: { [key in Key]: boolean | string | number | DishEntity | Date | null },
+    b: { [key in Key]: boolean | string | number | DishEntity | Date | null },
   ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -149,9 +149,9 @@ interface TableProps {
 const initialRows: DishRow[] = [];
 
 export interface DishesProps {
-  dishes: DishEntityMongo[];
-  onAddDish: (dish: DishEntityMongo) => any;
-  onUpdateDish: (id: string, dish: DishEntityMongo) => any;
+  dishes: DishEntity[];
+  onAddDish: (dish: DishEntity) => any;
+  onUpdateDish: (id: string, dish: DishEntity) => any;
 }
 
 const DishesTableHead = (props: TableProps) => {
@@ -222,7 +222,7 @@ const Dishes = (props: DishesProps) => {
   let dishIdToDishRowIndex: IdToNumberMap = {};
 
   const getRows = (): DishRow[] => {
-    const rows: DishRow[] = props.dishes.map((dish: DishEntityMongo) => {
+    const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
       const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
       const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
       const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
@@ -264,7 +264,7 @@ const Dishes = (props: DishesProps) => {
 
   const handleAddRow = () => {
 
-    const dish: DishEntityMongo = {
+    const dish: DishEntity = {
       id: '',
       name: '',
       type: DishType.Main,
@@ -345,7 +345,7 @@ const Dishes = (props: DishesProps) => {
       // check for duplicate dish names.
       const updatedDishName = currentEditDish.name;
       for (let dishIndex = 0; dishIndex < props.dishes.length; dishIndex++) {
-        const existingDish: DishEntityMongo = props.dishes[dishIndex];
+        const existingDish: DishEntity = props.dishes[dishIndex];
         if (currentEditDish.dish.id !== existingDish.id && existingDish.name === updatedDishName) {
           setSnackbar({ children: 'Error while saving dish: duplicate dish name', severity: 'error' });
           return;
@@ -361,7 +361,7 @@ const Dishes = (props: DishesProps) => {
       }
 
       if (currentEditDish.dish.id === '') {
-        const newDish: DishEntityMongo = {
+        const newDish: DishEntity = {
           id: '',
           name: currentEditDish.name,
           type: currentEditDish.type,
@@ -380,7 +380,7 @@ const Dishes = (props: DishesProps) => {
             }
           });
       } else {
-        const updatedDish: DishEntityMongo = cloneDeep(currentEditDish.dish);
+        const updatedDish: DishEntity = cloneDeep(currentEditDish.dish);
         updatedDish.name = currentEditDish.name;
         updatedDish.type = currentEditDish.type;
         updatedDish.minimumInterval = currentEditDish.minimumInterval;
@@ -411,7 +411,7 @@ const Dishes = (props: DishesProps) => {
       if (!isNil(currentEditDish)) {
         const selectedDishRowIndex = dishIdToDishRowIndex[currentEditDish.dish.id];
         const selectedDishRow: DishRow = rows[selectedDishRowIndex];
-        const unmodifiedDishEntity: DishEntityMongo = selectedDishRow.dish;
+        const unmodifiedDishEntity: DishEntity = selectedDishRow.dish;
         selectedDishRow.name = unmodifiedDishEntity.name;
         selectedDishRow.type = unmodifiedDishEntity.type;
         selectedDishRow.minimumInterval = unmodifiedDishEntity.minimumInterval;

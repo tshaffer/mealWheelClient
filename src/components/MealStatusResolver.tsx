@@ -18,7 +18,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
-import { VerboseScheduledMeal, DishEntityMongo } from '../types';
+import { VerboseScheduledMeal, DishEntity } from '../types';
 import { MealWheelDispatch, setPendingMeal } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
@@ -34,10 +34,10 @@ export interface MealStatusResolverPropsFromParent {
 
 export interface MealStatusResolverProps extends MealStatusResolverPropsFromParent {
   meal: VerboseScheduledMeal | null;
-  mains: DishEntityMongo[];
-  sides: DishEntityMongo[];
-  salads: DishEntityMongo[];
-  veggies: DishEntityMongo[];
+  mains: DishEntity[];
+  sides: DishEntity[];
+  salads: DishEntity[];
+  veggies: DishEntity[];
   onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
 }
 
@@ -78,7 +78,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const handleUpdateMain = (event: any) => {
     const mainId = event.target.value;
-    let selectedMain: DishEntityMongo | null = null;
+    let selectedMain: DishEntity | null = null;
     for (const main of mains) {
       if (mainId === main.id) {
         selectedMain = main;
@@ -97,7 +97,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const handleUpdateSide = (event: any) => {
     const sideId = event.target.value;
-    let selectedSide: DishEntityMongo | null = null;
+    let selectedSide: DishEntity | null = null;
     for (const side of sides) {
       if (sideId === side.id) {
         selectedSide = side;
@@ -116,7 +116,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const handleUpdateSalad = (event: any) => {
     const saladId = event.target.value;
-    let selectedSalad: DishEntityMongo | null = null;
+    let selectedSalad: DishEntity | null = null;
     for (const salad of salads) {
       if (saladId === salad.id) {
         selectedSalad = salad;
@@ -132,7 +132,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const handleUpdateVeggie = (event: any) => {
     const veggieId = event.target.value;
-    let selectedVeggie: DishEntityMongo | null = null;
+    let selectedVeggie: DishEntity | null = null;
     for (const veggie of veggies) {
       if (veggieId === veggie.id) {
         selectedVeggie = veggie;
@@ -165,14 +165,14 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     );
   };
 
-  const renderDishMenuItem = (dishEntity: DishEntityMongo): JSX.Element => {
+  const renderDishMenuItem = (dishEntity: DishEntity): JSX.Element => {
     return (
       <MenuItem value={dishEntity.id} key={dishEntity.id}>{dishEntity.name}</MenuItem>
     );
   };
 
-  const renderDishMenuItems = (dishes: DishEntityMongo[], includeNone: boolean) => {
-    const dishMenuItems: JSX.Element[] = dishes.map((dish: DishEntityMongo) => {
+  const renderDishMenuItems = (dishes: DishEntity[], includeNone: boolean) => {
+    const dishMenuItems: JSX.Element[] = dishes.map((dish: DishEntity) => {
       return renderDishMenuItem(dish);
     });
     if (includeNone) {

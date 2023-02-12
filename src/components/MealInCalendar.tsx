@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { isNil, isString } from 'lodash';
 
-import { DishType, DishEntityMongo, ScheduledMealEntity } from '../types';
+import { DishType, DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import { getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
 import { MealWheelDispatch } from '../models';
@@ -14,10 +14,10 @@ export interface MealInCalendarPropsFromParent {
 }
 
 export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
-  main: DishEntityMongo | null;
-  salad: DishEntityMongo | null;
-  side: DishEntityMongo | null;
-  veggie: DishEntityMongo | null;
+  main: DishEntity | null;
+  salad: DishEntity | null;
+  side: DishEntity | null;
+  veggie: DishEntity | null;
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
@@ -43,7 +43,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
-  const renderAccompaniment = (accompanimentDish: DishEntityMongo | null) => {
+  const renderAccompaniment = (accompanimentDish: DishEntity | null) => {
 
     if (isNil(accompanimentDish)) {
       return null;
@@ -101,12 +101,12 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
     (isString(calendarEvent.scheduledMealId)) ? calendarEvent.scheduledMealId : '';
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
 
-  let main: DishEntityMongo | null = null;
-  let salad: DishEntityMongo | null = null;
-  let side: DishEntityMongo | null = null;
-  let veggie: DishEntityMongo | null = null;
+  let main: DishEntity | null = null;
+  let salad: DishEntity | null = null;
+  let side: DishEntity | null = null;
+  let veggie: DishEntity | null = null;
   if (!isNil(scheduledMeal)) {
-    main = getMainById(state, scheduledMeal.mainDishId) as DishEntityMongo;
+    main = getMainById(state, scheduledMeal.mainDishId) as DishEntity;
     salad = getSaladById(state, scheduledMeal.saladId);
     side = getSideById(state, scheduledMeal.sideId);
     veggie = getVeggieById(state, scheduledMeal.veggieId);

@@ -1,13 +1,13 @@
 import { isString } from 'lodash';
-import { DishEntityMongo, DishEntityRedux, DishType, MealWheelState } from '../types';
+import { DishEntity, DishEntityRedux, DishType, MealWheelState } from '../types';
 
-const mongoDishFromReduxDish = (dish: DishEntityRedux) : DishEntityMongo => {
+const mongoDishFromReduxDish = (dish: DishEntityRedux): DishEntity => {
   return {
     id: dish.id,
     name: dish.name,
     type: dish.type,
     minimumInterval: dish.minimumInterval,
-    last: !isString(dish.lastAsStr) ? null: new Date(dish.lastAsStr),
+    last: !isString(dish.lastAsStr) ? null : new Date(dish.lastAsStr),
     accompanimentRequired: dish.accompanimentRequired,
   };
 };
@@ -16,15 +16,15 @@ const getReduxDishes = (state: MealWheelState): DishEntityRedux[] => {
   return state.dishesState.dishes;
 };
 
-export const getDishes = (state: MealWheelState): DishEntityMongo[] => {
+export const getDishes = (state: MealWheelState): DishEntity[] => {
   const dishes = getReduxDishes(state);
-  const allDishes: DishEntityMongo[] = dishes.map((dish: DishEntityRedux) => {
+  const allDishes: DishEntity[] = dishes.map((dish: DishEntityRedux) => {
     return mongoDishFromReduxDish(dish);
   });
   return allDishes;
 };
 
-export const getDishById = (state: MealWheelState, dishId: string): DishEntityMongo | null => {
+export const getDishById = (state: MealWheelState, dishId: string): DishEntity | null => {
   // FIX TO USE MAP
   const dishes = getReduxDishes(state);
   for (const dish of dishes) {
@@ -35,9 +35,9 @@ export const getDishById = (state: MealWheelState, dishId: string): DishEntityMo
   return null;
 };
 
-const getDishesOfType = (state: MealWheelState, dishType: DishType): DishEntityMongo[] => {
+const getDishesOfType = (state: MealWheelState, dishType: DishType): DishEntity[] => {
 
-  const dishes: DishEntityMongo[] = [];
+  const dishes: DishEntity[] = [];
   for (const dish of getReduxDishes(state)) {
     if (dish.type === dishType) {
       dishes.push(mongoDishFromReduxDish(dish));
@@ -46,24 +46,24 @@ const getDishesOfType = (state: MealWheelState, dishType: DishType): DishEntityM
   return dishes;
 };
 
-export const getMains = (state: MealWheelState): DishEntityMongo[] => {
+export const getMains = (state: MealWheelState): DishEntity[] => {
   return getDishesOfType(state, DishType.Main);
 };
 
-export const getSides = (state: MealWheelState): DishEntityMongo[] => {
+export const getSides = (state: MealWheelState): DishEntity[] => {
   return getDishesOfType(state, DishType.Side);
 };
 
-export const getSalads = (state: MealWheelState): DishEntityMongo[] => {
+export const getSalads = (state: MealWheelState): DishEntity[] => {
   return getDishesOfType(state, DishType.Salad);
 };
 
-export const getVeggies = (state: MealWheelState): DishEntityMongo[] => {
+export const getVeggies = (state: MealWheelState): DishEntity[] => {
   return getDishesOfType(state, DishType.Veggie);
 };
 
-export const getVeggieById = (state: MealWheelState, id: string): DishEntityMongo | null => {
-  const veggies: DishEntityMongo[] = getVeggies(state);
+export const getVeggieById = (state: MealWheelState, id: string): DishEntity | null => {
+  const veggies: DishEntity[] = getVeggies(state);
   for (const veggie of veggies) {
     if (veggie.id === id) {
       return veggie;
@@ -72,8 +72,8 @@ export const getVeggieById = (state: MealWheelState, id: string): DishEntityMong
   return null;
 };
 
-export const getSideById = (state: MealWheelState, id: string): DishEntityMongo | null => {
-  const sides: DishEntityMongo[] = getSides(state);
+export const getSideById = (state: MealWheelState, id: string): DishEntity | null => {
+  const sides: DishEntity[] = getSides(state);
   for (const side of sides) {
     if (side.id === id) {
       return side;
@@ -82,8 +82,8 @@ export const getSideById = (state: MealWheelState, id: string): DishEntityMongo 
   return null;
 };
 
-export const getSaladById = (state: MealWheelState, id: string): DishEntityMongo | null => {
-  const salads: DishEntityMongo[] = getSalads(state);
+export const getSaladById = (state: MealWheelState, id: string): DishEntity | null => {
+  const salads: DishEntity[] = getSalads(state);
   for (const salad of salads) {
     if (salad.id === id) {
       return salad;
@@ -92,8 +92,8 @@ export const getSaladById = (state: MealWheelState, id: string): DishEntityMongo
   return null;
 };
 
-export const getMainById = (state: MealWheelState, id: string): DishEntityMongo | null => {
-  const mains: DishEntityMongo[] = getMains(state);
+export const getMainById = (state: MealWheelState, id: string): DishEntity | null => {
+  const mains: DishEntity[] = getMains(state);
   for (const main of mains) {
     if (main.id === id) {
       return main;

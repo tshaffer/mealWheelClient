@@ -10,7 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
-import { MealEntity, MealOnDateMongo, ScheduledMealEntity } from '../types';
+import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
 import { addRandomMeals, assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 import { MealWheelDispatch } from '../models';
@@ -32,7 +32,7 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
   startDate: Date;
   numberOfMealsToGenerate: number,
   scheduledMeals: ScheduledMealEntity[];
-  mealOnDates: MealOnDateMongo[];
+  mealOnDates: MealOnDate[];
   onAssignMealToDate: (meal: MealEntity, date: Date) => void;
   onUpdateMealAssignedToDate: (meal: MealEntity, date: Date) => void;
   onDeleteScheduledMeal: (id: string) => void;
@@ -41,7 +41,7 @@ export interface AssignMealsToDatesDialogProps extends AssignMealsToDatesDialogP
 
 function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
-  const [mealOnDates, setMealOnDateMongos] = React.useState<MealOnDateMongo[]>([]);
+  const [mealOnDates, setMealOnDateMongos] = React.useState<MealOnDate[]>([]);
 
   React.useEffect(() => {
     setMealOnDateMongos(props.mealOnDates);
@@ -55,7 +55,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     props.onSuggestMoreMeals(4, props.startDate);
   };
 
-  const handleClearAssignedMealOnDateMongo = (mealOnDate: MealOnDateMongo) => {
+  const handleClearAssignedMealOnDateMongo = (mealOnDate: MealOnDate) => {
     console.log('clear assigned meal on: ', mealOnDate.date.toDateString());
     if (!isNil(mealOnDate.meal)) {
 
@@ -72,7 +72,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     return (date2.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
   };
 
-  const assignMealToDate = (meal: MealEntity, mealOnDate: MealOnDateMongo) => {
+  const assignMealToDate = (meal: MealEntity, mealOnDate: MealOnDate) => {
     if (isNil(mealOnDate.meal)) {
       props.onAssignMealToDate(meal, mealOnDate.date);
     } else {
@@ -80,7 +80,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     }
   };
 
-  const handleDrop = (meal: MealEntity, mealOnDate: MealOnDateMongo) => {
+  const handleDrop = (meal: MealEntity, mealOnDate: MealOnDate) => {
     console.log('drop');
     console.log(meal);
     console.log(mealOnDate);
@@ -89,7 +89,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
   const getDroppableDatesInSchedule = (): JSX.Element[] => {
 
-    const renderedListOfMealOnDateMongos = mealOnDates.map((mealOnDate: MealOnDateMongo, mealOnDateIndex: number) => {
+    const renderedListOfMealOnDateMongos = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
       return (
         <DroppableDateInSchedule
           key={mealOnDateIndex}

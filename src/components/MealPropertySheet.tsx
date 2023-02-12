@@ -17,7 +17,7 @@ import TextField from '@mui/material/TextField';
 import '../styles/MealWheel.css';
 
 import {
-  DishEntityMongo,
+  DishEntity,
   DishType,
   RequiredAccompanimentFlags,
   ScheduledMealEntity
@@ -55,21 +55,21 @@ export interface MealPropertySheetPropsFromParent {
 
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
   scheduledMeal: ScheduledMealEntity | null,
-  mainValue: DishEntityMongo | null;
-  veggieValue: DishEntityMongo | null;
-  sideValue: DishEntityMongo | null;
-  saladValue: DishEntityMongo | null;
-  mains: DishEntityMongo[];
-  sides: DishEntityMongo[];
-  salads: DishEntityMongo[];
-  veggies: DishEntityMongo[];
+  mainValue: DishEntity | null;
+  veggieValue: DishEntity | null;
+  sideValue: DishEntity | null;
+  saladValue: DishEntity | null;
+  mains: DishEntity[];
+  sides: DishEntity[];
+  salads: DishEntity[];
+  veggies: DishEntity[];
   onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
   onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
   onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
   onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
   onGenerateMeal: (mealId: string, date: Date) => any;
   onDeleteMeal: (mealId: string) => any;
-  onAddDish: (dish: DishEntityMongo) => any;
+  onAddDish: (dish: DishEntity) => any;
   state: any;
 }
 
@@ -152,7 +152,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     console.log(requiredAccompanimentFlags);
     // TODO - I don't think the 'addedDish' is necessary.
     const dishId: string = 'addedDish' + uuidv4();
-    const dishEntity: DishEntityMongo = {
+    const dishEntity: DishEntity = {
       id: dishId,
       name: dishName,
       type: dishTypeFromDialog,
@@ -201,14 +201,14 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  const renderDishMenuItem = (dishEntity: DishEntityMongo): JSX.Element => {
+  const renderDishMenuItem = (dishEntity: DishEntity): JSX.Element => {
     return (
       <MenuItem value={dishEntity.id} key={dishEntity.id}>{dishEntity.name}</MenuItem>
     );
   };
 
-  const renderDishMenuItems = (dishes: DishEntityMongo[], includeNone: boolean) => {
-    const dishMenuItems: JSX.Element[] = dishes.map((mainDish: DishEntityMongo) => {
+  const renderDishMenuItems = (dishes: DishEntity[], includeNone: boolean) => {
+    const dishMenuItems: JSX.Element[] = dishes.map((mainDish: DishEntity) => {
       return renderDishMenuItem(mainDish);
     });
     if (includeNone) {
@@ -370,7 +370,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         />
       </div>
       <div className='mealPropertySheet'>
-        <p className='shortParagraph'>{'Main: ' + (props.mainValue as DishEntityMongo).name}</p>
+        <p className='shortParagraph'>{'Main: ' + (props.mainValue as DishEntity).name}</p>
         {mainDishElement}
         {sideDishElement}
         {saladsDishElement}
@@ -387,10 +387,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
 function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent) {
   let scheduledMeal: ScheduledMealEntity | null = null;
-  let mainValue: DishEntityMongo | null = null;
-  let saladValue: DishEntityMongo | null = null;
-  let sideValue: DishEntityMongo | null = null;
-  let veggieValue: DishEntityMongo | null = null;
+  let mainValue: DishEntity | null = null;
+  let saladValue: DishEntity | null = null;
+  let sideValue: DishEntity | null = null;
+  let veggieValue: DishEntity | null = null;
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.scheduledMealId) && ownProps.selectedMealInCalendar.scheduledMealId !== '') {
     scheduledMeal = getScheduledMeal(state, ownProps.scheduledMealId);
     if (!isNil(scheduledMeal)) {

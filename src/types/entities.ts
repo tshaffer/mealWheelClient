@@ -21,7 +21,7 @@ export interface MainDishEntity extends BaseDishEntityRedux {
   accompanimentRequired: RequiredAccompanimentFlags;
 }
 
-export interface BaseDishEntityMongo {
+export interface BaseDishEntity {
   id: string;
   userId: string;
   name: string;
@@ -30,11 +30,11 @@ export interface BaseDishEntityMongo {
   last: Date | null;
 }
 
-export interface MainDishEntity extends BaseDishEntityMongo {
+export interface MainDishEntity extends BaseDishEntity {
   accompanimentRequired: RequiredAccompanimentFlags;
 }
 
-export interface DishEntityMongo {
+export interface DishEntity {
   id: string;
   name: string;
   type: DishType;
@@ -57,10 +57,10 @@ export interface DishEntityRedux {
 
 export interface MealEntity {
   id: string;
-  mainDish: DishEntityMongo;
-  salad?: DishEntityMongo;
-  veggie?: DishEntityMongo;
-  side?: DishEntityMongo;
+  mainDish: DishEntity;
+  salad?: DishEntity;
+  veggie?: DishEntity;
+  side?: DishEntity;
   // mainDishId: string;
   // saladId: string;
   // veggieId: string;
@@ -93,13 +93,13 @@ export interface ScheduledMealEntity {
 }
 
 export interface VerboseScheduledMeal extends ScheduledMealEntity {
-  main: DishEntityMongo | null;
+  main: DishEntity | null;
   mainName: string;
-  salad: DishEntityMongo | null;
+  salad: DishEntity | null;
   saladName: string;
-  veggie: DishEntityMongo | null;
+  veggie: DishEntity | null;
   veggieName: string;
-  side: DishEntityMongo | null;
+  side: DishEntity | null;
   sideName: string;
 }
 

@@ -1,5 +1,5 @@
 import { cloneDeep, isNil } from 'lodash';
-import { DishEntityMongo, DishEntityRedux, DishesState, RequiredAccompanimentFlags } from '../types';
+import { DishEntity, DishEntityRedux, DishesState, RequiredAccompanimentFlags } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -28,7 +28,7 @@ export interface AddReduxDishPayload {
 
 export const addDishRedux = (
   id: string,
-  mongoDish: DishEntityMongo
+  mongoDish: DishEntity
 ): any => {
   const reduxDish: DishEntityRedux = {
     id: mongoDish.id,
@@ -52,9 +52,9 @@ interface AddReduxDishesPayload {
 }
 
 export const addDishesRedux = (
-  dishes: DishEntityMongo[]
+  dishes: DishEntity[]
 ): any => {
-  const reduxDishes: DishEntityRedux[] = dishes.map((mongoDish: DishEntityMongo) => {
+  const reduxDishes: DishEntityRedux[] = dishes.map((mongoDish: DishEntity) => {
     return {
       id: mongoDish.id,
       name: mongoDish.name,
@@ -79,7 +79,7 @@ export interface UpdateReduxDishPayload {
 
 export const updateDishRedux = (
   id: string,
-  mongoDish: DishEntityMongo
+  mongoDish: DishEntity
 ): any => {
   const reduxDish: DishEntityRedux = {
     id: mongoDish.id,

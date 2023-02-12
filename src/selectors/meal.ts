@@ -1,6 +1,6 @@
 import { cloneDeep, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity, MealOnDateMongo, DishEntityMongo } from '../types';
+import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity, MealOnDate, DishEntity } from '../types';
 import { getMainById, getSaladById, getSideById, getVeggieById } from './dish';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
@@ -63,34 +63,34 @@ export const getScheduledMealsForDays = (state: MealWheelState, mealDate: Date, 
   return mealEntities;
 };
 
-export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): MealOnDateMongo[] => {
+export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, numberOfDays: number): MealOnDate[] => {
 
   let localMealDate = cloneDeep(mealDate);
 
-  const mealOnDates: MealOnDateMongo[] = [];
+  const mealOnDates: MealOnDate[] = [];
 
   for (let dayIndex = 0; dayIndex < numberOfDays; dayIndex++) {
 
     const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, localMealDate);
     if (!isNil(scheduledMeal)) {
-      const mainDish: DishEntityMongo | null = getMainById(state, scheduledMeal.mainDishId);
-      const salad: DishEntityMongo | null = getSaladById(state, scheduledMeal.saladId);
-      const side: DishEntityMongo | null = getSideById(state, scheduledMeal.sideId);
-      const veggie: DishEntityMongo | null = getVeggieById(state, scheduledMeal.veggieId);
+      const mainDish: DishEntity | null = getMainById(state, scheduledMeal.mainDishId);
+      const salad: DishEntity | null = getSaladById(state, scheduledMeal.saladId);
+      const side: DishEntity | null = getSideById(state, scheduledMeal.sideId);
+      const veggie: DishEntity | null = getVeggieById(state, scheduledMeal.veggieId);
       const mealEntity: MealEntity = {
         id: uuidv4(),
-        mainDish: mainDish as DishEntityMongo,
+        mainDish: mainDish as DishEntity,
         salad: isNil(salad) ? undefined : salad,
         veggie: isNil(veggie) ? undefined : veggie,
         side: isNil(side) ? undefined : side,
       };
-      const mealOnDate: MealOnDateMongo = {
+      const mealOnDate: MealOnDate = {
         date: localMealDate,
         meal: mealEntity,
       };
       mealOnDates.push(mealOnDate);
     } else {
-      const mealOnDate: MealOnDateMongo = {
+      const mealOnDate: MealOnDate = {
         date: localMealDate,
         meal: null,
       };
