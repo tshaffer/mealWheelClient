@@ -34,13 +34,22 @@ export interface MainDishEntity extends BaseDishEntity {
   accompanimentRequired: RequiredAccompanimentFlags;
 }
 
+export interface DishEntityFromServer {
+  id: string;
+  name: string;
+  type: DishType;
+  minimumInterval: number;
+  last: string | null;
+  accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
+}
+
+
 export interface DishEntity {
   id: string;
   name: string;
   type: DishType;
   minimumInterval: number;
   last: Date | null;
-  // lastAsStr: string | null;
   accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
 }
 

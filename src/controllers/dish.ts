@@ -4,7 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { addDishesRedux, addDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, updateDishRedux } from '../models';
 
-import { apiUrlFragment, DishEntity, MealWheelState, serverUrl } from '../types';
+import { apiUrlFragment, DishEntity, DishEntityFromServer, MealWheelState, RequiredAccompanimentFlags, serverUrl } from '../types';
+import { isNil } from 'lodash';
 
 export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
@@ -16,7 +17,19 @@ export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
 
     return axios.get(path)
       .then((dishesResponse: any) => {
-        const dishEntities: DishEntity[] = (dishesResponse as any).data;
+        const dishEntitiesFromServer: DishEntityFromServer[] = (dishesResponse as any).data;
+        const dishEntities: DishEntity[] = dishEntitiesFromServer.map((dishEntityFromServer: DishEntityFromServer) => {
+          const dishEntity: DishEntity = {
+            id: dishEntityFromServer.id,
+            name: dishEntityFromServer.name,
+            type: dishEntityFromServer.type,
+            minimumInterval: dishEntityFromServer.minimumInterval,
+            last: isNil(dishEntityFromServer.last) ? null : new Date(dishEntityFromServer.last),
+            accompanimentRequired: isNil(dishEntityFromServer.accompanimentRequired) ? undefined : dishEntityFromServer.accompanimentRequired,
+          };
+          return dishEntity;
+        });
+
         dispatch(addDishesRedux(dishEntities));
       });
   };

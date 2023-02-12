@@ -79,14 +79,12 @@ export interface ScheduledMealsState {
 }
 
 export interface GenerateMealsStateRedux {
-  // startDate: Date;
   startDateAsStr: string;
   numberOfMealsToGenerate: number;
 }
 
 export interface GenerateMealsState {
   startDate: Date;
-  // startDateAsStr: string;
   numberOfMealsToGenerate: number;
 }
 
@@ -167,11 +165,6 @@ export enum MealStatus {
   pending = 0,
   prepared = 1,
   different = 2,
-}
-
-export interface MealOnDateRedux {
-  dateAsStr: string;
-  meal: MealEntity | null;
 }
 
 export interface MealOnDate {
