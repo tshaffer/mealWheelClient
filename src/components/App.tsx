@@ -271,7 +271,7 @@ const App = (props: AppProps) => {
           <button style={mealScheduleTabStyle} onClick={handleSelectTab} id='mealScheduleTabSelect' >Meal Schedule</button>
           <button style={dishesTabStyle} onClick={handleSelectTab} id='dishesTabSelect'>Dishes</button>
           <button style={ingredientsTabStyle} onClick={handleSelectTab} id='ingredientsTabSelect'>Ingredients</button>
-          <button style={mealWheelTonightTabStyle} onClick={handleSelectTab} id='mealWheelTonightTabSelect'>MealWheel Tonight!</button>
+          <button style={mealWheelTonightTabStyle} onClick={handleSelectTab} id='mealWheelTonightTabSelect'>MealWheelTonight &trade;</button>
           <button style={settingsTabStyle} onClick={handleSelectTab} id='settingsTabSelect'>Tools & Settings</button>
         </div>
         <div id='mealScheduleContent' style={mealScheduleTabContentStyle}>
