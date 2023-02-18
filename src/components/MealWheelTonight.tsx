@@ -36,15 +36,15 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
       label: 'Zero',
     },
     {
-      value: 20,
+      value: 2,
       label: 'Very low',
     },
     {
-      value: 50,
+      value: 5,
       label: 'Medium',
     },
     {
-      value: 100,
+      value: 10,
       label: 'High',
     },
   ];
@@ -77,11 +77,13 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
         <span>Prep effort willingness</span>
         <Slider
           style={sliderStyle}
-          defaultValue={50}
+          defaultValue={5}
           getAriaValueText={valuetext}
-          step={10}
+          step={1}
           valueLabelDisplay="auto"
           marks={effortMarks}
+          min={0}
+          max={10}
         />
       </Box>
     );
@@ -96,11 +98,13 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
         <span>Cleanup effort willingness</span>
         <Slider
           style={sliderStyle}
-          defaultValue={50}
+          defaultValue={5}
           getAriaValueText={valuetext}
-          step={10}
+          step={1}
           valueLabelDisplay="auto"
           marks={effortMarks}
+          min={0}
+          max={10}
         />
       </Box>
     );
