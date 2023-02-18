@@ -196,6 +196,8 @@ const App = (props: AppProps) => {
     let ingredientsTabContentStyle;
     let mealScheduleTabStyle;
     let mealScheduleTabContentStyle;
+    let mealWheelTonightTabStyle;
+    let mealWheelTonightTabContentStyle;
     let settingsTabStyle;
     let settingsTabContentStyle;
 
@@ -207,6 +209,8 @@ const App = (props: AppProps) => {
         ingredientsTabContentStyle = unselectedTabContent;
         mealScheduleTabStyle = tabLinkUnselected;
         mealScheduleTabContentStyle = unselectedTabContent;
+        mealWheelTonightTabStyle = tabLinkUnselected;
+        mealWheelTonightTabContentStyle = unselectedTabContent;
         settingsTabStyle = tabLinkUnselected;
         settingsTabContentStyle = unselectedTabContent;
         break;
@@ -217,6 +221,20 @@ const App = (props: AppProps) => {
         ingredientsTabContentStyle = selectedTabContent;
         mealScheduleTabStyle = tabLinkUnselected;
         mealScheduleTabContentStyle = unselectedTabContent;
+        mealWheelTonightTabStyle = tabLinkUnselected;
+        mealWheelTonightTabContentStyle = unselectedTabContent;
+        settingsTabStyle = tabLinkUnselected;
+        settingsTabContentStyle = unselectedTabContent;
+        break;
+      case 'mealWheelTonightTabSelect':
+        dishesTabStyle = tabLinkUnselected;
+        dishesTabContentStyle = unselectedTabContent;
+        ingredientsTabStyle = tabLinkUnselected;
+        ingredientsTabContentStyle = unselectedTabContent;
+        mealScheduleTabStyle = tabLinkUnselected;
+        mealScheduleTabContentStyle = unselectedTabContent;
+        mealWheelTonightTabStyle = tabLinkSelected;
+        mealWheelTonightTabContentStyle = selectedTabContent;
         settingsTabStyle = tabLinkUnselected;
         settingsTabContentStyle = unselectedTabContent;
         break;
@@ -228,6 +246,8 @@ const App = (props: AppProps) => {
         ingredientsTabContentStyle = unselectedTabContent;
         mealScheduleTabStyle = tabLinkSelected;
         mealScheduleTabContentStyle = selectedTabContent;
+        mealWheelTonightTabStyle = tabLinkUnselected;
+        mealWheelTonightTabContentStyle = unselectedTabContent;
         settingsTabStyle = tabLinkUnselected;
         settingsTabContentStyle = unselectedTabContent;
         break;
@@ -238,6 +258,8 @@ const App = (props: AppProps) => {
         ingredientsTabContentStyle = unselectedTabContent;
         mealScheduleTabStyle = tabLinkUnselected;
         mealScheduleTabContentStyle = unselectedTabContent;
+        mealWheelTonightTabStyle = tabLinkUnselected;
+        mealWheelTonightTabContentStyle = unselectedTabContent;
         settingsTabStyle = tabLinkSelected;
         settingsTabContentStyle = selectedTabContent;
         break;
@@ -249,7 +271,8 @@ const App = (props: AppProps) => {
           <button style={mealScheduleTabStyle} onClick={handleSelectTab} id='mealScheduleTabSelect' >Meal Schedule</button>
           <button style={dishesTabStyle} onClick={handleSelectTab} id='dishesTabSelect'>Dishes</button>
           <button style={ingredientsTabStyle} onClick={handleSelectTab} id='ingredientsTabSelect'>Ingredients</button>
-          <button style={settingsTabStyle} onClick={handleSelectTab} id='settingsTabSelect' >Tools & Settings</button>
+          <button style={mealWheelTonightTabStyle} onClick={handleSelectTab} id='mealWheelTonightTabSelect'>MealWheel Tonight!</button>
+          <button style={settingsTabStyle} onClick={handleSelectTab} id='settingsTabSelect'>Tools & Settings</button>
         </div>
         <div id='mealScheduleContent' style={mealScheduleTabContentStyle}>
           <MealSchedule />
@@ -261,6 +284,9 @@ const App = (props: AppProps) => {
         </div>
         <div id='ingredientsContent' style={ingredientsTabContentStyle}>
           <Ingredients />
+        </div>
+        <div id='mealWheelTonightContent' style={mealWheelTonightTabContentStyle}>
+          Pizza
         </div>
         <div id='settingsContent' style={settingsTabContentStyle}>
           <ToolsAndSettings />
