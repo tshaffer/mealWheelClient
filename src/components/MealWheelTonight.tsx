@@ -68,13 +68,32 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
     );
   };
 
-  const renderEffort = (): JSX.Element => {
+  const renderPrepEffort = (): JSX.Element => {
     return (
       <Box
         sx={{ width: 300 }}
         style={effortStyle}
       >
-        <span>Prep effort</span>
+        <span>Prep effort willingness</span>
+        <Slider
+          style={sliderStyle}
+          defaultValue={50}
+          getAriaValueText={valuetext}
+          step={10}
+          valueLabelDisplay="auto"
+          marks={effortMarks}
+        />
+      </Box>
+    );
+  };
+
+  const renderCleanupEffort = (): JSX.Element => {
+    return (
+      <Box
+        sx={{ width: 300 }}
+        style={effortStyle}
+      >
+        <span>Cleanup effort willingness</span>
         <Slider
           style={sliderStyle}
           defaultValue={50}
@@ -88,12 +107,14 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
   };
 
   const targetDinnerTime: JSX.Element = renderTargetDinnerTime();
-  const effort: JSX.Element = renderEffort();
+  const prepEffort: JSX.Element = renderPrepEffort();
+  const cleanupEffort: JSX.Element = renderCleanupEffort();
 
   return (
     <div>
       {targetDinnerTime}
-      {effort}
+      {prepEffort}
+      {cleanupEffort}
     </div>
   );
 };
