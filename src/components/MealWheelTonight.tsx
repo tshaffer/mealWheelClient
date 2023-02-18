@@ -13,22 +13,27 @@ export interface MealWheelTonightProps {
 
 const MealWheelTonight = (props: MealWheelTonightProps) => {
 
-  const marks = [
+  const effortStyle = {
+    marginTop: '20px',
+    marginLeft: '20px',
+  };
+
+  const effortMarks = [
     {
       value: 0,
-      label: '0°C',
+      label: 'Zero',
     },
     {
       value: 20,
-      label: '20°C',
+      label: 'Very low',
     },
     {
-      value: 37,
-      label: '37°C',
+      value: 50,
+      label: 'Medium',
     },
     {
       value: 100,
-      label: '100°C',
+      label: 'High',
     },
   ];
 
@@ -38,14 +43,17 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
 
   const renderEffort = (): JSX.Element => {
     return (
-      <Box sx={{ width: 300 }}>
+      <Box
+        sx={{ width: 300 }}
+        style={effortStyle}
+      >
+        <span>Prep effort</span>
         <Slider
-          aria-label="Custom marks"
-          defaultValue={20}
+          defaultValue={50}
           getAriaValueText={valuetext}
           step={10}
           valueLabelDisplay="auto"
-          marks={marks}
+          marks={effortMarks}
         />
       </Box>
     );
