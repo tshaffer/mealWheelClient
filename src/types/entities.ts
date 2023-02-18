@@ -15,6 +15,9 @@ export interface BaseDishEntityRedux {
   minimumInterval: number;
   // last: Date | null;
   lastAsStr: string | null;
+  prepEffort: number;
+  prepTime: number;
+  cleanupEffort: number;
 }
 
 export interface MainDishEntity extends BaseDishEntityRedux {
@@ -28,6 +31,9 @@ export interface BaseDishEntity {
   type: DishType;
   minimumInterval: number;
   last: Date | null;
+  prepEffort: number;
+  prepTime: number;
+  cleanupEffort: number;
 }
 
 export interface MainDishEntity extends BaseDishEntity {
@@ -41,6 +47,9 @@ export interface DishEntityFromServer {
   minimumInterval: number;
   last: string | null;
   accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
+  prepEffort: number;
+  prepTime: number;
+  cleanupEffort: number;
 }
 
 
@@ -51,6 +60,9 @@ export interface DishEntity {
   minimumInterval: number;
   last: Date | null;
   accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
+  prepEffort: number;
+  prepTime: number;
+  cleanupEffort: number;
 }
 
 
@@ -62,6 +74,9 @@ export interface DishEntityRedux {
   // last: Date | null;
   lastAsStr: string | null;
   accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === DishType.Main
+  prepEffort: number;
+  prepTime: number;
+  cleanupEffort: number;
 }
 
 export interface MealEntity {

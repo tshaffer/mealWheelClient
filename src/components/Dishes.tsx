@@ -270,6 +270,9 @@ const Dishes = (props: DishesProps) => {
       type: DishType.Main,
       minimumInterval: 5,
       last: null,
+      prepEffort: 5,
+      prepTime: 15,
+      cleanupEffort: 5,
     };
 
     const dishRow: DishRow = {
@@ -368,6 +371,9 @@ const Dishes = (props: DishesProps) => {
           minimumInterval: currentEditDish.minimumInterval,
           accompanimentRequired: getAccompanimentRequired(currentEditDish),
           last: null,
+          prepEffort: 5,
+          prepTime: 15,
+          cleanupEffort: 5,
         };
         props.onAddDish(newDish)
           .then((newDishId: string) => {

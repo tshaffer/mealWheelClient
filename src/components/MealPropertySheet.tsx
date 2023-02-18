@@ -159,7 +159,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       minimumInterval,
       accompanimentRequired: requiredAccompanimentFlags,
       last: null,
-    };
+      prepEffort: 5,
+      prepTime: 15,
+      cleanupEffort: 5,
+};
     const addDishPromise = props.onAddDish(dishEntity);
     addDishPromise
       .then((updatedDishId: string) => {

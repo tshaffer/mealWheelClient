@@ -9,6 +9,10 @@ const mongoDishFromReduxDish = (dish: DishEntityRedux): DishEntity => {
     minimumInterval: dish.minimumInterval,
     last: !isString(dish.lastAsStr) ? null : new Date(dish.lastAsStr),
     accompanimentRequired: dish.accompanimentRequired,
+    prepEffort: dish.prepEffort,
+    prepTime: dish.prepTime,
+    cleanupEffort: dish.cleanupEffort,
+
   };
 };
 

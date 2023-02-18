@@ -26,6 +26,9 @@ export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
             minimumInterval: dishEntityFromServer.minimumInterval,
             last: isNil(dishEntityFromServer.last) ? null : new Date(dishEntityFromServer.last),
             accompanimentRequired: isNil(dishEntityFromServer.accompanimentRequired) ? undefined : dishEntityFromServer.accompanimentRequired,
+            prepEffort: dishEntityFromServer.prepEffort,
+            prepTime: dishEntityFromServer.prepTime,
+            cleanupEffort: dishEntityFromServer.cleanupEffort,
           };
           return dishEntity;
         });

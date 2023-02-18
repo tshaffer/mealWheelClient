@@ -37,6 +37,9 @@ export const addDishRedux = (
     minimumInterval: mongoDish.minimumInterval,
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
     accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
+    prepEffort: mongoDish.prepEffort,
+    prepTime: mongoDish.prepTime,
+    cleanupEffort: mongoDish.cleanupEffort,
   };
   return {
     type: ADD_DISH,
@@ -62,6 +65,9 @@ export const addDishesRedux = (
       minimumInterval: mongoDish.minimumInterval,
       lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
       accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
+      prepEffort: mongoDish.prepEffort,
+      prepTime: mongoDish.prepTime,
+      cleanupEffort: mongoDish.cleanupEffort,
     };
   });
   return {
@@ -88,6 +94,9 @@ export const updateDishRedux = (
     minimumInterval: mongoDish.minimumInterval,
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
     accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
+    prepEffort: mongoDish.prepEffort,
+    prepTime: mongoDish.prepTime,
+    cleanupEffort: mongoDish.cleanupEffort,
   };
   return {
     type: UPDATE_DISH,
