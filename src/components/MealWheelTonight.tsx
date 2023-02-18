@@ -2,8 +2,14 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { Dayjs } from 'dayjs';
+
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
+import TextField from '@mui/material/TextField';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 
 import { MealWheelDispatch } from '../models';
@@ -12,6 +18,8 @@ export interface MealWheelTonightProps {
 }
 
 const MealWheelTonight = (props: MealWheelTonightProps) => {
+
+  const [value, setValue] = React.useState<Dayjs | null>(null);
 
   const sliderStyle = {
     display: 'inline-block',
@@ -45,6 +53,21 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
     return `${value}°C`;
   }
 
+  const renderTargetDinnerTime = (): JSX.Element => {
+    return (
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <TimePicker
+          label="Dinner time"
+          value={value}
+          onChange={(newValue) => {
+            setValue(newValue);
+          }}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
+    );
+  };
+
   const renderEffort = (): JSX.Element => {
     return (
       <Box
@@ -62,12 +85,16 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
         />
       </Box>
     );
-  }
+  };
 
+  const targetDinnerTime: JSX.Element = renderTargetDinnerTime();
   const effort: JSX.Element = renderEffort();
 
   return (
-    <div>{effort}</div>
+    <div>
+      {targetDinnerTime}
+      {effort}
+    </div>
   );
 };
 
@@ -82,4 +109,3 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MealWheelTonight);
-
