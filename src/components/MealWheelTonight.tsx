@@ -13,6 +13,10 @@ export interface MealWheelTonightProps {
 
 const MealWheelTonight = (props: MealWheelTonightProps) => {
 
+  const sliderStyle = {
+    display: 'inline-block',
+  };
+
   const effortStyle = {
     marginTop: '20px',
     marginLeft: '20px',
@@ -49,6 +53,7 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
       >
         <span>Prep effort</span>
         <Slider
+          style={sliderStyle}
           defaultValue={50}
           getAriaValueText={valuetext}
           step={10}
