@@ -42,6 +42,7 @@ import AboutDialog from './AboutDialog';
 import AccountDialog from './AccountDialog';
 import Box from '@mui/material/Box';
 import { isNil } from 'lodash';
+import MealWheelTonight from './MealWheelTonight';
 
 export interface AppProps {
   appInitialized: boolean;
@@ -286,7 +287,7 @@ const App = (props: AppProps) => {
           <Ingredients />
         </div>
         <div id='mealWheelTonightContent' style={mealWheelTonightTabContentStyle}>
-          Pizza
+          <MealWheelTonight/>
         </div>
         <div id='settingsContent' style={settingsTabContentStyle}>
           <ToolsAndSettings />

@@ -17,6 +17,7 @@ export * from './MealSchedule';
 export * from './MealStatusResolver';
 export * from './MealsStatusResolver';
 export * from './MenuItemDescriptor';
+export * from './MealWheelTonight';
 export * from './NewDishDialog';
 export * from './ToolsAndSettings';
 
