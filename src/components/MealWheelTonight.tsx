@@ -12,10 +12,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 
-import { MealWheelDispatch } from '../models';
+import { MealWheelDispatch, setCleanupEffort, setDinnerTime, setPrepEffort } from '../models';
+import { isNil, isNumber } from 'lodash';
 
 export interface MealWheelTonightProps {
-}
+  onSetDinnerTime: (dinnerTime: string) => void;
+  onSetCleanupEffort: (cleanupEffort: number) => void;
+  onSetPrepEffort: (prepEffort: number) => void;
+};
 
 const MealWheelTonight = (props: MealWheelTonightProps) => {
 
@@ -53,6 +57,24 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
     return `${value}°C`;
   }
 
+  const handleUpdateDinnerTime = (value: Dayjs | null) => {
+    if (!isNil(value)) {
+      props.onSetDinnerTime(value.toString());
+    }
+  };
+
+  const handleUpdatePrepEffort = (event: any, value: number | number[]) => {
+    if (isNumber(value)) {
+      props.onSetPrepEffort(value);
+    }
+  };
+
+  const handleUpdateCleanupEffort = (event: any, value: number | number[]) => {
+    if (isNumber(value)) {
+      props.onSetCleanupEffort(value);
+    }
+  };
+
   const renderTargetDinnerTime = (): JSX.Element => {
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -61,6 +83,7 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
           value={value}
           onChange={(newValue) => {
             setValue(newValue);
+            handleUpdateDinnerTime(newValue);
           }}
           renderInput={(params) => <TextField {...params} />}
         />
@@ -84,6 +107,7 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
           marks={effortMarks}
           min={0}
           max={10}
+          onChange={handleUpdatePrepEffort}
         />
       </Box>
     );
@@ -105,6 +129,7 @@ const MealWheelTonight = (props: MealWheelTonightProps) => {
           marks={effortMarks}
           min={0}
           max={10}
+          onChange={handleUpdateCleanupEffort}
         />
       </Box>
     );
@@ -130,6 +155,9 @@ function mapStateToProps(state: any) {
 
 const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
+    onSetDinnerTime: setDinnerTime,
+    onSetCleanupEffort: setCleanupEffort,
+    onSetPrepEffort: setPrepEffort,
   }, dispatch);
 };
 

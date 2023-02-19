@@ -31,6 +31,13 @@ export interface MealWheelState {
   unassignedMealsState: UnassignedMealsState;
   users: UsersMap;
   versionInfo: VersionInfo;
+  mealWheelTonightUIState: MealWheelTonightUIState,
+}
+
+export interface MealWheelTonightUIState {
+  dinnerTime: string,   // TEDTODO - not date due to redux
+  prepEffort: number,
+  cleanupEffort: number,
 }
 
 export interface UnassignedMealsState {
