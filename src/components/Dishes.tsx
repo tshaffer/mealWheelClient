@@ -775,7 +775,7 @@ const Dishes = (props: DishesProps) => {
     },
   ];
 
-  const renderSelectAsTextFields = () => {
+  const renderTestUI = () => {
     return (
       <Box
         component="form"
@@ -808,12 +808,35 @@ const Dishes = (props: DishesProps) => {
               </option>
             ))}
           </TextField>
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='number'
+            label='Min interval'
+            variant='standard'
+            InputProps={{
+              inputProps: {
+                min: 0
+              }
+            }}
+          />
+          <Checkbox
+            color="primary"
+          />
+          <Checkbox
+            color="primary"
+          />
+          <Checkbox
+            color="primary"
+          />
+          <Checkbox
+            color="primary"
+          />
         </div>
       </Box>
     );
   };
 
-  const demoTextFields = renderSelectAsTextFields();
+  const testUI = renderTestUI();
 
   return (
     <div>
@@ -829,7 +852,7 @@ const Dishes = (props: DishesProps) => {
               Add dish
             </Button>
           </div>
-          {demoTextFields}
+          {testUI}
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
