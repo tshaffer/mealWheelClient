@@ -60,6 +60,9 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
+let dishTypeElement: any = null;
+console.log('set dishTypeElement to null');
+
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
@@ -448,6 +451,29 @@ const Dishes = (props: DishesProps) => {
     selectedDishRow.name = dishName;
   };
 
+  const handleOnDishNameGetsFocus = (selectedDishRow: DishRow, event: any) => {
+    console.log('handleOnDishNameGetsFocus');
+    console.log(selectedDishRow);
+    console.log(event);
+    if (!isNil(dishTypeElement)) {
+      // dishTypeElement.focus();
+      setTimeout(function () {
+        console.log('apply focus to ');
+        console.log(dishTypeElement);
+        dishTypeElement.focus();
+      }, 1000);
+    }
+  };
+
+  const handleOnDishTypeGetsFocus = (selectedDishRow: DishRow, event: any) => {
+    console.log('handleOnDishNameGetsFocus');
+    console.log(selectedDishRow);
+    console.log(event);
+    dishTypeElement = event.target;
+    dishTypeElement.setAttribute('tabindex', '0');
+    console.log('set dishTypeElement to ', dishTypeElement);
+  };
+
   const updateSelectedRowProperty = (selectedDishRow: DishRow, propertyName: string, propertyValue: any): DishRow => {
     const clonedRows = cloneDeep(rows);
     const selectedDishRowIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
@@ -460,6 +486,10 @@ const Dishes = (props: DishesProps) => {
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
     setCurrentEditDish(selectedRow);
+
+    // console.log('Element with focus');
+    // const ele = document.activeElement;
+    // console.log(ele);
   };
 
   const handleUpdateMinimumInterval = (selectedDishRow: DishRow, minimumIntervalInput: string) => {
@@ -522,17 +552,16 @@ const Dishes = (props: DishesProps) => {
             defaultValue={row.name}
             variant='standard'
             onBlur={(event) => handleUpdateDishName(row, event.target.value)}
+            onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
           />
         </TableCell>
         <TableCell
-          // component='th'
-          // id={labelId}
-          // scope='row'
-          // padding='none'
           padding='none'
           align='center'
         >
-          <Select
+
+
+          {/* <Select
             onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
             placeholder={'Dish Type'}
             value={row.type}
@@ -541,7 +570,29 @@ const Dishes = (props: DishesProps) => {
             <MenuItem value={'salad'}>Salad</MenuItem>
             <MenuItem value={'side'}>Side</MenuItem>
             <MenuItem value={'veggie'}>Veggie</MenuItem>
-          </Select>
+          </Select> */}
+
+
+          <TextField
+            id="dishTypeTextField"
+            select
+            label="Dish Type"
+            SelectProps={{
+              native: true,
+            }}
+            helperText="Please select your dish type"
+            onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
+            placeholder={'Dish Type'}
+            value={row.type}
+            onFocus={(event) => handleOnDishTypeGetsFocus(row, event)}
+          >
+            {accompanimentChoices.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+
+          </TextField>
         </TableCell>
         <TableCell>
           <TextField
@@ -738,7 +789,8 @@ const Dishes = (props: DishesProps) => {
 
   const renderSortedTableContents = () => {
     buildDishIdToDishRowIndex();
-    const sortedDishes = stableSort(rows, getComparator(order, orderBy));
+    // const sortedDishes = stableSort(rows, getComparator(order, orderBy));
+    const sortedDishes = rows;
     const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
       <React.Fragment>
