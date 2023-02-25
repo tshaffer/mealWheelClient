@@ -455,14 +455,14 @@ const Dishes = (props: DishesProps) => {
     console.log('handleOnDishNameGetsFocus');
     console.log(selectedDishRow);
     console.log(event);
-    if (!isNil(dishTypeElement)) {
-      // dishTypeElement.focus();
-      setTimeout(function () {
-        console.log('apply focus to ');
-        console.log(dishTypeElement);
-        dishTypeElement.focus();
-      }, 1000);
-    }
+    // if (!isNil(dishTypeElement)) {
+    //   // dishTypeElement.focus();
+    //   setTimeout(function () {
+    //     console.log('apply focus to ');
+    //     console.log(dishTypeElement);
+    //     dishTypeElement.focus();
+    //   }, 1000);
+    // }
   };
 
   const handleOnDishTypeGetsFocus = (selectedDishRow: DishRow, event: any) => {
