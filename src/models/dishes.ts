@@ -9,6 +9,7 @@ export const CLEAR_DISHES = 'CLEAR_DISHES';
 export const ADD_DISH = 'ADD_DISH';
 export const ADD_DISHES = 'ADD_DISHES';
 export const UPDATE_DISH = 'UPDATE_DISH';
+export const DELETE_DISH = 'DELETE_DISH';
 
 // ------------------------------------
 // Actions
@@ -78,6 +79,19 @@ export const addDishesRedux = (
   };
 };
 
+interface DeleteDishReduxPayload {
+  id: string;
+}
+
+export const deleteDishRedux = (id: string): any => {
+  return {
+    type: DELETE_DISH,
+    payload: {
+      id
+    }
+  };
+};
+
 export interface UpdateReduxDishPayload {
   id: string;
   reduxDish: DishEntityRedux;
@@ -118,7 +132,7 @@ const initialState: DishesState =
 
 export const dishesStateReducer = (
   state: DishesState = initialState,
-  action: MealWheelModelBaseAction<AddReduxDishPayload & AddReduxDishesPayload>
+  action: MealWheelModelBaseAction<AddReduxDishPayload & AddReduxDishesPayload & DeleteDishReduxPayload>
 ): DishesState => {
   switch (action.type) {
     case ADD_DISH: {
@@ -142,6 +156,11 @@ export const dishesStateReducer = (
     }
     case CLEAR_DISHES:
       return initialState;
+    case DELETE_DISH: {
+      const newState = cloneDeep(state) as DishesState;
+      newState.dishes = newState.dishes.filter(e => e.id !== action.payload.id);
+      return newState;
+    }
     default:
       return state;
   }

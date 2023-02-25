@@ -32,7 +32,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
-import { addDish, updateDish } from '../controllers';
+import { addDish, deleteDish, updateDish } from '../controllers';
 import { getDishes } from '../selectors';
 import { MealWheelDispatch } from '../models';
 
@@ -152,6 +152,7 @@ export interface DishesProps {
   dishes: DishEntity[];
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
+  onDeleteDish: (id: string) => any;
 }
 
 const DishesTableHead = (props: TableProps) => {
@@ -310,6 +311,8 @@ const Dishes = (props: DishesProps) => {
 
   const handleDeleteClick = (dishEntityData: DishRow) => {
     console.log('Delete ' + dishEntityData.dish.id);
+    setRows(rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
+    props.onDeleteDish(dishEntityData.dish.id);
     setCurrentEditDish(null);
   };
 
@@ -829,6 +832,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onAddDish: addDish,
     onUpdateDish: updateDish,
+    onDeleteDish: deleteDish,
   }, dispatch);
 };
 

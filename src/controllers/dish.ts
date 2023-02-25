@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCurrentUser } from '../selectors';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addDishesRedux, addDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, updateDishRedux } from '../models';
+import { addDishesRedux, addDishRedux, deleteDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, updateDishRedux } from '../models';
 
 import { apiUrlFragment, DishEntity, DishEntityFromServer, MealWheelState, RequiredAccompanimentFlags, serverUrl } from '../types';
 import { isNil } from 'lodash';
@@ -106,3 +106,29 @@ export const updateDishLastProperty = (
     dispatch(updateDish(dishEntity.id, dishEntity));
   };
 };
+
+export const deleteDish = (
+  dishId: string,
+): MealWheelVoidPromiseThunkAction => {
+  return (dispatch: MealWheelDispatch): any => {
+
+    const path = serverUrl + apiUrlFragment + 'deleteDish';
+
+    const deleteDishBody: any = {
+      dishId,
+    };
+
+    return axios.post(
+      path,
+      deleteDishBody
+    ).then((response) => {
+      dispatch(deleteDishRedux(dishId));
+      return;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      return;
+    });
+  };
+};
+
