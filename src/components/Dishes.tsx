@@ -205,6 +205,8 @@ const DishesTableHead = (props: TableProps) => {
 
 const Dishes = (props: DishesProps) => {
 
+  const [demoDishType, setDemoDishType] = React.useState<DishType>(DishType.Main);
+
   const [rowsRead, setRowsRead] = React.useState(false);
   const [rows, setRows] = React.useState<DishRow[]>(initialRows);
   const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
@@ -490,6 +492,10 @@ const Dishes = (props: DishesProps) => {
     // console.log('Element with focus');
     // const ele = document.activeElement;
     // console.log(ele);
+  };
+
+  const handleDemoUpdateDishType = (updatedDishType: DishType) => {
+    setDemoDishType(updatedDishType);
   };
 
   const handleUpdateMinimumInterval = (selectedDishRow: DishRow, minimumIntervalInput: string) => {
@@ -835,11 +841,6 @@ const Dishes = (props: DishesProps) => {
           sx={{ minWidth: 750 }}
           size={'small'}
         >
-          {/* <DishesTableHead
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-          /> */}
           <TableBody>
             <TableRow>
               <div>
@@ -858,6 +859,9 @@ const Dishes = (props: DishesProps) => {
                     native: true,
                   }}
                   helperText="Please select your dish type"
+                  onChange={(event) => handleDemoUpdateDishType(event.target.value as DishType)}
+                  placeholder={'Dish Type'}
+                  value={demoDishType}
                 >
                   {accompanimentChoices.map((option) => (
                     <option key={option.value} value={option.value}>
