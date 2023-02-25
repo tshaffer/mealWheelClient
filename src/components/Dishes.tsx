@@ -829,63 +829,130 @@ const Dishes = (props: DishesProps) => {
 
   const renderTestUI = () => {
     return (
-      <Box
-        component="form"
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <div>
-          <TextField
-            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-            type='string'
-            label='Demo'
-            variant='standard'
-          />
-          <TextField
-            id="outlined-select-currency-native"
-            select
-            label="Native select"
-            defaultValue="EUR"
-            SelectProps={{
-              native: true,
-            }}
-            helperText="Please select your dish type"
-          >
-            {accompanimentChoices.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </TextField>
-          <TextField
-            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-            type='number'
-            label='Min interval'
-            variant='standard'
-            InputProps={{
-              inputProps: {
-                min: 0
-              }
-            }}
-          />
-          <Checkbox
-            color="primary"
-          />
-          <Checkbox
-            color="primary"
-          />
-          <Checkbox
-            color="primary"
-          />
-          <Checkbox
-            color="primary"
-          />
-        </div>
-      </Box>
-    );
+      <TableContainer>
+        <Table
+
+          sx={{ minWidth: 750 }}
+          size={'small'}
+        >
+          {/* <DishesTableHead
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+          /> */}
+          <TableBody>
+            <TableRow>
+              <div>
+                <TextField
+                  sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+                  type='string'
+                  label='Demo'
+                  variant='standard'
+                />
+                <TextField
+                  id="outlined-select-currency-native"
+                  select
+                  label="Native select"
+                  defaultValue="main"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  helperText="Please select your dish type"
+                >
+                  {accompanimentChoices.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </TextField>
+                <TextField
+                  sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+                  type='number'
+                  label='Min interval'
+                  variant='standard'
+                  InputProps={{
+                    inputProps: {
+                      min: 0
+                    }
+                  }}
+                />
+                <Checkbox
+                  color="primary"
+                />
+                <Checkbox
+                  color="primary"
+                />
+                <Checkbox
+                  color="primary"
+                />
+                <Checkbox
+                  color="primary"
+                />
+              </div>
+
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
+    // return (
+    //   <Box
+    //     component="form"
+    //     sx={{
+    //       '& .MuiTextField-root': { m: 1, width: '25ch' },
+    //     }}
+    //     noValidate
+    //     autoComplete="off"
+    //   >
+    //     <div>
+    //       <TextField
+    //         sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+    //         type='string'
+    //         label='Demo'
+    //         variant='standard'
+    //       />
+    //       <TextField
+    //         id="outlined-select-currency-native"
+    //         select
+    //         label="Native select"
+    //         defaultValue="EUR"
+    //         SelectProps={{
+    //           native: true,
+    //         }}
+    //         helperText="Please select your dish type"
+    //       >
+    //         {accompanimentChoices.map((option) => (
+    //           <option key={option.value} value={option.value}>
+    //             {option.label}
+    //           </option>
+    //         ))}
+    //       </TextField>
+    //       <TextField
+    //         sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+    //         type='number'
+    //         label='Min interval'
+    //         variant='standard'
+    //         InputProps={{
+    //           inputProps: {
+    //             min: 0
+    //           }
+    //         }}
+    //       />
+    //       <Checkbox
+    //         color="primary"
+    //       />
+    //       <Checkbox
+    //         color="primary"
+    //       />
+    //       <Checkbox
+    //         color="primary"
+    //       />
+    //       <Checkbox
+    //         color="primary"
+    //       />
+    //     </div>
+    //   </Box>
+    // );
   };
 
   const testUI = renderTestUI();
