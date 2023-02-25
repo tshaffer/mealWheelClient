@@ -787,18 +787,11 @@ const Dishes = (props: DishesProps) => {
       >
         <div>
           <TextField
-            id="outlined-select-currency"
-            select
-            label="Select"
-            defaultValue="EUR"
-            helperText="Please select your currency"
-          >
-            {accompanimentChoices.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Demo'
+            variant='standard'
+          />
           <TextField
             id="outlined-select-currency-native"
             select
@@ -807,73 +800,7 @@ const Dishes = (props: DishesProps) => {
             SelectProps={{
               native: true,
             }}
-            helperText="Please select your currency"
-          >
-            {accompanimentChoices.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </TextField>
-        </div>
-        <div>
-          <TextField
-            id="filled-select-currency"
-            select
-            label="Select"
-            defaultValue="EUR"
-            helperText="Please select your currency"
-            variant="filled"
-          >
-            {accompanimentChoices.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="filled-select-currency-native"
-            select
-            label="Native select"
-            defaultValue="EUR"
-            SelectProps={{
-              native: true,
-            }}
-            helperText="Please select your currency"
-            variant="filled"
-          >
-            {accompanimentChoices.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </TextField>
-        </div>
-        <div>
-          <TextField
-            id="standard-select-currency"
-            select
-            label="Select"
-            defaultValue="EUR"
-            helperText="Please select your currency"
-            variant="standard"
-          >
-            {accompanimentChoices.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="standard-select-currency-native"
-            select
-            label="Native select"
-            defaultValue="EUR"
-            SelectProps={{
-              native: true,
-            }}
-            helperText="Please select your currency"
-            variant="standard"
+            helperText="Please select your dish type"
           >
             {accompanimentChoices.map((option) => (
               <option key={option.value} value={option.value}>
@@ -902,12 +829,6 @@ const Dishes = (props: DishesProps) => {
               Add dish
             </Button>
           </div>
-          <TextField
-            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-            type='string'
-            label='Demo'
-            variant='standard'
-          />
           {demoTextFields}
           <TableContainer>
             <Table
