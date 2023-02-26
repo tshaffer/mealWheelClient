@@ -848,6 +848,7 @@ const Dishes = (props: DishesProps) => {
     }
     const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     const row: DishRow = pagedSortedDishes[0];
+    console.log('row.name: ', row.name);
     const isItemSelected = true;
     return (
       <TableContainer>
@@ -871,8 +872,8 @@ const Dishes = (props: DishesProps) => {
                   label='Demo'
                   defaultValue={row.name}
                   variant='standard'
-                  onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-                  onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
+                  // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
+                  // onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
                 />
                 <TextField
                   id="outlined-select-currency-native"
@@ -922,65 +923,7 @@ const Dishes = (props: DishesProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-    )
-    // return (
-    //   <Box
-    //     component="form"
-    //     sx={{
-    //       '& .MuiTextField-root': { m: 1, width: '25ch' },
-    //     }}
-    //     noValidate
-    //     autoComplete="off"
-    //   >
-    //     <div>
-    //       <TextField
-    //         sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-    //         type='string'
-    //         label='Demo'
-    //         variant='standard'
-    //       />
-    //       <TextField
-    //         id="outlined-select-currency-native"
-    //         select
-    //         label="Native select"
-    //         defaultValue="EUR"
-    //         SelectProps={{
-    //           native: true,
-    //         }}
-    //         helperText="Please select your dish type"
-    //       >
-    //         {accompanimentChoices.map((option) => (
-    //           <option key={option.value} value={option.value}>
-    //             {option.label}
-    //           </option>
-    //         ))}
-    //       </TextField>
-    //       <TextField
-    //         sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-    //         type='number'
-    //         label='Min interval'
-    //         variant='standard'
-    //         InputProps={{
-    //           inputProps: {
-    //             min: 0
-    //           }
-    //         }}
-    //       />
-    //       <Checkbox
-    //         color="primary"
-    //       />
-    //       <Checkbox
-    //         color="primary"
-    //       />
-    //       <Checkbox
-    //         color="primary"
-    //       />
-    //       <Checkbox
-    //         color="primary"
-    //       />
-    //     </div>
-    //   </Box>
-    // );
+    );
   };
 
   const testUI = renderTestUI();
@@ -1000,7 +943,7 @@ const Dishes = (props: DishesProps) => {
             </Button>
           </div>
           {testUI}
-          <TableContainer>
+          {/* <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
               size={'small'}
@@ -1023,8 +966,8 @@ const Dishes = (props: DishesProps) => {
                 )}
               </TableBody>
             </Table>
-          </TableContainer>
-          <TablePagination
+          </TableContainer> */}
+          {/* <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
             count={rows.length}
@@ -1032,8 +975,8 @@ const Dishes = (props: DishesProps) => {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-          {!!snackbar && (
+          /> */}
+          {/* {!!snackbar && (
             <Snackbar
               open
               anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -1042,7 +985,7 @@ const Dishes = (props: DishesProps) => {
             >
               <Alert {...snackbar} onClose={handleCloseSnackbar} />
             </Snackbar>
-          )}
+          )} */}
 
         </Paper>
       </Box>
