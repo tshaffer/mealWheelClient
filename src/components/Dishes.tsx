@@ -860,6 +860,7 @@ const Dishes = (props: DishesProps) => {
               hover
               role='checkbox'
               tabIndex={-1}
+              // key={'ted'}
               key={row.name}
               selected={isItemSelected}
             >
