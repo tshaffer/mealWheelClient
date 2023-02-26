@@ -565,9 +565,7 @@ const Dishes = (props: DishesProps) => {
           padding='none'
           align='center'
         >
-
-
-          {/* <Select
+          <Select
             onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
             placeholder={'Dish Type'}
             value={row.type}
@@ -576,29 +574,7 @@ const Dishes = (props: DishesProps) => {
             <MenuItem value={'salad'}>Salad</MenuItem>
             <MenuItem value={'side'}>Side</MenuItem>
             <MenuItem value={'veggie'}>Veggie</MenuItem>
-          </Select> */}
-
-
-          <TextField
-            id="dishTypeTextField"
-            select
-            label="Dish Type"
-            SelectProps={{
-              native: true,
-            }}
-            helperText="Please select your dish type"
-            onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
-            placeholder={'Dish Type'}
-            value={row.type}
-            onFocus={(event) => handleOnDishTypeGetsFocus(row, event)}
-          >
-            {accompanimentChoices.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-
-          </TextField>
+          </Select>
         </TableCell>
         <TableCell>
           <TextField
