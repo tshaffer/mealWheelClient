@@ -840,6 +840,14 @@ const Dishes = (props: DishesProps) => {
   ];
 
   const renderTestUI = () => {
+    buildDishIdToDishRowIndex();
+    // const sortedDishes = stableSort(rows, getComparator(order, orderBy));
+    const sortedDishes = rows;
+    if (rows.length === 0) {
+      return null;
+    }
+    const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const row: DishRow = pagedSortedDishes[0];
     const isItemSelected = true;
     return (
       <TableContainer>
@@ -852,7 +860,7 @@ const Dishes = (props: DishesProps) => {
               hover
               role='checkbox'
               tabIndex={-1}
-              key={'ted'}
+              key={row.name}
               selected={isItemSelected}
             >
               <div>
@@ -860,7 +868,10 @@ const Dishes = (props: DishesProps) => {
                   sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
                   type='string'
                   label='Demo'
+                  defaultValue={row.name}
                   variant='standard'
+                  onBlur={(event) => handleUpdateDishName(row, event.target.value)}
+                  onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
                 />
                 <TextField
                   id="outlined-select-currency-native"
@@ -871,9 +882,9 @@ const Dishes = (props: DishesProps) => {
                     native: true,
                   }}
                   helperText="Please select your dish type"
-                  onChange={(event) => handleDemoUpdateDishType(event.target.value as DishType)}
+                  onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
                   placeholder={'Dish Type'}
-                  value={demoDishType}
+                  value={row.type}
                 >
                   {accompanimentChoices.map((option) => (
                     <option key={option.value} value={option.value}>
