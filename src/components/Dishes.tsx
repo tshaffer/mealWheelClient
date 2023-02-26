@@ -60,6 +60,9 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
+let dishNameElement: any = null;
+console.log('set dishNameElement to null');
+
 let dishTypeElement: any = null;
 console.log('set dishTypeElement to null');
 
@@ -271,7 +274,7 @@ const Dishes = (props: DishesProps) => {
 
     const dish: DishEntity = {
       id: '',
-      name: '',
+      name: 'newRow',
       type: DishType.Main,
       minimumInterval: 5,
       last: null,
@@ -342,39 +345,70 @@ const Dishes = (props: DishesProps) => {
 
   const handleSaveClick = () => {
 
+    console.log('handleSaveClick');
     if (!isNil(currentEditDish)) {
 
+      console.log(dishNameElement);
+
+      const elePizza = document.getElementById('pizzaBelly');
+      console.log(elePizza);
+
+      // currentEditDish.name = (elePizza! as HTMLInputElement).value;
+      const newDishName = (elePizza! as HTMLInputElement).value;
+
+      const localCurrentEditDish = cloneDeep(currentEditDish);
+      localCurrentEditDish.name = newDishName;
+
+      // const ele = document.getElementById(currentEditDish.dish.id);
+      // if (isNil(ele)) {
+      //   console.log('no element with id: ', currentEditDish.dish.id);
+      //   const elePizza = document.getElementById('pizzaBelly');
+      //   console.log(elePizza);
+      // } else {
+      //   console.log(ele);
+      // }
+
+      // const ele = document.getElementsByTagName('newRow');
+      // console.log(ele);
+      // if (isNil(ele)) {
+      //   console.log('no element with id: ', currentEditDish.dish.id);
+      //   const elePizza = document.getElementById('pizzaBelly');
+      //   console.log(elePizza);
+      // } else {
+      //   console.log(ele);
+      // }
+
       // check for empty name
-      if (currentEditDish.name === '') {
+      if (localCurrentEditDish.name === '') {
         setSnackbar({ children: 'Error while saving dish: name can\'t be empty.', severity: 'error' });
         return;
       }
 
       // check for duplicate dish names.
-      const updatedDishName = currentEditDish.name;
+      const updatedDishName = localCurrentEditDish.name;
       for (let dishIndex = 0; dishIndex < props.dishes.length; dishIndex++) {
         const existingDish: DishEntity = props.dishes[dishIndex];
-        if (currentEditDish.dish.id !== existingDish.id && existingDish.name === updatedDishName) {
+        if (localCurrentEditDish.dish.id !== existingDish.id && existingDish.name === updatedDishName) {
           setSnackbar({ children: 'Error while saving dish: duplicate dish name', severity: 'error' });
           return;
         }
       }
 
       // if requiresAccompaniment, ensure that one is specified
-      if (currentEditDish.requiresAccompaniment) {
-        if (!currentEditDish.requiresSalad && !currentEditDish.requiresSide && !currentEditDish.requiresVeggie) {
+      if (localCurrentEditDish.requiresAccompaniment) {
+        if (!localCurrentEditDish.requiresSalad && !localCurrentEditDish.requiresSide && !localCurrentEditDish.requiresVeggie) {
           setSnackbar({ children: 'Error while saving dish: accompaniment required.', severity: 'error' });
           return;
         }
       }
 
-      if (currentEditDish.dish.id === '') {
+      if (localCurrentEditDish.dish.id === '') {
         const newDish: DishEntity = {
           id: '',
-          name: currentEditDish.name,
-          type: currentEditDish.type,
-          minimumInterval: currentEditDish.minimumInterval,
-          accompanimentRequired: getAccompanimentRequired(currentEditDish),
+          name: localCurrentEditDish.name,
+          type: localCurrentEditDish.type,
+          minimumInterval: localCurrentEditDish.minimumInterval,
+          accompanimentRequired: getAccompanimentRequired(localCurrentEditDish),
           last: null,
           prepEffort: 5,
           prepTime: 15,
@@ -450,13 +484,18 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleUpdateDishName = (selectedDishRow: DishRow, dishName: string) => {
+    console.log('handleUpdateDishName', dishName);
     selectedDishRow.name = dishName;
   };
 
   const handleOnDishNameGetsFocus = (selectedDishRow: DishRow, event: any) => {
     console.log('handleOnDishNameGetsFocus');
-    console.log(selectedDishRow);
-    console.log(event);
+
+    dishNameElement = event.target;
+    console.log(dishNameElement);
+
+    // console.log(selectedDishRow);
+    // console.log(event);
     // if (!isNil(dishTypeElement)) {
     //   // dishTypeElement.focus();
     //   setTimeout(function () {
@@ -557,9 +596,11 @@ const Dishes = (props: DishesProps) => {
             type='string'
             label='Dish name'
             defaultValue={row.name}
+            id={!isNil(row.dish) && row.dish.id === '' ? 'pizzaBelly' : row.dish.id}
             variant='standard'
+            // onChange={(event) => handleUpdateDishName(row, event.target.value)}
             // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-            // onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
+            onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
           />
         </TableCell>
         <TableCell
@@ -872,8 +913,8 @@ const Dishes = (props: DishesProps) => {
                   label='Demo'
                   defaultValue={row.name}
                   variant='standard'
-                  // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-                  // onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
+                // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
+                // onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
                 />
                 <TextField
                   id="outlined-select-currency-native"
