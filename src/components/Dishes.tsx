@@ -550,6 +550,7 @@ const Dishes = (props: DishesProps) => {
           scope='row'
           padding='none'
           align='center'
+          tabIndex={0}
         >
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
@@ -564,8 +565,29 @@ const Dishes = (props: DishesProps) => {
         <TableCell
           padding='none'
           align='center'
+          tabIndex={1}
         >
-          <Select
+          <TextField
+            id="dishTypeTextField"
+            select
+            label="Dish Type"
+            SelectProps={{
+              native: true,
+            }}
+            helperText="Please select your dish type"
+            onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
+            placeholder={'Dish Type'}
+            value={row.type}
+            onFocus={(event) => handleOnDishTypeGetsFocus(row, event)}
+          >
+            {accompanimentChoices.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+
+          </TextField>
+          {/* <Select
             onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
             placeholder={'Dish Type'}
             value={row.type}
@@ -574,9 +596,11 @@ const Dishes = (props: DishesProps) => {
             <MenuItem value={'salad'}>Salad</MenuItem>
             <MenuItem value={'side'}>Side</MenuItem>
             <MenuItem value={'veggie'}>Veggie</MenuItem>
-          </Select>
+          </Select> */}
         </TableCell>
-        <TableCell>
+        <TableCell
+          tabIndex={2}
+        >
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='number'
@@ -592,7 +616,10 @@ const Dishes = (props: DishesProps) => {
           />
 
         </TableCell>
-        <TableCell align='center'>
+        <TableCell
+          align='center'
+          tabIndex={3}
+        >
           <Checkbox
             color="primary"
             checked={row.requiresAccompaniment}
@@ -600,7 +627,10 @@ const Dishes = (props: DishesProps) => {
             disabled={row.type !== DishType.Main}
           />
         </TableCell>
-        <TableCell align='center'>
+        <TableCell
+          align='center'
+          tabIndex={4}
+        >
           <Checkbox
             color="primary"
             checked={row.requiresSalad}
@@ -810,15 +840,21 @@ const Dishes = (props: DishesProps) => {
   ];
 
   const renderTestUI = () => {
+    const isItemSelected = true;
     return (
       <TableContainer>
         <Table
-
           sx={{ minWidth: 750 }}
           size={'small'}
         >
           <TableBody>
-            <TableRow>
+            <TableRow
+              hover
+              role='checkbox'
+              tabIndex={-1}
+              key={'ted'}
+              selected={isItemSelected}
+            >
               <div>
                 <TextField
                   sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
