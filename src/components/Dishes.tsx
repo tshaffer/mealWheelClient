@@ -870,7 +870,7 @@ const Dishes = (props: DishesProps) => {
                   label='Demo'
                   // defaultValue={row.name}
                   variant='standard'
-                  // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
+                  onBlur={(event) => handleUpdateDishName(row, event.target.value)}
                   // onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
                 />
                 <TextField
