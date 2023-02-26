@@ -860,7 +860,7 @@ const Dishes = (props: DishesProps) => {
               hover
               role='checkbox'
               tabIndex={-1}
-              key={'ted'}
+              key={row.name}
               selected={isItemSelected}
             >
               <div>
@@ -868,10 +868,10 @@ const Dishes = (props: DishesProps) => {
                   sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
                   type='string'
                   label='Demo'
-                  // defaultValue={row.name}
+                  defaultValue={row.name}
                   variant='standard'
                   onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-                  // onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
+                  onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
                 />
                 <TextField
                   id="outlined-select-currency-native"
