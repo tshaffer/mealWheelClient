@@ -558,8 +558,8 @@ const Dishes = (props: DishesProps) => {
             label='Dish name'
             defaultValue={row.name}
             variant='standard'
-            onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-            onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
+            // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
+            // onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
           />
         </TableCell>
         <TableCell
@@ -926,7 +926,7 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
-  const testUI = renderTestUI();
+  // const testUI = renderTestUI();
 
   return (
     <div>
@@ -942,8 +942,8 @@ const Dishes = (props: DishesProps) => {
               Add dish
             </Button>
           </div>
-          {testUI}
-          {/* <TableContainer>
+          {/* {testUI} */}
+          <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
               size={'small'}
@@ -966,8 +966,8 @@ const Dishes = (props: DishesProps) => {
                 )}
               </TableBody>
             </Table>
-          </TableContainer> */}
-          {/* <TablePagination
+          </TableContainer>
+          <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
             count={rows.length}
@@ -975,8 +975,8 @@ const Dishes = (props: DishesProps) => {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          /> */}
-          {/* {!!snackbar && (
+          />
+          {!!snackbar && (
             <Snackbar
               open
               anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -985,8 +985,7 @@ const Dishes = (props: DishesProps) => {
             >
               <Alert {...snackbar} onClose={handleCloseSnackbar} />
             </Snackbar>
-          )} */}
-
+          )}
         </Paper>
       </Box>
     </div>);
