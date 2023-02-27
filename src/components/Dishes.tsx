@@ -580,7 +580,7 @@ const Dishes = (props: DishesProps) => {
         hover
         role='checkbox'
         tabIndex={-1}
-        key={row.name}
+        // key={row.name}
         selected={isItemSelected}
       >
         <TableCell
@@ -598,7 +598,7 @@ const Dishes = (props: DishesProps) => {
             defaultValue={row.name}
             id={!isNil(row.dish) && row.dish.id === '' ? 'pizzaBelly' : row.dish.id}
             variant='standard'
-            // onChange={(event) => handleUpdateDishName(row, event.target.value)}
+            onChange={(event) => handleUpdateDishName(row, event.target.value)}
             // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
             onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
           />
