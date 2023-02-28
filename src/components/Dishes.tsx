@@ -501,6 +501,26 @@ const Dishes = (props: DishesProps) => {
     setRows(newRows);
   }
 
+  const accompanimentChoices = [
+    {
+      value: 'main',
+      label: 'Main',
+    },
+    {
+      value: 'salad',
+      label: 'Salad',
+    },
+    {
+      value: 'side',
+      label: 'Side',
+    },
+    {
+      value: 'veggie',
+      label: 'Veggie',
+    },
+  ];
+
+
   const renderEditingRow = (row: DishRow) => {
     const isItemSelected = true;
     return (
@@ -508,12 +528,11 @@ const Dishes = (props: DishesProps) => {
         hover
         role='checkbox'
         tabIndex={-1}
-        key={row.name}
+        // key={row.name}
         selected={isItemSelected}
       >
         <TableCell
           component='th'
-          // id={labelId}
           scope='row'
           padding='none'
           align='center'
@@ -528,23 +547,27 @@ const Dishes = (props: DishesProps) => {
           />
         </TableCell>
         <TableCell
-          // component='th'
-          // id={labelId}
-          // scope='row'
-          // padding='none'
           padding='none'
           align='center'
         >
-          <Select
+          <TextField
+            id="dishTypeTextField"
+            select
+            label="Dish Type"
+            SelectProps={{
+              native: true,
+            }}
+            helperText="Please select your dish type"
             onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
             placeholder={'Dish Type'}
             value={row.type}
           >
-            <MenuItem value={'main'}>Main</MenuItem>
-            <MenuItem value={'salad'}>Salad</MenuItem>
-            <MenuItem value={'side'}>Side</MenuItem>
-            <MenuItem value={'veggie'}>Veggie</MenuItem>
-          </Select>
+            {accompanimentChoices.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </TextField>
         </TableCell>
         <TableCell>
           <TextField
