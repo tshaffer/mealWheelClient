@@ -764,7 +764,7 @@ const Dishes = (props: DishesProps) => {
 
   const renderSortedTableContents = () => {
     buildDishIdToDishRowIndex();
-    const sortedDishes = stableSort(rows, getComparator(order, orderBy));
+    const sortedDishes: DishRow[] = rows.slice().sort(getComparator(order, orderBy));
     const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
       <React.Fragment>
