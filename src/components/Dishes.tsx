@@ -19,7 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from '@mui/icons-material/Add'; ``
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -35,6 +35,126 @@ import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, updateDish } from '../controllers';
 import { getDishes } from '../selectors';
 import { MealWheelDispatch } from '../models';
+
+const accompanimentChoices = [
+  {
+    value: 'main',
+    label: 'Main',
+  },
+  {
+    value: 'salad',
+    label: 'Salad',
+  },
+  {
+    value: 'side',
+    label: 'Side',
+  },
+  {
+    value: 'veggie',
+    label: 'Veggie',
+  },
+];
+
+
+interface TextField1Props {
+  row: DishRow;
+}
+
+const TextField1 = (props: TextField1Props): JSX.Element => {
+
+  const handleUpdateDishName = (selectedDishRow: DishRow, dishName: string) => {
+    console.log('handleUpdateDishName', dishName);
+    selectedDishRow.name = dishName;
+  };
+
+  return (
+    <TextField
+      sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+      type='string'
+      label='Dish name'
+      defaultValue={props.row.name}
+      id={!isNil(props.row.dish) && props.row.dish.id === '' ? 'pizzaBelly' : props.row.dish.id}
+      variant='standard'
+      onChange={(event) => handleUpdateDishName(props.row, event.target.value)}
+    />
+  );
+};
+
+const TableCell1 = (props: any) => {
+  return (
+    <TableCell
+      component='th'
+      // id={labelId}
+      scope='row'
+      padding='none'
+      align='center'
+      tabIndex={0}
+    >
+      <TextField1
+        row={props.row}
+      />
+    </TableCell>
+  );
+};
+
+interface TextField2Props {
+  row: DishRow;
+  updateSelectedRowProperty: any;
+  setCurrentEditDish: any;
+}
+
+const TextField2 = (props: TextField2Props) => {
+
+  const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
+    const selectedRow: DishRow = props.updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
+    props.setCurrentEditDish(selectedRow);
+  };
+
+  return (
+    <TextField
+      id="dishTypeTextField"
+      select
+      label="Dish Type"
+      SelectProps={{
+        native: true,
+      }}
+      helperText="Please select your dish type"
+      onChange={(event) => handleUpdateDishType(props.row, event.target.value as DishType)}
+      placeholder={'Dish Type'}
+      value={props.row.type}
+    >
+      {accompanimentChoices.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+
+    </TextField>
+  );
+};
+
+const TableCell2 = (props: TextField2Props) => {
+  return (
+    <TableCell
+      padding='none'
+      align='center'
+      tabIndex={1}
+    >
+      <TextField2
+        row={props.row}
+        updateSelectedRowProperty={props.updateSelectedRowProperty}
+        setCurrentEditDish={props.setCurrentEditDish}
+      />
+    </TableCell>
+  );
+};
+
+
+const comp4 = (props: any) => {
+  return (
+    <div>foo</div>
+  );
+};
 
 interface DishRow {
   dish: DishEntity;
@@ -527,10 +647,6 @@ const Dishes = (props: DishesProps) => {
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
     setCurrentEditDish(selectedRow);
-
-    // console.log('Element with focus');
-    // const ele = document.activeElement;
-    // console.log(ele);
   };
 
   const handleDemoUpdateDishType = (updatedDishType: DishType) => {
@@ -580,65 +696,17 @@ const Dishes = (props: DishesProps) => {
         hover
         role='checkbox'
         tabIndex={-1}
-        // key={row.name}
+        key={row.name}
         selected={isItemSelected}
       >
-        <TableCell
-          component='th'
-          // id={labelId}
-          scope='row'
-          padding='none'
-          align='center'
-          tabIndex={0}
-        >
-          <TextField
-            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-            type='string'
-            label='Dish name'
-            defaultValue={row.name}
-            id={!isNil(row.dish) && row.dish.id === '' ? 'pizzaBelly' : row.dish.id}
-            variant='standard'
-            onChange={(event) => handleUpdateDishName(row, event.target.value)}
-            // onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-            onFocus={(event) => handleOnDishNameGetsFocus(row, event)}
-          />
-        </TableCell>
-        <TableCell
-          padding='none'
-          align='center'
-          tabIndex={1}
-        >
-          <TextField
-            id="dishTypeTextField"
-            select
-            label="Dish Type"
-            SelectProps={{
-              native: true,
-            }}
-            helperText="Please select your dish type"
-            onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
-            placeholder={'Dish Type'}
-            value={row.type}
-            onFocus={(event) => handleOnDishTypeGetsFocus(row, event)}
-          >
-            {accompanimentChoices.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-
-          </TextField>
-          {/* <Select
-            onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
-            placeholder={'Dish Type'}
-            value={row.type}
-          >
-            <MenuItem value={'main'}>Main</MenuItem>
-            <MenuItem value={'salad'}>Salad</MenuItem>
-            <MenuItem value={'side'}>Side</MenuItem>
-            <MenuItem value={'veggie'}>Veggie</MenuItem>
-          </Select> */}
-        </TableCell>
+        <TableCell1
+          row={row}
+        />
+        <TableCell2
+          row={row}
+          updateSelectedRowProperty={updateSelectedRowProperty}
+          setCurrentEditDish={setCurrentEditDish}
+        />
         <TableCell
           tabIndex={2}
         >
@@ -713,7 +781,7 @@ const Dishes = (props: DishesProps) => {
             </IconButton>
           </Tooltip>
         </TableCell>
-      </TableRow>
+      </TableRow >
     );
   };
 
@@ -860,25 +928,6 @@ const Dishes = (props: DishesProps) => {
       </React.Fragment>
     );
   };
-
-  const accompanimentChoices = [
-    {
-      value: 'main',
-      label: 'Main',
-    },
-    {
-      value: 'salad',
-      label: 'Salad',
-    },
-    {
-      value: 'side',
-      label: 'Side',
-    },
-    {
-      value: 'veggie',
-      label: 'Veggie',
-    },
-  ];
 
   const renderTestUI = () => {
     buildDishIdToDishRowIndex();
