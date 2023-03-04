@@ -6,6 +6,7 @@ import { MealWheelModelBaseAction } from './baseAction';
 // Constants
 // ------------------------------------
 export const CLEAR_DISHES = 'CLEAR_DISHES';
+export const SORT_DISHES = 'SORT_DISHES';
 export const ADD_DISH = 'ADD_DISH';
 export const ADD_DISHES = 'ADD_DISHES';
 export const UPDATE_DISH = 'UPDATE_DISH';
@@ -18,6 +19,12 @@ export const DELETE_DISH = 'DELETE_DISH';
 export const clearDishes = (): any => {
   return {
     type: CLEAR_DISHES,
+  };
+};
+
+export const sortDishes = (): any => {
+  return {
+    type: SORT_DISHES,
   };
 };
 
@@ -121,6 +128,33 @@ export const updateDishRedux = (
   };
 };
 
+// utilities
+
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+type Order = 'asc' | 'desc';
+
+function getComparator<Key extends keyof any>(
+  order: Order,
+  orderBy: Key,
+): (
+    a: { [key in Key]: boolean | string | number | DishEntity | Date | null },
+    b: { [key in Key]: boolean | string | number | DishEntity | Date | null },
+  ) => number {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+
 // ------------------------------------
 // Reducer
 // ------------------------------------
@@ -160,6 +194,14 @@ export const dishesStateReducer = (
       const newState = cloneDeep(state) as DishesState;
       newState.dishes = newState.dishes.filter(e => e.id !== action.payload.id);
       return newState;
+    }
+    case SORT_DISHES: {
+      const newState = cloneDeep(state) as DishesState;
+      newState.dishes = newState.dishes.slice().sort(getComparator('asc', 'name'));
+      console.log('sortDishes');
+      console.log(newState.dishes);
+      return newState;
+      // return state.dishes.slice().sort(getComparator('asc', 'name'));;
     }
     default:
       return state;

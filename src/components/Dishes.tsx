@@ -30,11 +30,11 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
-import { DishEntity, DishType, RequiredAccompanimentFlags } from '../types';
+import { DishEntity, DishType, RequiredAccompanimentFlags, UiState } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, updateDish } from '../controllers';
-import { getDishes } from '../selectors';
-import { MealWheelDispatch } from '../models';
+import { getDishes, getUiState } from '../selectors';
+import { MealWheelDispatch, sortDishes } from '../models';
 
 interface DishRow {
   dish: DishEntity;
@@ -134,9 +134,11 @@ const initialRows: DishRow[] = [];
 
 export interface DishesProps {
   dishes: DishEntity[];
+  uiState: UiState;
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
   onDeleteDish: (id: string) => any;
+  onSortDishes: () => any;
 }
 
 const DishesTableHead = (props: TableProps) => {
@@ -200,6 +202,30 @@ const Dishes = (props: DishesProps) => {
 
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
+  React.useEffect(() => {
+    if (props.uiState === UiState.Dishes) {
+      props.onSortDishes();
+      console.log('invoke props.onSortDishes');
+      console.log(props.dishes);
+
+      // console.log('invoke addDish');
+      // const newDish: DishEntity = {
+      //   id: '',
+      //   name: 'testDish',
+      //   type: DishType.Salad,
+      //   minimumInterval: 0,
+      //   accompanimentRequired: undefined,
+      //   last: null,
+      //   prepEffort: 5,
+      //   prepTime: 15,
+      //   cleanupEffort: 5,
+      // };
+      // props.onAddDish(newDish);
+
+    }
+  }, [props.uiState]);
+
+
   interface IdToNumberMap {
     [id: string]: number;
   }
@@ -207,6 +233,9 @@ const Dishes = (props: DishesProps) => {
   let dishIdToDishRowIndex: IdToNumberMap = {};
 
   const getRows = (): DishRow[] => {
+
+    props.onSortDishes();
+
     const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
       const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
       const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
@@ -294,7 +323,6 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleDeleteClick = (dishEntityData: DishRow) => {
-    console.log('Delete ' + dishEntityData.dish.id);
     setRows(rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
     props.onDeleteDish(dishEntityData.dish.id);
     setCurrentEditDish(null);
@@ -748,7 +776,8 @@ const Dishes = (props: DishesProps) => {
 
   const renderSortedTableContents = () => {
     buildDishIdToDishRowIndex();
-    const sortedDishes: DishRow[] = rows.slice().sort(getComparator(order, orderBy));
+    const sortedDishes: DishRow[] = rows;
+    // const sortedDishes: DishRow[] = rows.slice().sort(getComparator(order, orderBy));
     const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
       <React.Fragment>
@@ -830,8 +859,10 @@ const Dishes = (props: DishesProps) => {
 };
 
 function mapStateToProps(state: any) {
+  console.log('mapStateToProps invoked');
   return {
     dishes: getDishes(state),
+    uiState: getUiState(state),
   };
 }
 
@@ -840,6 +871,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onAddDish: addDish,
     onUpdateDish: updateDish,
     onDeleteDish: deleteDish,
+    onSortDishes: sortDishes,
   }, dispatch);
 };
 

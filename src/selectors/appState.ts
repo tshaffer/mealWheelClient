@@ -1,6 +1,7 @@
 import {
   AppState,
-  MealWheelState
+  MealWheelState,
+  UiState
 } from '../types';
 
 export const getAppState = (state: MealWheelState): AppState => {
@@ -13,4 +14,8 @@ export const getAppInitialized = (state: MealWheelState): boolean => {
 
 export const getCurrentUser = (state: MealWheelState): string | null => {
   return state.appState.userId;
+};
+
+export const getUiState = (state: MealWheelState): UiState => {
+  return state.appState.uiState;
 };
