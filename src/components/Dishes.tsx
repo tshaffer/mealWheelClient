@@ -119,8 +119,6 @@ interface TableProps {
   orderBy: string;
 }
 
-const initialRows: DishRow[] = [];
-
 export interface DishesProps {
   dishes: DishEntity[];
   rows: DishRow[];
@@ -180,8 +178,6 @@ const DishesTableHead = (props: TableProps) => {
 
 const Dishes = (props: DishesProps) => {
 
-  const [rowsRead, setRowsRead] = React.useState(false);
-  // const [rows, setRows] = React.useState<DishRow[]>(initialRows);
   const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
@@ -198,33 +194,6 @@ const Dishes = (props: DishesProps) => {
 
       const newRows: DishRow[] = getRows();
       props.onSetRows(newRows);
-
-      //     debugger;
-
-      //     const newRows: DishRow[] = getRows();
-      //     if (!rowsRead && newRows.length > 0) {
-      //       setRowsRead(true);
-      //       setRows(newRows);
-      //     }
-
-      //     // props.onSortDishes();
-      //     // console.log('invoke props.onSortDishes');
-      //     // console.log(props.dishes);
-
-      //     // // console.log('invoke addDish');
-      //     // // const newDish: DishEntity = {
-      //     // //   id: '',
-      //     // //   name: 'testDish',
-      //     // //   type: DishType.Salad,
-      //     // //   minimumInterval: 0,
-      //     // //   accompanimentRequired: undefined,
-      //     // //   last: null,
-      //     // //   prepEffort: 5,
-      //     // //   prepTime: 15,
-      //     // //   cleanupEffort: 5,
-      //     // // };
-      //     // // props.onAddDish(newDish);
-
     }
   }, [props.uiState]);
 
@@ -236,8 +205,6 @@ const Dishes = (props: DishesProps) => {
   let dishIdToDishRowIndex: IdToNumberMap = {};
 
   const getRows = (): DishRow[] => {
-
-    // props.onSortDishes();
 
     const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
       const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
@@ -305,8 +272,7 @@ const Dishes = (props: DishesProps) => {
     };
 
     const newRows = cloneDeep(props.rows);
-    newRows.push(dishRow);
-    debugger;
+    newRows.unshift(dishRow);
     props.onSetRows(newRows);
 
     setCurrentEditDish(dishRow);
@@ -402,7 +368,6 @@ const Dishes = (props: DishesProps) => {
               const clonedRows = cloneDeep(props.rows);
               const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
               selectedRow.dish.id = newDishId;
-              debugger;
               props.onSetRows(clonedRows);
             }
           });
@@ -476,7 +441,6 @@ const Dishes = (props: DishesProps) => {
     const selectedDishRowIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
     const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
     (selectedRow as any)[propertyName] = propertyValue;
-    debugger;
     props.onSetRows(clonedRows);
     return selectedRow;
   };
@@ -515,13 +479,6 @@ const Dishes = (props: DishesProps) => {
   // Avoid a layout jump when reaching the last page with empty props.rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
-
-  // const newRows: DishRow[] = getRows();
-  // if (!rowsRead && newRows.length > 0) {
-  //   setRowsRead(true);
-  //   debugger;
-  //   props.onSetRows(newRows);
-  // }
 
   const accompanimentChoices = [
     {
@@ -805,10 +762,6 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
-  console.log('re-render dishes');
-  console.log('dishes: ', props.dishes);
-  console.log('props.rows: ', props.rows);
-
   return (
     <div>
       <AssignIngredientsToDishDialog
@@ -873,8 +826,6 @@ const Dishes = (props: DishesProps) => {
 };
 
 function mapStateToProps(state: any) {
-  console.log('mapStateToProps invoked');
-  console.log('dishes', getDishes(state));
   return {
     dishes: getDishes(state),
     rows: getDishRows(state),
