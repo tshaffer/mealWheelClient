@@ -204,23 +204,32 @@ const Dishes = (props: DishesProps) => {
 
   React.useEffect(() => {
     if (props.uiState === UiState.Dishes) {
-      props.onSortDishes();
-      console.log('invoke props.onSortDishes');
-      console.log(props.dishes);
 
-      // console.log('invoke addDish');
-      // const newDish: DishEntity = {
-      //   id: '',
-      //   name: 'testDish',
-      //   type: DishType.Salad,
-      //   minimumInterval: 0,
-      //   accompanimentRequired: undefined,
-      //   last: null,
-      //   prepEffort: 5,
-      //   prepTime: 15,
-      //   cleanupEffort: 5,
-      // };
-      // props.onAddDish(newDish);
+      debugger;
+
+      const newRows: DishRow[] = getRows();
+      if (!rowsRead && newRows.length > 0) {
+        setRowsRead(true);
+        setRows(newRows);
+      }
+
+      // props.onSortDishes();
+      // console.log('invoke props.onSortDishes');
+      // console.log(props.dishes);
+
+      // // console.log('invoke addDish');
+      // // const newDish: DishEntity = {
+      // //   id: '',
+      // //   name: 'testDish',
+      // //   type: DishType.Salad,
+      // //   minimumInterval: 0,
+      // //   accompanimentRequired: undefined,
+      // //   last: null,
+      // //   prepEffort: 5,
+      // //   prepTime: 15,
+      // //   cleanupEffort: 5,
+      // // };
+      // // props.onAddDish(newDish);
 
     }
   }, [props.uiState]);
@@ -234,7 +243,7 @@ const Dishes = (props: DishesProps) => {
 
   const getRows = (): DishRow[] => {
 
-    props.onSortDishes();
+    // props.onSortDishes();
 
     const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
       const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
@@ -795,6 +804,10 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
+  console.log('re-render dishes');
+  console.log('dishes: ', props.dishes);
+  console.log('rows: ', rows);
+
   return (
     <div>
       <AssignIngredientsToDishDialog
@@ -860,6 +873,7 @@ const Dishes = (props: DishesProps) => {
 
 function mapStateToProps(state: any) {
   console.log('mapStateToProps invoked');
+  console.log('dishes', getDishes(state));
   return {
     dishes: getDishes(state),
     uiState: getUiState(state),

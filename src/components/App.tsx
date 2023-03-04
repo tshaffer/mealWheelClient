@@ -30,6 +30,7 @@ import {
   MealWheelDispatch,
   setUiState,
   setUser,
+  sortDishes,
 } from '../models';
 import {
   getAppInitialized,
@@ -53,6 +54,7 @@ export interface AppProps {
   onInitializeApp: () => any;
   onSetUiState: (uiState: UiState) => any;
   onSetUser: (userId: string) => any;
+  onSortDishes: () => any;
 }
 
 const App = (props: AppProps) => {
@@ -155,8 +157,10 @@ const App = (props: AppProps) => {
     switch (evt.target.id as AppTab) {
       case AppTab.Dishes:
         newUiState = UiState.Dishes;
+        props.onSortDishes();
         break;
       case AppTab.Ingredients:
+        props.onSortDishes();
         newUiState = UiState.Ingredients;
         break;
       case AppTab.MealSchedule:
@@ -356,6 +360,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onInitializeApp: initializeApp,
     onSetUser: setUser,
     onSetUiState: setUiState,
+    onSortDishes: sortDishes,
   }, dispatch);
 };
 
