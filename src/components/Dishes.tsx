@@ -293,7 +293,6 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleDeleteClick = (dishEntityData: DishRow) => {
-    debugger;
     props.onSetRows(props.rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
     props.onDeleteDish(dishEntityData.dish.id);
     setCurrentEditDish(null);
