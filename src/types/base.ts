@@ -54,8 +54,20 @@ export enum UiState {
   SelectUser = 'SelectUser',
   App = 'App',
   Other = 'Other',
+  MealSchedule = 'MealSchedule',
+  Dishes = 'Dishes',
+  Ingredients = 'Ingredients',
+  MealWheelTonight = 'MealWheelTonight',
+  Settings = 'Settings',
 }
 
+export enum AppTab {
+  MealSchedule = 'MealSchedule',
+  Dishes = 'Dishes',
+  Ingredients = 'Ingredients',
+  MealWheelTonight = 'MealWheelTonight',
+  Settings = 'Settings',
+}
 
 export interface VersionInfo {
   clientVersion: string;

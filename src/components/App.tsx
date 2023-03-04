@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import {
+  AppTab,
   UiState,
   UsersMap,
 } from '../types';
@@ -25,6 +26,7 @@ import {
   initializeApp,
 } from '../controllers';
 import {
+  appStateReducer,
   MealWheelDispatch,
   setUiState,
   setUser,
@@ -60,7 +62,7 @@ const App = (props: AppProps) => {
   const [showAbout, setShowAbout] = React.useState(false);
   const [showAccount, setShowAccount] = React.useState(false);
 
-  const [selectedTab, setSelectedTab] = React.useState<string>('mealScheduleTabSelect');
+  const [selectedTab, setSelectedTab] = React.useState<AppTab>(AppTab.MealSchedule);
 
   React.useEffect(() => {
     if (!props.appInitialized) {
@@ -149,6 +151,27 @@ const App = (props: AppProps) => {
 
   function handleSelectTab(evt: any) {
     setSelectedTab(evt.target.id);
+    let newUiState;
+    switch (evt.target.id as AppTab) {
+      case AppTab.Dishes:
+        newUiState = UiState.Dishes;
+        break;
+      case AppTab.Ingredients:
+        newUiState = UiState.Ingredients;
+        break;
+      case AppTab.MealSchedule:
+      default:
+        newUiState = UiState.MealSchedule;
+        break;
+      case AppTab.MealWheelTonight:
+        newUiState = UiState.MealWheelTonight;
+        break;
+      case AppTab.Settings:
+        newUiState = UiState.Settings;
+        break;
+    }
+    props.onSetUiState(newUiState);
+
   }
 
   const currentUserName: string = isNil(props.currentUser) ? 'None' : props.users[props.currentUser].userName;
@@ -203,7 +226,7 @@ const App = (props: AppProps) => {
     let settingsTabContentStyle;
 
     switch (selectedTab) {
-      case 'dishesTabSelect':
+      case AppTab.Dishes:
         dishesTabStyle = tabLinkSelected;
         dishesTabContentStyle = selectedTabContent;
         ingredientsTabStyle = tabLinkUnselected;
@@ -215,7 +238,7 @@ const App = (props: AppProps) => {
         settingsTabStyle = tabLinkUnselected;
         settingsTabContentStyle = unselectedTabContent;
         break;
-      case 'ingredientsTabSelect':
+      case AppTab.Ingredients:
         dishesTabStyle = tabLinkUnselected;
         dishesTabContentStyle = unselectedTabContent;
         ingredientsTabStyle = tabLinkSelected;
@@ -227,7 +250,7 @@ const App = (props: AppProps) => {
         settingsTabStyle = tabLinkUnselected;
         settingsTabContentStyle = unselectedTabContent;
         break;
-      case 'mealWheelTonightTabSelect':
+      case AppTab.MealWheelTonight:
         dishesTabStyle = tabLinkUnselected;
         dishesTabContentStyle = unselectedTabContent;
         ingredientsTabStyle = tabLinkUnselected;
@@ -240,7 +263,7 @@ const App = (props: AppProps) => {
         settingsTabContentStyle = unselectedTabContent;
         break;
       default:
-      case 'mealScheduleTabSelect':
+      case AppTab.MealSchedule:
         dishesTabStyle = tabLinkUnselected;
         dishesTabContentStyle = unselectedTabContent;
         ingredientsTabStyle = tabLinkUnselected;
@@ -252,7 +275,7 @@ const App = (props: AppProps) => {
         settingsTabStyle = tabLinkUnselected;
         settingsTabContentStyle = unselectedTabContent;
         break;
-      case 'settingsTabSelect':
+      case AppTab.Settings:
         dishesTabContentStyle = unselectedTabContent;
         dishesTabStyle = tabLinkUnselected;
         ingredientsTabStyle = tabLinkUnselected;
@@ -269,11 +292,11 @@ const App = (props: AppProps) => {
     return (
       <div>
         <div style={tab}>
-          <button style={mealScheduleTabStyle} onClick={handleSelectTab} id='mealScheduleTabSelect' >Meal Schedule</button>
-          <button style={dishesTabStyle} onClick={handleSelectTab} id='dishesTabSelect'>Dishes</button>
-          <button style={ingredientsTabStyle} onClick={handleSelectTab} id='ingredientsTabSelect'>Ingredients</button>
-          <button style={mealWheelTonightTabStyle} onClick={handleSelectTab} id='mealWheelTonightTabSelect'>MealWheelTonight &trade;</button>
-          <button style={settingsTabStyle} onClick={handleSelectTab} id='settingsTabSelect'>Tools & Settings</button>
+          <button style={mealScheduleTabStyle} onClick={handleSelectTab} id={AppTab.MealSchedule} >Meal Schedule</button>
+          <button style={dishesTabStyle} onClick={handleSelectTab} id={AppTab.Dishes}>Dishes</button>
+          <button style={ingredientsTabStyle} onClick={handleSelectTab} id={AppTab.Ingredients}>Ingredients</button>
+          <button style={mealWheelTonightTabStyle} onClick={handleSelectTab} id={AppTab.MealWheelTonight}>MealWheelTonight &trade;</button>
+          <button style={settingsTabStyle} onClick={handleSelectTab} id={AppTab.Settings}>Tools & Settings</button>
         </div>
         <div id='mealScheduleContent' style={mealScheduleTabContentStyle}>
           <MealSchedule />
@@ -287,7 +310,7 @@ const App = (props: AppProps) => {
           <Ingredients />
         </div>
         <div id='mealWheelTonightContent' style={mealWheelTonightTabContentStyle}>
-          <MealWheelTonight/>
+          <MealWheelTonight />
         </div>
         <div id='settingsContent' style={settingsTabContentStyle}>
           <ToolsAndSettings />
