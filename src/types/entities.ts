@@ -143,3 +143,15 @@ export interface IngredientsByDish {
   [dishId: string]: string[];   // string array is list of ingredient ids
 }
 
+export interface DishRow {
+  dish: DishEntity;
+  name: string
+  type: DishType;
+  minimumInterval: number;
+  last: Date | null;
+  requiresAccompaniment: boolean;
+  requiresSalad: boolean;
+  requiresSide: boolean;
+  requiresVeggie: boolean;
+}
+

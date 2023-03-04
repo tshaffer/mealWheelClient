@@ -30,23 +30,12 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
-import { DishEntity, DishType, RequiredAccompanimentFlags, UiState } from '../types';
+import { DishEntity, DishRow, DishType, RequiredAccompanimentFlags, UiState } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, updateDish } from '../controllers';
-import { getDishes, getUiState } from '../selectors';
+import { getDishes, getDishRows, getUiState } from '../selectors';
 import { MealWheelDispatch, sortDishes } from '../models';
-
-interface DishRow {
-  dish: DishEntity;
-  name: string
-  type: DishType;
-  minimumInterval: number;
-  last: Date | null;
-  requiresAccompaniment: boolean;
-  requiresSalad: boolean;
-  requiresSide: boolean;
-  requiresVeggie: boolean;
-}
+import { setRows } from '../models/dishesUI';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -134,11 +123,13 @@ const initialRows: DishRow[] = [];
 
 export interface DishesProps {
   dishes: DishEntity[];
+  rows: DishRow[];
   uiState: UiState;
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
   onDeleteDish: (id: string) => any;
   onSortDishes: () => any;
+  onSetRows: (rows: DishRow[]) => any;
 }
 
 const DishesTableHead = (props: TableProps) => {
@@ -190,7 +181,7 @@ const DishesTableHead = (props: TableProps) => {
 const Dishes = (props: DishesProps) => {
 
   const [rowsRead, setRowsRead] = React.useState(false);
-  const [rows, setRows] = React.useState<DishRow[]>(initialRows);
+  // const [rows, setRows] = React.useState<DishRow[]>(initialRows);
   const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
@@ -205,31 +196,34 @@ const Dishes = (props: DishesProps) => {
   React.useEffect(() => {
     if (props.uiState === UiState.Dishes) {
 
-      debugger;
-
       const newRows: DishRow[] = getRows();
-      if (!rowsRead && newRows.length > 0) {
-        setRowsRead(true);
-        setRows(newRows);
-      }
+      props.onSetRows(newRows);
 
-      // props.onSortDishes();
-      // console.log('invoke props.onSortDishes');
-      // console.log(props.dishes);
+      //     debugger;
 
-      // // console.log('invoke addDish');
-      // // const newDish: DishEntity = {
-      // //   id: '',
-      // //   name: 'testDish',
-      // //   type: DishType.Salad,
-      // //   minimumInterval: 0,
-      // //   accompanimentRequired: undefined,
-      // //   last: null,
-      // //   prepEffort: 5,
-      // //   prepTime: 15,
-      // //   cleanupEffort: 5,
-      // // };
-      // // props.onAddDish(newDish);
+      //     const newRows: DishRow[] = getRows();
+      //     if (!rowsRead && newRows.length > 0) {
+      //       setRowsRead(true);
+      //       setRows(newRows);
+      //     }
+
+      //     // props.onSortDishes();
+      //     // console.log('invoke props.onSortDishes');
+      //     // console.log(props.dishes);
+
+      //     // // console.log('invoke addDish');
+      //     // // const newDish: DishEntity = {
+      //     // //   id: '',
+      //     // //   name: 'testDish',
+      //     // //   type: DishType.Salad,
+      //     // //   minimumInterval: 0,
+      //     // //   accompanimentRequired: undefined,
+      //     // //   last: null,
+      //     // //   prepEffort: 5,
+      //     // //   prepTime: 15,
+      //     // //   cleanupEffort: 5,
+      //     // // };
+      //     // // props.onAddDish(newDish);
 
     }
   }, [props.uiState]);
@@ -310,9 +304,10 @@ const Dishes = (props: DishesProps) => {
       requiresVeggie: false,
     };
 
-    const newRows = cloneDeep(rows);
+    const newRows = cloneDeep(props.rows);
     newRows.push(dishRow);
-    setRows(newRows);
+    debugger;
+    props.onSetRows(newRows);
 
     setCurrentEditDish(dishRow);
 
@@ -332,7 +327,8 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleDeleteClick = (dishEntityData: DishRow) => {
-    setRows(rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
+    debugger;
+    props.onSetRows(props.rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
     props.onDeleteDish(dishEntityData.dish.id);
     setCurrentEditDish(null);
   };
@@ -403,10 +399,11 @@ const Dishes = (props: DishesProps) => {
           .then((newDishId: string) => {
             const selectedDishRowIndex = dishIdToDishRowIndex[''];
             if (selectedDishRowIndex !== -1) {
-              const clonedRows = cloneDeep(rows);
+              const clonedRows = cloneDeep(props.rows);
               const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
               selectedRow.dish.id = newDishId;
-              setRows(clonedRows);
+              debugger;
+              props.onSetRows(clonedRows);
             }
           });
       } else {
@@ -428,9 +425,10 @@ const Dishes = (props: DishesProps) => {
 
       const selectedIndex = dishIdToDishRowIndex[''];
       if (selectedIndex !== -1) {
-        const newRows = cloneDeep(rows);
+        const newRows = cloneDeep(props.rows);
         newRows.splice(selectedIndex, 1);
-        setRows(newRows);
+        debugger;
+        props.onSetRows(newRows);
       }
 
     } else {
@@ -440,7 +438,7 @@ const Dishes = (props: DishesProps) => {
 
       if (!isNil(currentEditDish)) {
         const selectedDishRowIndex = dishIdToDishRowIndex[currentEditDish.dish.id];
-        const selectedDishRow: DishRow = rows[selectedDishRowIndex];
+        const selectedDishRow: DishRow = props.rows[selectedDishRowIndex];
         const unmodifiedDishEntity: DishEntity = selectedDishRow.dish;
         selectedDishRow.name = unmodifiedDishEntity.name;
         selectedDishRow.type = unmodifiedDishEntity.type;
@@ -457,9 +455,10 @@ const Dishes = (props: DishesProps) => {
           selectedDishRow.requiresSide = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
           selectedDishRow.requiresVeggie = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
         }
-        const clonedRows = cloneDeep(rows);
-        rows[selectedDishRowIndex] = selectedDishRow;
-        setRows(clonedRows);
+        const clonedRows = cloneDeep(props.rows);
+        debugger;
+        // rows[selectedDishRowIndex] = selectedDishRow;
+        props.onSetRows(clonedRows);
 
       }
 
@@ -473,11 +472,12 @@ const Dishes = (props: DishesProps) => {
   };
 
   const updateSelectedRowProperty = (selectedDishRow: DishRow, propertyName: string, propertyValue: any): DishRow => {
-    const clonedRows = cloneDeep(rows);
+    const clonedRows = cloneDeep(props.rows);
     const selectedDishRowIndex = dishIdToDishRowIndex[selectedDishRow.dish.id];
     const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
     (selectedRow as any)[propertyName] = propertyValue;
-    setRows(clonedRows);
+    debugger;
+    props.onSetRows(clonedRows);
     return selectedRow;
   };
 
@@ -512,15 +512,16 @@ const Dishes = (props: DishesProps) => {
     setCurrentEditDish(selectedRow);
   };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
+  // Avoid a layout jump when reaching the last page with empty props.rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
 
-  const newRows: DishRow[] = getRows();
-  if (!rowsRead && newRows.length > 0) {
-    setRowsRead(true);
-    setRows(newRows);
-  }
+  // const newRows: DishRow[] = getRows();
+  // if (!rowsRead && newRows.length > 0) {
+  //   setRowsRead(true);
+  //   debugger;
+  //   props.onSetRows(newRows);
+  // }
 
   const accompanimentChoices = [
     {
@@ -778,14 +779,14 @@ const Dishes = (props: DishesProps) => {
   // TEDTODO - only invoke this when necesssary
   const buildDishIdToDishRowIndex = () => {
     dishIdToDishRowIndex = {};
-    for (let index = 0; index < rows.length; index++) {
-      dishIdToDishRowIndex[rows[index].dish.id] = index;
+    for (let index = 0; index < props.rows.length; index++) {
+      dishIdToDishRowIndex[props.rows[index].dish.id] = index;
     }
   };
 
   const renderSortedTableContents = () => {
     buildDishIdToDishRowIndex();
-    const sortedDishes: DishRow[] = rows;
+    const sortedDishes: DishRow[] = props.rows;
     // const sortedDishes: DishRow[] = rows.slice().sort(getComparator(order, orderBy));
     const pagedSortedDishes = sortedDishes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
@@ -806,7 +807,7 @@ const Dishes = (props: DishesProps) => {
 
   console.log('re-render dishes');
   console.log('dishes: ', props.dishes);
-  console.log('rows: ', rows);
+  console.log('props.rows: ', props.rows);
 
   return (
     <div>
@@ -849,7 +850,7 @@ const Dishes = (props: DishesProps) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={props.rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -876,6 +877,7 @@ function mapStateToProps(state: any) {
   console.log('dishes', getDishes(state));
   return {
     dishes: getDishes(state),
+    rows: getDishRows(state),
     uiState: getUiState(state),
   };
 }
@@ -886,6 +888,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onUpdateDish: updateDish,
     onDeleteDish: deleteDish,
     onSortDishes: sortDishes,
+    onSetRows: setRows,
   }, dispatch);
 };
 

@@ -2,6 +2,7 @@ import { GridRowModel } from '@mui/x-data-grid';
 import {
   DefinedMealEntity,
   DishEntityRedux,
+  DishRow,
   IngredientEntity,
   IngredientsByDish,
   IngredientsById,
@@ -21,6 +22,7 @@ export interface MealWheelState {
   appParameters: AppParameters;
   appState: AppState;
   dishesState: DishesState;
+  dishesUIState: DishesUIState;
   definedMealsState: DefinedMealsState;
   generateGroceryListState: GenerateGroceryListStateRedux;
   generateMealsState: GenerateMealsStateRedux;
@@ -82,6 +84,10 @@ export interface DishesState {
 // export interface DishesMap {
 //   [id: string]: DishEntity; // dish name
 // }
+
+export interface DishesUIState {
+  rows: DishRow[];
+}
 
 export interface IngredientsState {
   ingredientsById: IngredientsById;
