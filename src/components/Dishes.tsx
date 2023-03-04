@@ -391,7 +391,6 @@ const Dishes = (props: DishesProps) => {
       if (selectedIndex !== -1) {
         const newRows = cloneDeep(props.rows);
         newRows.splice(selectedIndex, 1);
-        debugger;
         props.onSetRows(newRows);
       }
 
@@ -419,11 +418,12 @@ const Dishes = (props: DishesProps) => {
           selectedDishRow.requiresSide = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
           selectedDishRow.requiresVeggie = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
         }
-        const clonedRows = cloneDeep(props.rows);
         debugger;
-        // rows[selectedDishRowIndex] = selectedDishRow;
-        props.onSetRows(clonedRows);
-
+        /* old code that I don't understand. understand, then convert....
+          const clonedRows = cloneDeep(rows);
+          rows[selectedDishRowIndex] = selectedDishRow;
+          setRows(clonedRows);
+        */
       }
 
     }
