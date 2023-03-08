@@ -180,7 +180,6 @@ const DishesTableHead = (props: TableProps) => {
 
 const Dishes = (props: DishesProps) => {
 
-  // const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
   const [page, setPage] = React.useState(0);
@@ -249,6 +248,9 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleAddRow = () => {
+
+    console.log('handleAddRow invoked');
+    console.log(props.rows);  // it's broken here - props.rows[1].dish.id === ''
 
     const dish: DishEntity = {
       id: '',
@@ -369,7 +371,12 @@ const Dishes = (props: DishesProps) => {
               const clonedRows = cloneDeep(props.rows);
               const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
               selectedRow.dish.id = newDishId;
+              console.log('handleSaveClick to update id');
               props.onSetRows(clonedRows);
+              // before reaching the next line, mapStateToProps is invoked and props.rows looks correct
+              // however, props.rows is incorrect below.
+              console.log('returned from props.onSetRows');
+              console.log(props.rows);
             }
           });
       } else {
@@ -383,9 +390,9 @@ const Dishes = (props: DishesProps) => {
       props.onSetCurrentEditDish(null);
     }
 
-    setTimeout(() => {
-      handleAddRow();
-    }, 1000);
+    // setTimeout(() => {
+    //   handleAddRow();
+    // }, 1000);
   
   };
 
@@ -507,6 +514,10 @@ const Dishes = (props: DishesProps) => {
 
 
   const renderEditingRow = (row: DishRow) => {
+
+    console.log('renderEditingRow: ');
+    console.log(row);
+
     const isItemSelected = true;
     return (
       <TableRow
@@ -832,6 +843,8 @@ const Dishes = (props: DishesProps) => {
 };
 
 function mapStateToProps(state: any) {
+  console.log('mapStateToProps invoked');
+  console.log(getDishRows(state));
   return {
     dishes: getDishes(state),
     rows: getDishRows(state),
