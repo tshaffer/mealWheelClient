@@ -87,6 +87,7 @@ export interface DishesState {
 
 export interface DishesUIState {
   rows: DishRow[];
+  currentEditDish: DishRow | null;
 }
 
 export interface IngredientsState {

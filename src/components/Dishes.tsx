@@ -33,9 +33,9 @@ import MenuItem from '@mui/material/MenuItem';
 import { DishEntity, DishRow, DishType, RequiredAccompanimentFlags, UiState } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, updateDish } from '../controllers';
-import { getDishes, getDishRows, getUiState } from '../selectors';
+import { getCurrentEditDish, getDishes, getDishRows, getUiState } from '../selectors';
 import { MealWheelDispatch, sortDishes } from '../models';
-import { setRows } from '../models/dishesUI';
+import { setCurrentEditDish, setRows } from '../models/dishesUI';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -120,6 +120,7 @@ interface TableProps {
 }
 
 export interface DishesProps {
+  currentEditDish: DishRow | null,
   dishes: DishEntity[];
   rows: DishRow[];
   uiState: UiState;
@@ -128,6 +129,7 @@ export interface DishesProps {
   onDeleteDish: (id: string) => any;
   onSortDishes: () => any;
   onSetRows: (rows: DishRow[]) => any;
+  onSetCurrentEditDish: (currentEditDish: DishRow | null) => any;
 }
 
 const DishesTableHead = (props: TableProps) => {
@@ -178,7 +180,7 @@ const DishesTableHead = (props: TableProps) => {
 
 const Dishes = (props: DishesProps) => {
 
-  const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
+  // const [currentEditDish, setCurrentEditDish] = React.useState<DishRow | null>(null);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
   const [page, setPage] = React.useState(0);
@@ -275,12 +277,12 @@ const Dishes = (props: DishesProps) => {
     newRows.unshift(dishRow);
     props.onSetRows(newRows);
 
-    setCurrentEditDish(dishRow);
+    props.onSetCurrentEditDish(dishRow);
 
   };
 
   const handleEditClick = (dishEntityData: DishRow) => {
-    setCurrentEditDish(dishEntityData);
+    props.onSetCurrentEditDish(dishEntityData);
   };
 
   const handleAssignIngredientsToDish = (dishEntityData: DishRow) => {
@@ -295,7 +297,7 @@ const Dishes = (props: DishesProps) => {
   const handleDeleteClick = (dishEntityData: DishRow) => {
     props.onSetRows(props.rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
     props.onDeleteDish(dishEntityData.dish.id);
-    setCurrentEditDish(null);
+    props.onSetCurrentEditDish(null);
   };
 
   const getAccompanimentRequired = (dishRow: DishRow): RequiredAccompanimentFlags => {
@@ -322,39 +324,39 @@ const Dishes = (props: DishesProps) => {
 
   const handleSaveClick = () => {
 
-    if (!isNil(currentEditDish)) {
+    if (!isNil(props.currentEditDish)) {
 
       // check for empty name
-      if (currentEditDish.name === '') {
+      if (props.currentEditDish.name === '') {
         setSnackbar({ children: 'Error while saving dish: name can\'t be empty.', severity: 'error' });
         return;
       }
 
       // check for duplicate dish names.
-      const updatedDishName = currentEditDish.name;
+      const updatedDishName = props.currentEditDish.name;
       for (let dishIndex = 0; dishIndex < props.dishes.length; dishIndex++) {
         const existingDish: DishEntity = props.dishes[dishIndex];
-        if (currentEditDish.dish.id !== existingDish.id && existingDish.name === updatedDishName) {
+        if (props.currentEditDish.dish.id !== existingDish.id && existingDish.name === updatedDishName) {
           setSnackbar({ children: 'Error while saving dish: duplicate dish name', severity: 'error' });
           return;
         }
       }
 
       // if requiresAccompaniment, ensure that one is specified
-      if (currentEditDish.requiresAccompaniment) {
-        if (!currentEditDish.requiresSalad && !currentEditDish.requiresSide && !currentEditDish.requiresVeggie) {
+      if (props.currentEditDish.requiresAccompaniment) {
+        if (!props.currentEditDish.requiresSalad && !props.currentEditDish.requiresSide && !props.currentEditDish.requiresVeggie) {
           setSnackbar({ children: 'Error while saving dish: accompaniment required.', severity: 'error' });
           return;
         }
       }
 
-      if (currentEditDish.dish.id === '') {
+      if (props.currentEditDish.dish.id === '') {
         const newDish: DishEntity = {
           id: '',
-          name: currentEditDish.name,
-          type: currentEditDish.type,
-          minimumInterval: currentEditDish.minimumInterval,
-          accompanimentRequired: getAccompanimentRequired(currentEditDish),
+          name: props.currentEditDish.name,
+          type: props.currentEditDish.type,
+          minimumInterval: props.currentEditDish.minimumInterval,
+          accompanimentRequired: getAccompanimentRequired(props.currentEditDish),
           last: null,
           prepEffort: 5,
           prepTime: 15,
@@ -371,20 +373,25 @@ const Dishes = (props: DishesProps) => {
             }
           });
       } else {
-        const updatedDish: DishEntity = cloneDeep(currentEditDish.dish);
-        updatedDish.name = currentEditDish.name;
-        updatedDish.type = currentEditDish.type;
-        updatedDish.minimumInterval = currentEditDish.minimumInterval;
-        updatedDish.accompanimentRequired = getAccompanimentRequired(currentEditDish);
-        props.onUpdateDish(currentEditDish.dish.id, updatedDish);
+        const updatedDish: DishEntity = cloneDeep(props.currentEditDish.dish);
+        updatedDish.name = props.currentEditDish.name;
+        updatedDish.type = props.currentEditDish.type;
+        updatedDish.minimumInterval = props.currentEditDish.minimumInterval;
+        updatedDish.accompanimentRequired = getAccompanimentRequired(props.currentEditDish);
+        props.onUpdateDish(props.currentEditDish.dish.id, updatedDish);
       }
-      setCurrentEditDish(null);
+      props.onSetCurrentEditDish(null);
     }
+
+    setTimeout(() => {
+      handleAddRow();
+    }, 1000);
+  
   };
 
   const handleCancelClick = () => {
 
-    if (!isNil(currentEditDish) && !isNil(currentEditDish.dish) && (currentEditDish.dish.id === '')) {
+    if (!isNil(props.currentEditDish) && !isNil(props.currentEditDish.dish) && (props.currentEditDish.dish.id === '')) {
       // new dish - discard row
 
       const selectedIndex = dishIdToDishRowIndex[''];
@@ -399,8 +406,8 @@ const Dishes = (props: DishesProps) => {
       // revert to row before edits
       //    dishEntity hasn't been updated yet
 
-      if (!isNil(currentEditDish)) {
-        const selectedDishRowIndex = dishIdToDishRowIndex[currentEditDish.dish.id];
+      if (!isNil(props.currentEditDish)) {
+        const selectedDishRowIndex = dishIdToDishRowIndex[props.currentEditDish.dish.id];
         const selectedDishRow: DishRow = props.rows[selectedDishRowIndex];
         const unmodifiedDishEntity: DishEntity = selectedDishRow.dish;
         selectedDishRow.name = unmodifiedDishEntity.name;
@@ -428,7 +435,7 @@ const Dishes = (props: DishesProps) => {
 
     }
 
-    setCurrentEditDish(null);
+    props.onSetCurrentEditDish(null);
   };
 
   const handleUpdateDishName = (selectedDishRow: DishRow, dishName: string) => {
@@ -446,33 +453,33 @@ const Dishes = (props: DishesProps) => {
 
   const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
-    setCurrentEditDish(selectedRow);
+    props.onSetCurrentEditDish(selectedRow);
   };
 
   const handleUpdateMinimumInterval = (selectedDishRow: DishRow, minimumIntervalInput: string) => {
     const minimumInterval = parseInt(minimumIntervalInput, 10);
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'minimumInterval', minimumInterval);
-    setCurrentEditDish(selectedRow);
+    props.onSetCurrentEditDish(selectedRow);
   };
 
   const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresAccompaniment', requiresAccompaniment);
-    setCurrentEditDish(selectedRow);
+    props.onSetCurrentEditDish(selectedRow);
   };
 
   const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSalad', requiresSalad);
-    setCurrentEditDish(selectedRow);
+    props.onSetCurrentEditDish(selectedRow);
   };
 
   const handleToggleRequiresSide = (selectedDishRow: DishRow, requiresSide: boolean) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSide', requiresSide);
-    setCurrentEditDish(selectedRow);
+    props.onSetCurrentEditDish(selectedRow);
   };
 
   const handleToggleRequiresVeggie = (selectedDishRow: DishRow, requiresVeggie: boolean) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresVeggie', requiresVeggie);
-    setCurrentEditDish(selectedRow);
+    props.onSetCurrentEditDish(selectedRow);
   };
 
   // Avoid a layout jump when reaching the last page with empty props.rows.
@@ -750,7 +757,7 @@ const Dishes = (props: DishesProps) => {
         {pagedSortedDishes
           .map((row: DishRow, index: number) => {
             let renderedRow;
-            if (!isNil(currentEditDish) && currentEditDish.dish.id === row.dish.id) {
+            if (!isNil(props.currentEditDish) && props.currentEditDish.dish.id === row.dish.id) {
               renderedRow = renderEditingRow(row);
             } else {
               renderedRow = renderInactiveRow(row);
@@ -828,6 +835,7 @@ function mapStateToProps(state: any) {
   return {
     dishes: getDishes(state),
     rows: getDishRows(state),
+    currentEditDish: getCurrentEditDish(state),
     uiState: getUiState(state),
   };
 }
@@ -839,6 +847,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onDeleteDish: deleteDish,
     onSortDishes: sortDishes,
     onSetRows: setRows,
+    onSetCurrentEditDish: setCurrentEditDish,
   }, dispatch);
 };
 
