@@ -211,8 +211,6 @@ export const dishesStateReducer = (
       const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
       const newState = cloneDeep(state) as DishesState;
       newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'name'));
-      console.log('sortDishes');
-      console.log(newState.dishes);
       return newState;
       // return state.dishes.slice().sort(getComparator('asc', 'name'));;
     }

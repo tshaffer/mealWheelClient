@@ -33,9 +33,9 @@ import MenuItem from '@mui/material/MenuItem';
 import { DishEntity, DishRow, DishType, Order, RequiredAccompanimentFlags, UiState } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, updateDish } from '../controllers';
-import { getCurrentEditDish, getDishes, getDishRows, getUiState } from '../selectors';
+import { getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
 import { MealWheelDispatch, sortDishes } from '../models';
-import { setCurrentEditDish, setRows } from '../models/dishesUI';
+import { setCurrentEditDish, setRows, setSortBy, setSortOrder } from '../models/dishesUI';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -122,12 +122,16 @@ export interface DishesProps {
   dishes: DishEntity[];
   rows: DishRow[];
   uiState: UiState;
+  sortOrder: Order;
+  sortBy: string;
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
   onDeleteDish: (id: string) => any;
   onSortDishes: (sortOrder: Order, sortBy: string) => any;
   onSetRows: (rows: DishRow[]) => any;
   onSetCurrentEditDish: (currentEditDish: DishRow | null) => any;
+  onSetSortOrder: (sortOrder: Order) => any;
+  onSetSortBy: (sortBy: string) => any;
 }
 
 const DishesTableHead = (props: TableProps) => {
@@ -180,8 +184,8 @@ const Dishes = (props: DishesProps) => {
 
   const [dishNameInRow, setDishNameInRow] = React.useState<any>(null);
 
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
+  // const [order, setOrder] = React.useState<Order>('asc');
+  // const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -250,13 +254,14 @@ const Dishes = (props: DishesProps) => {
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
+  // property<string> === 'requiresSalad', for example
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof DishRow,
   ) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+    const isAsc = props.sortBy === property && props.sortOrder === 'asc';
+    props.onSetSortOrder(isAsc ? 'desc' : 'asc');
+    props.onSetSortBy(property);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -822,8 +827,8 @@ const Dishes = (props: DishesProps) => {
               size={'small'}
             >
               <DishesTableHead
-                order={order}
-                orderBy={orderBy}
+                order={props.sortOrder}
+                orderBy={props.sortBy}
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
@@ -871,6 +876,8 @@ function mapStateToProps(state: any) {
     rows: getDishRows(state),
     currentEditDish: getCurrentEditDish(state),
     uiState: getUiState(state),
+    sortOrder: getSortOrder(state),
+    sortBy: getSortBy(state),
   };
 }
 
@@ -882,6 +889,8 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onSortDishes: sortDishes,
     onSetRows: setRows,
     onSetCurrentEditDish: setCurrentEditDish,
+    onSetSortOrder: setSortOrder,
+    onSetSortBy: setSortBy,
   }, dispatch);
 };
 
