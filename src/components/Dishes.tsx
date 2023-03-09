@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { cloneDeep, isNil, isNumber, isString } from 'lodash';
 
 import Box from '@mui/material/Box';
@@ -270,11 +270,7 @@ const Dishes = (props: DishesProps) => {
     setPage(0);
   };
 
-  const handleAddRow = () => {
-
-    // console.log('handleAddRow invoked');
-    // console.log(props.rows);  // it's broken here - props.rows[1].dish.id === ''
-
+  const getDefaultDishEntity = (): DishEntity => {
     const dish: DishEntity = {
       id: '',
       name: '',
@@ -285,7 +281,11 @@ const Dishes = (props: DishesProps) => {
       prepTime: 15,
       cleanupEffort: 5,
     };
+    return dish;
+  };
 
+  const getDefaultDishRow = (dish: DishEntity): DishRow => {
+    
     const dishRow: DishRow = {
       dish,
       name: '',
@@ -297,6 +297,14 @@ const Dishes = (props: DishesProps) => {
       requiresSide: false,
       requiresVeggie: false,
     };
+
+    return dishRow;
+  };
+
+  const handleAddRow = () => {
+
+    const dish: DishEntity = getDefaultDishEntity();
+    const dishRow: DishRow = getDefaultDishRow(dish);
 
     const newRows = cloneDeep(props.rows);
     newRows.unshift(dishRow);
@@ -394,15 +402,16 @@ const Dishes = (props: DishesProps) => {
               const clonedRows = cloneDeep(props.rows);
               const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
               selectedRow.dish.id = newDishId;
-              // console.log('handleSaveClick to update id');
 
-
-              
+              // auto add new row
+              const dish: DishEntity = getDefaultDishEntity();
+              const dishRow: DishRow = getDefaultDishRow(dish);
+          
+              clonedRows.unshift(dishRow);
+              // following call updates id in row that was just saved and adds a new row
               props.onSetRows(clonedRows);
-              // before reaching the next line, mapStateToProps is invoked and props.rows looks correct
-              // however, props.rows is incorrect below.
-              // console.log('returned from props.onSetRows');
-              // console.log(props.rows);
+          
+              props.onSetCurrentEditDish(dishRow);
             }
           });
       } else {
@@ -416,10 +425,6 @@ const Dishes = (props: DishesProps) => {
       props.onSetCurrentEditDish(null);
     }
 
-    setTimeout(() => {
-      handleAddRow();
-    }, 1000);
-  
   };
 
   const handleCancelClick = () => {
@@ -540,9 +545,6 @@ const Dishes = (props: DishesProps) => {
 
 
   const renderEditingRow = (row: DishRow) => {
-
-    // console.log('renderEditingRow: ');
-    // console.log(row);
 
     const isItemSelected = true;
     return (
@@ -689,10 +691,6 @@ const Dishes = (props: DishesProps) => {
           />
         </TableCell>
         <TableCell
-          // component='th'
-          // id={labelId}
-          // scope='row'
-          // padding='none'
           padding='none'
           align='center'
         >
@@ -806,11 +804,6 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
-  // the following did not show a path to fixing the issue.
-  // console.log('invoke useSelector');
-  // const useSelectorValue = useSelector((state) => console.log(state));
-  // console.log(useSelectorValue);
-
   return (
     <div>
       <AssignIngredientsToDishDialog
@@ -875,8 +868,6 @@ const Dishes = (props: DishesProps) => {
 };
 
 function mapStateToProps(state: any) {
-  // console.log('mapStateToProps invoked');
-  // console.log(getDishRows(state));
   return {
     dishes: getDishes(state),
     rows: getDishRows(state),
