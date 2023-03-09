@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { cloneDeep, isNil, isNumber, isString } from 'lodash';
 
 import Box from '@mui/material/Box';
@@ -395,6 +395,9 @@ const Dishes = (props: DishesProps) => {
               const selectedRow: DishRow = clonedRows[selectedDishRowIndex];
               selectedRow.dish.id = newDishId;
               // console.log('handleSaveClick to update id');
+
+
+              
               props.onSetRows(clonedRows);
               // before reaching the next line, mapStateToProps is invoked and props.rows looks correct
               // however, props.rows is incorrect below.
@@ -413,9 +416,9 @@ const Dishes = (props: DishesProps) => {
       props.onSetCurrentEditDish(null);
     }
 
-    // setTimeout(() => {
-    //   handleAddRow();
-    // }, 1000);
+    setTimeout(() => {
+      handleAddRow();
+    }, 1000);
   
   };
 
@@ -802,6 +805,11 @@ const Dishes = (props: DishesProps) => {
       </React.Fragment>
     );
   };
+
+  // the following did not show a path to fixing the issue.
+  // console.log('invoke useSelector');
+  // const useSelectorValue = useSelector((state) => console.log(state));
+  // console.log(useSelectorValue);
 
   return (
     <div>
