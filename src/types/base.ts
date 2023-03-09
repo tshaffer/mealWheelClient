@@ -86,6 +86,8 @@ export interface DishesState {
 // }
 
 export interface DishesUIState {
+  sortOrder: Order;
+  sortBy: string;
   rows: DishRow[];
   currentEditDish: DishRow | null;
 }
@@ -197,3 +199,6 @@ export interface MealOnDate {
   date: Date;
   meal: MealEntity | null;
 }
+
+export type Order = 'asc' | 'desc';
+

@@ -22,12 +22,24 @@ export const clearDishes = (): any => {
   };
 };
 
-export const sortDishes = (): any => {
+interface SortDishesPayload {
+  sortOrder: string;
+  sortBy: string;
+}
+
+
+export const sortDishes = (
+  sortOrder: string,
+  sortBy: string,
+): any => {
   return {
     type: SORT_DISHES,
+    payload: {
+      sortOrder,
+      sortBy,
+    }
   };
 };
-
 
 export interface AddReduxDishPayload {
   id: string;
@@ -166,7 +178,7 @@ const initialState: DishesState =
 
 export const dishesStateReducer = (
   state: DishesState = initialState,
-  action: MealWheelModelBaseAction<AddReduxDishPayload & AddReduxDishesPayload & DeleteDishReduxPayload>
+  action: MealWheelModelBaseAction<AddReduxDishPayload & AddReduxDishesPayload & DeleteDishReduxPayload & SortDishesPayload>
 ): DishesState => {
   switch (action.type) {
     case ADD_DISH: {
@@ -196,8 +208,9 @@ export const dishesStateReducer = (
       return newState;
     }
     case SORT_DISHES: {
+      const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
       const newState = cloneDeep(state) as DishesState;
-      newState.dishes = newState.dishes.slice().sort(getComparator('asc', 'name'));
+      newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'name'));
       console.log('sortDishes');
       console.log(newState.dishes);
       return newState;

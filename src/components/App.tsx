@@ -18,6 +18,7 @@ import Button from '@mui/material/Button';
 
 import {
   AppTab,
+  Order,
   UiState,
   UsersMap,
 } from '../types';
@@ -36,6 +37,8 @@ import {
   getAppInitialized,
   getCurrentUser,
   getUsers,
+  getSortBy,
+  getSortOrder,
 } from '../selectors';
 import Dishes from './Dishes';
 import Ingredients from './Ingredients';
@@ -51,10 +54,12 @@ export interface AppProps {
   appInitialized: boolean;
   currentUser: string | null;
   users: UsersMap,
+  sortOrder: Order,
+  sortBy: string,
   onInitializeApp: () => any;
   onSetUiState: (uiState: UiState) => any;
   onSetUser: (userId: string) => any;
-  onSortDishes: () => any;
+  onSortDishes: (sortOrder: Order, sortBy: string) => any;
 }
 
 const App = (props: AppProps) => {
@@ -157,10 +162,11 @@ const App = (props: AppProps) => {
     switch (evt.target.id as AppTab) {
       case AppTab.Dishes:
         newUiState = UiState.Dishes;
-        props.onSortDishes();
+        props.onSortDishes(props.sortOrder, props.sortBy);
         break;
       case AppTab.Ingredients:
-        props.onSortDishes();
+        // TEDTODO - why is sort invoked here?
+        props.onSortDishes(props.sortOrder, props.sortBy);
         newUiState = UiState.Ingredients;
         break;
       case AppTab.MealSchedule:
@@ -352,6 +358,8 @@ function mapStateToProps(state: any) {
     appInitialized: getAppInitialized(state),
     currentUser: getCurrentUser(state),
     users: getUsers(state),
+    sortOrder: getSortOrder(state),
+    sortBy: getSortBy(state),
   };
 }
 

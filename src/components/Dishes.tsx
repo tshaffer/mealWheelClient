@@ -30,7 +30,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
-import { DishEntity, DishRow, DishType, RequiredAccompanimentFlags, UiState } from '../types';
+import { DishEntity, DishRow, DishType, Order, RequiredAccompanimentFlags, UiState } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, updateDish } from '../controllers';
 import { getCurrentEditDish, getDishes, getDishRows, getUiState } from '../selectors';
@@ -46,8 +46,6 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   }
   return 0;
 }
-
-type Order = 'asc' | 'desc';
 
 function getComparator<Key extends keyof any>(
   order: Order,
@@ -127,7 +125,7 @@ export interface DishesProps {
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
   onDeleteDish: (id: string) => any;
-  onSortDishes: () => any;
+  onSortDishes: (sortOrder: Order, sortBy: string) => any;
   onSetRows: (rows: DishRow[]) => any;
   onSetCurrentEditDish: (currentEditDish: DishRow | null) => any;
 }

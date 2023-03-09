@@ -45,6 +45,8 @@ export const setCurrentEditDish = (
 
 const initialState: DishesUIState =
 {
+  sortOrder: 'asc',
+  sortBy: 'name',
   rows: [],
   currentEditDish: null,
 };
