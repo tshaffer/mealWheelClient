@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { cloneDeep, isNil, isNumber, isString } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -36,28 +36,6 @@ import { addDish, deleteDish, sortDishesAndSetRows, updateDish } from '../contro
 import { getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
 import { MealWheelDispatch, sortDishes } from '../models';
 import { setCurrentEditDish, setRows, setSortBy, setSortOrder } from '../models/dishesUI';
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator<Key extends keyof DishRow>(
-  order: Order,
-  orderBy: Key,
-): (
-    a: { [key in Key]: boolean | string | number | DishEntity | Date | null },
-    b: { [key in Key]: boolean | string | number | DishEntity | Date | null },
-  ) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 interface HeadCell {
   disablePadding: boolean;
@@ -185,8 +163,6 @@ const Dishes = (props: DishesProps) => {
 
   const [dishNameInRow, setDishNameInRow] = React.useState<any>(null);
 
-  // const [order, setOrder] = React.useState<Order>('asc');
-  // const [orderBy, setOrderBy] = React.useState<keyof DishRow>('name');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -255,7 +231,6 @@ const Dishes = (props: DishesProps) => {
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
-  // property<string> === 'requiresSalad', for example
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof DishRow,
@@ -264,11 +239,7 @@ const Dishes = (props: DishesProps) => {
     const sortOrder: Order = isAsc ? 'desc' : 'asc';
     props.onSetSortOrder(sortOrder);
     props.onSetSortBy(property);
-
     props.onSortDishesAndSetRows(sortOrder, property);
-    // props.onSortDishes(sortOrder, property);
-    // const newRows: DishRow[] = getRows();
-    // props.onSetRows(newRows);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
