@@ -47,7 +47,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0;
 }
 
-function getComparator<Key extends keyof any>(
+function getComparator<Key extends keyof DishRow>(
   order: Order,
   orderBy: Key,
 ): (
@@ -260,8 +260,13 @@ const Dishes = (props: DishesProps) => {
     property: keyof DishRow,
   ) => {
     const isAsc = props.sortBy === property && props.sortOrder === 'asc';
-    props.onSetSortOrder(isAsc ? 'desc' : 'asc');
+    const sortOrder: Order = isAsc ? 'desc' : 'asc';
+    props.onSetSortOrder(sortOrder);
     props.onSetSortBy(property);
+
+    props.onSortDishes(sortOrder, property);
+    const newRows: DishRow[] = getRows();
+    props.onSetRows(newRows);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {

@@ -1,5 +1,5 @@
 import { cloneDeep, isNil } from 'lodash';
-import { DishEntity, DishEntityRedux, DishesState, RequiredAccompanimentFlags } from '../types';
+import { DishEntity, DishEntityRedux, DishesState, DishRow, RequiredAccompanimentFlags } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -154,7 +154,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
+function getComparator<Key extends keyof DishRow>(
   order: Order,
   orderBy: Key,
 ): (
@@ -210,7 +210,28 @@ export const dishesStateReducer = (
     case SORT_DISHES: {
       const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
       const newState = cloneDeep(state) as DishesState;
-      newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'name'));
+      const sortBy: string = action.payload.sortBy;
+      switch (sortBy) {
+        case 'name':
+        default:
+          newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'name'));
+          break;
+        case 'type':
+          newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'type'));
+          break;
+        case 'minimumInterval':
+          newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'minimumInterval'));
+          break;
+        case 'requiresSalad':
+          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'requiresSalad'));
+          break;
+        case 'requiresSide':
+          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'type'));
+          break;
+        case 'requiresVeggie':
+          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'type'));
+          break;
+      }
       return newState;
       // return state.dishes.slice().sort(getComparator('asc', 'name'));;
     }
