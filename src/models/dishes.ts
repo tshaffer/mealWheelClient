@@ -157,9 +157,10 @@ type Order = 'asc' | 'desc';
 function getComparator<Key extends keyof DishRow>(
   order: Order,
   orderBy: Key,
+  // orderBy: any,
 ): (
-    a: { [key in Key]: boolean | string | number | DishEntity | Date | null },
-    b: { [key in Key]: boolean | string | number | DishEntity | Date | null },
+    a: { [key in Key]: any },
+    b: { [key in Key]: any },
   ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -211,6 +212,11 @@ export const dishesStateReducer = (
       const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
       const newState = cloneDeep(state) as DishesState;
       const sortBy: string = action.payload.sortBy;
+
+      console.log('sort reducer');
+      console.log('sort order: ', sortOrder);
+      console.log('sort by: ', sortBy);
+
       switch (sortBy) {
         case 'name':
         default:
@@ -226,12 +232,13 @@ export const dishesStateReducer = (
           // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'requiresSalad'));
           break;
         case 'requiresSide':
-          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'type'));
+          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'requiresSide'));
           break;
         case 'requiresVeggie':
-          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'type'));
+          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'requiresVeggie'));
           break;
       }
+      console.log(newState);
       return newState;
       // return state.dishes.slice().sort(getComparator('asc', 'name'));;
     }

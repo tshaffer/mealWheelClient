@@ -32,7 +32,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { DishEntity, DishRow, DishType, Order, RequiredAccompanimentFlags, UiState } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
-import { addDish, deleteDish, updateDish } from '../controllers';
+import { addDish, deleteDish, sortDishesAndSetRows, updateDish } from '../controllers';
 import { getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
 import { MealWheelDispatch, sortDishes } from '../models';
 import { setCurrentEditDish, setRows, setSortBy, setSortOrder } from '../models/dishesUI';
@@ -127,6 +127,7 @@ export interface DishesProps {
   onAddDish: (dish: DishEntity) => any;
   onUpdateDish: (id: string, dish: DishEntity) => any;
   onDeleteDish: (id: string) => any;
+  onSortDishesAndSetRows: (sortOrder: Order, sortBy: string) => any;
   onSortDishes: (sortOrder: Order, sortBy: string) => any;
   onSetRows: (rows: DishRow[]) => any;
   onSetCurrentEditDish: (currentEditDish: DishRow | null) => any;
@@ -264,9 +265,10 @@ const Dishes = (props: DishesProps) => {
     props.onSetSortOrder(sortOrder);
     props.onSetSortBy(property);
 
-    props.onSortDishes(sortOrder, property);
-    const newRows: DishRow[] = getRows();
-    props.onSetRows(newRows);
+    props.onSortDishesAndSetRows(sortOrder, property);
+    // props.onSortDishes(sortOrder, property);
+    // const newRows: DishRow[] = getRows();
+    // props.onSetRows(newRows);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -812,6 +814,8 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
+  console.log('rerender dishes');
+
   return (
     <div>
       <AssignIngredientsToDishDialog
@@ -896,6 +900,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onSetCurrentEditDish: setCurrentEditDish,
     onSetSortOrder: setSortOrder,
     onSetSortBy: setSortBy,
+    onSortDishesAndSetRows: sortDishesAndSetRows,
   }, dispatch);
 };
 

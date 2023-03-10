@@ -4,6 +4,7 @@ export * from './baseAction';
 export * from './baseReducer';
 export * from './definedMeals';
 export * from './dishes';
+export * from './dishesUI';
 export * from './generateGroceryList';
 export * from './generateMeals';
 export * from './groceryList';
