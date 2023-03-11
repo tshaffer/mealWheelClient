@@ -158,24 +158,13 @@ const compareValues = (aValue: any, bValue: any, order: Order): number => {
   return val;
 };
 
-// DishEntityRedux
 const sortDishesByProperty = (dishes: DishEntityRedux[], order: Order, orderBy: string): any => {
   dishes.sort((a, b) => {
     switch (orderBy) {
       case 'name':
       case 'type':
       case 'minimumInterval': {
-        let val = 0;
-        if (a[orderBy] < b[orderBy]) {
-          val = -1;
-        }
-        if (b[orderBy] < a[orderBy]) {
-          val = 1;
-        }
-        if (order === 'desc') {
-          val *= -val;
-        }
-        return val;
+        return compareValues(a[orderBy], b[orderBy], order);
       }
       case 'requiresAccompaniment': {
         const aValue = a.accompanimentRequired !== RequiredAccompanimentFlags.None;
