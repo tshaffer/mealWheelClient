@@ -1,5 +1,5 @@
 import { cloneDeep, isNil } from 'lodash';
-import { DishEntity, DishEntityRedux, DishesState, DishRow, RequiredAccompanimentFlags } from '../types';
+import { DishEntity, DishEntityRedux, DishesState, RequiredAccompanimentFlags } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -142,31 +142,32 @@ export const updateDishRedux = (
 
 // utilities
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof DishRow>(
-  order: Order,
-  orderBy: Key,
-  // orderBy: any,
-): (
-    a: { [key in Key]: any },
-    b: { [key in Key]: any },
-  ) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
+const sortDishesByProperty = (dishes: DishEntityRedux[], order: Order, orderBy: string): any => {
+  dishes.sort((a, b) => {
+    switch (orderBy) {
+      case 'name':
+      case 'type':
+      case 'minimumInterval': {
+        let val = 0;
+        if (a[orderBy] < b[orderBy]) {
+          val = -1;
+        }
+        if (b[orderBy] < a[orderBy]) {
+          val = 1;
+        }
+        if (order === 'desc') {
+          val *= -val;
+        }
+        return val;
+      }
+      default:
+        debugger;
+        return 0;
+    }
+  });
+};
 
 // ------------------------------------
 // Reducer
@@ -184,7 +185,6 @@ export const dishesStateReducer = (
   switch (action.type) {
     case ADD_DISH: {
       const newState = cloneDeep(state) as DishesState;
-      // newState.dishes[action.payload.id] = action.payload.dish;
       newState.dishes.push(action.payload.reduxDish);
       return newState;
     }
@@ -212,35 +212,8 @@ export const dishesStateReducer = (
       const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
       const newState = cloneDeep(state) as DishesState;
       const sortBy: string = action.payload.sortBy;
-
-      console.log('sort reducer');
-      console.log('sort order: ', sortOrder);
-      console.log('sort by: ', sortBy);
-
-      switch (sortBy) {
-        case 'name':
-        default:
-          newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'name'));
-          break;
-        case 'type':
-          newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'type'));
-          break;
-        case 'minimumInterval':
-          newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'minimumInterval'));
-          break;
-        case 'requiresSalad':
-          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'requiresSalad'));
-          break;
-        case 'requiresSide':
-          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'requiresSide'));
-          break;
-        case 'requiresVeggie':
-          // newState.dishes = newState.dishes.slice().sort(getComparator(sortOrder, 'requiresVeggie'));
-          break;
-      }
-      console.log(newState);
+      sortDishesByProperty(newState.dishes, sortOrder, sortBy);
       return newState;
-      // return state.dishes.slice().sort(getComparator('asc', 'name'));;
     }
     default:
       return state;

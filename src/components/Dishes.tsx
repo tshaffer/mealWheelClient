@@ -785,8 +785,6 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
-  console.log('rerender dishes');
-
   return (
     <div>
       <AssignIngredientsToDishDialog
