@@ -144,6 +144,21 @@ export const updateDishRedux = (
 
 type Order = 'asc' | 'desc';
 
+const compareValues = (aValue: any, bValue: any, order: Order): number => {
+  let val = 0;
+  if (aValue < bValue) {
+    val = -1;
+  }
+  if (bValue < aValue) {
+    val = 1;
+  }
+  if (order === 'desc') {
+    val *= -val;
+  }
+  return val;
+};
+
+// DishEntityRedux
 const sortDishesByProperty = (dishes: DishEntityRedux[], order: Order, orderBy: string): any => {
   dishes.sort((a, b) => {
     switch (orderBy) {
@@ -161,6 +176,35 @@ const sortDishesByProperty = (dishes: DishEntityRedux[], order: Order, orderBy: 
           val *= -val;
         }
         return val;
+      }
+      case 'requiresAccompaniment': {
+        const aValue = a.accompanimentRequired !== RequiredAccompanimentFlags.None;
+        const bValue = b.accompanimentRequired !== RequiredAccompanimentFlags.None;
+        return compareValues(aValue, bValue, order);
+      }
+      case 'requiresSalad': {
+        if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
+          const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+          const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+          return compareValues(aValue, bValue, order);
+        }
+        return 0;
+      }
+      case 'requiresSide': {
+        if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
+          const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+          const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+          return compareValues(aValue, bValue, order);
+        }
+        return 0;
+      }
+      case 'requiresVeggie': {
+        if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
+          const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+          const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+          return compareValues(aValue, bValue, order);
+        }
+        return 0;
       }
       default:
         debugger;
