@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCurrentUser, getDishes } from '../selectors';
 import { v4 as uuidv4 } from 'uuid';
 
-import { addDishesRedux, addDishRedux, deleteDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, setRows, sortDishes, updateDishRedux } from '../models';
+import { addDishesRedux, addDishRedux, deleteDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, setRows, sortIngredients, updateDishRedux } from '../models';
 
 import { apiUrlFragment, DishEntity, DishEntityFromServer, DishEntityRedux, DishesState, DishRow, MealWheelState, Order, RequiredAccompanimentFlags, serverUrl } from '../types';
 import { isNil } from 'lodash';
@@ -160,7 +160,7 @@ export const sortDishesAndSetRows = (
   sortBy: string,
 ): any => {
   return (dispatch: MealWheelDispatch, getState: any): any => {
-    dispatch(sortDishes(sortOrder, sortBy));
+    dispatch(sortIngredients(sortOrder, sortBy));
     let state: MealWheelState = getState();
     const dishes: DishEntity[] = getDishes(state);
     const newRows: DishRow[] = getRows(dishes);

@@ -14,9 +14,9 @@ import CancelIcon from '@mui/icons-material/Close';
 
 
 import { visuallyHidden } from '@mui/utils';
-import { MealWheelDispatch } from '../models';
-import { addIngredient, updateIngredient } from '../controllers';
-import { getIngredients, getSortBy, getSortOrder, getUiState } from '../selectors';
+import { MealWheelDispatch, setCurrentEditIngredient, setIngredientRows, setIngredientSortBy, setIngredientSortOrder, sortIngredients } from '../models';
+import { addIngredient, deleteIngredient, sortIngredientsAndSetRows, updateIngredient } from '../controllers';
+import { getIngredientRows, getIngredients, getIngredientSortBy, getIngredientSortOrder, getSortBy, getSortOrder, getUiState } from '../selectors';
 
 
 interface HeadCell {

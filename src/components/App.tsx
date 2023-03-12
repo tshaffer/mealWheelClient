@@ -31,7 +31,7 @@ import {
   MealWheelDispatch,
   setUiState,
   setUser,
-  sortDishes,
+  sortIngredients,
 } from '../models';
 import {
   getAppInitialized,
@@ -368,7 +368,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onInitializeApp: initializeApp,
     onSetUser: setUser,
     onSetUiState: setUiState,
-    onSortDishes: sortDishes,
+    onSortDishes: sortIngredients,
   }, dispatch);
 };
 

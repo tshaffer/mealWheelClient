@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-import { apiUrlFragment, IngredientEntity, IngredientsByDish, MealWheelState, serverUrl } from '../types';
+import { apiUrlFragment, IngredientEntity, IngredientRow, IngredientsByDish, MealWheelState, Order, RequiredAccompanimentFlags, serverUrl } from '../types';
 
-import { getCurrentUser } from '../selectors';
-import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, MealWheelDispatch, MealWheelStringOrNullPromiseThunkAction, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, replaceIngredientInDishRedux, setIngredientsByDishRedux, updateIngredientRedux } from '../models';
+import { getCurrentUser, getIngredients } from '../selectors';
+import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, MealWheelDispatch, MealWheelStringOrNullPromiseThunkAction, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, replaceIngredientInDishRedux, setIngredientRows, setIngredientsByDishRedux, setRows, sortIngredients, updateIngredientRedux } from '../models';
+import { isNil } from 'lodash';
 
 export const loadIngredients = (): MealWheelVoidPromiseThunkAction => {
 
@@ -207,5 +208,39 @@ export const deleteIngredientFromDish = (
       console.log(error);
       return;
     });
+  };
+};
+
+
+export const deleteIngredient = (ingredientId: string) => {
+  debugger;
+};
+
+const getIngredientRows = (dishes: IngredientEntity[]): IngredientRow[] => {
+
+  const rows: IngredientRow[] = dishes.map((ingredient: IngredientEntity) => {
+    const row: IngredientRow = {
+      ingredient,
+      name: ingredient.name,
+      showInGrocerylist: ingredient.showInGroceryList,
+    };
+    return row;
+  });
+  return rows;
+};
+
+
+
+export const sortIngredientsAndSetRows = (
+  sortOrder: Order,
+  sortBy: string,
+): any => {
+  return (dispatch: MealWheelDispatch, getState: any): any => {
+    dispatch(sortIngredients(sortOrder, sortBy));
+    let state: MealWheelState = getState();
+    const ingredients: IngredientEntity[] = getIngredients(state);
+    const newRows: IngredientRow[] = getIngredientRows(ingredients);
+    dispatch(setIngredientRows(newRows));
+    state = getState();
   };
 };

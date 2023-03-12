@@ -11,6 +11,7 @@ import { cloneDeep, isArray } from 'lodash';
 // Constants
 // ------------------------------------
 export const CLEAR_INGREDIENTS = 'CLEAR_INGREDIENTS';
+export const SORT_INGREDIENTS = 'SORT_INGREDIENTS';
 export const CLEAR_INGREDIENTS_BY_DISH = 'CLEAR_INGREDIENTS_BY_DISH';
 export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
@@ -29,6 +30,26 @@ export const clearIngredients = (): any => {
     type: CLEAR_INGREDIENTS,
   };
 };
+
+interface SortIngredientsPayload {
+  sortOrder: string;
+  sortBy: string;
+}
+
+
+export const sortIngredients = (
+  sortOrder: string,
+  sortBy: string,
+): any => {
+  return {
+    type: SORT_INGREDIENTS,
+    payload: {
+      sortOrder,
+      sortBy,
+    }
+  };
+};
+
 
 export const clearIngredientsByDish = (): any => {
   return {
@@ -149,6 +170,37 @@ export const deleteIngredientFromDishRedux = (
   };
 };
 
+// utilities
+
+type Order = 'asc' | 'desc';
+
+const compareValues = (aValue: any, bValue: any, order: Order): number => {
+  let val = 0;
+  if (aValue < bValue) {
+    val = -1;
+  }
+  if (bValue < aValue) {
+    val = 1;
+  }
+  if (order === 'desc') {
+    val *= -val;
+  }
+  return val;
+};
+
+const sortIngredientsByProperty = (ingredients: IngredientEntity[], order: Order, orderBy: string): any => {
+  ingredients.sort((a, b) => {
+    switch (orderBy) {
+      case 'name':
+      case 'showInGroceryList':
+        return compareValues(a[orderBy], b[orderBy], order);
+
+      default:
+        debugger;
+        return 0;
+    }
+  });
+};
 
 // ------------------------------------
 // Reducer
@@ -162,7 +214,7 @@ const initialState: IngredientsState =
 
 export const ingredientsStateReducer = (
   state: IngredientsState = initialState,
-  action: MealWheelModelBaseAction<IngredientPayload & AddIngredientsPayload & AddIngredientToDishPayload & ReplaceIngredientToDishPayload & SetIngredientsByDishPayload & DeleteIngredientFromDishPayload>
+  action: MealWheelModelBaseAction<IngredientPayload & AddIngredientsPayload & AddIngredientToDishPayload & ReplaceIngredientToDishPayload & SetIngredientsByDishPayload & DeleteIngredientFromDishPayload & SortIngredientsPayload>
 ): IngredientsState => {
   switch (action.type) {
     case ADD_INGREDIENT:
@@ -210,10 +262,18 @@ export const ingredientsStateReducer = (
       return { ...state, ingredientsByDish: action.payload.ingredientsByDish };
     }
     case CLEAR_INGREDIENTS: {
-      return { ...state, ingredientsById: {}};
+      return { ...state, ingredientsById: {} };
     }
     case CLEAR_INGREDIENTS_BY_DISH: {
-      return { ...state, ingredientsByDish: {}};
+      return { ...state, ingredientsByDish: {} };
+    }
+    case SORT_INGREDIENTS: {
+      const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
+      const newState = cloneDeep(state) as IngredientsState;
+      const sortBy: string = action.payload.sortBy;
+      debugger;
+      sortIngredientsByProperty([], sortOrder, sortBy);
+      return newState;
     }
     default:
       return state;
