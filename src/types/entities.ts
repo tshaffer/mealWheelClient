@@ -155,3 +155,9 @@ export interface DishRow {
   requiresVeggie: boolean;
 }
 
+export interface IngredientRow {
+  ingredient: IngredientEntity;
+  name: string,
+  showInGrocerylist: boolean,
+}
+

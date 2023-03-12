@@ -4,6 +4,7 @@ import {
   DishEntityRedux,
   DishRow,
   IngredientEntity,
+  IngredientRow,
   IngredientsByDish,
   IngredientsById,
   MealEntity,
@@ -28,6 +29,7 @@ export interface MealWheelState {
   generateMealsState: GenerateMealsStateRedux;
   groceryListState: GroceryListState;
   ingredientsState: IngredientsState;
+  ingredientsUIState: IngredientsUIState;
   scheduledMealsState: ScheduledMealsState;
   mealsResolutionState: MealsResolutionState;
   unassignedMealsState: UnassignedMealsState;
@@ -91,6 +93,14 @@ export interface DishesUIState {
   rows: DishRow[];
   currentEditDish: DishRow | null;
 }
+
+export interface IngredientsUIState {
+  sortOrder: Order;
+  sortBy: string;
+  rows: IngredientRow[];
+  currentEditIngredient: IngredientRow | null;
+}
+
 
 export interface IngredientsState {
   ingredientsById: IngredientsById;

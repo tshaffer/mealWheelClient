@@ -9,6 +9,7 @@ export * from './generateGroceryList';
 export * from './generateMeals';
 export * from './groceryList';
 export * from './ingredients';
+export * from './ingredientsUI';
 export * from './mealsResolution';
 export * from './mealWheelTonightUI';
 export * from './scheduledMeals';

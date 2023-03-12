@@ -56,6 +56,14 @@ export interface IngredientsProps {
   sortBy: string;
   uiState: UiState;
 
+  onDeleteIngredient: (id: string) => any;
+  onSortIngredientsAndSetRows: (sortOrder: Order, sortBy: string) => any;
+  onSortIngredients: (sortOrder: Order, sortBy: string) => any;
+  onSetRows: (rows: IngredientRow[]) => any;
+  onSetCurrentEditIngredient: (currentEditIngredient: IngredientRow | null) => any;
+  onSetSortOrder: (sortOrder: Order) => any;
+  onSetSortBy: (sortBy: string) => any;
+
   // rows: IngredientRow[];
   // uiState: UiState;
   // onAddDish: (dish: DishEntity) => any;
@@ -117,13 +125,12 @@ const IngredientsTableHead = (props: TableProps) => {
 
 const Ingredients = (props: IngredientsProps) => {
 
-  const [dishNameInRow, setDishNameInRow] = React.useState<any>(null);
+  const [ingredientNameInRow, setIngredientNameInRow] = React.useState<any>(null);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const [showAssignIngredientsToDish, setShowAssignIngredientsToDish] = React.useState(false);
-  const [dishId, setDishId] = React.useState('');
+  const [ingredientId, setIngredientId] = React.useState('');
 
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
@@ -135,7 +142,7 @@ const Ingredients = (props: IngredientsProps) => {
   }, [props.uiState]);
 
   React.useEffect(() => {
-    if (!isNil(dishNameInRow)) {
+    if (!isNil(ingredientNameInRow)) {
 
       // const querySelectorAllResults = dishNameInRow.querySelectorAll('input');
       // console.log('querySelectorAll results:');
@@ -143,7 +150,7 @@ const Ingredients = (props: IngredientsProps) => {
       // const nameField = querySelectorAllResults[0];
       // nameField.focus();
 
-      const byTagNameResults = dishNameInRow.getElementsByTagName('input');
+      const byTagNameResults = ingredientNameInRow.getElementsByTagName('input');
       // console.log('getElementsByTagName results:');
       // console.log(byTagNameResults);
       const nameField = byTagNameResults[0];
@@ -152,7 +159,14 @@ const Ingredients = (props: IngredientsProps) => {
       // const nameField: any = dishNameInRow.children[1].firstChild;
       // nameField.focus();
     }
-  }, [dishNameInRow]);
+  }, [ingredientNameInRow]);
+
+  let ingredientIdToIngredientRowIndex: IdToNumberMap = {};
+
+  const getRows = (): IngredientRow[] => {
+    return [];
+  };
+
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -188,7 +202,7 @@ const Ingredients = (props: IngredientsProps) => {
         <Paper sx={{ width: '100%', mb: 2 }}>
           <div>
             <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
-              Add dish
+              Add ingredient
             </Button>
           </div>
           <TableContainer>
@@ -245,9 +259,9 @@ function mapStateToProps(state: any) {
   return {
     ingredients: getIngredients(state),
     uiState: getUiState(state),
-    sortOrder: getSortOrder(state),
-    sortBy: getSortBy(state),
-    rows: [],
+    sortOrder: getIngredientSortOrder(state),
+    sortBy: getIngredientSortBy(state),
+    rows: getIngredientRows(state),
     // dishes: getDishes(state),
     // rows: getDishRows(state),
     // currentEditDish: getCurrentEditDish(state),
@@ -270,6 +284,15 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     // onSetSortOrder: setSortOrder,
     // onSetSortBy: setSortBy,
     // onSortDishesAndSetRows: sortDishesAndSetRows,
+
+    onDeleteIngredient: deleteIngredient,
+    onSortIngredients: sortIngredients,
+    onSetRows: setIngredientRows,
+    onSetCurrentEditIngredient: setCurrentEditIngredient,
+    onSetSortOrder: setIngredientSortOrder,
+    onSetSortBy: setIngredientSortBy,
+    onSortIngredientsAndSetRows: sortIngredientsAndSetRows,
+
   }, dispatch);
 };
 
