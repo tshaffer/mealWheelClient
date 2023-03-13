@@ -267,14 +267,14 @@ export const ingredientsStateReducer = (
     case CLEAR_INGREDIENTS_BY_DISH: {
       return { ...state, ingredientsByDish: {} };
     }
-    case SORT_INGREDIENTS: {
-      const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
-      const newState = cloneDeep(state) as IngredientsState;
-      const sortBy: string = action.payload.sortBy;
-      debugger;
-      sortIngredientsByProperty([], sortOrder, sortBy);
-      return newState;
-    }
+    // case SORT_INGREDIENTS: {
+    //   const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
+    //   const newState = cloneDeep(state) as IngredientsState;
+    //   const sortBy: string = action.payload.sortBy;
+    //   debugger;
+    //   sortIngredientsByProperty([], sortOrder, sortBy);
+    //   return newState;
+    // }
     default:
       return state;
   }

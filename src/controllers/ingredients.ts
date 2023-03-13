@@ -222,7 +222,7 @@ const getIngredientRows = (dishes: IngredientEntity[]): IngredientRow[] => {
     const row: IngredientRow = {
       ingredient,
       name: ingredient.name,
-      showInGrocerylist: ingredient.showInGroceryList,
+      showInGroceryList: ingredient.showInGroceryList,
     };
     return row;
   });

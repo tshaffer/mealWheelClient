@@ -41,7 +41,8 @@ import {
   getSortOrder,
 } from '../selectors';
 import Dishes from './Dishes';
-import Ingredients from './Ingredients';
+// import Ingredients from './Ingredients';
+import IngredientsNew from './IngredientsNew';
 import MealSchedule from './MealSchedule';
 import ToolsAndSettings from './ToolsAndSettings';
 import AboutDialog from './AboutDialog';
@@ -317,7 +318,7 @@ const App = (props: AppProps) => {
           <Dishes />
         </div>
         <div id='ingredientsContent' style={ingredientsTabContentStyle}>
-          <Ingredients />
+          <IngredientsNew />
         </div>
         <div id='mealWheelTonightContent' style={mealWheelTonightTabContentStyle}>
           <MealWheelTonight />

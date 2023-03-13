@@ -158,6 +158,6 @@ export interface DishRow {
 export interface IngredientRow {
   ingredient: IngredientEntity;
   name: string,
-  showInGrocerylist: boolean,
+  showInGroceryList: boolean,
 }
 

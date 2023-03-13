@@ -21,7 +21,7 @@ import { getCurrentEditIngredient, getIngredientRows, getIngredients, getIngredi
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof IngredientEntity;
+  id: keyof IngredientRow;
   label: string;
   numeric: boolean;
 }
@@ -42,7 +42,7 @@ const headCells: readonly HeadCell[] = [
 ];
 
 interface TableProps {
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof IngredientEntity) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof IngredientRow) => void;
   order: Order;
   orderBy: string;
 }
@@ -71,7 +71,7 @@ const IngredientsTableHead = (props: TableProps) => {
     props;
 
   const createSortHandler =
-    (property: keyof IngredientEntity) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof IngredientRow) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -131,23 +131,15 @@ const Ingredients = (props: IngredientsProps) => {
 
   React.useEffect(() => {
     if (!isNil(ingredientNameInRow)) {
-
-      // const querySelectorAllResults = dishNameInRow.querySelectorAll('input');
-      // console.log('querySelectorAll results:');
-      // console.log(querySelectorAllResults);
-      // const nameField = querySelectorAllResults[0];
-      // nameField.focus();
-
       const byTagNameResults = ingredientNameInRow.getElementsByTagName('input');
-      // console.log('getElementsByTagName results:');
-      // console.log(byTagNameResults);
       const nameField = byTagNameResults[0];
       nameField.focus();
-
-      // const nameField: any = dishNameInRow.children[1].firstChild;
-      // nameField.focus();
     }
   }, [ingredientNameInRow]);
+
+  interface IdToNumberMap {
+    [id: string]: number;
+  }
 
   let ingredientIdToIngredientRowIndex: IdToNumberMap = {};
 
@@ -156,7 +148,7 @@ const Ingredients = (props: IngredientsProps) => {
       const row: IngredientRow = {
         ingredient,
         name: ingredient.name,
-        showInGrocerylist: ingredient.showInGroceryList,
+        showInGroceryList: ingredient.showInGroceryList,
       };
       return row;
     });
@@ -198,11 +190,11 @@ const Ingredients = (props: IngredientsProps) => {
   };
 
   const getDefaultIngredientRow = (ingredient: IngredientEntity): IngredientRow => {
-    
+
     const ingredientRow: IngredientRow = {
       ingredient,
       name: '',
-      showInGrocerylist: true,
+      showInGroceryList: true,
     };
 
     return ingredientRow;
@@ -253,7 +245,7 @@ const Ingredients = (props: IngredientsProps) => {
   };
 
   const handleToggleShowInGroceryList = (selectedIngredientRow: IngredientRow, showInGroceryList: boolean) => {
-    const selectedRow: IngredientRow = updateSelectedRowProperty(selectedIngredientRow, 'requiresAccompaniment', showInGroceryList);
+    const selectedRow: IngredientRow = updateSelectedRowProperty(selectedIngredientRow, 'showInGroceryList', showInGroceryList);
     props.onSetCurrentEditIngredient(selectedRow);
   };
 
@@ -286,15 +278,33 @@ const Ingredients = (props: IngredientsProps) => {
             defaultValue={row.name}
             variant='standard'
             onBlur={(event) => handleUpdateIngredientName(row, event.target.value)}
-            ref={(input) => { setIngredientNameInRow(input); }} 
+            ref={(input) => { setIngredientNameInRow(input); }}
           />
         </TableCell>
         <TableCell align='center'>
           <Checkbox
             color="primary"
-            checked={row.showInGrocerylist}
+            checked={row.showInGroceryList}
             onChange={(event) => handleToggleShowInGroceryList(row, event.target.checked)}
           />
+        </TableCell>
+        <TableCell align='center'>
+          <Tooltip title="Save">
+            <IconButton
+              id={row.name}
+              onClick={() => handleSaveClick()}
+            >
+              <SaveIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Cancel">
+            <IconButton
+              id={row.name}
+              onClick={() => handleCancelClick()}
+            >
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
         </TableCell>
       </TableRow>
     );
@@ -330,7 +340,7 @@ const Ingredients = (props: IngredientsProps) => {
         <TableCell align='center'>
           <Checkbox
             color="primary"
-            checked={row.showInGrocerylist}
+            checked={row.showInGroceryList}
             disabled
           />
         </TableCell>
@@ -372,7 +382,7 @@ const Ingredients = (props: IngredientsProps) => {
         {pagedSortedIngredients
           .map((row: IngredientRow, index: number) => {
             let renderedRow;
-            if (!isNil(props.currentEditIngredient) && props.currentEditIngredient.dish.id === row.dish.id) {
+            if (!isNil(props.currentEditIngredient) && props.currentEditIngredient.ingredient.id === row.ingredient.id) {
               renderedRow = renderEditingRow(row);
             } else {
               renderedRow = renderInactiveRow(row);
