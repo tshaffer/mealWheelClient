@@ -224,11 +224,88 @@ const Ingredients = (props: IngredientsProps) => {
   };
 
   const handleSaveClick = () => {
-    debugger;
+    if (!isNil(props.currentEditIngredient)) {
+
+      // check for empty name
+      if (props.currentEditIngredient.name === '') {
+        setSnackbar({ children: 'Error while saving ingredient: name can\'t be empty.', severity: 'error' });
+        return;
+      }
+
+      // check for duplicate ingredient names.
+      const updatedIngredientName = props.currentEditIngredient.name;
+      for (let ingredientIndex = 0; ingredientIndex < props.ingredients.length; ingredientIndex++) {
+        const existingIngredient: IngredientEntity = props.ingredients[ingredientIndex];
+        if (props.currentEditIngredient.ingredient.id !== existingIngredient.id && existingIngredient.name === updatedIngredientName) {
+          setSnackbar({ children: 'Error while saving ingredient: duplicate ingredient name', severity: 'error' });
+          return;
+        }
+      }
+
+      if (props.currentEditIngredient.ingredient.id === '') {
+        const newIngredient: IngredientEntity = {
+          id: '',
+          userId: '',
+          name: props.currentEditIngredient.name,
+          showInGroceryList: props.currentEditIngredient.showInGroceryList,
+          ingredients: [],
+        };
+        props.onAddIngredient(newIngredient)
+          .then((newIngredientId: string) => {
+            const selectedIngredientRowIndex = ingredientIdToIngredientRowIndex[''];
+            if (selectedIngredientRowIndex !== -1) {
+              const clonedRows = cloneDeep(props.rows);
+              const selectedRow: IngredientRow = clonedRows[selectedIngredientRowIndex];
+              selectedRow.ingredient.id = newIngredientId;
+
+              // auto add new row
+              const ingredient: IngredientEntity = getDefaultIngredientEntity();
+              const ingredientRow: IngredientRow = getDefaultIngredientRow(ingredient);
+          
+              clonedRows.unshift(ingredientRow);
+              // following call updates id in row that was just saved and adds a new row
+              props.onSetRows(clonedRows);
+          
+              props.onSetCurrentEditIngredient(ingredientRow);
+            }
+          });
+      } else {
+        const updatedIngredient: IngredientEntity = cloneDeep(props.currentEditIngredient.ingredient);
+        updatedIngredient.name = props.currentEditIngredient.name;
+        updatedIngredient.showInGroceryList = props.currentEditIngredient.showInGroceryList;
+        props.onUpdateIngredient(props.currentEditIngredient.ingredient.id, updatedIngredient);
+      }
+      props.onSetCurrentEditIngredient(null);
+    }
   };
 
   const handleCancelClick = () => {
-    debugger;
+    if (!isNil(props.currentEditIngredient) && !isNil(props.currentEditIngredient.ingredient) && (props.currentEditIngredient.ingredient.id === '')) {
+      // new dish - discard row
+
+      const selectedIndex = ingredientIdToIngredientRowIndex[''];
+      if (selectedIndex !== -1) {
+        const newRows = cloneDeep(props.rows);
+        newRows.splice(selectedIndex, 1);
+        props.onSetRows(newRows);
+      }
+
+    } else {
+
+      // revert to row before edits
+      //    ingredientEntity hasn't been updated yet
+
+      if (!isNil(props.currentEditIngredient)) {
+        const selectedIngredientRowIndex = ingredientIdToIngredientRowIndex[props.currentEditIngredient.ingredient.id];
+        const selectedIngredientRow: IngredientRow = props.rows[selectedIngredientRowIndex];
+        const unmodifiedIngredientEntity: IngredientEntity = selectedIngredientRow.ingredient;
+        selectedIngredientRow.name = unmodifiedIngredientEntity.name;
+        selectedIngredientRow.showInGroceryList = unmodifiedIngredientEntity.showInGroceryList;
+      }
+
+    }
+
+    props.onSetCurrentEditIngredient(null);
   };
 
   const handleUpdateIngredientName = (selectedIngredientRow: IngredientRow, ingredientName: string) => {
@@ -248,8 +325,6 @@ const Ingredients = (props: IngredientsProps) => {
     const selectedRow: IngredientRow = updateSelectedRowProperty(selectedIngredientRow, 'showInGroceryList', showInGroceryList);
     props.onSetCurrentEditIngredient(selectedRow);
   };
-
-
 
   // Avoid a layout jump when reaching the last page with empty props.rows.
   const emptyRows =
@@ -274,7 +349,7 @@ const Ingredients = (props: IngredientsProps) => {
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
-            label='Dish name'
+            label='Ingredient name'
             defaultValue={row.name}
             variant='standard'
             onBlur={(event) => handleUpdateIngredientName(row, event.target.value)}
@@ -330,7 +405,7 @@ const Ingredients = (props: IngredientsProps) => {
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
-            label='Dish name'
+            label='Ingredient name'
             defaultValue={row.name}
             disabled
             variant='standard'
