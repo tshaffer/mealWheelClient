@@ -268,11 +268,23 @@ export const ingredientsStateReducer = (
       return { ...state, ingredientsByDish: {} };
     }
     // case SORT_INGREDIENTS: {
-    //   const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
     //   const newState = cloneDeep(state) as IngredientsState;
+
+    //   const sortOrder: Order = action.payload.sortOrder === 'asc' ? 'asc' : 'desc';
     //   const sortBy: string = action.payload.sortBy;
-    //   debugger;
-    //   sortIngredientsByProperty([], sortOrder, sortBy);
+
+    //   // convert to array
+    //   const ingredients: IngredientEntity[] = [];
+    //   const ingredientsById = state.ingredientsById;
+    //   for (const ingredientId in ingredientsById) {
+    //     if (Object.prototype.hasOwnProperty.call(ingredientsById, ingredientId)) {
+    //       const ingredient: IngredientEntity = ingredientsById[ingredientId];
+    //       ingredients.push(ingredient);
+    //     }
+    //   }
+    //   // sort array
+    //   sortIngredientsByProperty(ingredients, sortOrder, sortBy);
+
     //   return newState;
     // }
     default:
