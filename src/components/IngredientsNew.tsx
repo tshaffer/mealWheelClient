@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { cloneDeep, isNil } from 'lodash';
 import { IngredientRow, IngredientEntity, Order, UiState } from '../types';
 
-import { TableHead, TableRow, TableCell, TableSortLabel, Box, AlertProps, Alert, Button, Paper, Snackbar, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
+import { TableHead, TableRow, TableCell, TableSortLabel, Box, AlertProps, Alert, Button, Paper, Snackbar, Table, TableBody, TableContainer, TablePagination, Checkbox, TextField, IconButton, Tooltip } from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,7 +16,7 @@ import CancelIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { MealWheelDispatch, setCurrentEditIngredient, setIngredientRows, setIngredientSortBy, setIngredientSortOrder, sortIngredients } from '../models';
 import { addIngredient, deleteIngredient, sortIngredientsAndSetRows, updateIngredient } from '../controllers';
-import { getIngredientRows, getIngredients, getIngredientSortBy, getIngredientSortOrder, getSortBy, getSortOrder, getUiState } from '../selectors';
+import { getCurrentEditIngredient, getIngredientRows, getIngredients, getIngredientSortBy, getIngredientSortOrder, getSortBy, getSortOrder, getUiState } from '../selectors';
 
 
 interface HeadCell {
@@ -48,6 +48,7 @@ interface TableProps {
 }
 
 export interface IngredientsProps {
+  currentEditIngredient: IngredientRow | null,
   ingredients: IngredientEntity[];
   rows: IngredientRow[];
   onAddIngredient: (ingredient: IngredientEntity) => any;
@@ -55,7 +56,6 @@ export interface IngredientsProps {
   sortOrder: Order;
   sortBy: string;
   uiState: UiState;
-
   onDeleteIngredient: (id: string) => any;
   onSortIngredientsAndSetRows: (sortOrder: Order, sortBy: string) => any;
   onSortIngredients: (sortOrder: Order, sortBy: string) => any;
@@ -63,18 +63,6 @@ export interface IngredientsProps {
   onSetCurrentEditIngredient: (currentEditIngredient: IngredientRow | null) => any;
   onSetSortOrder: (sortOrder: Order) => any;
   onSetSortBy: (sortBy: string) => any;
-
-  // rows: IngredientRow[];
-  // uiState: UiState;
-  // onAddDish: (dish: DishEntity) => any;
-  // onUpdateDish: (id: string, dish: DishEntity) => any;
-  // onDeleteDish: (id: string) => any;
-  // onSortIngredientsAndSetRows: (sortOrder: Order, sortBy: string) => any;
-  // onSortIngredients: (sortOrder: Order, sortBy: string) => any;
-  // onSetRows: (rows: IngredientRow[]) => any;
-  // onSetCurrentEditDish: (currentEditDish: IngredientRow | null) => any;
-  // onSetSortOrder: (sortOrder: Order) => any;
-  // onSetSortBy: (sortBy: string) => any;
 }
 
 const IngredientsTableHead = (props: TableProps) => {
@@ -164,7 +152,28 @@ const Ingredients = (props: IngredientsProps) => {
   let ingredientIdToIngredientRowIndex: IdToNumberMap = {};
 
   const getRows = (): IngredientRow[] => {
-    return [];
+    const rows: IngredientRow[] = props.ingredients.map((ingredient: IngredientEntity) => {
+      const row: IngredientRow = {
+        ingredient,
+        name: ingredient.name,
+        showInGrocerylist: ingredient.showInGroceryList,
+      };
+      return row;
+    });
+    return rows;
+  };
+
+  const handleCloseSnackbar = () => setSnackbar(null);
+
+  const handleRequestSort = (
+    event: React.MouseEvent<unknown>,
+    property: keyof IngredientRow,
+  ) => {
+    const isAsc = props.sortBy === property && props.sortOrder === 'asc';
+    const sortOrder: Order = isAsc ? 'desc' : 'asc';
+    props.onSetSortOrder(sortOrder);
+    props.onSetSortBy(property);
+    props.onSortIngredientsAndSetRows(sortOrder, property);
   };
 
 
@@ -177,23 +186,201 @@ const Ingredients = (props: IngredientsProps) => {
     setPage(0);
   };
 
-  const handleCloseSnackbar = () => setSnackbar(null);
-
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: keyof IngredientRow,
-  ) => {
+  const getDefaultIngredientEntity = (): IngredientEntity => {
+    const ingredient: IngredientEntity = {
+      id: '',
+      userId: '',
+      name: '',
+      showInGroceryList: true,
+      ingredients: [],
+    };
+    return ingredient;
   };
+
+  const getDefaultIngredientRow = (ingredient: IngredientEntity): IngredientRow => {
+    
+    const ingredientRow: IngredientRow = {
+      ingredient,
+      name: '',
+      showInGrocerylist: true,
+    };
+
+    return ingredientRow;
+  };
+
 
   const handleAddRow = () => {
+    const ingredient: IngredientEntity = getDefaultIngredientEntity();
+    const ingredientRow: IngredientRow = getDefaultIngredientRow(ingredient);
+
+    const newRows = cloneDeep(props.rows);
+    newRows.unshift(ingredientRow);
+    props.onSetRows(newRows);
+
+    props.onSetCurrentEditIngredient(ingredientRow);
   };
+
+  const handleEditClick = (ingredientRow: IngredientRow) => {
+    props.onSetCurrentEditIngredient(ingredientRow);
+  };
+
+  const handleDeleteClick = (ingredientRow: IngredientRow) => {
+    debugger;
+    // props.onSetRows(props.rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
+    // props.onDeleteDish(dishEntityData.dish.id);
+    // props.onSetCurrentEditDish(null);
+  };
+
+  const handleSaveClick = () => {
+    debugger;
+  };
+
+  const handleCancelClick = () => {
+    debugger;
+  };
+
+  const handleUpdateIngredientName = (selectedIngredientRow: IngredientRow, ingredientName: string) => {
+    selectedIngredientRow.name = ingredientName;
+  };
+
+  const updateSelectedRowProperty = (selectedIngredientRow: IngredientRow, propertyName: string, propertyValue: any): IngredientRow => {
+    const clonedRows = cloneDeep(props.rows);
+    const selectedIngredientRowIndex = ingredientIdToIngredientRowIndex[selectedIngredientRow.ingredient.id];
+    const selectedRow: IngredientRow = clonedRows[selectedIngredientRowIndex];
+    (selectedRow as any)[propertyName] = propertyValue;
+    props.onSetRows(clonedRows);
+    return selectedRow;
+  };
+
+  const handleToggleShowInGroceryList = (selectedIngredientRow: IngredientRow, showInGroceryList: boolean) => {
+    const selectedRow: IngredientRow = updateSelectedRowProperty(selectedIngredientRow, 'requiresAccompaniment', showInGroceryList);
+    props.onSetCurrentEditIngredient(selectedRow);
+  };
+
+
 
   // Avoid a layout jump when reaching the last page with empty props.rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
 
+  const renderEditingRow = (row: IngredientRow) => {
+    const isItemSelected = true;
+    return (
+      <TableRow
+        hover
+        role='checkbox'
+        tabIndex={-1}
+        // key={row.name}
+        selected={isItemSelected}
+      >
+        <TableCell
+          component='th'
+          scope='row'
+          padding='none'
+          align='center'
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Dish name'
+            defaultValue={row.name}
+            variant='standard'
+            onBlur={(event) => handleUpdateIngredientName(row, event.target.value)}
+            ref={(input) => { setIngredientNameInRow(input); }} 
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.showInGrocerylist}
+            onChange={(event) => handleToggleShowInGroceryList(row, event.target.checked)}
+          />
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  const renderInactiveRow = (row: IngredientRow) => {
+    const isItemSelected = false;
+    return (
+      <TableRow
+        hover
+        role='checkbox'
+        tabIndex={-1}
+        key={row.name}
+        selected={isItemSelected}
+      >
+        <TableCell
+          component='th'
+          // id={labelId}
+          scope='row'
+          padding='none'
+          align='center'
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Dish name'
+            defaultValue={row.name}
+            disabled
+            variant='standard'
+          />
+        </TableCell>
+
+        <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.showInGrocerylist}
+            disabled
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <Tooltip title="Edit">
+            <IconButton
+              id={row.name}
+              onClick={() => handleEditClick(row)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              id={row.name}
+              onClick={() => handleDeleteClick(row)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  const buildIngredientIdToIngredientRowIndex = () => {
+    ingredientIdToIngredientRowIndex = {};
+    for (let index = 0; index < props.rows.length; index++) {
+      ingredientIdToIngredientRowIndex[props.rows[index].ingredient.id] = index;
+    }
+  };
+
   const renderSortedTableContents = () => {
-    return (<div>pizza</div>);
+    buildIngredientIdToIngredientRowIndex();
+    const sortedIngredients: IngredientRow[] = props.rows;
+    const pagedSortedIngredients = sortedIngredients.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    return (
+      <React.Fragment>
+        {pagedSortedIngredients
+          .map((row: IngredientRow, index: number) => {
+            let renderedRow;
+            if (!isNil(props.currentEditIngredient) && props.currentEditIngredient.dish.id === row.dish.id) {
+              renderedRow = renderEditingRow(row);
+            } else {
+              renderedRow = renderInactiveRow(row);
+            }
+            return renderedRow;
+          })}
+      </React.Fragment>
+    );
   };
 
   return (
@@ -258,16 +445,11 @@ const Ingredients = (props: IngredientsProps) => {
 function mapStateToProps(state: any) {
   return {
     ingredients: getIngredients(state),
+    rows: getIngredientRows(state),
+    currentEditIngredient: getCurrentEditIngredient(state),
     uiState: getUiState(state),
     sortOrder: getIngredientSortOrder(state),
     sortBy: getIngredientSortBy(state),
-    rows: getIngredientRows(state),
-    // dishes: getDishes(state),
-    // rows: getDishRows(state),
-    // currentEditDish: getCurrentEditDish(state),
-    // uiState: getUiState(state),
-    // sortOrder: getSortOrder(state),
-    // sortBy: getSortBy(state),
   };
 }
 
@@ -275,16 +457,6 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onAddIngredient: addIngredient,
     onUpdateIngredient: updateIngredient,
-    // onAddDish: addDish,
-    // onUpdateDish: updateDish,
-    // onDeleteDish: deleteDish,
-    // onSortDishes: sortDishes,
-    // onSetRows: setRows,
-    // onSetCurrentEditDish: setCurrentEditDish,
-    // onSetSortOrder: setSortOrder,
-    // onSetSortBy: setSortBy,
-    // onSortDishesAndSetRows: sortDishesAndSetRows,
-
     onDeleteIngredient: deleteIngredient,
     onSortIngredients: sortIngredients,
     onSetRows: setIngredientRows,
