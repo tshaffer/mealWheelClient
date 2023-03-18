@@ -41,14 +41,14 @@ interface HeadCell {
   numeric: boolean;
 }
 
-interface MWHeadTableProps {
+interface MWTableHeadProps {
   headCells: HeadCell[];
   order: Order;
   orderBy: string;
   onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void;
 }
 
-const MWTableHead = (props: MWHeadTableProps) => {
+const MWTableHead = (props: MWTableHeadProps) => {
 
   const { headCells, order, orderBy, onRequestSort } =
     props;
@@ -95,6 +95,7 @@ const MWTableHead = (props: MWHeadTableProps) => {
 };
 
 export interface MWTablePropsFromParent {
+  headCells: HeadCell[],
   currentEditItemRow: any | null,
   items: any[];
   rows: any[];

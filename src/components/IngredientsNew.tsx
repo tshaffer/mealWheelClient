@@ -10,6 +10,29 @@ import { MealWheelDispatch, sortIngredients, setIngredientRows, setCurrentEditIn
 import { getIngredients, getIngredientRows, getCurrentEditIngredient, getUiState, getIngredientSortOrder, getIngredientSortBy } from '../selectors';
 import { IngredientRow, IngredientEntity, Order, UiState } from '../types';
 
+interface HeadCell {
+  disablePadding: boolean;
+  id: keyof IngredientRow;
+  label: string;
+  numeric: boolean;
+}
+
+const headCells: HeadCell[] = [
+  {
+    id: 'name',
+    numeric: false,
+    disablePadding: true,
+    label: 'Main',
+  },
+  {
+    id: 'showInGroceryList',
+    numeric: false,
+    disablePadding: true,
+    label: 'Show In Grocery List',
+  },
+];
+
+
 export interface IngredientsNewProps {
   currentEditIngredient: IngredientRow | null,
   ingredients: IngredientEntity[];
@@ -88,9 +111,10 @@ const IngredientsNew = (props: IngredientsNewProps) => {
 
   return (
     <MWTable
+      headCells={headCells}
       currentEditItemRow={null}
-      items={[]}
-      rows={[]}
+      items={props.ingredients}
+      rows={props.rows}
       myUIState={UiState.Ingredients}
       sortOrder={'asc'}
       sortBy={'name'}
