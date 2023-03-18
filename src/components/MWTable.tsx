@@ -112,10 +112,10 @@ export interface MWTablePropsFromParent {
 
   myUIState: UiState;
   onGetItems: () => void;
-  getDefaultItem: () => any;
-  getDefaultItemRow: (item: any) => any;
+  onGetDefaultItem: () => any;
+  onGetDefaultItemRow: (item: any) => any;
   onSetCurrentEditItemRow: (itemRow: any) => any;
-  getRows: () => any;
+  onGetRows: () => any;
 }
 
 export interface MWTableProps extends MWTablePropsFromParent {
@@ -133,7 +133,7 @@ const MWTable = (props: MWTableProps) => {
 
   React.useEffect(() => {
     if (props.uiState === props.myUIState) {
-      const newRows: any[] = props.getRows();
+      const newRows: any[] = props.onGetRows();
       props.onSetRows(newRows);
     }
   }, [props.uiState]);
@@ -175,8 +175,8 @@ const MWTable = (props: MWTableProps) => {
   };
 
   const handleAddRow = () => {
-    const item: any = props.getDefaultItem();
-    const itemRow: any = props.getDefaultItemRow(item);
+    const item: any = props.onGetDefaultItem();
+    const itemRow: any = props.onGetDefaultItemRow(item);
 
     const newRows = cloneDeep(props.rows);
     newRows.unshift(itemRow);
