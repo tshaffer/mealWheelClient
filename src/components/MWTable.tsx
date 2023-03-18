@@ -377,7 +377,7 @@ const MWTable = (props: MWTableProps) => {
               size={'small'}
             >
               <MWTableHead
-                headCells={[]}
+                headCells={props.headCells}
                 order={props.sortOrder}
                 orderBy={props.sortBy}
                 onRequestSort={handleRequestSort}
