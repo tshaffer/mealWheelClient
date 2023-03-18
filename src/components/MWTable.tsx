@@ -41,38 +41,14 @@ interface HeadCell {
   numeric: boolean;
 }
 
-interface MWTableHeadProps {
+interface MWHeadTableProps {
   headCells: HeadCell[];
   order: Order;
   orderBy: string;
   onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void;
 }
 
-export interface MWTablePropsFromParent {
-  myUIState: UiState;
-  onGetItems: () => void;
-  onSetSortOrder: (sortOrder: Order) => any;
-  onSetSortBy: (sortBy: string) => any;
-  onSortItemsAndSetRows: (sortOrder: Order, sortBy: string) => any;
-  getDefaultItem: () => any;
-  getDefaultItemRow: (item: any) => any;
-  onSetCurrentEditItemRow: (itemRow: any) => any;
-}
-
-export interface MWTableProps extends MWTablePropsFromParent {
-  items: any[];
-  rows: any[];
-  sortOrder: Order;
-  sortBy: string;
-  uiState: UiState;
-
-  onSetRows: (rows: any[]) => any;
-  getRows: () => any;
-  currentEditItemRow: any | null,
-
-}
-
-const MWTableHead = (props: MWTableHeadProps) => {
+const MWTableHead = (props: MWHeadTableProps) => {
 
   const { headCells, order, orderBy, onRequestSort } =
     props;
@@ -116,8 +92,35 @@ const MWTableHead = (props: MWTableHeadProps) => {
       </TableRow>
     </TableHead>
   );
-
 };
+
+export interface MWTablePropsFromParent {
+  currentEditItemRow: any | null,
+  items: any[];
+  rows: any[];
+  onAddItem: (item: any) => any;
+  onUpdateItem: (id: string, item: any) => any;
+  sortOrder: Order;
+  sortBy: string;
+  onDeleteItem: (id: string) => any;
+  onSortItemsAndSetRows: (sortOrder: Order, sortBy: string) => any;
+  onSortItems: (sortOrder: Order, sortBy: string) => any;
+  onSetRows: (rows: any[]) => any;
+  onSetCurrentEditItem: (currentEditItem: any | null) => any;
+  onSetSortOrder: (sortOrder: Order) => any;
+  onSetSortBy: (sortBy: string) => any;
+
+  myUIState: UiState;
+  onGetItems: () => void;
+  getDefaultItem: () => any;
+  getDefaultItemRow: (item: any) => any;
+  onSetCurrentEditItemRow: (itemRow: any) => any;
+  getRows: () => any;
+}
+
+export interface MWTableProps extends MWTablePropsFromParent {
+  uiState: UiState;
+}
 
 const MWTable = (props: MWTableProps) => {
 

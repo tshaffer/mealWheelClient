@@ -41,31 +41,13 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
-interface TableProps {
+interface IngredientsHeadTableProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof IngredientRow) => void;
   order: Order;
   orderBy: string;
 }
 
-export interface IngredientsProps {
-  currentEditIngredient: IngredientRow | null,
-  ingredients: IngredientEntity[];
-  rows: IngredientRow[];
-  onAddIngredient: (ingredient: IngredientEntity) => any;
-  onUpdateIngredient: (id: string, ingredient: IngredientEntity) => any;
-  sortOrder: Order;
-  sortBy: string;
-  uiState: UiState;
-  onDeleteIngredient: (id: string) => any;
-  onSortIngredientsAndSetRows: (sortOrder: Order, sortBy: string) => any;
-  onSortIngredients: (sortOrder: Order, sortBy: string) => any;
-  onSetRows: (rows: IngredientRow[]) => any;
-  onSetCurrentEditIngredient: (currentEditIngredient: IngredientRow | null) => any;
-  onSetSortOrder: (sortOrder: Order) => any;
-  onSetSortBy: (sortBy: string) => any;
-}
-
-const IngredientsTableHead = (props: TableProps) => {
+const IngredientsTableHead = (props: IngredientsHeadTableProps) => {
 
   const { order, orderBy, onRequestSort } =
     props;
@@ -110,6 +92,25 @@ const IngredientsTableHead = (props: TableProps) => {
     </TableHead>
   );
 };
+
+export interface IngredientsProps {
+  currentEditIngredient: IngredientRow | null,
+  ingredients: IngredientEntity[];
+  rows: IngredientRow[];
+  onAddIngredient: (ingredient: IngredientEntity) => any;
+  onUpdateIngredient: (id: string, ingredient: IngredientEntity) => any;
+  sortOrder: Order;
+  sortBy: string;
+  uiState: UiState;
+  onDeleteIngredient: (id: string) => any;
+  onSortIngredientsAndSetRows: (sortOrder: Order, sortBy: string) => any;
+  onSortIngredients: (sortOrder: Order, sortBy: string) => any;
+  onSetRows: (rows: IngredientRow[]) => any;
+  onSetCurrentEditIngredient: (currentEditIngredient: IngredientRow | null) => any;
+  onSetSortOrder: (sortOrder: Order) => any;
+  onSetSortBy: (sortBy: string) => any;
+}
+
 
 const Ingredients = (props: IngredientsProps) => {
 
