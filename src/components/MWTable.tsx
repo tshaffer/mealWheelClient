@@ -30,7 +30,9 @@ import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
 import { MealWheelDispatch } from '../models';
-import { Order } from '../types';
+import { Order, UiState } from '../types';
+import { getUiState } from '../selectors';
+import { isNil } from 'lodash';
 
 interface HeadCell {
   disablePadding: boolean;
@@ -47,12 +49,19 @@ interface MWTableHeadProps {
 }
 
 export interface MWTablePropsFromParent {
+  myUIState: UiState;
   onGetItems: () => void;
   onSetSortOrder: (sortOrder: Order) => any;
   onSetSortBy: (sortBy: string) => any;
 }
+
 export interface MWTableProps extends MWTablePropsFromParent {
   items: any[];
+  uiState: UiState;
+
+  onSetRows: (rows: any[]) => any;
+  getRows: () => any;
+
 }
 
 const MWTableHead = (props: MWTableHeadProps) => {
@@ -103,6 +112,34 @@ const MWTableHead = (props: MWTableHeadProps) => {
 };
 
 const MWTable = (props: MWTableProps) => {
+
+  const [itemNameInRow, setItemNameInRow] = React.useState<any>(null);
+
+  const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
+
+  React.useEffect(() => {
+    if (props.uiState === props.myUIState) {
+      const newRows: any[] = props.getRows();
+      props.onSetRows(newRows);
+    }
+  }, [props.uiState]);
+
+  React.useEffect(() => {
+    if (!isNil(itemNameInRow)) {
+      const byTagNameResults = itemNameInRow.getElementsByTagName('input');
+      const nameField = byTagNameResults[0];
+      nameField.focus();
+    }
+  }, [itemNameInRow]);
+
+  interface IdToNumberMap {
+    [id: string]: number;
+  }
+
+  const itemIdToItemRowIndex: IdToNumberMap = {};
+
+  const handleCloseSnackbar = () => setSnackbar(null);
+
   return (
     <div>pizza</div>
   );
@@ -110,6 +147,7 @@ const MWTable = (props: MWTableProps) => {
 
 function mapStateToProps(state: any) {
   return {
+    uiState: getUiState(state),
   };
 }
 
