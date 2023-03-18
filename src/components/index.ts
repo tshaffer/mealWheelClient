@@ -11,6 +11,7 @@ export * from './GroceryListDialog';
 export * from './Home';
 export * from './Ingredients';
 export * from './Login';
+export * from './MWTable';
 export * from './MealInCalendar';
 export * from './MealPropertySheet';
 export * from './MealSchedule';

@@ -32,7 +32,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { MealWheelDispatch } from '../models';
 import { Order, UiState } from '../types';
 import { getUiState } from '../selectors';
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 
 interface HeadCell {
   disablePadding: boolean;
@@ -53,14 +53,22 @@ export interface MWTablePropsFromParent {
   onGetItems: () => void;
   onSetSortOrder: (sortOrder: Order) => any;
   onSetSortBy: (sortBy: string) => any;
+  onSortItemsAndSetRows: (sortOrder: Order, sortBy: string) => any;
+  getDefaultItem: () => any;
+  getDefaultItemRow: (item: any) => any;
+  onSetCurrentEditItemRow: (itemRow: any) => any;
 }
 
 export interface MWTableProps extends MWTablePropsFromParent {
   items: any[];
+  rows: any[];
+  sortOrder: Order;
+  sortBy: string;
   uiState: UiState;
 
   onSetRows: (rows: any[]) => any;
   getRows: () => any;
+  currentEditItemRow: any | null,
 
 }
 
@@ -115,6 +123,9 @@ const MWTable = (props: MWTableProps) => {
 
   const [itemNameInRow, setItemNameInRow] = React.useState<any>(null);
 
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
   const [snackbar, setSnackbar] = React.useState<Pick<AlertProps, 'children' | 'severity'> | null>(null);
 
   React.useEffect(() => {
@@ -136,12 +147,274 @@ const MWTable = (props: MWTableProps) => {
     [id: string]: number;
   }
 
-  const itemIdToItemRowIndex: IdToNumberMap = {};
+  let itemIdToItemRowIndex: IdToNumberMap = {};
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
+  const handleRequestSort = (
+    event: React.MouseEvent<unknown>,
+    property: any,
+  ) => {
+    const isAsc = props.sortBy === property && props.sortOrder === 'asc';
+    const sortOrder: Order = isAsc ? 'desc' : 'asc';
+    props.onSetSortOrder(sortOrder);
+    props.onSetSortBy(property);
+    props.onSortItemsAndSetRows(sortOrder, property);
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleAddRow = () => {
+    const item: any = props.getDefaultItem();
+    const itemRow: any = props.getDefaultItemRow(item);
+
+    const newRows = cloneDeep(props.rows);
+    newRows.unshift(itemRow);
+    props.onSetRows(newRows);
+
+    props.onSetCurrentEditItemRow(itemRow);
+  };
+
+  const handleEditClick = (itemRow: any) => {
+    props.onSetCurrentEditItemRow(itemRow);
+  };
+
+  const handleDeleteClick = (itemRow: any) => {
+    debugger;
+    // props.onSetRows(props.rows.filter((row) => row.dish.id !== dishEntityData.dish.id));
+    // props.onDeleteDish(dishEntityData.dish.id);
+    // props.onSetCurrentEditDish(null);
+  };
+
+  const handleSaveClick = () => {
+    debugger;
+  };
+
+  const handleCancelClick = () => {
+    debugger;
+  };
+
+  const handleUpdateItemName = (selectedItemRow: any, itemName: string) => {
+    selectedItemRow.name = itemName;
+  };
+
+  const updateSelectedRowProperty = (selectedItemRow: any, propertyName: string, propertyValue: any): any => {
+    debugger; // selectedItemRow.id
+    const clonedRows = cloneDeep(props.rows);
+    const selectedItemRowIndex = itemIdToItemRowIndex[selectedItemRow.id];
+    const selectedRow: any = clonedRows[selectedItemRowIndex];
+    (selectedRow as any)[propertyName] = propertyValue;
+    props.onSetRows(clonedRows);
+    return selectedRow;
+  };
+
+  // Avoid a layout jump when reaching the last page with empty props.rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
+
+  const renderEditingRow = (row: any) => {
+    const isItemSelected = true;
+    return (
+      <TableRow
+        hover
+        role='checkbox'
+        tabIndex={-1}
+        // key={row.name}
+        selected={isItemSelected}
+      >
+        <TableCell
+          component='th'
+          scope='row'
+          padding='none'
+          align='center'
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Name'
+            defaultValue={row.name}
+            variant='standard'
+            onBlur={(event) => handleUpdateItemName(row, event.target.value)}
+            ref={(input) => { setItemNameInRow(input); }}
+          />
+        </TableCell>
+        {/* <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.showInGroceryList}
+            onChange={(event) => handleToggleShowInGroceryList(row, event.target.checked)}
+          />
+        </TableCell> */}
+        <TableCell align='center'>
+          <Tooltip title="Save">
+            <IconButton
+              id={row.name}
+              onClick={() => handleSaveClick()}
+            >
+              <SaveIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Cancel">
+            <IconButton
+              id={row.name}
+              onClick={() => handleCancelClick()}
+            >
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  const renderInactiveRow = (row: any) => {
+    const isItemSelected = false;
+    return (
+      <TableRow
+        hover
+        role='checkbox'
+        tabIndex={-1}
+        key={row.name}
+        selected={isItemSelected}
+      >
+        <TableCell
+          component='th'
+          // id={labelId}
+          scope='row'
+          padding='none'
+          align='center'
+        >
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Name'
+            defaultValue={row.name}
+            disabled
+            variant='standard'
+          />
+        </TableCell>
+
+        {/* <TableCell align='center'>
+          <Checkbox
+            color="primary"
+            checked={row.showInGroceryList}
+            disabled
+          />
+        </TableCell> */}
+        <TableCell align='center'>
+          <Tooltip title="Edit">
+            <IconButton
+              id={row.name}
+              onClick={() => handleEditClick(row)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              id={row.name}
+              onClick={() => handleDeleteClick(row)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  const buildItemIdToItemRowIndex = () => {
+    itemIdToItemRowIndex = {};
+    for (let index = 0; index < props.rows.length; index++) {
+      itemIdToItemRowIndex[props.rows[index].item.id] = index;
+    }
+  };
+
+  const renderSortedTableContents = () => {
+    buildItemIdToItemRowIndex();
+    const sortedIngredients: any[] = props.rows;
+    const pagedSortedIngredients = sortedIngredients.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    return (
+      <React.Fragment>
+        {pagedSortedIngredients
+          .map((row: any, index: number) => {
+            let renderedRow;
+            debugger; // id property
+            if (!isNil(props.currentEditItemRow) && props.currentEditItemRow.id === row.id) {
+              renderedRow = renderEditingRow(row);
+            } else {
+              renderedRow = renderInactiveRow(row);
+            }
+            return renderedRow;
+          })}
+      </React.Fragment>
+    );
+  };
+
   return (
-    <div>pizza</div>
+    <div>
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <div>
+            <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
+              Add
+            </Button>
+          </div>
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              size={'small'}
+            >
+              <MWTableHead
+                headCells={[]}
+                order={props.sortOrder}
+                orderBy={props.sortBy}
+                onRequestSort={handleRequestSort}
+              />
+              <TableBody>
+                {renderSortedTableContents()}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (33) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={props.rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          {!!snackbar && (
+            <Snackbar
+              open
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              onClose={handleCloseSnackbar}
+              autoHideDuration={6000}
+            >
+              <Alert {...snackbar} onClose={handleCloseSnackbar} />
+            </Snackbar>
+          )}
+
+        </Paper>
+      </Box>
+    </div>
   );
 };
 
