@@ -61,6 +61,58 @@ const IngredientsNew = (props: IngredientsNewProps) => {
     console.log('handleUpdateItem: ', item);
   };
 
+  const handleSave = () => {
+    console.log('handleSave');
+    if (!isNil(props.currentEditIngredient)) {
+
+      // implement separate function to check for other errors
+      //   // check for duplicate ingredient names.
+      //   const updatedIngredientName = props.currentEditIngredient.name;
+      //   for (let ingredientIndex = 0; ingredientIndex < props.ingredients.length; ingredientIndex++) {
+      //     const existingIngredient: IngredientEntity = props.ingredients[ingredientIndex];
+      //     if (props.currentEditIngredient.ingredient.id !== existingIngredient.id && existingIngredient.name === updatedIngredientName) {
+      //       setSnackbar({ children: 'Error while saving ingredient: duplicate ingredient name', severity: 'error' });
+      //       return;
+      //     }
+      //   }
+
+      if (props.currentEditIngredient.ingredient.id === '') {
+        const newIngredient: IngredientEntity = {
+          id: '',
+          userId: '',
+          name: props.currentEditIngredient.name,
+          showInGroceryList: props.currentEditIngredient.showInGroceryList,
+          ingredients: [],
+        };
+        props.onAddIngredient(newIngredient)
+          .then((newIngredientId: string) => {
+            const selectedIngredientRowIndex = ingredientIdToIngredientRowIndex[''];
+            if (selectedIngredientRowIndex !== -1) {
+              const clonedRows = cloneDeep(props.rows);
+              const selectedRow: IngredientRow = clonedRows[selectedIngredientRowIndex];
+              selectedRow.ingredient.id = newIngredientId;
+
+              // auto add new row
+              const ingredient: IngredientEntity = handleGetDefaultItem();
+              const ingredientRow: IngredientRow = handleGetDefaultItemRow(ingredient);
+
+              clonedRows.unshift(ingredientRow);
+              // following call updates id in row that was just saved and adds a new row
+              props.onSetRows(clonedRows);
+
+              props.onSetCurrentEditIngredient(ingredientRow);
+            }
+          });
+      } else {
+        const updatedIngredient: IngredientEntity = cloneDeep(props.currentEditIngredient.ingredient);
+        updatedIngredient.name = props.currentEditIngredient.name;
+        updatedIngredient.showInGroceryList = props.currentEditIngredient.showInGroceryList;
+        props.onUpdateIngredient(props.currentEditIngredient.ingredient.id, updatedIngredient);
+      }
+      props.onSetCurrentEditIngredient(null);
+    }
+  };
+
   const handleDeleteItem = (id: string) => {
     console.log('handleDeleteItem: ', id);
   };
@@ -176,6 +228,7 @@ const IngredientsNew = (props: IngredientsNewProps) => {
       onGetDefaultItemRow={handleGetDefaultItemRow}
       onSetCurrentEditItemRow={handleSetCurrentEditItemRow}
       onGetRows={handleGetRows}
+      onSave={handleSave}
     />
   );
 };

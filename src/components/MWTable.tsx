@@ -111,6 +111,7 @@ export interface MWTablePropsFromParent {
   onSetCurrentEditItem: (currentEditItem: any | null) => any;
   onSetSortOrder: (sortOrder: Order) => any;
   onSetSortBy: (sortBy: string) => any;
+  onSave: () => any;
 
   myUIState: UiState;
   onGetItems: () => void;
@@ -199,7 +200,19 @@ const MWTable = (props: MWTableProps) => {
   };
 
   const handleSaveClick = () => {
-    debugger;
+    if (!isNil(props.currentEditItemRow)) {
+
+      // check for empty name
+      if (props.currentEditItemRow.name === '') {
+        setSnackbar({ children: 'Error while saving ingredient: name can\'t be empty.', severity: 'error' });
+        return;
+      }
+
+      // check for item specific errors
+      // for ingredients, check for duplicate ingredient names.
+      
+      props.onSave();
+    }
   };
 
   const handleCancelClick = () => {
@@ -211,7 +224,6 @@ const MWTable = (props: MWTableProps) => {
   };
 
   const updateSelectedRowProperty = (selectedItemRow: any, propertyName: string, propertyValue: any): any => {
-    debugger; // selectedItemRow.id
     const clonedRows = cloneDeep(props.rows);
     const selectedItemRowIndex = itemIdToItemRowIndex[selectedItemRow.id];
     const selectedRow: any = clonedRows[selectedItemRowIndex];
