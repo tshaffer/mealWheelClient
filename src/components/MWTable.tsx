@@ -32,7 +32,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { MealWheelDispatch } from '../models';
 import { IngredientRow, Order, UiState } from '../types';
 import { getUiState } from '../selectors';
-import { cloneDeep, isNil } from 'lodash';
+import { cloneDeep, isNil, isString } from 'lodash';
 
 interface HeadCell {
   disablePadding: boolean;
@@ -104,7 +104,6 @@ export interface MWTablePropsFromParent {
   items: any[];
   rows: any[];
   rowIds: string[],
-  onAddItem: (item: any) => any;
   onUpdateItem: (id: string, item: any) => any;
   sortOrder: Order;
   sortBy: string;
@@ -217,7 +216,23 @@ const MWTable = (props: MWTableProps) => {
   };
 
   const handleCancelClick = () => {
-    debugger;
+    if (!isNil(props.currentEditItemRow) && isString(props.currentEditItemRow.id) && (props.currentEditItemRow.id === '')) {
+      // new item - discard row
+
+      const selectedIndex = itemIdToItemRowIndex[''];
+      if (selectedIndex !== -1) {
+        const newRows = cloneDeep(props.rows);
+        newRows.splice(selectedIndex, 1);
+        console.log('handleCancelClick');
+        console.log(newRows);
+        props.onSetRows(newRows);
+        console.log(props.rows);
+      }
+
+    }
+
+    props.onSetCurrentEditItem(null);
+
   };
 
   const handleUpdateItemName = (selectedItemRow: any, itemName: string) => {
@@ -349,6 +364,8 @@ const MWTable = (props: MWTableProps) => {
   };
 
   const buildItemIdToItemRowIndex = () => {
+    console.log('buildItemIdToItemRowIndex');
+    console.log(props.rows);
     itemIdToItemRowIndex = {};
     for (let index = 0; index < props.rows.length; index++) {
       const itemId: string = props.rowIds[index];
@@ -357,8 +374,13 @@ const MWTable = (props: MWTableProps) => {
   };
 
   const renderSortedTableContents = () => {
+    // console.log('itemIdToItemRowIndex');
+    // console.log(itemIdToItemRowIndex);
     buildItemIdToItemRowIndex();
+    console.log(itemIdToItemRowIndex);
     const sortedIngredients: any[] = props.rows;
+    console.log('renderSortedTableContents');
+    console.log(props.rows);
     const pagedSortedIngredients = sortedIngredients.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
       <React.Fragment>

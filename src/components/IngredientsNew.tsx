@@ -53,10 +53,6 @@ export interface IngredientsNewProps {
 
 const IngredientsNew = (props: IngredientsNewProps) => {
 
-  const handleAddItem = (item: any) => {
-    console.log('handleAddItem: ', item);
-  };
-
   const handleUpdateItem = (id: string, item: any) => {
     console.log('handleUpdateItem: ', item);
   };
@@ -66,6 +62,7 @@ const IngredientsNew = (props: IngredientsNewProps) => {
   }
 
   const handleSave = (ingredientIdToIngredientRowIndex: IdToNumberMap) => {
+    debugger;
     console.log('handleSave');
     if (!isNil(props.currentEditIngredient)) {
 
@@ -218,7 +215,6 @@ const IngredientsNew = (props: IngredientsNewProps) => {
       myUIState={UiState.Ingredients}
       sortOrder={'asc'}
       sortBy={'name'}
-      onAddItem={handleAddItem}
       onUpdateItem={handleUpdateItem}
       onDeleteItem={handleDeleteItem}
       onSortItemsAndSetRows={handleSortItemsAndRows}

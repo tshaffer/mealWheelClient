@@ -64,7 +64,7 @@ export const loadIngredientsByDish = (): MealWheelVoidPromiseThunkAction => {
 
 export const addIngredient = (
   ingredient: IngredientEntity
-): MealWheelStringOrNullPromiseThunkAction => {
+): MealWheelStringPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
 
     // TODO - is this the right place to strip 'newIngredient'?
@@ -88,7 +88,7 @@ export const addIngredient = (
       addIngredientBody
     ).then((response) => {
       dispatch(addIngredientRedux(ingredient));
-      return null;
+      return ingredient.id;
     }).catch((error) => {
       console.log('error');
       console.log(error);
