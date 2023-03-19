@@ -222,6 +222,7 @@ const getIngredientRows = (dishes: IngredientEntity[]): IngredientRow[] => {
     const row: IngredientRow = {
       ingredient,
       name: ingredient.name,
+      id: ingredient.id,
       showInGroceryList: ingredient.showInGroceryList,
     };
     return row;

@@ -149,6 +149,7 @@ const Ingredients = (props: IngredientsProps) => {
       const row: IngredientRow = {
         ingredient,
         name: ingredient.name,
+        id: ingredient.id,
         showInGroceryList: ingredient.showInGroceryList,
       };
       return row;
@@ -195,6 +196,7 @@ const Ingredients = (props: IngredientsProps) => {
     const ingredientRow: IngredientRow = {
       ingredient,
       name: '',
+      id: ingredient.id,
       showInGroceryList: true,
     };
 

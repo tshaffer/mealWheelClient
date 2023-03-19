@@ -100,16 +100,33 @@ const IngredientsNew = (props: IngredientsNewProps) => {
     return props.ingredients;
   };
 
-  const handleGetDefaultItem = () => {
+  const handleGetDefaultItem = (): IngredientEntity => {
     console.log('handleUpdateItem: ');
+    const ingredient: IngredientEntity = {
+      id: '',
+      userId: '',
+      name: '',
+      showInGroceryList: true,
+      ingredients: [],
+    };
+    return ingredient;
   };
 
-  const handleGetDefaultItemRow = (item: any) => {
-    console.log('handleGetDefaultItemRow: ', item);
+  const handleGetDefaultItemRow = (ingredient: IngredientEntity) => {
+    console.log('handleGetDefaultItemRow: ', ingredient);
+    const ingredientRow: IngredientRow = {
+      ingredient,
+      name: '',
+      id: '',
+      showInGroceryList: true,
+    };
+
+    return ingredientRow;
   };
 
-  const handleSetCurrentEditItemRow = (item: any) => {
+  const handleSetCurrentEditItemRow = (item: IngredientRow) => {
     console.log('handleSetCurrentEditItemRow: ', item);
+    props.onSetCurrentEditIngredient(item);
   };
 
   const getRows = (): IngredientRow[] => {
@@ -117,6 +134,7 @@ const IngredientsNew = (props: IngredientsNewProps) => {
       const row: IngredientRow = {
         ingredient,
         name: ingredient.name,
+        id: ingredient.id,
         showInGroceryList: ingredient.showInGroceryList,
       };
       return row;
@@ -137,7 +155,7 @@ const IngredientsNew = (props: IngredientsNewProps) => {
   return (
     <MWTable
       headCells={headCells}
-      currentEditItemRow={null}
+      currentEditItemRow={props.currentEditIngredient}
       items={props.ingredients}
       rows={props.rows}
       rowIds={rowIds}

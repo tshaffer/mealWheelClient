@@ -352,7 +352,6 @@ const MWTable = (props: MWTableProps) => {
         {pagedSortedIngredients
           .map((row: any, index: number) => {
             let renderedRow;
-            debugger; // id property
             if (!isNil(props.currentEditItemRow) && props.currentEditItemRow.id === row.id) {
               renderedRow = renderEditingRow(row);
             } else {

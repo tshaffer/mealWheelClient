@@ -158,6 +158,7 @@ export interface DishRow {
 export interface IngredientRow {
   ingredient: IngredientEntity;
   name: string,
+  id: string,
   showInGroceryList: boolean,
 }
 
