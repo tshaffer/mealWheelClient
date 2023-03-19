@@ -61,7 +61,11 @@ const IngredientsNew = (props: IngredientsNewProps) => {
     console.log('handleUpdateItem: ', item);
   };
 
-  const handleSave = () => {
+  interface IdToNumberMap {
+    [id: string]: number;
+  }
+
+  const handleSave = (ingredientIdToIngredientRowIndex: IdToNumberMap) => {
     console.log('handleSave');
     if (!isNil(props.currentEditIngredient)) {
 

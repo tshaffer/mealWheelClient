@@ -94,6 +94,10 @@ const MWTableHead = (props: MWTableHeadProps) => {
   );
 };
 
+interface IdToNumberMap {
+  [id: string]: number;
+}
+
 export interface MWTablePropsFromParent {
   headCells: HeadCell[],
   currentEditItemRow: any | null,
@@ -111,7 +115,7 @@ export interface MWTablePropsFromParent {
   onSetCurrentEditItem: (currentEditItem: any | null) => any;
   onSetSortOrder: (sortOrder: Order) => any;
   onSetSortBy: (sortBy: string) => any;
-  onSave: () => any;
+  onSave: (itemIdToItemRowIndex: IdToNumberMap) => any;
 
   myUIState: UiState;
   onGetItems: () => void;
@@ -148,10 +152,6 @@ const MWTable = (props: MWTableProps) => {
       nameField.focus();
     }
   }, [itemNameInRow]);
-
-  interface IdToNumberMap {
-    [id: string]: number;
-  }
 
   let itemIdToItemRowIndex: IdToNumberMap = {};
 
@@ -210,8 +210,9 @@ const MWTable = (props: MWTableProps) => {
 
       // check for item specific errors
       // for ingredients, check for duplicate ingredient names.
+      // TEDTODO
       
-      props.onSave();
+      props.onSave(itemIdToItemRowIndex);
     }
   };
 
