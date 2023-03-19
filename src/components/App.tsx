@@ -50,6 +50,7 @@ import Box from '@mui/material/Box';
 import { isNil } from 'lodash';
 import MealWheelTonight from './MealWheelTonight';
 import IngredientsNew from './IngredientsNew';
+import DishesNew from './DishesNew';
 
 export interface AppProps {
   appInitialized: boolean;
@@ -315,7 +316,7 @@ const App = (props: AppProps) => {
         <div id='dishesContent' style={dishesTabContentStyle}>
           {/* <Dishes /> */}
           {/* <EnhancedTable/> */}
-          <Dishes />
+          <DishesNew />
         </div>
         <div id='ingredientsContent' style={ingredientsTabContentStyle}>
           <IngredientsNew />

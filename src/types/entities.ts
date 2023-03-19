@@ -145,6 +145,7 @@ export interface IngredientsByDish {
 
 export interface DishRow {
   dish: DishEntity;
+  id: string,
   name: string
   type: DishType;
   minimumInterval: number;
@@ -157,8 +158,8 @@ export interface DishRow {
 
 export interface IngredientRow {
   ingredient: IngredientEntity;
-  name: string,
   id: string,
+  name: string,
   showInGroceryList: boolean,
 }
 

@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 import { cloneDeep, isNil } from 'lodash';
 
 import MWTable from './MWTable';
-import { DishEntity, DishRow, DishType, Order, UiState } from '../types';
-import { MealWheelDispatch } from '../models';
+import { DishEntity, DishRow, DishType, Order, RequiredAccompanimentFlags, UiState } from '../types';
+import { MealWheelDispatch, setCurrentEditDish, setRows, setSortBy, setSortOrder, sortDishes } from '../models';
+import { addDish, updateDish, deleteDish, sortDishesAndSetRows } from '../controllers';
+import { getDishes, getDishRows, getCurrentEditDish, getUiState, getSortBy, getSortOrder } from '../selectors';
 
 interface HeadCell {
   disablePadding: boolean;
@@ -14,7 +16,7 @@ interface HeadCell {
   numeric: boolean;
 }
 
-const headCells: readonly HeadCell[] = [
+const headCells: HeadCell[] = [
   {
     id: 'name',
     numeric: false,
@@ -89,7 +91,7 @@ const DishesNew = (props: DishesNewProps) => {
     [id: string]: number;
   }
 
-  const handleSave = (ingredientIdToDishRowIndex: IdToNumberMap) => {
+  const handleSave = (DishIdToDishRowIndex: IdToNumberMap) => {
     debugger;
     console.log('handleSave');
   };
@@ -151,6 +153,7 @@ const DishesNew = (props: DishesNewProps) => {
     
     const dishRow: DishRow = {
       dish,
+      id: dish.id,
       name: '',
       type: DishType.Main,
       minimumInterval: 5,
@@ -164,35 +167,95 @@ const DishesNew = (props: DishesNewProps) => {
     return dishRow;
   };
 
+  const handleSetCurrentEditItemRow = (item: DishRow) => {
+    console.log('handleSetCurrentEditItemRow: ', item);
+    props.onSetCurrentEditDish(item);
+  };
+
+  const getRows = (): DishRow[] => {
+
+    const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
+      const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+      const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+      const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+      const row: DishRow = {
+        dish,
+        id: dish.id,
+        name: dish.name,
+        type: dish.type,
+        last: dish.last,
+        minimumInterval: dish.minimumInterval,
+        requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
+        requiresSide,
+        requiresSalad,
+        requiresVeggie,
+      };
+      return row;
+    });
+    return rows;
+  };
+
+  const handleGetRows = () => {
+    console.log('handleGetRows: ');
+    const rows: DishRow[] = getRows();
+    return rows;
+  };
+
+  const rowIds: string[] = props.rows.map((row: DishRow) => {
+    return row.dish.id;
+  });
+
 
   return (
-    <div>foo</div>
+    <MWTable
+      headCells={headCells}
+      currentEditItemRow={props.currentEditDish}
+      items={props.dishes}
+      rows={props.rows}
+      rowIds={rowIds}
+      myUIState={UiState.Dishes}
+      sortOrder={'asc'}
+      sortBy={'name'}
+      onUpdateItem={handleUpdateItem}
+      onDeleteItem={handleDeleteItem}
+      onSortItemsAndSetRows={handleSortItemsAndRows}
+      onSortItems={handleSortItems}
+      onSetRows={handleSetRows}
+      onSetCurrentEditItem={handleSetCurrentEditItem}
+      onSetSortOrder={handleSetSortOrder}
+      onSetSortBy={handleSetSortBy}
+      onGetItems={handleGetItems}
+      onGetDefaultItem={handleGetDefaultItem}
+      onGetDefaultItemRow={handleGetDefaultItemRow}
+      onSetCurrentEditItemRow={handleSetCurrentEditItemRow}
+      onGetRows={handleGetRows}
+      onSave={handleSave}
+    />
   );
 };
 
 function mapStateToProps(state: any) {
   return {
-  //   dishes: getDishes(state),
-  //   rows: getDishRows(state),
-  //   currentEditDish: getCurrentEditDish(state),
-  //   uiState: getUiState(state),
-  //   sortOrder: getDishSortOrder(state),
-  //   sortBy: getDishSortBy(state),
+    dishes: getDishes(state),
+    rows: getDishRows(state),
+    currentEditDish: getCurrentEditDish(state),
+    uiState: getUiState(state),
+    sortOrder: getSortOrder(state),
+    sortBy: getSortBy(state),
   };
 }
 
 const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
-    // onAddDish: addDish,
-    // onUpdateDish: updateDish,
-    // onDeleteDish: deleteDish,
-    // onSortDishes: sortDishes,
-    // onSetRows: setDishRows,
-    // onSetCurrentEditDish: setCurrentEditDish,
-    // onSetSortOrder: setDishSortOrder,
-    // onSetSortBy: setDishSortBy,
-    // onSortDishesAndSetRows: sortDishesAndSetRows,
-
+    onAddDish: addDish,
+    onUpdateDish: updateDish,
+    onDeleteDish: deleteDish,
+    onSortDishes: sortDishes,
+    onSetRows: setRows,
+    onSetCurrentEditDish: setCurrentEditDish,
+    onSetSortOrder: setSortOrder,
+    onSetSortBy: setSortBy,
+    onSortDishesAndSetRows: sortDishesAndSetRows,
   }, dispatch);
 };
 

@@ -215,6 +215,7 @@ const Dishes = (props: DishesProps) => {
       const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
       const row: DishRow = {
         dish,
+        id: dish.id,
         name: dish.name,
         type: dish.type,
         last: dish.last,
@@ -269,6 +270,7 @@ const Dishes = (props: DishesProps) => {
     
     const dishRow: DishRow = {
       dish,
+      id: dish.id,
       name: '',
       type: DishType.Main,
       minimumInterval: 5,
