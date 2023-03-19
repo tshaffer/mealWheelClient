@@ -30,7 +30,7 @@ import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
 import { MealWheelDispatch } from '../models';
-import { Order, UiState } from '../types';
+import { IngredientRow, Order, UiState } from '../types';
 import { getUiState } from '../selectors';
 import { cloneDeep, isNil } from 'lodash';
 
@@ -99,6 +99,7 @@ export interface MWTablePropsFromParent {
   currentEditItemRow: any | null,
   items: any[];
   rows: any[];
+  rowIds: string[],
   onAddItem: (item: any) => any;
   onUpdateItem: (id: string, item: any) => any;
   sortOrder: Order;
@@ -337,7 +338,8 @@ const MWTable = (props: MWTableProps) => {
   const buildItemIdToItemRowIndex = () => {
     itemIdToItemRowIndex = {};
     for (let index = 0; index < props.rows.length; index++) {
-      itemIdToItemRowIndex[props.rows[index].item.id] = index;
+      const itemId: string = props.rowIds[index];
+      itemIdToItemRowIndex[itemId] = index;
     }
   };
 

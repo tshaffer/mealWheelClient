@@ -67,30 +67,37 @@ const IngredientsNew = (props: IngredientsNewProps) => {
 
   const handleSortItemsAndRows = (sortOrder: Order, sortBy: string) => {
     console.log('handleSortItemsAndRows: ', sortOrder, sortBy);
+    props.onSortIngredientsAndSetRows(sortOrder, sortBy);
   };
 
   const handleSortItems = (sortOrder: Order, sortBy: string) => {
     console.log('handleSortItems: ', sortOrder, sortBy);
+    props.onSortIngredients(sortOrder, sortBy);
   };
 
-  const handleSetRows = (rows: any[]) => {
+  const handleSetRows = (rows: IngredientRow[]) => {
     console.log('handleSetRows: ', rows);
+    props.onSetRows(rows);
   };
 
-  const handleSetCurrentEditItem = (currentEditItem: any | null) => {
+  const handleSetCurrentEditItem = (currentEditItem: IngredientRow | null) => {
     console.log('handleSetCurrentEditItem: ', currentEditItem);
+    props.onSetCurrentEditIngredient(currentEditItem);
   };
 
   const handleSetSortOrder = (sortOrder: Order) => {
     console.log('handleSetSortOrder: ', sortOrder);
+    props.onSetSortOrder(sortOrder);
   };
 
   const handleSetSortBy = (sortBy: string) => {
     console.log('handleSetSortBy: ', sortBy);
+    props.onSetSortBy(sortBy);
   };
 
-  const handleGetItems = () => {
+  const handleGetItems = (): IngredientEntity[] => {
     console.log('handleGetItems: ');
+    return props.ingredients;
   };
 
   const handleGetDefaultItem = () => {
@@ -105,9 +112,27 @@ const IngredientsNew = (props: IngredientsNewProps) => {
     console.log('handleSetCurrentEditItemRow: ', item);
   };
 
+  const getRows = (): IngredientRow[] => {
+    const rows: IngredientRow[] = props.ingredients.map((ingredient: IngredientEntity) => {
+      const row: IngredientRow = {
+        ingredient,
+        name: ingredient.name,
+        showInGroceryList: ingredient.showInGroceryList,
+      };
+      return row;
+    });
+    return rows;
+  };
+
   const handleGetRows = () => {
     console.log('handleGetRows: ');
+    const rows: IngredientRow[] = getRows();
+    return rows;
   };
+
+  const rowIds: string[] = props.rows.map((row: IngredientRow) => {
+    return row.ingredient.id;
+  });
 
   return (
     <MWTable
@@ -115,6 +140,7 @@ const IngredientsNew = (props: IngredientsNewProps) => {
       currentEditItemRow={null}
       items={props.ingredients}
       rows={props.rows}
+      rowIds={rowIds}
       myUIState={UiState.Ingredients}
       sortOrder={'asc'}
       sortBy={'name'}
