@@ -8,6 +8,7 @@ import { DishEntity, DishRow, DishType, Order, RequiredAccompanimentFlags, UiSta
 import { MealWheelDispatch, setCurrentEditDish, setRows, setSortBy, setSortOrder, sortDishes } from '../models';
 import { addDish, updateDish, deleteDish, sortDishesAndSetRows } from '../controllers';
 import { getDishes, getDishRows, getCurrentEditDish, getUiState, getSortBy, getSortOrder } from '../selectors';
+import { nlNL } from '@mui/material/locale';
 
 interface HeadCell {
   disablePadding: boolean;
@@ -61,6 +62,78 @@ const headCells: HeadCell[] = [
   },
 ];
 
+/*
+  columnElement
+    Dish Type
+      elementType: 'TextDropDown'
+      label: 'Dish Type'
+      helperText: 'Please select your dish type'
+      onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
+      placeHolder: 'Dish Type'
+      value: ?
+      options: array<key, value>: label
+    Minimum Interval
+      elementType: 'TextNumber'
+      label: 'Min interval'
+      defaultValue: ?
+      onBlur={(event) => handleUpdateMinimumInterval(row, event.target.value)}
+      min: 0
+    Requires Accompaniment
+      elementType: checkbox
+      checked={row.requiresAccompaniment}
+      onChange={(event) => handleToggleRequiresAccompaniment(row, event.target.checked)}
+      disabled={row.type !== DishType.Main}
+    Requires Salad
+      elementType: checkbox
+      checked={row.requiresSalad}
+      onChange={(event) => handleToggleRequiresSalad(row, event.target.checked)}
+      disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
+    Requires Side
+      elementType: checkbox
+      checked={row.requiresSide}
+      onChange={(event) => handleToggleRequiresSide(row, event.target.checked)}
+      disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
+    Requires Veggie
+      elementType: checkbox
+      checked={row.requiresVeggie}
+      onChange={(event) => handleToggleRequiresVeggie(row, event.target.checked)}
+      disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
+    
+    Actions
+      Save
+        elementType: IconButton
+        Tooltip: 'Save'
+        Id: row.name
+        onClick={() => handleSaveClick()}
+      Cancel
+        elementType: IconButton
+        Tooltip: 'Cancel'
+        Id: row.name
+        onClick={() => handleCancelClick()}
+*/
+
+
+interface ActionElement {
+  toolTip: string;
+  getId: any;
+  onClick: any;
+}
+
+interface ColumnElement {
+  elementType: string;
+  label?: string;
+  helperText?: string;
+  onChange?: any;
+  placeHolder?: string;
+  getValue?: any;
+  getOptions?: any;
+  getDefaultValue?: any;
+  onBlur?: any;
+  min?: number;
+  getChecked?: any;
+  getDisabled?: any;
+}
+
 export interface DishesNewProps {
   currentEditDish: DishRow | null,
   dishes: DishEntity[];
@@ -78,10 +151,67 @@ export interface DishesNewProps {
   onSetSortOrder: (sortOrder: Order) => any;
   onSetSortBy: (sortBy: string) => any;
 
-  
+
 }
 
 const DishesNew = (props: DishesNewProps) => {
+
+  const handleGetRequiresAccompaniment = (row: any) => {
+    return row.requiresAccompaniment;
+  };
+
+  const handleToggleRequiresAccompaniment = (row: any, isChecked: boolean) => {
+    console.log('handleToggleRequiresAccompaniment: ', isChecked);
+  };
+
+  const handleGetRequiresAccompanimentDisabled = (row: any) => {
+    return row.type !== DishType.Main;
+  };
+
+  const columnElements: ColumnElement[] = [
+    {
+      elementType: 'textTypeSelect',
+      label: 'Dish Type',
+      helperText: 'Please select your dish type',
+      onChange: null,
+      placeHolder: 'Dish Type',
+      getValue: null,
+      getOptions: null,
+    },
+    {
+      elementType: 'textTypeNumber',
+      label: 'Min interval',
+      getDefaultValue: null,
+      onBlur: null,
+      min: 0,
+    },
+    {
+      elementType: 'checkbox',
+      getChecked: handleGetRequiresAccompaniment,
+      onChange: handleToggleRequiresAccompaniment,
+      getDisabled: handleGetRequiresAccompanimentDisabled,
+    },
+    {
+      elementType: 'checkbox',
+      getChecked: null,
+      onChange: null,
+      getDisabled: null,
+    },
+    {
+      elementType: 'checkbox',
+      getChecked: null,
+      onChange: null,
+      getDisabled: null,
+    },
+    {
+      elementType: 'checkbox',
+      getChecked: null,
+      onChange: null,
+      getDisabled: null,
+    },
+  ];
+
+
 
   const handleUpdateItem = (id: string, item: any) => {
     console.log('handleUpdateItem: ', item);
@@ -150,7 +280,7 @@ const DishesNew = (props: DishesNewProps) => {
   };
 
   const handleGetDefaultItemRow = (dish: DishEntity): DishRow => {
-    
+
     const dishRow: DishRow = {
       dish,
       id: dish.id,
