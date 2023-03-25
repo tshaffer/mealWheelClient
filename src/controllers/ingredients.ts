@@ -1,10 +1,10 @@
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
-import { apiUrlFragment, IngredientEntity, IngredientRow, IngredientsByDish, MealWheelState, Order, RequiredAccompanimentFlags, serverUrl } from '../types';
+import { apiUrlFragment, IngredientEntity, IngredientRow, IngredientsByDish, MealWheelState, Order, serverUrl } from '../types';
 
 import { getCurrentUser, getIngredients } from '../selectors';
-import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, MealWheelDispatch, MealWheelStringOrNullPromiseThunkAction, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, replaceIngredientInDishRedux, setIngredientRows, setIngredientsByDishRedux, setRows, sortIngredients, updateIngredientRedux } from '../models';
-import { isNil } from 'lodash';
+import { addIngredientRedux, addIngredientsRedux, addIngredientToDishRedux, deleteIngredientFromDishRedux, MealWheelDispatch, MealWheelStringOrNullPromiseThunkAction, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, replaceIngredientInDishRedux, setIngredientRows, setIngredientsByDishRedux, sortIngredients, updateIngredientRedux } from '../models';
 
 export const loadIngredients = (): MealWheelVoidPromiseThunkAction => {
 
@@ -67,13 +67,9 @@ export const addIngredient = (
 ): MealWheelStringOrNullPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
 
-    // TODO - is this the right place to strip 'newIngredient'?
-    const newIngredientMarker = 'newIngredient';
-    if (ingredient.id.startsWith(newIngredientMarker)) {
-      ingredient.id = ingredient.id.substring(newIngredientMarker.length);
-    }
-
     const path = serverUrl + apiUrlFragment + 'addIngredient';
+
+    ingredient.id = uuidv4();
 
     const addIngredientBody = {
       id: ingredient.id,
@@ -88,7 +84,7 @@ export const addIngredient = (
       addIngredientBody
     ).then((response) => {
       dispatch(addIngredientRedux(ingredient));
-      return null;
+      return ingredient.id;
     }).catch((error) => {
       console.log('error');
       console.log(error);

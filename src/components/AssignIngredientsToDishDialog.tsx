@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { isNil } from 'lodash';
+import { isNil, isString } from 'lodash';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 import { DishEntity, IngredientEntity } from '../types';
-import { addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../controllers';
+import { addIngredient, addIngredientToDish, deleteIngredientFromDish, replaceIngredientInDish } from '../controllers';
 import { getDishById, getIngredients, getIngredientsByDish } from '../selectors';
 import { MealWheelDispatch } from '../models';
 
@@ -38,6 +38,7 @@ export interface AssignIngredientsToDishDialogProps extends AssignIngredientsToD
   dish: DishEntity | null;
   allIngredients: IngredientEntity[];
   ingredientsInDish: IngredientEntity[];
+  onAddIngredient: (ingredient: IngredientEntity) => any;
   onAddIngredientToDish: (dishId: string, ingredient: IngredientEntity) => any;
   onReplaceIngredientInDish: (dishId: string, existingIngredientId: string, newIngredientId: string) => any;
   onDeleteIngredientFromDish: (dishId: string, ingredientId: string) => any;
@@ -88,6 +89,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     id: any,
     value: any,
   ) => {
+    console.log('handleInputChange');
     if (id === placeholderIngredientId) {
       setSelectIngredientValue(value);
     }
@@ -98,6 +100,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   }
 
   const handleClose = () => {
+    console.log('onClose');
     onClose();
   };
 
@@ -108,31 +111,54 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
   };
 
   const handleAutoCompleteChange = (
-    selectedIngredient: IngredientOption,
+    selectedIngredient: IngredientOption | string | null,
     existingIngredient: IngredientEntity | null,
   ) => {
     console.log('handleAutoCompleteChange');
     console.log(selectedIngredient);
     console.log(existingIngredient);
-    
+
     if (isNil(selectedIngredient)) {
       console.log('selectedIngredient is null');
       return;
     }
 
-    let newIngredient: IngredientEntity | null = null;
-    for (const ingredient of allIngredients) {
-      if (ingredient.id === (selectedIngredient.value as IngredientEntity).id) {
-        newIngredient = ingredient;
-        break;
+
+    if (isString(selectedIngredient)) {
+      const addedIngredient: IngredientEntity = {
+        id: '',
+        userId: '',
+        name: selectedIngredient,
+        showInGroceryList: true,
+        ingredients: [],
+      };
+      props.onAddIngredient(addedIngredient)
+        .then((addedIngredientId: string) => {
+          addedIngredient.id = addedIngredientId;
+          setIngredientInDish(existingIngredient, addedIngredient);
+        });
+    } else {
+      let newIngredient: IngredientEntity | null = null;
+      for (const ingredient of allIngredients) {
+        if (ingredient.id === ((selectedIngredient as IngredientOption).value as IngredientEntity).id) {
+          newIngredient = ingredient;
+          break;
+        }
+      }
+      if (!isNil(newIngredient)) {
+        setIngredientInDish(existingIngredient, newIngredient);
       }
     }
-    if (!isNil(newIngredient)) {
-      if (!isNil(existingIngredient)) {
-        props.onReplaceIngredientInDish(props.dishId, existingIngredient.id, newIngredient.id);
-      } else {
-        props.onAddIngredientToDish(props.dishId, newIngredient);
-      }
+  };
+
+  const setIngredientInDish = (
+    existingIngredient: IngredientEntity | null,
+    newIngredient: IngredientEntity,
+  ) => {
+    if (!isNil(existingIngredient)) {
+      props.onReplaceIngredientInDish(props.dishId, existingIngredient.id, newIngredient.id);
+    } else {
+      props.onAddIngredientToDish(props.dishId, newIngredient);
     }
   };
 
@@ -280,6 +306,7 @@ function mapStateToProps(state: any, ownProps: AssignIngredientsToDishDialogProp
 
 const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
+    onAddIngredient: addIngredient,
     onAddIngredientToDish: addIngredientToDish,
     onReplaceIngredientInDish: replaceIngredientInDish,
     onDeleteIngredientFromDish: deleteIngredientFromDish,

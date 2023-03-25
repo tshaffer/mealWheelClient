@@ -2,7 +2,6 @@ export * from './AboutDialog';
 export * from './AccountDialog';
 export * from './App';
 export * from './AssignIngredientsToDishDialog';
-export * from './AssignIngredientsToDishDialogNew';
 export * from './AssignMealsToDatesDialog';
 export * from './DraggableMeal';
 export * from './DroppableDateInSchedule';
