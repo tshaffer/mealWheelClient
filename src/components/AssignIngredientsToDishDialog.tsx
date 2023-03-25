@@ -114,8 +114,9 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     console.log('handleAutoCompleteChange');
     console.log(selectedIngredient);
     console.log(existingIngredient);
-
+    
     if (isNil(selectedIngredient)) {
+      console.log('selectedIngredient is null');
       return;
     }
 
@@ -193,6 +194,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
     return (
       <ListItem key={id}>
         <Autocomplete
+          freeSolo
           options={ingredientOptions}
           value={ingredientOption}
           autoHighlight={true}
@@ -200,7 +202,7 @@ function AssignIngredientsToDishDialog(props: AssignIngredientsToDishDialogProps
           id="combo-box-demo"
           sx={{ width: 300 }}
           renderInput={(params) => <TextField {...params} label="Ingredient" />}
-          onChange={(event: any, newValue: IngredientOption | null) => {
+          onChange={(event: any, newValue: string | IngredientOption | null) => {
             handleAutoCompleteChange(newValue as IngredientOption, ingredient);
           }}
           onInputChange={(event, value, reason) => handleAutoCompleteInputChange(value)}

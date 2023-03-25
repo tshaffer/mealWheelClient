@@ -2,12 +2,14 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import Paper from '@mui/material/Paper';
 
 
 import { DishEntity } from '../types';
@@ -36,6 +38,18 @@ function AssignIngredientsToDishNewDialog(props: AssignIngredientsToDishNewDialo
     props.onClose();
   };
 
+  const handleAddRow = () => {
+
+    // const dish: DishEntity = getDefaultDishEntity();
+    // const dishRow: DishRow = getDefaultDishRow(dish);
+
+    // const newRows = cloneDeep(props.rows);
+    // newRows.unshift(dishRow);
+    // props.onSetRows(newRows);
+
+    // props.onSetCurrentEditDish(dishRow);
+
+  };
   const dishLabel: string = isNil(props.dish) ? 'Unknown dish' : props.dish.name;
 
   return (
@@ -54,6 +68,13 @@ function AssignIngredientsToDishNewDialog(props: AssignIngredientsToDishNewDialo
             },
           }}
         >
+          <Paper sx={{ width: '100%', mb: 2 }}>
+            <div>
+              <Button color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
+                Add dish
+              </Button>
+            </div>
+          </Paper>
         </Box>
       </DialogContent>
       <DialogActions>
