@@ -26,6 +26,10 @@ function GroceryListDialog(props: GroceryListDialogProps) {
 
   const { ingredientsInGroceryList, open, onClose } = props;
 
+  const handleCopyToClipboard = (ingredientsString: string) => {
+    window.navigator['clipboard'].writeText(ingredientsString);
+  };
+
   const handleClose = () => {
     onClose();
   };
@@ -50,7 +54,7 @@ function GroceryListDialog(props: GroceryListDialogProps) {
       <DialogContent>
         <TextField
           sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-          type='number'
+          // type='number'
           multiline
           variant='standard'
           InputProps={{
@@ -58,10 +62,13 @@ function GroceryListDialog(props: GroceryListDialogProps) {
           }}
           value={ingredientsString}
         />
+        <Button
+          onClick={() => handleCopyToClipboard(ingredientsString)}
+        >Copy to Clipboard</Button>
         <br />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
   );
