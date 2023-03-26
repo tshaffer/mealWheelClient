@@ -51,10 +51,10 @@ function GroceryListDialog(props: GroceryListDialogProps) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Grocery List</DialogTitle>
+      {/* https://medium.com/the-clever-dev/how-to-size-and-position-the-material-ui-mui-dialog-component-a5601cedc1c9 */}
       <DialogContent>
         <TextField
-          sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-          // type='number'
+          sx={{ m: 1, maxHeight: '200px', marginTop: '12px' }}
           multiline
           variant='standard'
           InputProps={{
