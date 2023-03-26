@@ -9,7 +9,6 @@ import { useDrag } from 'react-dnd';
 
 const style: CSSProperties = {
   border: '1px dashed gray',
-  backgroundColor: 'white',
   padding: '0.5rem 1rem',
   marginRight: '1.5rem',
   marginBottom: '1.5rem',
@@ -19,6 +18,7 @@ const style: CSSProperties = {
 
 export interface DraggableMealProps {
   meal: MealEntity;
+  isAlreadyAssigned: boolean;
 }
 
 function DraggableMeal(props: DraggableMealProps) {
@@ -33,8 +33,10 @@ function DraggableMeal(props: DraggableMealProps) {
     }),
   );
 
+  const backgroundColor = props.isAlreadyAssigned ? 'limegreen': 'white';
+
   return (
-    <div key={props.meal.id} ref={drag} style={{ ...style, opacity }}>
+    <div key={props.meal.id} ref={drag} style={{ ...style, backgroundColor, opacity }}>
       <MenuItemDescriptor
         meal={props.meal}
       />

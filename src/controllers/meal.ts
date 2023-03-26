@@ -290,8 +290,11 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
       // select accompaniment from the possible accompaniments
       // don't select one that has been used within the minimum time between uses
       let accompanimentSelected = false;
+      let noPossibleAccompaniments = false;
       // TEDTODO - ensure no infinite loop
-      while (!accompanimentSelected) {
+      // Infinite loop occurs if
+      //    mainDish requires an accompaniment (of only one type) and no accompaniments are available
+      while (!accompanimentSelected && !noPossibleAccompaniments) {
         const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
         const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
         switch (accompanimentType) {
@@ -301,6 +304,9 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
               if (!isNil(saladId)) {
                 accompanimentSelected = true;
               }
+            } else {
+              // TEDTODO temporary - other types might be possible??
+              noPossibleAccompaniments = true;
             }
             break;
           }
@@ -309,6 +315,9 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
               sideId = getAccompanimentIndex(mealWheelState, allSideIndices, startDate);
               if (!isNil(sideId)) {
                 accompanimentSelected = true;
+              } else {
+                // TEDTODO temporary - other types might be possible??
+                noPossibleAccompaniments = true;
               }
             }
             break;
@@ -318,6 +327,9 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
               veggieId = getAccompanimentIndex(mealWheelState, allVegIndices, startDate);
               if (!isNil(veggieId)) {
                 accompanimentSelected = true;
+              } else {
+                // TEDTODO temporary - other types might be possible??
+                noPossibleAccompaniments = true;
               }
             }
             break;

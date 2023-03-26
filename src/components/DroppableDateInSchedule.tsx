@@ -41,8 +41,11 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
   });
 
   const isActive = isOver && canDrop;
+  const mealIsAssigned = !isNil(props.mealOnDate.meal);
   let backgroundColor = '#222';
-  if (isActive) {
+  if (mealIsAssigned) {
+    backgroundColor = 'limegreen';
+  } else if (isActive) {
     backgroundColor = 'darkgreen';
   } else if (canDrop) {
     backgroundColor = 'darkkhaki';

@@ -10,7 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
-import { MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
+import { DishEntity, MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
 import { addRandomMeals, assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 import { MealWheelDispatch } from '../models';
@@ -104,11 +104,55 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     return renderedListOfMealOnDateMongos;
   };
 
+  const areAccompanimentsIdentical = (accompaniment0: DishEntity | undefined, accompaniment1: DishEntity | undefined): boolean => {
+    if (isNil(accompaniment0) && isNil(accompaniment1)) {
+      return true;
+    }
+    if (isNil(accompaniment0) && !isNil(accompaniment1)) {
+      return false;
+    }
+    if (!isNil(accompaniment0) && isNil(accompaniment1)) {
+      return false;
+    }
+    return (accompaniment0!.id === accompaniment1!.id);
+  };
+
+  const areMealsIdentical = (mealOnDate: MealOnDate, mealEntity: MealEntity): boolean => {
+
+    if (isNil(mealOnDate.meal)) {
+      return false;
+    }
+    const mealOnDateMeal: MealEntity = mealOnDate.meal;
+
+    if (mealOnDate.meal.mainDish.id !== mealEntity.mainDish.id) {
+      return false;
+    }
+    if (!areAccompanimentsIdentical(mealOnDateMeal.salad, mealEntity.salad)) {
+      return false;
+    }
+    if (!areAccompanimentsIdentical(mealOnDateMeal.side, mealEntity.side)) {
+      return false;
+    }
+    if (!areAccompanimentsIdentical(mealOnDateMeal.veggie, mealEntity.veggie)) {
+      return false;
+    }
+    return true;
+  };
+
   const getDraggableMeal = (mealEntity: MealEntity): JSX.Element => {
+    // iterate through mealOnDates to determine if this mealEntity is already assigned to one of the dates in the dialog
+    let isAlreadyAssigned = false;
+    props.mealOnDates.forEach((mealOnDate: MealOnDate) => {
+      if (areMealsIdentical(mealOnDate, mealEntity)) {
+        console.log('meal ' + mealOnDate.meal!.mainDish.name + ' is already assigned on the dialog');
+        isAlreadyAssigned = true;
+      }
+    });
     return (
       <DraggableMeal
         key={mealEntity.id}
         meal={mealEntity}
+        isAlreadyAssigned={isAlreadyAssigned}
       />
     );
   };
