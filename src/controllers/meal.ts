@@ -255,9 +255,6 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
           const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
           if (earliestTimeToRecommend < startDate.getTime()) {
             selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-          } else {
-            // validate code is exercised
-            debugger;
           }
         } else {
           selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
@@ -299,23 +296,29 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
         const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
         switch (accompanimentType) {
           case DishType.Salad: {
-            saladId = getAccompanimentIndex(mealWheelState, allSaladIndices, startDate);
-            if (!isNil(saladId)) {
-              accompanimentSelected = true;
+            if (allSaladIndices.length > 0) {
+              saladId = getAccompanimentIndex(mealWheelState, allSaladIndices, startDate);
+              if (!isNil(saladId)) {
+                accompanimentSelected = true;
+              }
             }
             break;
           }
           case DishType.Side: {
-            sideId = getAccompanimentIndex(mealWheelState, allSideIndices, startDate);
-            if (!isNil(sideId)) {
-              accompanimentSelected = true;
+            if (allSideIndices.length > 0) {
+              sideId = getAccompanimentIndex(mealWheelState, allSideIndices, startDate);
+              if (!isNil(sideId)) {
+                accompanimentSelected = true;
+              }
             }
             break;
           }
           case DishType.Veggie: {
-            veggieId = getAccompanimentIndex(mealWheelState, allVegIndices, startDate);
-            if (!isNil(veggieId)) {
-              accompanimentSelected = true;
+            if (allVegIndices.length > 0) {
+              veggieId = getAccompanimentIndex(mealWheelState, allVegIndices, startDate);
+              if (!isNil(veggieId)) {
+                accompanimentSelected = true;
+              }
             }
             break;
           }
@@ -357,7 +360,6 @@ const getAccompanimentIndex = (
       if (earliestTimeToRecommend < startDate.getTime()) {
         return accompanimentId;
       } else {
-        debugger;
         return null;
       }
     } else {
