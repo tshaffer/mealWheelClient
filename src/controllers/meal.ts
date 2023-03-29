@@ -315,10 +315,10 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
               sideId = getAccompanimentIndex(mealWheelState, allSideIndices, startDate);
               if (!isNil(sideId)) {
                 accompanimentSelected = true;
-              } else {
-                // TEDTODO temporary - other types might be possible??
-                noPossibleAccompaniments = true;
               }
+            } else {
+              // TEDTODO temporary - other types might be possible??
+              noPossibleAccompaniments = true;
             }
             break;
           }
@@ -327,16 +327,17 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
               veggieId = getAccompanimentIndex(mealWheelState, allVegIndices, startDate);
               if (!isNil(veggieId)) {
                 accompanimentSelected = true;
-              } else {
-                // TEDTODO temporary - other types might be possible??
-                noPossibleAccompaniments = true;
               }
+            } else {
+              // TEDTODO temporary - other types might be possible??
+              noPossibleAccompaniments = true;
             }
-            break;
           }
+            break;
         }
       }
     }
+
 
     const mealId = uuidv4();
     const meal: MealEntity = {
