@@ -1,3 +1,4 @@
+import { alertClasses } from '@mui/material';
 import axios from 'axios';
 import { cloneDeep, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
@@ -209,8 +210,205 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
 
 };
 
+const isDishDisqualifiedByLastness = (
+  dishId: string,
+  mealWheelState: MealWheelState,
+  startDate: Date
+): boolean => {
+  const dish: DishEntity | null = getDishById(mealWheelState, dishId);
+  if (!isNil(dish)) {
+    if (!isNil(dish.last)) {
+      const earliestTimeToRecommend: number = dish.last.getTime() + (dish.minimumInterval * (1000 * 3600 * 24));
+      if (earliestTimeToRecommend < startDate.getTime()) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+  return true;
+};
+
+const isDishAssignable = (
+  dishId: string,
+  mealWheelState: MealWheelState,
+  startDate: Date,
+  dishIdsAlreadyAssigned: string[]
+): boolean => {
+
+  for (const dishIdAlreadyAssigned of dishIdsAlreadyAssigned) {
+    if (dishIdAlreadyAssigned === dishId) {
+      return true;
+    }
+  }
+
+  if (isDishDisqualifiedByLastness(dishId, mealWheelState, startDate)) {
+    return false;
+  }
+
+  return false;
+};
+
+const getUnassignedMain = (
+  mealWheelState: MealWheelState,
+  startDate: Date,
+  mainIndices: number[],
+  mainsAlreadyAssigned: string[],
+): string | null => {
+  return null;
+};
+
+const getUnassignedDish = (
+  mealWheelState: MealWheelState,
+  startDate: Date,
+  allowableDishTypes: DishType[],
+  allowableDishTypesAlreadySelected: string[],
+): DishEntity | null => {
+
+  return null;
+};
+
+interface DishIndices {
+  mainIndices: number[];
+  saladIndices: number[];
+  sideIndices: number[];
+  veggieIndices: number[];
+}
+
+const buildDishIndices = (mealWheelState: MealWheelState): DishIndices => {
+
+  const mainIndices: number[] = [];
+  const saladIndices: number[] = [];
+  const sideIndices: number[] = [];
+  const veggieIndices: number[] = [];
+
+  const allDishes: DishEntity[] = getDishes(mealWheelState);
+  allDishes.forEach((dish: DishEntity, index: number) => {
+    switch (dish.type) {
+      case 'main':
+        mainIndices.push(index);
+        break;
+      case 'salad':
+        saladIndices.push(index);
+        break;
+      case 'side':
+        sideIndices.push(index);
+        break;
+      case 'veggie':
+        veggieIndices.push(index);
+        break;
+    }
+  });
+
+  return {
+    mainIndices,
+    saladIndices,
+    sideIndices,
+    veggieIndices,
+  };
+};
+
+const generateRandomDishBasedMealsNew = (mealWheelState: MealWheelState, numMeals: number, startDate: Date): MealEntity[] => {
+
+  const mealEntities: MealEntity[] = [];
+
+  const selectedMainDishIndices: number[] = [];
+
+  const { mainIndices, saladIndices, sideIndices, veggieIndices } = buildDishIndices(mealWheelState);
+
+  // select random main dish items
+  const allDishes: DishEntity[] = getDishes(mealWheelState);
+
+  while (selectedMainDishIndices.length < numMeals) {
+
+    const mainDishIndex = Math.floor(Math.random() * mainIndices.length);
+
+    if (isDishAssignable(
+      allDishes[mainDishIndex].id,
+      mealWheelState,
+      startDate,
+      []
+    )) {
+      selectedMainDishIndices.push(mainDishIndex);
+    }
+  }
+
+  // select accompaniments for mains where required
+  for (const selectedMainDishIndex of selectedMainDishIndices) {
+
+    let saladId: string | null = null;
+    let veggieId: string | null = null;
+    let sideId: string | null = null;
+
+    const mainDish: DishEntity = allDishes[selectedMainDishIndex];
+
+    // get accompaniment as appropriate
+
+    const allowableDishTypes: DishType[] = [];
+    if (!isNil(mainDish.accompanimentRequired) && mainDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
+
+      // get accompaniment for this main dish
+      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
+        allowableDishTypes.push(DishType.Salad);
+      }
+      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
+        allowableDishTypes.push(DishType.Side);
+      }
+      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
+        allowableDishTypes.push(DishType.Veggie);
+      }
+
+      const accompaniment: DishEntity | null = getUnassignedDish(
+        mealWheelState,
+        startDate,
+        allowableDishTypes,
+        []
+      );
+
+      // **** if accompaniment === null, ??
+      if (!isNil(accompaniment)) {
+        switch (accompaniment.type) {
+          case DishType.Salad:
+            saladId = accompaniment.id;
+            break;
+          case DishType.Side:
+            sideId = accompaniment.id;
+            break;
+          case DishType.Veggie:
+            veggieId = accompaniment.id;
+            break;
+          default:
+            debugger;
+        }
+
+        const mealId = uuidv4();
+        const meal: MealEntity = {
+          id: mealId,
+          mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
+          salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntity : undefined,
+          veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntity : undefined,
+          side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntity : undefined,
+        };
+      
+        mealEntities.push(meal);
+      
+      }
+
+
+    }
+  }
+
+
+  return [];
+};
+
 const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number, startDate: Date): MealEntity[] => {
 
+  return generateRandomDishBasedMealsNew(mealWheelState, numMeals, startDate);
+
+  /*
   const mealEntities: MealEntity[] = [];
 
   const allMainDishIndices: number[] = [];
@@ -339,22 +537,19 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
     }
 
 
-    const mealId = uuidv4();
-    const meal: MealEntity = {
-      id: mealId,
-      mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
-      salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntity : undefined,
-      veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntity : undefined,
-      side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntity : undefined,
-    };
+  const mealId = uuidv4();
+  const meal: MealEntity = {
+    id: mealId,
+    mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
+    salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntity : undefined,
+    veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntity : undefined,
+    side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntity : undefined,
+  };
 
-    mealEntities.push(meal);
+  mealEntities.push(meal);
+*/
 
-  }
-
-  return mealEntities;
-
-};
+}
 
 const getAccompanimentIndex = (
   mealWheelState: MealWheelState,
