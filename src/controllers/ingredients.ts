@@ -10,16 +10,19 @@ export const loadIngredients = (): MealWheelVoidPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
-    const state: MealWheelState = getState();
-    const id = getCurrentUser(state);
+    dispatch(addIngredientsRedux([]));
+    return Promise.resolve();
 
-    const path = serverUrl + apiUrlFragment + 'ingredients?id=' + id;
+    //   const state: MealWheelState = getState();
+    //   const id = getCurrentUser(state);
 
-    return axios.get(path)
-      .then((ingredientsResponse: any) => {
-        const ingredients: IngredientEntity[] = (ingredientsResponse as any).data;
-        dispatch(addIngredientsRedux(ingredients));
-      });
+    //   const path = serverUrl + apiUrlFragment + 'ingredients?id=' + id;
+
+    //   return axios.get(path)
+    //     .then((ingredientsResponse: any) => {
+    //       const ingredients: IngredientEntity[] = (ingredientsResponse as any).data;
+    //       dispatch(addIngredientsRedux(ingredients));
+    //     });
   };
 };
 
@@ -27,16 +30,21 @@ export const loadIngredientsByDish = (): MealWheelVoidPromiseThunkAction => {
 
   return (dispatch: MealWheelDispatch, getState: any) => {
 
-    const state: MealWheelState = getState();
-    const id = getCurrentUser(state);
+    const tmp: IngredientsByDish = {};
 
-    const path = serverUrl + apiUrlFragment + 'ingredientsByDish?id=' + id;
+    dispatch(setIngredientsByDishRedux(tmp));
+    return Promise.resolve();
+    
+    // const state: MealWheelState = getState();
+    // const id = getCurrentUser(state);
 
-    return axios.get(path)
-      .then((ingredientsByDishResponse: any) => {
-        const ingredientsByDish: IngredientsByDish = (ingredientsByDishResponse as any).data;
-        dispatch(setIngredientsByDishRedux(ingredientsByDish));
-      });
+    // const path = serverUrl + apiUrlFragment + 'ingredientsByDish?id=' + id;
+
+    // return axios.get(path)
+    //   .then((ingredientsByDishResponse: any) => {
+    //     const ingredientsByDish: IngredientsByDish = (ingredientsByDishResponse as any).data;
+    //     dispatch(setIngredientsByDishRedux(ingredientsByDish));
+    //   });
   };
 };
 

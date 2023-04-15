@@ -60,16 +60,16 @@ export const loadDefinedMeals = (): MealWheelVoidThunkAction => {
 
     dispatch(clearDefinedMeals());
 
-    const state: MealWheelState = getState();
-    const id = getCurrentUser(state);
+    // const state: MealWheelState = getState();
+    // const id = getCurrentUser(state);
 
-    const path = serverUrl + apiUrlFragment + 'definedMeals?id=' + id;
+    // const path = serverUrl + apiUrlFragment + 'definedMeals?id=' + id;
 
-    return axios.get(path)
-      .then((mealsResponse: any) => {
-        const definedMealEntities: DefinedMealEntity[] = (mealsResponse as any).data;
-        dispatch(addDefinedMealsRedux(definedMealEntities));
-      });
+    // return axios.get(path)
+    //   .then((mealsResponse: any) => {
+    //     const definedMealEntities: DefinedMealEntity[] = (mealsResponse as any).data;
+    //     dispatch(addDefinedMealsRedux(definedMealEntities));
+    //   });
   };
 };
 
