@@ -1,5 +1,6 @@
 import { GridRowModel } from '@mui/x-data-grid';
 import {
+  AccompanimentTypeEntity,
   DefinedMealEntity,
   DishEntityRedux,
   DishRow,
@@ -20,6 +21,7 @@ export const serverUrl = 'http://localhost:8000';
 export const apiUrlFragment = '/api/v1/';
 
 export interface MealWheelState {
+  accompanimentTypes: AccompanimentTypesMap;
   appParameters: AppParameters;
   appState: AppState;
   dishesState: DishesState;
@@ -178,6 +180,10 @@ export enum StartPage {
 
 export interface UsersMap {
   [id: string]: UserEntity; // userId
+}
+
+export interface AccompanimentTypesMap {
+  [id: string]: AccompanimentTypeEntity[]; // userId
 }
 
 export interface AppParameters {

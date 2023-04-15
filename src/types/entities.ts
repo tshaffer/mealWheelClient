@@ -127,6 +127,13 @@ export interface VerboseScheduledMeal extends ScheduledMealEntity {
   sideName: string;
 }
 
+export interface AccompanimentTypeEntity {
+  id: string;
+  userId: string;
+  name: string;
+  uiIndex: number;
+}
+
 export interface IngredientEntity {
   id: string;
   userId: string;

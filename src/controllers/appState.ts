@@ -34,6 +34,7 @@ import {
   loadScheduledMeals,
 } from './meal';
 import { loadIngredients, loadIngredientsByDish } from './ingredients';
+import { loadAccompanimentTypes } from './accompanimentType';
 
 const getStartupParams = (): MealWheelAnyThunkAction => {
 
@@ -102,8 +103,10 @@ export const loadUserData = (): MealWheelAnyPromiseThunkAction => {
     dispatch(clearScheduledMeals());
     dispatch(clearIngredients());
     dispatch(clearIngredientsByDish());
-    return dispatch(loadDishes())
+    return dispatch(loadAccompanimentTypes())
       .then(() => {
+        dispatch(loadDishes());
+      }).then(() => {
         dispatch(loadDefinedMeals());
       }).then(() => {
         dispatch(loadScheduledMeals());
