@@ -1,7 +1,6 @@
 import { GridRowModel } from '@mui/x-data-grid';
 import {
   AccompanimentTypeEntity,
-  // DefinedMealEntity,
   DishEntityRedux,
   DishRow,
   IngredientEntity,

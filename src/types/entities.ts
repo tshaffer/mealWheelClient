@@ -109,20 +109,6 @@ export interface MealEntity {
   // sideId: string; 
 }
 
-// export interface DefinedMealEntity {
-//   id: string;
-//   userId: string;
-//   name: string;
-//   mainDishId: string;
-//   // saladId: string;
-//   // veggieId: string;
-//   // sideId: string;
-//   mainName: string;
-//   // veggieName: string;
-//   // saladName: string;
-//   // sideName: string;
-// }
-
 export interface ScheduledMealEntity {
   id: string;
   userId: string;

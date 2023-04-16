@@ -1,6 +1,6 @@
 import { cloneDeep, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity, MealOnDate, DishEntity } from '../types';
+import { MealWheelState, ScheduledMealEntity, MealEntity, MealOnDate, DishEntity } from '../types';
 import { 
   getMainById, 
   // getSaladById, 
