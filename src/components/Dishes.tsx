@@ -614,17 +614,12 @@ const Dishes = (props: DishesProps) => {
             defaultValue={row.numAccompanimentsRequired}
             variant='standard'
             onBlur={(event) => handleUpdateNumAccompanimentsRequired(row, event.target.value)}
+            disabled={row.type !== 'main'}
             InputProps={{
               inputProps: {
                 min: 0
               }
             }}
-          />
-          <Checkbox
-            color="primary"
-            checked={row.numAccompanimentsRequired > 0}
-            onChange={(event) => handleToggleRequiresAccompaniment(row, event.target.checked)}
-            disabled={row.type !== 'main'}
           />
         </TableCell>
         {/* <TableCell align='center'>
