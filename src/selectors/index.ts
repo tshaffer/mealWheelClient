@@ -1,3 +1,4 @@
+export * from './accompanimentTypes';
 export * from './appParameters';
 export * from './appState';
 export * from './dish';

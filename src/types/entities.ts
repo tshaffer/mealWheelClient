@@ -25,7 +25,7 @@ export interface BaseDishEntityRedux {
 
 export interface MainDishEntity extends BaseDishEntityRedux {
   numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: string[],
+  allowableAccompanimentTypes: string[],// accompanimentTypeId[]
 }
 
 export interface BaseDishEntity {
@@ -42,8 +42,7 @@ export interface BaseDishEntity {
 
 export interface MainDishEntity extends BaseDishEntity {
   numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: string[],
-
+  allowableAccompanimentTypes: string[],  // accompanimentTypeId[]
 }
 
 export interface DishEntityFromServer {
@@ -53,7 +52,7 @@ export interface DishEntityFromServer {
   minimumInterval: number;
   last: string | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: string[],
+  allowableAccompanimentTypes?: string[],// accompanimentTypeId[]
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -67,7 +66,7 @@ export interface DishEntity {
   minimumInterval: number;
   last: Date | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: string[],
+  allowableAccompanimentTypes?: string[],// accompanimentTypeId[]
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -82,7 +81,7 @@ export interface DishEntityRedux {
   // last: Date | null;
   lastAsStr: string | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: string[],
+  allowableAccompanimentTypes?: string[],// accompanimentTypeId[]
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;

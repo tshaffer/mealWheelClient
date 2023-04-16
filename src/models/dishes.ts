@@ -3,7 +3,6 @@ import {
   DishEntity,
   DishEntityRedux,
   DishesState,
-  // RequiredAccompanimentFlags
 } from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
@@ -63,7 +62,6 @@ export const addDishRedux = (
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
     numAccompanimentsRequired: !isNil(mongoDish.numAccompanimentsRequired) ? mongoDish.numAccompanimentsRequired : 0,
     allowableAccompanimentTypes: !isNil(mongoDish.allowableAccompanimentTypes) ? mongoDish.allowableAccompanimentTypes : [],
-    // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
     prepEffort: mongoDish.prepEffort,
     prepTime: mongoDish.prepTime,
     cleanupEffort: mongoDish.cleanupEffort,
@@ -93,7 +91,6 @@ export const addDishesRedux = (
       lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
       numAccompanimentsRequired: !isNil(mongoDish.numAccompanimentsRequired) ? mongoDish.numAccompanimentsRequired : 0,
       allowableAccompanimentTypes: !isNil(mongoDish.allowableAccompanimentTypes) ? mongoDish.allowableAccompanimentTypes : [],
-      // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
       prepEffort: mongoDish.prepEffort,
       prepTime: mongoDish.prepTime,
       cleanupEffort: mongoDish.cleanupEffort,
@@ -137,7 +134,6 @@ export const updateDishRedux = (
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
     numAccompanimentsRequired: !isNil(mongoDish.numAccompanimentsRequired) ? mongoDish.numAccompanimentsRequired : 0,
     allowableAccompanimentTypes: !isNil(mongoDish.allowableAccompanimentTypes) ? mongoDish.allowableAccompanimentTypes : [],
-    // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
     prepEffort: mongoDish.prepEffort,
     prepTime: mongoDish.prepTime,
     cleanupEffort: mongoDish.cleanupEffort,
