@@ -182,22 +182,7 @@ export interface AccompanimentTypesMap {
 
 export interface AppParameters {
   startPage: StartPage;
-  // startupBoardId: string | null;
 }
-
-// export enum DishType {
-//   Main = 'main',
-//   Side = 'side',
-//   Salad = 'salad',
-//   Veggie = 'veggie',
-// }
-
-// export enum RequiredAccompanimentFlags {
-//   None = 0,
-//   Side = 1,
-//   Salad = 2,
-//   Veggie = 4,
-// }
 
 export enum MealStatus {
   pending = 0,

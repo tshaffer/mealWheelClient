@@ -1,8 +1,7 @@
-import { 
+import {
   // string, 
-  MealStatus, 
-  // RequiredAccompanimentFlags
- } from './base';
+  MealStatus,
+} from './base';
 
 export interface UserEntity {
   id: string;
@@ -25,10 +24,8 @@ export interface BaseDishEntityRedux {
 }
 
 export interface MainDishEntity extends BaseDishEntityRedux {
-  // accompanimentRequired: RequiredAccompanimentFlags;
   numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: number[],
-
+  allowableAccompanimentTypes: string[],
 }
 
 export interface BaseDishEntity {
@@ -44,9 +41,8 @@ export interface BaseDishEntity {
 }
 
 export interface MainDishEntity extends BaseDishEntity {
-  // accompanimentRequired: RequiredAccompanimentFlags;
   numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: number[],
+  allowableAccompanimentTypes: string[],
 
 }
 
@@ -57,8 +53,7 @@ export interface DishEntityFromServer {
   minimumInterval: number;
   last: string | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: number[],
-  // accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === string.Main
+  allowableAccompanimentTypes?: string[],
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -72,8 +67,7 @@ export interface DishEntity {
   minimumInterval: number;
   last: Date | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: number[],
-  // accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === string.Main
+  allowableAccompanimentTypes?: string[],
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -88,8 +82,7 @@ export interface DishEntityRedux {
   // last: Date | null;
   lastAsStr: string | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: number[],
-  // accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === string.Main
+  allowableAccompanimentTypes?: string[],
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -99,14 +92,8 @@ export interface MealEntity {
   id: string;
   mainDish: DishEntity;
   accompanimentDishes?: DishEntity[];
-  // salad?: DishEntity;
-  // veggie?: DishEntity;
-  // side?: DishEntity;
   mainDishId: string;
   accompanimentDishIds?: string[];
-  // saladId: string;
-  // veggieId: string;
-  // sideId: string; 
 }
 
 export interface ScheduledMealEntity {
@@ -114,9 +101,6 @@ export interface ScheduledMealEntity {
   userId: string;
   mainDishId: string;
   accompanimentIds: string[];
-  // saladId: string;
-  // veggieId: string;
-  // sideId: string;
   dateScheduled: Date;
   status: MealStatus;
 }
@@ -126,12 +110,6 @@ export interface VerboseScheduledMeal extends ScheduledMealEntity {
   mainName: string;
   accompaniments: DishEntity[] | null;
   accompanimentNames: string[];
-  // salad: DishEntity | null;
-  // saladName: string;
-  // veggie: DishEntity | null;
-  // veggieName: string;
-  // side: DishEntity | null;
-  // sideName: string;
 }
 
 export interface AccompanimentTypeEntity {

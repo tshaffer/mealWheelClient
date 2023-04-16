@@ -16,8 +16,7 @@ export interface NewDishDialogPropsFromParent {
     dishType: string,
     minimumInterval: number,
     numAccompanimentsRequired?: number,
-    allowableAccompanimentTypes?: number[],
-    // accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === string.Main
+    allowableAccompanimentTypes?: string[],
   ) => void;
   onClose: () => void;
   dishType: string;
