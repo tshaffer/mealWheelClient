@@ -139,6 +139,7 @@ export interface DishRow {
   type: string;
   minimumInterval: number;
   last: Date | null;
+  numAccompanimentsRequired: number,
   // requiresAccompaniment: boolean;
   // requiresSalad: boolean;
   // requiresSide: boolean;

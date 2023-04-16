@@ -157,6 +157,7 @@ const getRows = (dishes: DishEntity[]): DishRow[] => {
       type: dish.type,
       last: dish.last,
       minimumInterval: dish.minimumInterval,
+      numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired) ? dish.numAccompanimentsRequired : 0,
       // requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
       // requiresSide,
       // requiresSalad,

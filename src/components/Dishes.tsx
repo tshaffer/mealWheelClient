@@ -70,12 +70,12 @@ const headCells: readonly HeadCell[] = [
     disablePadding: true,
     label: 'Minimum interval in days (0 for no minimum)',
   },
-  // {
-  //   id: 'requiresAccompaniment',
-  //   numeric: false,
-  //   disablePadding: true,
-  //   label: 'Requires accompaniment',
-  // },
+  {
+    id: 'numAccompanimentsRequired',
+    numeric: false,
+    disablePadding: true,
+    label: 'Requires accompaniment',
+  },
   // {
   //   id: 'requiresSalad',
   //   numeric: false,
@@ -226,6 +226,7 @@ const Dishes = (props: DishesProps) => {
         type: dish.type,
         last: dish.last,
         minimumInterval: dish.minimumInterval,
+        numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired)? dish.numAccompanimentsRequired : 0,
         // requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
         // requiresSide,
         // requiresSalad,
@@ -280,6 +281,7 @@ const Dishes = (props: DishesProps) => {
       type: 'main',
       minimumInterval: 5,
       last: null,
+      numAccompanimentsRequired: 0,
       // requiresAccompaniment: false,
       // requiresSalad: false,
       // requiresSide: false,
@@ -598,15 +600,15 @@ const Dishes = (props: DishesProps) => {
           />
 
         </TableCell>
-        {/* <TableCell align='center'>
+        <TableCell align='center'>
           <Checkbox
             color="primary"
-            checked={row.requiresAccompaniment}
+            checked={row.numAccompanimentsRequired > 0}
             onChange={(event) => handleToggleRequiresAccompaniment(row, event.target.checked)}
-            disabled={row.type !== DishType.Main}
+            disabled={row.type !== 'main'}
           />
         </TableCell>
-        <TableCell align='center'>
+        {/* <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresSalad}
@@ -705,14 +707,14 @@ const Dishes = (props: DishesProps) => {
           />
         </TableCell>
 
-        {/* <TableCell align='center'>
+        <TableCell align='center'>
           <Checkbox
             color="primary"
-            checked={row.requiresAccompaniment}
+            checked={row.numAccompanimentsRequired > 0}
             disabled
           />
         </TableCell>
-        <TableCell align='center'>
+        {/* <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresSalad}
