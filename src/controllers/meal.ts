@@ -28,22 +28,23 @@ import {
   getIngredientById,
   getIngredientIdsByDish,
   getMainById,
-  getSaladById,
+  // getSaladById,
   getScheduledMeal,
   getScheduledMealByDate,
   getScheduledMealsForDays,
-  getSideById,
+  // getSideById,
   getUnassignedMeals,
-  getVeggieById
+  // getVeggieById
+  getAccompanimentById,
 } from '../selectors';
 
 import {
   apiUrlFragment,
   DishEntity,
-  DishType,
+  // DishType,
   MealStatus,
   MealWheelState,
-  RequiredAccompanimentFlags,
+  // RequiredAccompanimentFlags,
   DefinedMealEntity,
   serverUrl,
   ScheduledMealEntity,
@@ -98,9 +99,9 @@ export const loadScheduledMeals = (): MealWheelVoidPromiseThunkAction => {
             id,
             userId,
             mainDishId,
-            saladId,
-            veggieId,
-            sideId,
+            // saladId,
+            // veggieId,
+            // sideId,
             dateScheduled: new Date(dateScheduled),
             status,
           });
@@ -177,11 +178,12 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
     // get the list of dish ids for the scheduled meals for this date range - dish ids are unique
     const uniqueDishes: any = {};
     scheduledMeals.forEach((scheduledMeal: ScheduledMealEntity) => {
-      const { mainDishId, saladId, veggieId, sideId } = scheduledMeal;
+      // const { mainDishId, saladId, veggieId, sideId } = scheduledMeal;
+      const { mainDishId } = scheduledMeal;
       addToUniqueDishes(uniqueDishes, mainDishId);
-      addToUniqueDishes(uniqueDishes, saladId);
-      addToUniqueDishes(uniqueDishes, veggieId);
-      addToUniqueDishes(uniqueDishes, sideId);
+      // addToUniqueDishes(uniqueDishes, saladId);
+      // addToUniqueDishes(uniqueDishes, veggieId);
+      // addToUniqueDishes(uniqueDishes, sideId);
     });
 
     // get list of ingredients ids given dish ids.
@@ -267,85 +269,85 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
     const mainDish: DishEntity = allDishes[selectedMainDishIndex];
 
-    let saladId: string | null = null;
-    let veggieId: string | null = null;
-    let sideId: string | null = null;
+    // let saladId: string | null = null;
+    // let veggieId: string | null = null;
+    // let sideId: string | null = null;
 
     // if accompaniment to main is required, procure it.
 
     // get list of possible accompaniment types for this main dish
-    if (!isNil(mainDish.accompanimentRequired) && mainDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
-      const possibleAccompaniments: DishType[] = [];
-      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
-        possibleAccompaniments.push(DishType.Salad);
-      }
-      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
-        possibleAccompaniments.push(DishType.Side);
-      }
-      if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
-        possibleAccompaniments.push(DishType.Veggie);
-      }
-      const numPossibleAccompaniments = possibleAccompaniments.length;
+    // if (!isNil(mainDish.accompanimentRequired) && mainDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
+    //   const possibleAccompaniments: DishType[] = [];
+    //   if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
+    //     possibleAccompaniments.push(DishType.Salad);
+    //   }
+    //   if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
+    //     possibleAccompaniments.push(DishType.Side);
+    //   }
+    //   if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
+    //     possibleAccompaniments.push(DishType.Veggie);
+    //   }
+    //   const numPossibleAccompaniments = possibleAccompaniments.length;
 
-      // select accompaniment from the possible accompaniments
-      // don't select one that has been used within the minimum time between uses
-      let accompanimentSelected = false;
-      let noPossibleAccompaniments = false;
-      // TEDTODO - ensure no infinite loop
-      // Infinite loop occurs if
-      //    mainDish requires an accompaniment (of only one type) and no accompaniments are available
-      while (!accompanimentSelected && !noPossibleAccompaniments) {
-        const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
-        const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
-        switch (accompanimentType) {
-          case DishType.Salad: {
-            if (allSaladIndices.length > 0) {
-              saladId = getAccompanimentIndex(mealWheelState, allSaladIndices, startDate);
-              if (!isNil(saladId)) {
-                accompanimentSelected = true;
-              }
-            } else {
-              // TEDTODO temporary - other types might be possible??
-              noPossibleAccompaniments = true;
-            }
-            break;
-          }
-          case DishType.Side: {
-            if (allSideIndices.length > 0) {
-              sideId = getAccompanimentIndex(mealWheelState, allSideIndices, startDate);
-              if (!isNil(sideId)) {
-                accompanimentSelected = true;
-              }
-            } else {
-              // TEDTODO temporary - other types might be possible??
-              noPossibleAccompaniments = true;
-            }
-            break;
-          }
-          case DishType.Veggie: {
-            if (allVegIndices.length > 0) {
-              veggieId = getAccompanimentIndex(mealWheelState, allVegIndices, startDate);
-              if (!isNil(veggieId)) {
-                accompanimentSelected = true;
-              }
-            } else {
-              // TEDTODO temporary - other types might be possible??
-              noPossibleAccompaniments = true;
-            }
-          }
-            break;
-        }
-      }
-    }
+    //   // select accompaniment from the possible accompaniments
+    //   // don't select one that has been used within the minimum time between uses
+    //   let accompanimentSelected = false;
+    //   let noPossibleAccompaniments = false;
+    //   // TEDTODO - ensure no infinite loop
+    //   // Infinite loop occurs if
+    //   //    mainDish requires an accompaniment (of only one type) and no accompaniments are available
+    //   while (!accompanimentSelected && !noPossibleAccompaniments) {
+    //     const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
+    //     const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
+    //     switch (accompanimentType) {
+    //       case DishType.Salad: {
+    //         if (allSaladIndices.length > 0) {
+    //           saladId = getAccompanimentIndex(mealWheelState, allSaladIndices, startDate);
+    //           if (!isNil(saladId)) {
+    //             accompanimentSelected = true;
+    //           }
+    //         } else {
+    //           // TEDTODO temporary - other types might be possible??
+    //           noPossibleAccompaniments = true;
+    //         }
+    //         break;
+    //       }
+    //       case DishType.Side: {
+    //         if (allSideIndices.length > 0) {
+    //           sideId = getAccompanimentIndex(mealWheelState, allSideIndices, startDate);
+    //           if (!isNil(sideId)) {
+    //             accompanimentSelected = true;
+    //           }
+    //         } else {
+    //           // TEDTODO temporary - other types might be possible??
+    //           noPossibleAccompaniments = true;
+    //         }
+    //         break;
+    //       }
+    //       case DishType.Veggie: {
+    //         if (allVegIndices.length > 0) {
+    //           veggieId = getAccompanimentIndex(mealWheelState, allVegIndices, startDate);
+    //           if (!isNil(veggieId)) {
+    //             accompanimentSelected = true;
+    //           }
+    //         } else {
+    //           // TEDTODO temporary - other types might be possible??
+    //           noPossibleAccompaniments = true;
+    //         }
+    //       }
+    //         break;
+    //     }
+    //   }
+    // }
 
 
     const mealId = uuidv4();
     const meal: MealEntity = {
       id: mealId,
       mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
-      salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntity : undefined,
-      veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntity : undefined,
-      side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntity : undefined,
+      // salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntity : undefined,
+      // veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntity : undefined,
+      // side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntity : undefined,
     };
 
     mealEntities.push(meal);
@@ -411,15 +413,16 @@ const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadySchedul
 
   for (const selectedDefinedMeal of selectedDefinedMeals) {
 
-    const { mainDishId, saladId, veggieId, sideId } = selectedDefinedMeal;
+    // const { mainDishId, saladId, veggieId, sideId } = selectedDefinedMeal;
+    const { mainDishId } = selectedDefinedMeal;
     const mealId = uuidv4();
     const scheduledMeal: ScheduledMealEntity = {
       id: mealId,
       userId: getCurrentUser(mealWheelState) as string,
       mainDishId,
-      saladId,
-      veggieId,
-      sideId,
+      // saladId,
+      // veggieId,
+      // sideId,
       dateScheduled: mealDate,        // placeholder
       status: MealStatus.pending
     };
@@ -437,15 +440,15 @@ const updateMealDishesLastProperty = (
 ): any => {
   return (dispatch: MealWheelDispatch,) => {
     dispatch(updateDishLastProperty(meal.mainDish, date));
-    if (!isNil(meal.salad)) {
-      dispatch(updateDishLastProperty(meal.salad, date));
-    }
-    if (!isNil(meal.veggie)) {
-      dispatch(updateDishLastProperty(meal.veggie, date));
-    }
-    if (!isNil(meal.side)) {
-      dispatch(updateDishLastProperty(meal.side, date));
-    }
+    // if (!isNil(meal.salad)) {
+    //   dispatch(updateDishLastProperty(meal.salad, date));
+    // }
+    // if (!isNil(meal.veggie)) {
+    //   dispatch(updateDishLastProperty(meal.veggie, date));
+    // }
+    // if (!isNil(meal.side)) {
+    //   dispatch(updateDishLastProperty(meal.side, date));
+    // }
   };
 };
 
@@ -465,9 +468,9 @@ export const assignMealToDate = (
       id: mealId,
       userId: getCurrentUser(mealWheelState) as string,
       mainDishId: meal.mainDish.id,
-      saladId: isNil(meal.salad) ? '' : meal.salad.id,
-      veggieId: isNil(meal.veggie) ? '' : meal.veggie.id,
-      sideId: isNil(meal.side) ? '' : meal.side.id,
+      // saladId: isNil(meal.salad) ? '' : meal.salad.id,
+      // veggieId: isNil(meal.veggie) ? '' : meal.veggie.id,
+      // sideId: isNil(meal.side) ? '' : meal.side.id,
       dateScheduled: date,
       status: MealStatus.pending
     };
@@ -490,9 +493,9 @@ export const updateMealAssignedToDate = (
     const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(mealWheelState, date);
     if (!isNil(scheduledMeal)) {
       scheduledMeal.mainDishId = meal.mainDish.id;
-      scheduledMeal.saladId = isNil(meal.salad) ? '' : meal.salad.id;
-      scheduledMeal.sideId = isNil(meal.side) ? '' : meal.side.id;
-      scheduledMeal.veggieId = isNil(meal.veggie) ? '' : meal.veggie.id;
+      // scheduledMeal.saladId = isNil(meal.salad) ? '' : meal.salad.id;
+      // scheduledMeal.sideId = isNil(meal.side) ? '' : meal.side.id;
+      // scheduledMeal.veggieId = isNil(meal.veggie) ? '' : meal.veggie.id;
       dispatch(updateScheduledMeal(scheduledMeal.id, scheduledMeal));
     }
   };
@@ -612,11 +615,11 @@ export const updateSideInMeal = (
     const newSide: BaseDishEntity | null = getDishById(mealWheelState, newSideId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
-      if (!isNil(newSide)) {
-        meal.sideId = newSideId;
-      } else {
-        meal.sideId = '';
-      }
+      // if (!isNil(newSide)) {
+      //   meal.sideId = newSideId;
+      // } else {
+      //   meal.sideId = '';
+      // }
       dispatch(updateScheduledMeal(meal.id, meal));
     }
   };
@@ -631,11 +634,11 @@ export const updateSaladInMeal = (
     const newSalad: BaseDishEntity | null = getDishById(mealWheelState, newSaladId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
-      if (!isNil(newSalad)) {
-        meal.saladId = newSaladId;
-      } else {
-        meal.saladId = '';
-      }
+      // if (!isNil(newSalad)) {
+      //   meal.saladId = newSaladId;
+      // } else {
+      //   meal.saladId = '';
+      // }
       dispatch(updateScheduledMeal(meal.id, meal));
     }
   };
@@ -650,11 +653,11 @@ export const updateVeggieInMeal = (
     const newVeggie: BaseDishEntity | null = getDishById(mealWheelState, newVeggieId) as BaseDishEntity;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
-      if (!isNil(newVeggie)) {
-        meal.veggieId = newVeggieId;
-      } else {
-        meal.veggieId = '';
-      }
+      // if (!isNil(newVeggie)) {
+      //   meal.veggieId = newVeggieId;
+      // } else {
+      //   meal.veggieId = '';
+      // }
       dispatch(updateScheduledMeal(meal.id, meal));
     }
   };
@@ -692,28 +695,28 @@ const generateMealsToResolve = (state: MealWheelState, scheduledMeals: Scheduled
         const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
           isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
 
-        const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
-        const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
-          isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
+        // const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
+        // const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
+        //   isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
 
-        const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
-        const sideName: string = isNil(scheduledMeal.sideId) ? '' :
-          isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
+        // const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
+        // const sideName: string = isNil(scheduledMeal.sideId) ? '' :
+        //   isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
 
-        const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
-        const saladName: string = isNil(scheduledMeal.saladId) ? '' :
-          isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
+        // const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
+        // const saladName: string = isNil(scheduledMeal.saladId) ? '' :
+        //   isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
 
         const verboseScheduledMeal: VerboseScheduledMeal = {
           ...scheduledMeal,
           main,
           mainName: mainDishName,
-          salad,
-          saladName,
-          veggie,
-          veggieName,
-          side,
-          sideName,
+          // salad,
+          // saladName,
+          // veggie,
+          // veggieName,
+          // side,
+          // sideName,
         };
 
         verboseScheduledMealsToResolve.push(verboseScheduledMeal);

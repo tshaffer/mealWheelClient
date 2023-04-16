@@ -150,19 +150,19 @@ export interface MealsResolutionState {
   mealsToResolve: VerboseScheduledMeal[];
 }
 
-export interface Meal {
-  mainDishId: string;
-  accompanimentDishId: string | null;
-}
-
+// ????
 export interface DishRowModel {
   id: string;
   name: string,
   type: string,
-  requiresAccompaniment: boolean;
-  side: number;
-  salad: number;
-  veggie: number;
+  // requiresAccompaniment: boolean;
+  // side: number;
+  // salad: number;
+  // veggie: number;
+  numAccompanimentsRequired: number,
+  // allowableAccompanimentTypes: number[],
+  accompaniments: string[],
+
 }
 
 export interface IngredientInDishRowModel extends GridRowModel {
@@ -191,19 +191,19 @@ export interface AppParameters {
   // startupBoardId: string | null;
 }
 
-export enum DishType {
-  Main = 'main',
-  Side = 'side',
-  Salad = 'salad',
-  Veggie = 'veggie',
-}
+// export enum DishType {
+//   Main = 'main',
+//   Side = 'side',
+//   Salad = 'salad',
+//   Veggie = 'veggie',
+// }
 
-export enum RequiredAccompanimentFlags {
-  None = 0,
-  Side = 1,
-  Salad = 2,
-  Veggie = 4,
-}
+// export enum RequiredAccompanimentFlags {
+//   None = 0,
+//   Side = 1,
+//   Salad = 2,
+//   Veggie = 4,
+// }
 
 export enum MealStatus {
   pending = 0,

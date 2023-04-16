@@ -27,9 +27,9 @@ const MenuItemDescriptor = (props: MenuItemProps) => {
   return (
     <div key={meal.id}>
       {renderDish(meal.mainDish, 'Main', false)}
-      {renderDish(meal.salad, 'Salad', true)}
+      {/* {renderDish(meal.salad, 'Salad', true)}
       {renderDish(meal.side, 'Side', true)}
-      {renderDish(meal.veggie, 'Veggie', true)}
+      {renderDish(meal.veggie, 'Veggie', true)} */}
     </div>
   );
 };

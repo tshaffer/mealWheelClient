@@ -4,9 +4,15 @@ import { bindActionCreators } from 'redux';
 
 import { isNil, isString } from 'lodash';
 
-import { DishType, DishEntity, ScheduledMealEntity } from '../types';
+import { DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
-import { getMainById, getSaladById, getScheduledMeal, getSideById, getVeggieById } from '../selectors';
+import { 
+  getMainById, 
+  // getSaladById, 
+  getScheduledMeal, 
+  // getSideById, 
+  // getVeggieById
+ } from '../selectors';
 import { MealWheelDispatch } from '../models';
 
 export interface MealInCalendarPropsFromParent {
@@ -15,23 +21,24 @@ export interface MealInCalendarPropsFromParent {
 
 export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
   main: DishEntity | null;
-  salad: DishEntity | null;
-  side: DishEntity | null;
-  veggie: DishEntity | null;
+  // salad: DishEntity | null;
+  // side: DishEntity | null;
+  // veggie: DishEntity | null;
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
 
-  const getAccompanimentLabel = (accompanimentType: DishType): string => {
-    switch (accompanimentType) {
-      case DishType.Salad:
-        return 'Salad';
-      case DishType.Side:
-      default:
-        return 'Side';
-      case DishType.Veggie:
-        return 'Vegetable';
-    }
+  const getAccompanimentLabel = (accompanimentType: string): string => {
+    // switch (accompanimentType) {
+    //   case DishType.Salad:
+    //     return 'Salad';
+    //   case DishType.Side:
+    //   default:
+    //     return 'Side';
+    //   case DishType.Veggie:
+    //     return 'Vegetable';
+    // }
+    return 'pizza';
   };
 
   const renderMainDish = () => {
@@ -59,26 +66,26 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   const renderAccompaniments = () => {
 
-    if (isNil(props.salad) && isNil(props.side) && isNil(props.veggie)) {
-      return (
-        <p className='shortParagraph'>{''}</p>
-      );
-    }
+    // if (isNil(props.salad) && isNil(props.side) && isNil(props.veggie)) {
+    //   return (
+    //     <p className='shortParagraph'>{''}</p>
+    //   );
+    // }
 
-    const renderedAccompaniments = [];
+    const renderedAccompaniments: any[] = [];
 
-    let jsx = renderAccompaniment(props.salad);
-    if (!isNil(jsx)) {
-      renderedAccompaniments.push(jsx);
-    }
-    jsx = renderAccompaniment(props.veggie);
-    if (!isNil(jsx)) {
-      renderedAccompaniments.push(jsx);
-    }
-    jsx = renderAccompaniment(props.side);
-    if (!isNil(jsx)) {
-      renderedAccompaniments.push(jsx);
-    }
+    // let jsx = renderAccompaniment(props.salad);
+    // if (!isNil(jsx)) {
+    //   renderedAccompaniments.push(jsx);
+    // }
+    // jsx = renderAccompaniment(props.veggie);
+    // if (!isNil(jsx)) {
+    //   renderedAccompaniments.push(jsx);
+    // }
+    // jsx = renderAccompaniment(props.side);
+    // if (!isNil(jsx)) {
+    //   renderedAccompaniments.push(jsx);
+    // }
 
     return renderedAccompaniments;
   };
@@ -102,22 +109,22 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
 
   let main: DishEntity | null = null;
-  let salad: DishEntity | null = null;
-  let side: DishEntity | null = null;
-  let veggie: DishEntity | null = null;
+  // let salad: DishEntity | null = null;
+  // let side: DishEntity | null = null;
+  // let veggie: DishEntity | null = null;
   if (!isNil(scheduledMeal)) {
     main = getMainById(state, scheduledMeal.mainDishId) as DishEntity;
-    salad = getSaladById(state, scheduledMeal.saladId);
-    side = getSideById(state, scheduledMeal.sideId);
-    veggie = getVeggieById(state, scheduledMeal.veggieId);
+    // salad = getSaladById(state, scheduledMeal.saladId);
+    // side = getSideById(state, scheduledMeal.sideId);
+    // veggie = getVeggieById(state, scheduledMeal.veggieId);
   } else {
     // anything
   }
   return {
     main,
-    salad,
-    side,
-    veggie
+    // salad,
+    // side,
+    // veggie
   };
 }
 

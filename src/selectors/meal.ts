@@ -1,7 +1,12 @@
 import { cloneDeep, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { MealWheelState, ScheduledMealEntity, DefinedMealEntity, MealEntity, MealOnDate, DishEntity } from '../types';
-import { getMainById, getSaladById, getSideById, getVeggieById } from './dish';
+import { 
+  getMainById, 
+  // getSaladById, 
+  // getSideById, 
+  // getVeggieById,
+ } from './dish';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
@@ -74,15 +79,15 @@ export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, nu
     const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(state, localMealDate);
     if (!isNil(scheduledMeal)) {
       const mainDish: DishEntity | null = getMainById(state, scheduledMeal.mainDishId);
-      const salad: DishEntity | null = getSaladById(state, scheduledMeal.saladId);
-      const side: DishEntity | null = getSideById(state, scheduledMeal.sideId);
-      const veggie: DishEntity | null = getVeggieById(state, scheduledMeal.veggieId);
+      // const salad: DishEntity | null = getSaladById(state, scheduledMeal.saladId);
+      // const side: DishEntity | null = getSideById(state, scheduledMeal.sideId);
+      // const veggie: DishEntity | null = getVeggieById(state, scheduledMeal.veggieId);
       const mealEntity: MealEntity = {
         id: uuidv4(),
         mainDish: mainDish as DishEntity,
-        salad: isNil(salad) ? undefined : salad,
-        veggie: isNil(veggie) ? undefined : veggie,
-        side: isNil(side) ? undefined : side,
+        // salad: isNil(salad) ? undefined : salad,
+        // veggie: isNil(veggie) ? undefined : veggie,
+        // side: isNil(side) ? undefined : side,
       };
       const mealOnDate: MealOnDate = {
         date: localMealDate,

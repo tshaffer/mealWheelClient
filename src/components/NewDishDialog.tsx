@@ -4,13 +4,23 @@ import { connect } from 'react-redux';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
-import { DishType, RequiredAccompanimentFlags } from '../types';
+// import {
+//   DishType,
+//   RequiredAccompanimentFlags
+// } from '../types';
 
 export interface NewDishDialogPropsFromParent {
   open: boolean;
-  onAddDish: (dishName: string, dishType: DishType, minimumInterval: number, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => void;
+  onAddDish: (
+    dishName: string,
+    dishType: string,
+    minimumInterval: number,
+    numAccompanimentsRequired?: number,
+    allowableAccompanimentTypes?: number[],
+    // accompanimentRequired?: RequiredAccompanimentFlags;   // only applies when dishType === string.Main
+  ) => void;
   onClose: () => void;
-  dishType: DishType;
+  dishType: string;
 }
 
 export interface NewDishDialogProps extends NewDishDialogPropsFromParent {
@@ -23,41 +33,42 @@ function NewDishDialog(props: NewDishDialogProps) {
 
   const [dishName, setDishName] = React.useState('');
   const [minimumInterval, setMinimumInterval] = React.useState(5);
-  const [requiredAccompanimentFlags, setRequiredAccompanimentFlags] = React.useState(RequiredAccompanimentFlags.None);
+  // const [requiredAccompanimentFlags, setRequiredAccompanimentFlags] = React.useState(RequiredAccompanimentFlags.None);
 
   const getTypeLabelFromType = (): string => {
-    switch (props.dishType) {
-      case DishType.Main:
-        return 'Main';
-      case DishType.Salad:
-        return 'Salad';
-      case DishType.Side:
-        return 'Side';
-      case DishType.Veggie:
-      default:
-        return 'Veggie';
-    }
+  //   switch (props.dishType) {
+  //     case DishType.Main:
+  //       return 'Main';
+  //     case DishType.Salad:
+  //       return 'Salad';
+  //     case DishType.Side:
+  //       return 'Side';
+  //     case DishType.Veggie:
+  //     default:
+  //       return 'Veggie';
+  //   }
+    return'pizza';
   };
 
-  const sideRequired = (): boolean => {
-    return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Side) !== 0;
-  };
+  // const sideRequired = (): boolean => {
+  //   return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Side) !== 0;
+  // };
 
-  const saladRequired = (): boolean => {
-    return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Salad) !== 0;
-  };
+  // const saladRequired = (): boolean => {
+  //   return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Salad) !== 0;
+  // };
 
-  const veggieRequired = (): boolean => {
-    return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Veggie) !== 0;
-  };
+  // const veggieRequired = (): boolean => {
+  //   return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Veggie) !== 0;
+  // };
 
   const handleAddNewDish = () => {
-    if (props.dishType === DishType.Main) {
-      props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentFlags);
-    }
-    else {
-      props.onAddDish(dishName, props.dishType, minimumInterval);
-    }
+    // if (props.dishType === DishType.Main) {
+    //   props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentFlags);
+    // }
+    // else {
+    //   props.onAddDish(dishName, props.dishType, minimumInterval);
+    // }
   };
 
   const handleClose = () => {
@@ -65,50 +76,53 @@ function NewDishDialog(props: NewDishDialogProps) {
   };
 
   const renderRequiresAccompaniment = () => {
-    if (props.dishType !== DishType.Main) {
+    if (props.dishType !== 'main') {
       return null;
     }
 
     return (
-      <div>
-        <FormGroup
-          sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-        >
-          <FormLabel
-            style={{ marginRight: '20px', marginTop: '10px' }}
-          >
-            <label>Requires Accompaniment:</label>
-          </FormLabel>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={sideRequired()}
-                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Side + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Side)))}
-              />
-            }
-            label="Side"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={saladRequired()}
-                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Salad + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Salad)))}
-              />
-            }
-            label="Salad"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={veggieRequired()}
-                onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Veggie + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Veggie)))}
-              />
-            }
-            label="Veggie"
-          />
-        </FormGroup>
-      </div>
+      <div>pizza</div>
     );
+    // return (
+    //   <div>
+    //     <FormGroup
+    //       sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+    //     >
+    //       <FormLabel
+    //         style={{ marginRight: '20px', marginTop: '10px' }}
+    //       >
+    //         <label>Requires Accompaniment:</label>
+    //       </FormLabel>
+    //       <FormControlLabel
+    //         control={
+    //           <Checkbox
+    //             checked={sideRequired()}
+    //             onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Side + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Side)))}
+    //           />
+    //         }
+    //         label="Side"
+    //       />
+    //       <FormControlLabel
+    //         control={
+    //           <Checkbox
+    //             checked={saladRequired()}
+    //             onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Salad + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Salad)))}
+    //           />
+    //         }
+    //         label="Salad"
+    //       />
+    //       <FormControlLabel
+    //         control={
+    //           <Checkbox
+    //             checked={veggieRequired()}
+    //             onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Veggie + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Veggie)))}
+    //           />
+    //         }
+    //         label="Veggie"
+    //       />
+    //     </FormGroup>
+    //   </div>
+    // );
   };
 
   /*

@@ -4,7 +4,18 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { addDishesRedux, addDishRedux, deleteDishRedux, MealWheelDispatch, MealWheelStringPromiseThunkAction, MealWheelVoidPromiseThunkAction, MealWheelVoidThunkAction, setRows, sortIngredients, updateDishRedux } from '../models';
 
-import { apiUrlFragment, DishEntity, DishEntityFromServer, DishEntityRedux, DishesState, DishRow, MealWheelState, Order, RequiredAccompanimentFlags, serverUrl } from '../types';
+import {
+  apiUrlFragment,
+  DishEntity,
+  DishEntityFromServer,
+  DishEntityRedux,
+  DishesState,
+  DishRow,
+  MealWheelState,
+  Order,
+  // RequiredAccompanimentFlags,
+  serverUrl
+} from '../types';
 import { isNil } from 'lodash';
 
 export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
@@ -25,7 +36,9 @@ export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
             type: dishEntityFromServer.type,
             minimumInterval: dishEntityFromServer.minimumInterval,
             last: isNil(dishEntityFromServer.last) ? null : new Date(dishEntityFromServer.last),
-            accompanimentRequired: isNil(dishEntityFromServer.accompanimentRequired) ? undefined : dishEntityFromServer.accompanimentRequired,
+            numAccompanimentsRequired: !isNil(dishEntityFromServer.numAccompanimentsRequired) ? dishEntityFromServer.numAccompanimentsRequired : 0,
+            allowableAccompanimentTypes: !isNil(dishEntityFromServer.allowableAccompanimentTypes) ? dishEntityFromServer.allowableAccompanimentTypes : [],
+            // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
             prepEffort: dishEntityFromServer.prepEffort,
             prepTime: dishEntityFromServer.prepTime,
             cleanupEffort: dishEntityFromServer.cleanupEffort,
@@ -135,19 +148,19 @@ export const deleteDish = (
 const getRows = (dishes: DishEntity[]): DishRow[] => {
 
   const rows: DishRow[] = dishes.map((dish: DishEntity) => {
-    const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-    const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-    const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+    // const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+    // const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+    // const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
     const row: DishRow = {
       dish,
       name: dish.name,
       type: dish.type,
       last: dish.last,
       minimumInterval: dish.minimumInterval,
-      requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
-      requiresSide,
-      requiresSalad,
-      requiresVeggie,
+      // requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
+      // requiresSide,
+      // requiresSalad,
+      // requiresVeggie,
     };
     return row;
   });

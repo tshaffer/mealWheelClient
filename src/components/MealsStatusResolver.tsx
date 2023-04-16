@@ -57,9 +57,9 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
       id: (meal as VerboseScheduledMeal).id,
       userId: (meal as VerboseScheduledMeal).userId,
       mainDishId: (meal as VerboseScheduledMeal).mainDishId,
-      saladId: (meal as VerboseScheduledMeal).saladId,
-      veggieId: (meal as VerboseScheduledMeal).veggieId,
-      sideId: (meal as VerboseScheduledMeal).sideId,
+      // saladId: (meal as VerboseScheduledMeal).saladId,
+      // veggieId: (meal as VerboseScheduledMeal).veggieId,
+      // sideId: (meal as VerboseScheduledMeal).sideId,
       dateScheduled: (meal as VerboseScheduledMeal).dateScheduled,
       status: MealStatus.prepared,
     };
@@ -83,7 +83,8 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   return (
     <div>
-      <MealStatusResolver
+      pizza
+      {/* <MealStatusResolver
         previousDayEnabled={mealIndex > 0}
         onPreviousDay={handlePreviousDay}
         nextDayEnabled={mealIndex < (mealsToResolve.length - 1)}
@@ -92,7 +93,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
         onDelete={handleDeleteMealStatusResolver}
         onSave={handleSaveMealStatusResolver}
         onSkip={handleSkipMealStatusResolver}
-      />
+      /> */}
     </div>
   );
 };

@@ -1,5 +1,10 @@
 import { cloneDeep, isNil } from 'lodash';
-import { DishEntity, DishEntityRedux, DishesState, RequiredAccompanimentFlags } from '../types';
+import {
+  DishEntity,
+  DishEntityRedux,
+  DishesState,
+  // RequiredAccompanimentFlags
+} from '../types';
 import { MealWheelModelBaseAction } from './baseAction';
 
 // ------------------------------------
@@ -56,7 +61,9 @@ export const addDishRedux = (
     type: mongoDish.type,
     minimumInterval: mongoDish.minimumInterval,
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
-    accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
+    numAccompanimentsRequired: !isNil(mongoDish.numAccompanimentsRequired) ? mongoDish.numAccompanimentsRequired : 0,
+    allowableAccompanimentTypes: !isNil(mongoDish.allowableAccompanimentTypes) ? mongoDish.allowableAccompanimentTypes : [],
+    // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
     prepEffort: mongoDish.prepEffort,
     prepTime: mongoDish.prepTime,
     cleanupEffort: mongoDish.cleanupEffort,
@@ -84,7 +91,9 @@ export const addDishesRedux = (
       type: mongoDish.type,
       minimumInterval: mongoDish.minimumInterval,
       lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
-      accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
+      numAccompanimentsRequired: !isNil(mongoDish.numAccompanimentsRequired) ? mongoDish.numAccompanimentsRequired : 0,
+      allowableAccompanimentTypes: !isNil(mongoDish.allowableAccompanimentTypes) ? mongoDish.allowableAccompanimentTypes : [],
+      // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
       prepEffort: mongoDish.prepEffort,
       prepTime: mongoDish.prepTime,
       cleanupEffort: mongoDish.cleanupEffort,
@@ -126,7 +135,9 @@ export const updateDishRedux = (
     type: mongoDish.type,
     minimumInterval: mongoDish.minimumInterval,
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
-    accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
+    numAccompanimentsRequired: !isNil(mongoDish.numAccompanimentsRequired) ? mongoDish.numAccompanimentsRequired : 0,
+    allowableAccompanimentTypes: !isNil(mongoDish.allowableAccompanimentTypes) ? mongoDish.allowableAccompanimentTypes : [],
+    // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
     prepEffort: mongoDish.prepEffort,
     prepTime: mongoDish.prepTime,
     cleanupEffort: mongoDish.cleanupEffort,
@@ -166,37 +177,37 @@ const sortDishesByProperty = (dishes: DishEntityRedux[], order: Order, orderBy: 
       case 'minimumInterval': {
         return compareValues(a[orderBy], b[orderBy], order);
       }
-      case 'requiresAccompaniment': {
-        const aValue = a.accompanimentRequired !== RequiredAccompanimentFlags.None;
-        const bValue = b.accompanimentRequired !== RequiredAccompanimentFlags.None;
-        return compareValues(aValue, bValue, order);
-      }
-      case 'requiresSalad': {
-        if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
-          const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-          const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-          return compareValues(aValue, bValue, order);
-        }
-        return 0;
-      }
-      case 'requiresSide': {
-        if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
-          const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-          const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-          return compareValues(aValue, bValue, order);
-        }
-        return 0;
-      }
-      case 'requiresVeggie': {
-        if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
-          const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
-          const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
-          return compareValues(aValue, bValue, order);
-        }
-        return 0;
-      }
+      // case 'requiresAccompaniment': {
+      //   const aValue = a.accompanimentRequired !== RequiredAccompanimentFlags.None;
+      //   const bValue = b.accompanimentRequired !== RequiredAccompanimentFlags.None;
+      //   return compareValues(aValue, bValue, order);
+      // }
+      // case 'requiresSalad': {
+      //   if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
+      //     const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+      //     const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+      //     return compareValues(aValue, bValue, order);
+      //   }
+      //   return 0;
+      // }
+      // case 'requiresSide': {
+      //   if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
+      //     const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+      //     const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+      //     return compareValues(aValue, bValue, order);
+      //   }
+      //   return 0;
+      // }
+      // case 'requiresVeggie': {
+      //   if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
+      //     const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+      //     const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+      //     return compareValues(aValue, bValue, order);
+      //   }
+      //   return 0;
+      // }
       default:
-        debugger;
+        // debugger;
         return 0;
     }
   });

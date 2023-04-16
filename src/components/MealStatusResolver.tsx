@@ -17,7 +17,13 @@ import IconButton from '@mui/material/IconButton';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-import { getMains, getSides, getSalads, getVeggies, getPendingMeal } from '../selectors';
+import {
+  getMains,
+  // getSides,
+  // getSalads,
+  // getVeggies,
+  getPendingMeal
+} from '../selectors';
 import { VerboseScheduledMeal, DishEntity } from '../types';
 import { MealWheelDispatch, setPendingMeal } from '../models';
 
@@ -108,9 +114,9 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     const sideName: string = isNil(selectedSide) ? '' : selectedSide.name;
 
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
-    updatedMeal.side = selectedSide;
-    updatedMeal.sideId = isNil(selectedSide) ? '' : selectedSide.id;
-    updatedMeal.sideName = sideName;
+    // updatedMeal.side = selectedSide;
+    // updatedMeal.sideId = isNil(selectedSide) ? '' : selectedSide.id;
+    // updatedMeal.sideName = sideName;
     onSetPendingMeal(updatedMeal);
   };
 
@@ -124,9 +130,9 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
       }
     }
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
-    updatedMeal.salad = selectedSalad;
-    updatedMeal.saladId = isNil(selectedSalad) ? '' : selectedSalad.id;
-    updatedMeal.saladName = isNil(selectedSalad) ? '' : selectedSalad.name;
+    // updatedMeal.salad = selectedSalad;
+    // updatedMeal.saladId = isNil(selectedSalad) ? '' : selectedSalad.id;
+    // updatedMeal.saladName = isNil(selectedSalad) ? '' : selectedSalad.name;
     onSetPendingMeal(updatedMeal);
   };
 
@@ -143,9 +149,9 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     const veggieName: string = isNil(selectedVeggie) ? '' : selectedVeggie.name;
 
     const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
-    updatedMeal.veggie = selectedVeggie;
-    updatedMeal.veggieId = isNil(selectedVeggie) ? '' : selectedVeggie.id;
-    updatedMeal.veggieName = veggieName;
+    // updatedMeal.veggie = selectedVeggie;
+    // updatedMeal.veggieId = isNil(selectedVeggie) ? '' : selectedVeggie.id;
+    // updatedMeal.veggieName = veggieName;
     onSetPendingMeal(updatedMeal);
   };
 
@@ -232,10 +238,10 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const renderSides = (): JSX.Element => {
-    let sideId = 'none';
-    if (!isNil(meal) && !isNil(meal.side)) {
-      sideId = meal.side.id;
-    }
+    const sideId = 'none';
+    // if (!isNil(meal) && !isNil(meal.side)) {
+    //   sideId = meal.side.id;
+    // }
     const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
     return (
       <div>
@@ -255,10 +261,10 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const renderSalads = (): JSX.Element => {
-    let saladId = 'none';
-    if (!isNil(meal) && !isNil(meal.salad)) {
-      saladId = meal.salad.id;
-    }
+    const saladId = 'none';
+    // if (!isNil(meal) && !isNil(meal.salad)) {
+    //   saladId = meal.salad.id;
+    // }
     const saladsMenuItems: JSX.Element[] = renderDishMenuItems(salads, true);
     return (
       <div>
@@ -278,10 +284,10 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const renderVeggies = (): JSX.Element => {
-    let veggieId = 'none';
-    if (!isNil(meal) && !isNil(meal.veggie)) {
-      veggieId = meal.veggie.id;
-    }
+    const veggieId = 'none';
+    // if (!isNil(meal) && !isNil(meal.veggie)) {
+    //   veggieId = meal.veggie.id;
+    // }
     const veggiesMenuItems: JSX.Element[] = renderDishMenuItems(veggies, true);
     return (
       <div>
@@ -372,9 +378,9 @@ function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent
   return {
     meal: getPendingMeal(state) as VerboseScheduledMeal,
     mains: getMains(state),
-    sides: getSides(state),
-    salads: getSalads(state),
-    veggies: getVeggies(state),
+    // sides: getSides(state),
+    // salads: getSalads(state),
+    // veggies: getVeggies(state),
   };
 }
 

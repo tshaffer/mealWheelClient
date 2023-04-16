@@ -80,9 +80,9 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     return (
       <React.Fragment>
         {'Main: ' + meal.mainDish.name}
-        {getFormattedAccompaniment(meal.salad, 'Salad')}
+        {/* {getFormattedAccompaniment(meal.salad, 'Salad')}
         {getFormattedAccompaniment(meal.side, 'Side')}
-        {getFormattedAccompaniment(meal.veggie, 'Veggie')}
+        {getFormattedAccompaniment(meal.veggie, 'Veggie')} */}
         <br />
         <Button
           onClick={() => handleClearAssignedMealOnDateMongo(mealOnDate)}

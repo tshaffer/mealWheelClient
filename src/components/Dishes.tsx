@@ -30,7 +30,14 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
-import { DishEntity, DishRow, DishType, Order, RequiredAccompanimentFlags, UiState } from '../types';
+import {
+  DishEntity,
+  DishRow,
+  // DishType,
+  Order,
+  // RequiredAccompanimentFlags,
+  UiState
+} from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, sortDishesAndSetRows, updateDish } from '../controllers';
 import { getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
@@ -63,30 +70,30 @@ const headCells: readonly HeadCell[] = [
     disablePadding: true,
     label: 'Minimum interval in days (0 for no minimum)',
   },
-  {
-    id: 'requiresAccompaniment',
-    numeric: false,
-    disablePadding: true,
-    label: 'Requires accompaniment',
-  },
-  {
-    id: 'requiresSalad',
-    numeric: false,
-    disablePadding: true,
-    label: 'Salad',
-  },
-  {
-    id: 'requiresSide',
-    numeric: false,
-    disablePadding: true,
-    label: 'Side',
-  },
-  {
-    id: 'requiresVeggie',
-    numeric: false,
-    disablePadding: true,
-    label: 'Veggie',
-  },
+  // {
+  //   id: 'requiresAccompaniment',
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: 'Requires accompaniment',
+  // },
+  // {
+  //   id: 'requiresSalad',
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: 'Salad',
+  // },
+  // {
+  //   id: 'requiresSide',
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: 'Side',
+  // },
+  // {
+  //   id: 'requiresVeggie',
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: 'Veggie',
+  // },
 ];
 
 interface TableProps {
@@ -210,19 +217,19 @@ const Dishes = (props: DishesProps) => {
   const getRows = (): DishRow[] => {
 
     const rows: DishRow[] = props.dishes.map((dish: DishEntity) => {
-      const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-      const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-      const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+      // const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+      // const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+      // const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
       const row: DishRow = {
         dish,
         name: dish.name,
         type: dish.type,
         last: dish.last,
         minimumInterval: dish.minimumInterval,
-        requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
-        requiresSide,
-        requiresSalad,
-        requiresVeggie,
+        // requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
+        // requiresSide,
+        // requiresSalad,
+        // requiresVeggie,
       };
       return row;
     });
@@ -255,7 +262,7 @@ const Dishes = (props: DishesProps) => {
     const dish: DishEntity = {
       id: '',
       name: '',
-      type: DishType.Main,
+      type: 'main',
       minimumInterval: 5,
       last: null,
       prepEffort: 5,
@@ -266,17 +273,17 @@ const Dishes = (props: DishesProps) => {
   };
 
   const getDefaultDishRow = (dish: DishEntity): DishRow => {
-    
+
     const dishRow: DishRow = {
       dish,
       name: '',
-      type: DishType.Main,
+      type: 'main',
       minimumInterval: 5,
       last: null,
-      requiresAccompaniment: false,
-      requiresSalad: false,
-      requiresSide: false,
-      requiresVeggie: false,
+      // requiresAccompaniment: false,
+      // requiresSalad: false,
+      // requiresSide: false,
+      // requiresVeggie: false,
     };
 
     return dishRow;
@@ -314,27 +321,27 @@ const Dishes = (props: DishesProps) => {
     props.onSetCurrentEditDish(null);
   };
 
-  const getAccompanimentRequired = (dishRow: DishRow): RequiredAccompanimentFlags => {
-    switch (dishRow.type) {
-      case DishType.Main: {
-        let accompanimentValue: RequiredAccompanimentFlags = RequiredAccompanimentFlags.None;
-        if (dishRow.requiresSalad) {
-          accompanimentValue = RequiredAccompanimentFlags.Salad;
-        }
-        if (dishRow.requiresSide) {
-          accompanimentValue += RequiredAccompanimentFlags.Side;
-        }
-        if (dishRow.requiresVeggie) {
-          accompanimentValue += RequiredAccompanimentFlags.Veggie;
-        }
-        return accompanimentValue;
-      }
-      case DishType.Salad:
-      case DishType.Side:
-      case DishType.Veggie:
-        return RequiredAccompanimentFlags.None;
-    }
-  };
+  // const getAccompanimentRequired = (dishRow: DishRow): RequiredAccompanimentFlags => {
+  //   switch (dishRow.type) {
+  //     case 'main': {
+  //       let accompanimentValue: RequiredAccompanimentFlags = RequiredAccompanimentFlags.None;
+  //       if (dishRow.requiresSalad) {
+  //         accompanimentValue = RequiredAccompanimentFlags.Salad;
+  //       }
+  //       if (dishRow.requiresSide) {
+  //         accompanimentValue += RequiredAccompanimentFlags.Side;
+  //       }
+  //       if (dishRow.requiresVeggie) {
+  //         accompanimentValue += RequiredAccompanimentFlags.Veggie;
+  //       }
+  //       return accompanimentValue;
+  //     }
+  //     case DishType.Salad:
+  //     case DishType.Side:
+  //     case DishType.Veggie:
+  //       return RequiredAccompanimentFlags.None;
+  //   }
+  // };
 
   const handleSaveClick = () => {
 
@@ -357,12 +364,12 @@ const Dishes = (props: DishesProps) => {
       }
 
       // if requiresAccompaniment, ensure that one is specified
-      if (props.currentEditDish.requiresAccompaniment) {
-        if (!props.currentEditDish.requiresSalad && !props.currentEditDish.requiresSide && !props.currentEditDish.requiresVeggie) {
-          setSnackbar({ children: 'Error while saving dish: accompaniment required.', severity: 'error' });
-          return;
-        }
-      }
+      // if (props.currentEditDish.requiresAccompaniment) {
+      //   if (!props.currentEditDish.requiresSalad && !props.currentEditDish.requiresSide && !props.currentEditDish.requiresVeggie) {
+      //     setSnackbar({ children: 'Error while saving dish: accompaniment required.', severity: 'error' });
+      //     return;
+      //   }
+      // }
 
       if (props.currentEditDish.dish.id === '') {
         const newDish: DishEntity = {
@@ -370,7 +377,7 @@ const Dishes = (props: DishesProps) => {
           name: props.currentEditDish.name,
           type: props.currentEditDish.type,
           minimumInterval: props.currentEditDish.minimumInterval,
-          accompanimentRequired: getAccompanimentRequired(props.currentEditDish),
+          // accompanimentRequired: getAccompanimentRequired(props.currentEditDish),
           last: null,
           prepEffort: 5,
           prepTime: 15,
@@ -387,11 +394,11 @@ const Dishes = (props: DishesProps) => {
               // auto add new row
               const dish: DishEntity = getDefaultDishEntity();
               const dishRow: DishRow = getDefaultDishRow(dish);
-          
+
               clonedRows.unshift(dishRow);
               // following call updates id in row that was just saved and adds a new row
               props.onSetRows(clonedRows);
-          
+
               props.onSetCurrentEditDish(dishRow);
             }
           });
@@ -400,7 +407,7 @@ const Dishes = (props: DishesProps) => {
         updatedDish.name = props.currentEditDish.name;
         updatedDish.type = props.currentEditDish.type;
         updatedDish.minimumInterval = props.currentEditDish.minimumInterval;
-        updatedDish.accompanimentRequired = getAccompanimentRequired(props.currentEditDish);
+        // updatedDish.accompanimentRequired = getAccompanimentRequired(props.currentEditDish);
         props.onUpdateDish(props.currentEditDish.dish.id, updatedDish);
       }
       props.onSetCurrentEditDish(null);
@@ -433,17 +440,17 @@ const Dishes = (props: DishesProps) => {
         selectedDishRow.type = unmodifiedDishEntity.type;
         selectedDishRow.minimumInterval = unmodifiedDishEntity.minimumInterval;
         selectedDishRow.last = unmodifiedDishEntity.last;
-        if (isNil(unmodifiedDishEntity.accompanimentRequired)) {
-          selectedDishRow.requiresAccompaniment = false;
-          selectedDishRow.requiresSalad = false;
-          selectedDishRow.requiresSide = false;
-          selectedDishRow.requiresVeggie = false;
-        } else {
-          selectedDishRow.requiresAccompaniment = unmodifiedDishEntity.accompanimentRequired !== RequiredAccompanimentFlags.None;
-          selectedDishRow.requiresSalad = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-          selectedDishRow.requiresSide = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-          selectedDishRow.requiresVeggie = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
-        }
+        // if (isNil(unmodifiedDishEntity.accompanimentRequired)) {
+        //   selectedDishRow.requiresAccompaniment = false;
+        //   selectedDishRow.requiresSalad = false;
+        //   selectedDishRow.requiresSide = false;
+        //   selectedDishRow.requiresVeggie = false;
+        // } else {
+        //   selectedDishRow.requiresAccompaniment = unmodifiedDishEntity.accompanimentRequired !== RequiredAccompanimentFlags.None;
+        //   selectedDishRow.requiresSalad = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
+        //   selectedDishRow.requiresSide = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
+        //   selectedDishRow.requiresVeggie = (unmodifiedDishEntity.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
+        // }
         debugger;
         /* old code that I don't understand. understand, then convert....
           const clonedRows = cloneDeep(rows);
@@ -470,7 +477,7 @@ const Dishes = (props: DishesProps) => {
     return selectedRow;
   };
 
-  const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: DishType) => {
+  const handleUpdateDishType = (selectedDishRow: DishRow, updatedDishType: string) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'type', updatedDishType);
     props.onSetCurrentEditDish(selectedRow);
   };
@@ -486,20 +493,20 @@ const Dishes = (props: DishesProps) => {
     props.onSetCurrentEditDish(selectedRow);
   };
 
-  const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
-    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSalad', requiresSalad);
-    props.onSetCurrentEditDish(selectedRow);
-  };
+  // const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
+  //   const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSalad', requiresSalad);
+  //   props.onSetCurrentEditDish(selectedRow);
+  // };
 
-  const handleToggleRequiresSide = (selectedDishRow: DishRow, requiresSide: boolean) => {
-    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSide', requiresSide);
-    props.onSetCurrentEditDish(selectedRow);
-  };
+  // const handleToggleRequiresSide = (selectedDishRow: DishRow, requiresSide: boolean) => {
+  //   const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSide', requiresSide);
+  //   props.onSetCurrentEditDish(selectedRow);
+  // };
 
-  const handleToggleRequiresVeggie = (selectedDishRow: DishRow, requiresVeggie: boolean) => {
-    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresVeggie', requiresVeggie);
-    props.onSetCurrentEditDish(selectedRow);
-  };
+  // const handleToggleRequiresVeggie = (selectedDishRow: DishRow, requiresVeggie: boolean) => {
+  //   const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresVeggie', requiresVeggie);
+  //   props.onSetCurrentEditDish(selectedRow);
+  // };
 
   // Avoid a layout jump when reaching the last page with empty props.rows.
   const emptyRows =
@@ -510,18 +517,18 @@ const Dishes = (props: DishesProps) => {
       value: 'main',
       label: 'Main',
     },
-    {
-      value: 'salad',
-      label: 'Salad',
-    },
-    {
-      value: 'side',
-      label: 'Side',
-    },
-    {
-      value: 'veggie',
-      label: 'Veggie',
-    },
+    // {
+    //   value: 'salad',
+    //   label: 'Salad',
+    // },
+    // {
+    //   value: 'side',
+    //   label: 'Side',
+    // },
+    // {
+    //   value: 'veggie',
+    //   label: 'Veggie',
+    // },
   ];
 
 
@@ -549,7 +556,7 @@ const Dishes = (props: DishesProps) => {
             defaultValue={row.name}
             variant='standard'
             onBlur={(event) => handleUpdateDishName(row, event.target.value)}
-            ref={(input) => { setDishNameInRow(input); }} 
+            ref={(input) => { setDishNameInRow(input); }}
           />
         </TableCell>
         <TableCell
@@ -564,7 +571,7 @@ const Dishes = (props: DishesProps) => {
               native: true,
             }}
             helperText="Please select your dish type"
-            onChange={(event) => handleUpdateDishType(row, event.target.value as DishType)}
+            onChange={(event) => handleUpdateDishType(row, event.target.value as string)}
             placeholder={'Dish Type'}
             value={row.type}
           >
@@ -591,7 +598,7 @@ const Dishes = (props: DishesProps) => {
           />
 
         </TableCell>
-        <TableCell align='center'>
+        {/* <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresAccompaniment}
@@ -614,15 +621,15 @@ const Dishes = (props: DishesProps) => {
             onChange={(event) => handleToggleRequiresSide(row, event.target.checked)}
             disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
           />
-        </TableCell>
-        <TableCell align='center'>
+        </TableCell> */}
+        {/* <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresVeggie}
             onChange={(event) => handleToggleRequiresVeggie(row, event.target.checked)}
             disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
           />
-        </TableCell>
+        </TableCell> */}
         <TableCell align='center'>
           <Tooltip title="Save">
             <IconButton
@@ -698,7 +705,7 @@ const Dishes = (props: DishesProps) => {
           />
         </TableCell>
 
-        <TableCell align='center'>
+        {/* <TableCell align='center'>
           <Checkbox
             color="primary"
             checked={row.requiresAccompaniment}
@@ -725,7 +732,7 @@ const Dishes = (props: DishesProps) => {
             checked={row.requiresVeggie}
             disabled
           />
-        </TableCell>
+        </TableCell> */}
         <TableCell align='center'>
           <Tooltip title="Edit">
             <IconButton

@@ -127,15 +127,15 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     if (mealOnDate.meal.mainDish.id !== mealEntity.mainDish.id) {
       return false;
     }
-    if (!areAccompanimentsIdentical(mealOnDateMeal.salad, mealEntity.salad)) {
-      return false;
-    }
-    if (!areAccompanimentsIdentical(mealOnDateMeal.side, mealEntity.side)) {
-      return false;
-    }
-    if (!areAccompanimentsIdentical(mealOnDateMeal.veggie, mealEntity.veggie)) {
-      return false;
-    }
+    // if (!areAccompanimentsIdentical(mealOnDateMeal.salad, mealEntity.salad)) {
+    //   return false;
+    // }
+    // if (!areAccompanimentsIdentical(mealOnDateMeal.side, mealEntity.side)) {
+    //   return false;
+    // }
+    // if (!areAccompanimentsIdentical(mealOnDateMeal.veggie, mealEntity.veggie)) {
+    //   return false;
+    // }
     return true;
   };
 
