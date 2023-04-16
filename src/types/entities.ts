@@ -91,8 +91,6 @@ export interface MealEntity {
   id: string;
   mainDish: DishEntity;
   accompanimentDishes?: DishEntity[];
-  mainDishId: string;
-  accompanimentDishIds?: string[];
 }
 
 export interface ScheduledMealEntity {

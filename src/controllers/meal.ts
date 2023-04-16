@@ -72,11 +72,12 @@ export const loadScheduledMeals = (): MealWheelVoidPromiseThunkAction => {
         const scheduledMealEntities: ScheduledMealEntity[] = [];
         const rawScheduledMealEntities: any[] = (mealsResponse as any).data;
         for (const rawScheduledMealEntity of rawScheduledMealEntities) {
-          const { id, userId, mainDishId, saladId, veggieId, sideId, dateScheduled, status } = rawScheduledMealEntity;
+          const { id, userId, mainDishId, accompanimentIds, dateScheduled, status } = rawScheduledMealEntity;
           scheduledMealEntities.push({
             id,
             userId,
             mainDishId,
+            accompanimentIds,
             // saladId,
             // veggieId,
             // sideId,
@@ -397,6 +398,7 @@ export const assignMealToDate = (
       id: mealId,
       userId: getCurrentUser(mealWheelState) as string,
       mainDishId: meal.mainDish.id,
+      accompanimentIds: [],
       // saladId: isNil(meal.salad) ? '' : meal.salad.id,
       // veggieId: isNil(meal.veggie) ? '' : meal.veggie.id,
       // sideId: isNil(meal.side) ? '' : meal.side.id,
@@ -640,6 +642,8 @@ const generateMealsToResolve = (state: MealWheelState, scheduledMeals: Scheduled
           ...scheduledMeal,
           main,
           mainName: mainDishName,
+          accompaniments: [],
+          accompanimentNames: [],
           // salad,
           // saladName,
           // veggie,

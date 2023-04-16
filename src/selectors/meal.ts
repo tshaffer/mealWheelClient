@@ -1,12 +1,9 @@
 import { cloneDeep, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { MealWheelState, ScheduledMealEntity, MealEntity, MealOnDate, DishEntity } from '../types';
-import { 
-  getMainById, 
-  // getSaladById, 
-  // getSideById, 
-  // getVeggieById,
- } from './dish';
+import {
+  getMainById,
+} from './dish';
 
 export const getScheduledMeals = (state: MealWheelState): ScheduledMealEntity[] => {
   return state.scheduledMealsState.scheduledMeals;
