@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { isNil } from 'lodash';
 import {
-  clearDefinedMeals,
   clearDishes,
   clearIngredients,
   clearIngredientsByDish,
@@ -30,7 +29,6 @@ import { getVersions } from './versionInfo';
 import { loadDishes } from './dish';
 import { loadUsers, loginPersistentUser } from './user';
 import {
-  loadDefinedMeals,
   loadScheduledMeals,
 } from './meal';
 import { loadIngredients, loadIngredientsByDish } from './ingredients';
@@ -99,15 +97,12 @@ export const initializeApp = (): MealWheelAnyPromiseThunkAction => {
 export const loadUserData = (): MealWheelAnyPromiseThunkAction => {
   return (dispatch: MealWheelDispatch) => {
     dispatch(clearDishes());
-    dispatch(clearDefinedMeals());
     dispatch(clearScheduledMeals());
     dispatch(clearIngredients());
     dispatch(clearIngredientsByDish());
     return dispatch(loadAccompanimentTypes())
       .then(() => {
         dispatch(loadDishes());
-      }).then(() => {
-        dispatch(loadDefinedMeals());
       }).then(() => {
         dispatch(loadScheduledMeals());
       }).then(() => {

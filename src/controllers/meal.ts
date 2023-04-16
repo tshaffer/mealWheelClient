@@ -4,8 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   addScheduledMealRedux,
-  addDefinedMealsRedux,
-  clearDefinedMeals,
   clearScheduledMeals,
   deleteScheduledMealRedux,
   updateScheduledMealRedux,
@@ -22,7 +20,6 @@ import {
 } from '../models';
 import {
   getCurrentUser,
-  getDefinedMeals,
   getDishById,
   getDishes,
   getIngredientById,
@@ -45,7 +42,6 @@ import {
   MealStatus,
   MealWheelState,
   // RequiredAccompanimentFlags,
-  DefinedMealEntity,
   serverUrl,
   ScheduledMealEntity,
   MainDishEntity,
@@ -55,24 +51,6 @@ import {
   MealEntity
 } from '../types';
 import { updateDishLastProperty } from './dish';
-
-export const loadDefinedMeals = (): MealWheelVoidThunkAction => {
-  return (dispatch: MealWheelDispatch, getState: any) => {
-
-    dispatch(clearDefinedMeals());
-
-    // const state: MealWheelState = getState();
-    // const id = getCurrentUser(state);
-
-    // const path = serverUrl + apiUrlFragment + 'definedMeals?id=' + id;
-
-    // return axios.get(path)
-    //   .then((mealsResponse: any) => {
-    //     const definedMealEntities: DefinedMealEntity[] = (mealsResponse as any).data;
-    //     dispatch(addDefinedMealsRedux(definedMealEntities));
-    //   });
-  };
-};
 
 const dateComparator = (scheduledMeal1: ScheduledMealEntity, scheduledMeal2: ScheduledMealEntity): number => {
   return scheduledMeal1.dateScheduled.getTime() - scheduledMeal2.dateScheduled.getTime();
@@ -383,55 +361,6 @@ const getAccompanimentIndex = (
   }
 
   return null;
-};
-
-const getRandomPredefinedMeals = (mealWheelState: MealWheelState, alreadyScheduledMeals: ScheduledMealEntity[], numMeals: number): ScheduledMealEntity[] => {
-
-  const allDefinedMeals: DefinedMealEntity[] = getDefinedMeals(mealWheelState);
-
-  const selectedMainDishIds: string[] = [];
-
-  for (const alreadyScheduledMeal of alreadyScheduledMeals) {
-    selectedMainDishIds.push(alreadyScheduledMeal.mainDishId);
-  }
-
-  const selectedDefinedMeals: DefinedMealEntity[] = [];
-
-  while (selectedDefinedMeals.length < numMeals) {
-    const definedMealIndex = Math.floor(Math.random() * allDefinedMeals.length);
-    const selectedDefinedMeal: DefinedMealEntity = allDefinedMeals[definedMealIndex];
-    const selectedDefinedMealMainDishId = selectedDefinedMeal.mainDishId;
-    if (!selectedMainDishIds.includes(selectedDefinedMealMainDishId)) {
-      selectedDefinedMeals.push(selectedDefinedMeal);
-      selectedMainDishIds.push(selectedDefinedMealMainDishId);
-    }
-  }
-
-  const scheduledMealEntities: ScheduledMealEntity[] = [];
-
-  const mealDate: Date = new Date();
-
-  for (const selectedDefinedMeal of selectedDefinedMeals) {
-
-    // const { mainDishId, saladId, veggieId, sideId } = selectedDefinedMeal;
-    const { mainDishId } = selectedDefinedMeal;
-    const mealId = uuidv4();
-    const scheduledMeal: ScheduledMealEntity = {
-      id: mealId,
-      userId: getCurrentUser(mealWheelState) as string,
-      mainDishId,
-      // saladId,
-      // veggieId,
-      // sideId,
-      dateScheduled: mealDate,        // placeholder
-      status: MealStatus.pending
-    };
-
-    scheduledMealEntities.push(scheduledMeal);
-
-  }
-
-  return scheduledMealEntities;
 };
 
 const updateMealDishesLastProperty = (

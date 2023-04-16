@@ -98,33 +98,36 @@ export interface DishEntityRedux {
 export interface MealEntity {
   id: string;
   mainDish: DishEntity;
+  accompanimentDishes?: DishEntity[];
   // salad?: DishEntity;
   // veggie?: DishEntity;
   // side?: DishEntity;
-  // mainDishId: string;
+  mainDishId: string;
+  accompanimentDishIds?: string[];
   // saladId: string;
   // veggieId: string;
   // sideId: string; 
 }
 
-export interface DefinedMealEntity {
-  id: string;
-  userId: string;
-  name: string;
-  mainDishId: string;
-  // saladId: string;
-  // veggieId: string;
-  // sideId: string;
-  mainName: string;
-  // veggieName: string;
-  // saladName: string;
-  // sideName: string;
-}
+// export interface DefinedMealEntity {
+//   id: string;
+//   userId: string;
+//   name: string;
+//   mainDishId: string;
+//   // saladId: string;
+//   // veggieId: string;
+//   // sideId: string;
+//   mainName: string;
+//   // veggieName: string;
+//   // saladName: string;
+//   // sideName: string;
+// }
 
 export interface ScheduledMealEntity {
   id: string;
   userId: string;
   mainDishId: string;
+  accompanimentIds: string[];
   // saladId: string;
   // veggieId: string;
   // sideId: string;
@@ -135,6 +138,8 @@ export interface ScheduledMealEntity {
 export interface VerboseScheduledMeal extends ScheduledMealEntity {
   main: DishEntity | null;
   mainName: string;
+  accompaniments: DishEntity[] | null;
+  accompanimentNames: string[];
   // salad: DishEntity | null;
   // saladName: string;
   // veggie: DishEntity | null;
@@ -166,6 +171,7 @@ export interface IngredientsByDish {
   [dishId: string]: string[];   // string array is list of ingredient ids
 }
 
+// ????
 export interface DishRow {
   dish: DishEntity;
   name: string
