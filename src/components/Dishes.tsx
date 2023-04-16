@@ -74,7 +74,7 @@ const headCells: readonly HeadCell[] = [
     id: 'numAccompanimentsRequired',
     numeric: false,
     disablePadding: true,
-    label: 'Requires accompaniment',
+    label: 'Number of required accompaniments',
   },
   // {
   //   id: 'requiresSalad',
@@ -226,7 +226,7 @@ const Dishes = (props: DishesProps) => {
         type: dish.type,
         last: dish.last,
         minimumInterval: dish.minimumInterval,
-        numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired)? dish.numAccompanimentsRequired : 0,
+        numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired) ? dish.numAccompanimentsRequired : 0,
         // requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
         // requiresSide,
         // requiresSalad,
@@ -490,6 +490,12 @@ const Dishes = (props: DishesProps) => {
     props.onSetCurrentEditDish(selectedRow);
   };
 
+  const handleUpdateNumAccompanimentsRequired = (selectedDishRow: DishRow, numAccompanimentsRequiredInput: string) => {
+    const numAccompanimentsRequired = parseInt(numAccompanimentsRequiredInput, 10);
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'numAccompanimentsRequired', numAccompanimentsRequired);
+    props.onSetCurrentEditDish(selectedRow);
+  };
+
   const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
     const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresAccompaniment', requiresAccompaniment);
     props.onSetCurrentEditDish(selectedRow);
@@ -601,6 +607,19 @@ const Dishes = (props: DishesProps) => {
 
         </TableCell>
         <TableCell align='center'>
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='number'
+            label='Num'
+            defaultValue={row.numAccompanimentsRequired}
+            variant='standard'
+            onBlur={(event) => handleUpdateNumAccompanimentsRequired(row, event.target.value)}
+            InputProps={{
+              inputProps: {
+                min: 0
+              }
+            }}
+          />
           <Checkbox
             color="primary"
             checked={row.numAccompanimentsRequired > 0}
@@ -708,10 +727,13 @@ const Dishes = (props: DishesProps) => {
         </TableCell>
 
         <TableCell align='center'>
-          <Checkbox
-            color="primary"
-            checked={row.numAccompanimentsRequired > 0}
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='number'
+            label='Num'
+            defaultValue={row.numAccompanimentsRequired}
             disabled
+            variant='standard'
           />
         </TableCell>
         {/* <TableCell align='center'>
