@@ -53,6 +53,7 @@ interface HeadCell {
   numeric: boolean;
 }
 
+
 const headCells: readonly HeadCell[] = [
   {
     id: 'name',
@@ -216,6 +217,47 @@ const Dishes = (props: DishesProps) => {
   }
 
   let dishIdToDishRowIndex: IdToNumberMap = {};
+
+  const getHeadCells = (): HeadCell[] => {
+
+    const headCells: HeadCell[] = [
+      {
+        id: 'name',
+        numeric: false,
+        disablePadding: true,
+        label: 'Main',
+      },
+      {
+        id: 'type',
+        numeric: false,
+        disablePadding: true,
+        label: 'Type',
+      },
+      {
+        id: 'minimumInterval',
+        numeric: true,
+        disablePadding: true,
+        label: 'Minimum interval in days (0 for no minimum)',
+      },
+      {
+        id: 'numAccompanimentsRequired',
+        numeric: false,
+        disablePadding: true,
+        label: 'Number of required accompaniments',
+      },
+    ];
+
+    for (const accompanimentType of props.accompanimentTypes) {
+      headCells.push({
+        id: 'name',
+        numeric: false,
+        disablePadding: true,
+        label: 'poo',
+      });
+    }
+
+    return headCells;
+  };
 
   const getRows = (): DishRow[] => {
 
@@ -504,6 +546,12 @@ const Dishes = (props: DishesProps) => {
     props.onSetCurrentEditDish(selectedRow);
   };
 
+  const handleToggleSetAllowableAccompaniment = (accompanimentType: AccompanimentTypeEntity, checked: boolean) => {
+    console.log('handleToggleSetAllowableAccompaniment');
+    console.log(accompanimentType);
+    console.log(checked);
+  };
+
   // const handleToggleRequiresSalad = (selectedDishRow: DishRow, requiresSalad: boolean) => {
   //   const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresSalad', requiresSalad);
   //   props.onSetCurrentEditDish(selectedRow);
@@ -556,16 +604,39 @@ const Dishes = (props: DishesProps) => {
         value: accompanimentTypeEntity.id,
         label: accompanimentTypeEntity.name,
       });
-
     }
 
     return accompanimentChoices;
   };
 
+  const getAllowableAccompanimentColumn = (accompanimentType: AccompanimentTypeEntity): JSX.Element => {
+    return (
+      <TableCell align='center'>
+        <Checkbox
+          color="primary"
+          onChange={(event) => handleToggleSetAllowableAccompaniment(accompanimentType, event.target.checked)}
+        // checked={row.requiresSalad}
+        // onChange={(event) => handleToggleRequiresSalad(row, event.target.checked)}
+        // disabled={row.type !== DishType.Main || !row.requiresAccompaniment}
+        />
+      </TableCell>
+    );
+  };
+
+  const getAllowableAccompanimentColumns = (): JSX.Element[] => {
+
+    const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
+      return getAllowableAccompanimentColumn(accompanimentType);
+    });
+
+    return allowableAccompanimentColumns;
+  };
 
   const renderEditingRow = (row: DishRow) => {
 
     const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
+
+    const allowableAccompanimentColumns = getAllowableAccompanimentColumns();
 
     const isItemSelected = true;
     return (
@@ -647,6 +718,7 @@ const Dishes = (props: DishesProps) => {
             }}
           />
         </TableCell>
+        {allowableAccompanimentColumns}
         {/* <TableCell align='center'>
           <Checkbox
             color="primary"
