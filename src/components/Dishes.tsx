@@ -31,6 +31,8 @@ import Alert, { AlertProps } from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 
 import {
+  AccompanimentTypeEntity,
+  AccompanimentTypesMap,
   DishEntity,
   DishRow,
   // DishType,
@@ -40,7 +42,7 @@ import {
 } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, sortDishesAndSetRows, updateDish } from '../controllers';
-import { getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
+import { getAccompanimentTypesByUser, getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
 import { MealWheelDispatch, sortDishes } from '../models';
 import { setCurrentEditDish, setRows, setSortBy, setSortOrder } from '../models/dishesUI';
 
@@ -103,6 +105,7 @@ interface TableProps {
 }
 
 export interface DishesProps {
+  accompanimentTypes: AccompanimentTypeEntity[];
   currentEditDish: DishRow | null,
   dishes: DishEntity[];
   rows: DishRow[];
@@ -520,27 +523,49 @@ const Dishes = (props: DishesProps) => {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
 
-  const accompanimentChoices = [
-    {
-      value: 'main',
-      label: 'Main',
-    },
-    // {
-    //   value: 'salad',
-    //   label: 'Salad',
-    // },
-    // {
-    //   value: 'side',
-    //   label: 'Side',
-    // },
-    // {
-    //   value: 'veggie',
-    //   label: 'Veggie',
-    // },
-  ];
+  // const accompanimentChoices = [
+  //   {
+  //     value: 'main',
+  //     label: 'Main',
+  //   },
+  // {
+  //   value: 'salad',
+  //   label: 'Salad',
+  // },
+  // {
+  //   value: 'side',
+  //   label: 'Side',
+  // },
+  // {
+  //   value: 'veggie',
+  //   label: 'Veggie',
+  // },
+  // ];
+
+  const getAccompanimentTypeOptions = (): any[] => {
+
+    const accompanimentChoices = [
+      {
+        value: 'main',
+        label: 'Main',
+      }
+    ];
+
+    for (const accompanimentTypeEntity of props.accompanimentTypes) {
+      accompanimentChoices.push({
+        value: accompanimentTypeEntity.id,
+        label: accompanimentTypeEntity.name,
+      });
+
+    }
+
+    return accompanimentChoices;
+  };
 
 
   const renderEditingRow = (row: DishRow) => {
+
+    const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
 
     const isItemSelected = true;
     return (
@@ -583,7 +608,7 @@ const Dishes = (props: DishesProps) => {
             placeholder={'Dish Type'}
             value={row.type}
           >
-            {accompanimentChoices.map((option) => (
+            {accompanimentTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -875,7 +900,10 @@ const Dishes = (props: DishesProps) => {
 };
 
 function mapStateToProps(state: any) {
+  console.log('mapStateToProps');
+  console.log(getAccompanimentTypesByUser(state));
   return {
+    accompanimentTypes: getAccompanimentTypesByUser(state),
     dishes: getDishes(state),
     rows: getDishRows(state),
     currentEditDish: getCurrentEditDish(state),
