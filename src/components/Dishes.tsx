@@ -158,6 +158,10 @@ const Dishes = (props: DishesProps) => {
 
   let dishIdToDishRowIndex: IdToNumberMap = {};
 
+  // Avoid a layout jump when reaching the last page with empty props.rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
+
   const getHeadCells = (): HeadCell[] => {
 
     const headCells: HeadCell[] = [
@@ -352,6 +356,7 @@ const Dishes = (props: DishesProps) => {
         updatedDish.name = props.currentEditDish.name;
         updatedDish.type = props.currentEditDish.type;
         updatedDish.minimumInterval = props.currentEditDish.minimumInterval;
+        updatedDish.numAccompanimentsRequired = props.currentEditDish.numAccompanimentsRequired;
         props.onUpdateDish(props.currentEditDish.dish.id, updatedDish);
       }
       props.onSetCurrentEditDish(null);
@@ -434,10 +439,6 @@ const Dishes = (props: DishesProps) => {
     console.log(accompanimentType);
     console.log(checked);
   };
-
-  // Avoid a layout jump when reaching the last page with empty props.rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
 
   const getAccompanimentTypeOptions = (): any[] => {
 
