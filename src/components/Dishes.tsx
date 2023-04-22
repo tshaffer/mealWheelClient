@@ -428,13 +428,9 @@ const Dishes = (props: DishesProps) => {
     props.onSetCurrentEditDish(selectedRow);
   };
 
-  const handleToggleRequiresAccompaniment = (selectedDishRow: DishRow, requiresAccompaniment: boolean) => {
-    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'requiresAccompaniment', requiresAccompaniment);
-    props.onSetCurrentEditDish(selectedRow);
-  };
-
-  const handleToggleSetAllowableAccompaniment = (accompanimentType: AccompanimentTypeEntity, checked: boolean) => {
+  const handleToggleSetAllowableAccompaniment = (dish: DishEntity, accompanimentType: AccompanimentTypeEntity, checked: boolean) => {
     console.log('handleToggleSetAllowableAccompaniment');
+    console.log(dish);
     console.log(accompanimentType);
     console.log(checked);
   };
@@ -462,13 +458,12 @@ const Dishes = (props: DishesProps) => {
     return accompanimentChoices;
   };
 
-  const getAllowableAccompanimentColumn = (accompanimentType: AccompanimentTypeEntity, isDisabled: boolean): JSX.Element => {
+  const getReadOnlyAllowableAccompanimentColumn = (accompanimentType: AccompanimentTypeEntity): JSX.Element => {
     return (
       <TableCell align='center'>
         <Checkbox
           color="primary"
-          onChange={(event) => handleToggleSetAllowableAccompaniment(accompanimentType, event.target.checked)}
-          disabled={isDisabled}
+          disabled={true}
         />
       </TableCell>
     );
@@ -477,16 +472,28 @@ const Dishes = (props: DishesProps) => {
   const getReadOnlyAllowableAccompanimentColumns = (): JSX.Element[] => {
 
     const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
-      return getAllowableAccompanimentColumn(accompanimentType, true);
+      return getReadOnlyAllowableAccompanimentColumn(accompanimentType);
     });
 
     return allowableAccompanimentColumns;
   };
 
-  const getReadWriteAllowableAccompanimentColumns = (readOnly: boolean): JSX.Element[] => {
+  const getReadWriteAllowableAccompanimentColumn = (dish: DishEntity, accompanimentType: AccompanimentTypeEntity, isDisabled: boolean): JSX.Element => {
+    return (
+      <TableCell align='center'>
+        <Checkbox
+          color="primary"
+          onChange={(event) => handleToggleSetAllowableAccompaniment(dish, accompanimentType, event.target.checked)}
+          disabled={isDisabled}
+        />
+      </TableCell>
+    );
+  };
+
+  const getReadWriteAllowableAccompanimentColumns = (dish: DishEntity, readOnly: boolean): JSX.Element[] => {
 
     const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
-      return getAllowableAccompanimentColumn(accompanimentType, readOnly);
+      return getReadWriteAllowableAccompanimentColumn(dish, accompanimentType, readOnly);
     });
 
     return allowableAccompanimentColumns;
@@ -496,11 +503,8 @@ const Dishes = (props: DishesProps) => {
 
     const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
 
-    console.log('renderEditingRow');
-    console.log(row);
-
     const isReadOnly: boolean = row.dish.type.toLowerCase() !== 'main';
-    const allowableAccompanimentColumns = getReadWriteAllowableAccompanimentColumns(isReadOnly);
+    const allowableAccompanimentColumns = getReadWriteAllowableAccompanimentColumns(row.dish, isReadOnly);
 
     const isItemSelected = true;
     return (
@@ -798,8 +802,6 @@ const Dishes = (props: DishesProps) => {
 };
 
 function mapStateToProps(state: any) {
-  console.log('mapStateToProps');
-  console.log(getAccompanimentTypesByUser(state));
   return {
     accompanimentTypes: getAccompanimentTypesByUser(state),
     dishes: getDishes(state),
