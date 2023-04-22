@@ -48,59 +48,14 @@ import { setCurrentEditDish, setRows, setSortBy, setSortOrder } from '../models/
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof DishRow;
+  id: string;
   label: string;
   numeric: boolean;
 }
 
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Main',
-  },
-  {
-    id: 'type',
-    numeric: false,
-    disablePadding: true,
-    label: 'Type',
-  },
-  {
-    id: 'minimumInterval',
-    numeric: true,
-    disablePadding: true,
-    label: 'Minimum interval in days (0 for no minimum)',
-  },
-  {
-    id: 'numAccompanimentsRequired',
-    numeric: false,
-    disablePadding: true,
-    label: 'Number of required accompaniments',
-  },
-  // {
-  //   id: 'requiresSalad',
-  //   numeric: false,
-  //   disablePadding: true,
-  //   label: 'Salad',
-  // },
-  // {
-  //   id: 'requiresSide',
-  //   numeric: false,
-  //   disablePadding: true,
-  //   label: 'Side',
-  // },
-  // {
-  //   id: 'requiresVeggie',
-  //   numeric: false,
-  //   disablePadding: true,
-  //   label: 'Veggie',
-  // },
-];
-
 interface TableProps {
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof DishRow) => void;
+  headCells: HeadCell[];
+  onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
   orderBy: string;
 }
@@ -126,11 +81,11 @@ export interface DishesProps {
 
 const DishesTableHead = (props: TableProps) => {
 
-  const { order, orderBy, onRequestSort } =
+  const { headCells, order, orderBy, onRequestSort } =
     props;
 
   const createSortHandler =
-    (property: keyof DishRow) => (event: React.MouseEvent<unknown>) => {
+    (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -249,10 +204,10 @@ const Dishes = (props: DishesProps) => {
 
     for (const accompanimentType of props.accompanimentTypes) {
       headCells.push({
-        id: 'name',
+        id: accompanimentType.name,
         numeric: false,
         disablePadding: true,
-        label: 'poo',
+        label: accompanimentType.name,
       });
     }
 
@@ -286,7 +241,7 @@ const Dishes = (props: DishesProps) => {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof DishRow,
+    property: string,
   ) => {
     const isAsc = props.sortBy === property && props.sortOrder === 'asc';
     const sortOrder: Order = isAsc ? 'desc' : 'asc';
@@ -908,6 +863,11 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
+  const headCells = getHeadCells();
+  console.log('headCells');
+  console.log(headCells.length);
+  console.log(headCells);
+
   return (
     <div>
       <AssignIngredientsToDishDialog
@@ -928,6 +888,7 @@ const Dishes = (props: DishesProps) => {
               size={'small'}
             >
               <DishesTableHead
+                headCells={headCells}
                 order={props.sortOrder}
                 orderBy={props.sortBy}
                 onRequestSort={handleRequestSort}
