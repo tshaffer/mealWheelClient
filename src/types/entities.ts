@@ -140,10 +140,7 @@ export interface DishRow {
   minimumInterval: number;
   last: Date | null;
   numAccompanimentsRequired: number,
-  // requiresAccompaniment: boolean;
-  // requiresSalad: boolean;
-  // requiresSide: boolean;
-  // requiresVeggie: boolean;
+  allowableAccompanimentTypes: string[],// accompanimentTypeId[]
 }
 
 export interface IngredientRow {

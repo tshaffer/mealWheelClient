@@ -154,7 +154,7 @@ export interface DishRowModel {
   // salad: number;
   // veggie: number;
   numAccompanimentsRequired: number,
-  // allowableAccompanimentTypes: number[],
+  allowableAccompanimentTypes: string[],
   accompaniments: string[],
 
 }

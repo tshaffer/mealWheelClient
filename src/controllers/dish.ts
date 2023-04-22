@@ -148,9 +148,6 @@ export const deleteDish = (
 const getRows = (dishes: DishEntity[]): DishRow[] => {
 
   const rows: DishRow[] = dishes.map((dish: DishEntity) => {
-    // const requiresSide: boolean = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-    // const requiresSalad = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-    // const requiresVeggie = isNil(dish.accompanimentRequired) ? false : (dish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
     const row: DishRow = {
       dish,
       name: dish.name,
@@ -158,10 +155,7 @@ const getRows = (dishes: DishEntity[]): DishRow[] => {
       last: dish.last,
       minimumInterval: dish.minimumInterval,
       numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired) ? dish.numAccompanimentsRequired : 0,
-      // requiresAccompaniment: !isNil(dish.accompanimentRequired) && dish.accompanimentRequired !== RequiredAccompanimentFlags.None,
-      // requiresSide,
-      // requiresSalad,
-      // requiresVeggie,
+      allowableAccompanimentTypes: !isNil(dish.allowableAccompanimentTypes) ? dish.allowableAccompanimentTypes : [],
     };
     return row;
   });

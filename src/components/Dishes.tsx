@@ -213,6 +213,7 @@ const Dishes = (props: DishesProps) => {
         last: dish.last,
         minimumInterval: dish.minimumInterval,
         numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired) ? dish.numAccompanimentsRequired : 0,
+        allowableAccompanimentTypes: !isNil(dish.allowableAccompanimentTypes) ? dish.allowableAccompanimentTypes : [],
       };
       return row;
     });
@@ -264,6 +265,7 @@ const Dishes = (props: DishesProps) => {
       minimumInterval: 5,
       last: null,
       numAccompanimentsRequired: 0,
+      allowableAccompanimentTypes: [],
     };
 
     return dishRow;
@@ -357,6 +359,7 @@ const Dishes = (props: DishesProps) => {
         updatedDish.type = props.currentEditDish.type;
         updatedDish.minimumInterval = props.currentEditDish.minimumInterval;
         updatedDish.numAccompanimentsRequired = props.currentEditDish.numAccompanimentsRequired;
+        updatedDish.allowableAccompanimentTypes = props.currentEditDish.allowableAccompanimentTypes;
         props.onUpdateDish(props.currentEditDish.dish.id, updatedDish);
       }
       props.onSetCurrentEditDish(null);
@@ -433,11 +436,22 @@ const Dishes = (props: DishesProps) => {
     props.onSetCurrentEditDish(selectedRow);
   };
 
-  const handleToggleSetAllowableAccompaniment = (dish: DishEntity, accompanimentType: AccompanimentTypeEntity, checked: boolean) => {
+  const handleToggleSetAllowableAccompaniment = (selectedDishRow: DishRow, accompanimentType: AccompanimentTypeEntity, checked: boolean) => {
     console.log('handleToggleSetAllowableAccompaniment');
-    console.log(dish);
+    console.log(selectedDishRow);
+    // const dish = selectedDishRow.dish;
     console.log(accompanimentType);
     console.log(checked);
+
+    const allowableAccompanimentTypes: string[] = cloneDeep(selectedDishRow.allowableAccompanimentTypes);
+    const indexOfAccompanimentType = allowableAccompanimentTypes.indexOf(accompanimentType.id);
+    if (indexOfAccompanimentType >= 0) {
+      allowableAccompanimentTypes.splice(indexOfAccompanimentType, 1);
+    } else {
+      allowableAccompanimentTypes.splice(0, 0, accompanimentType.id);
+    }
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'allowableAccompanimentTypes', allowableAccompanimentTypes);
+    props.onSetCurrentEditDish(selectedRow);
   };
 
   const getAccompanimentTypeOptions = (): any[] => {
@@ -479,22 +493,31 @@ const Dishes = (props: DishesProps) => {
     return allowableAccompanimentColumns;
   };
 
-  const getReadWriteAllowableAccompanimentColumn = (dish: DishEntity, accompanimentType: AccompanimentTypeEntity, isDisabled: boolean): JSX.Element => {
+  const getReadWriteAllowableAccompanimentColumn = (dishRow: DishRow, accompanimentType: AccompanimentTypeEntity, isDisabled: boolean): JSX.Element => {
+    console.log('getReadWriteAllowableAccompanimentColumn');
+    console.log(dishRow);
+    console.log(accompanimentType);
+
+    const allowableAccompanimentTypesForThisRow = isNil(dishRow.allowableAccompanimentTypes) ? [] : dishRow.allowableAccompanimentTypes;
+    const accompanimentId = accompanimentType.id;
+    const isChecked = allowableAccompanimentTypesForThisRow.indexOf(accompanimentId) >= 0;
+
     return (
       <TableCell align='center'>
         <Checkbox
           color="primary"
-          onChange={(event) => handleToggleSetAllowableAccompaniment(dish, accompanimentType, event.target.checked)}
+          checked={isChecked}
+          onChange={(event) => handleToggleSetAllowableAccompaniment(dishRow, accompanimentType, event.target.checked)}
           disabled={isDisabled}
         />
       </TableCell>
     );
   };
 
-  const getReadWriteAllowableAccompanimentColumns = (dish: DishEntity, readOnly: boolean): JSX.Element[] => {
+  const getReadWriteAllowableAccompanimentColumns = (dishRow: DishRow, readOnly: boolean): JSX.Element[] => {
 
     const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
-      return getReadWriteAllowableAccompanimentColumn(dish, accompanimentType, readOnly);
+      return getReadWriteAllowableAccompanimentColumn(dishRow, accompanimentType, readOnly);
     });
 
     return allowableAccompanimentColumns;
@@ -505,7 +528,7 @@ const Dishes = (props: DishesProps) => {
     const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
 
     const isReadOnly: boolean = row.dish.type.toLowerCase() !== 'main';
-    const allowableAccompanimentColumns = getReadWriteAllowableAccompanimentColumns(row.dish, isReadOnly);
+    const allowableAccompanimentColumns = getReadWriteAllowableAccompanimentColumns(row, isReadOnly);
 
     const isItemSelected = true;
     return (
