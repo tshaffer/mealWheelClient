@@ -385,7 +385,7 @@ const Dishes = (props: DishesProps) => {
         selectedDishRow.minimumInterval = unmodifiedDishEntity.minimumInterval;
         selectedDishRow.last = unmodifiedDishEntity.last;
         // }
-        debugger;
+        // debugger;
         /* old code that I don't understand. understand, then convert....
           const clonedRows = cloneDeep(rows);
           rows[selectedDishRowIndex] = selectedDishRow;
@@ -474,7 +474,16 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
-  const getAllowableAccompanimentColumns = (readOnly: boolean): JSX.Element[] => {
+  const getReadOnlyAllowableAccompanimentColumns = (): JSX.Element[] => {
+
+    const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
+      return getAllowableAccompanimentColumn(accompanimentType, true);
+    });
+
+    return allowableAccompanimentColumns;
+  };
+
+  const getReadWriteAllowableAccompanimentColumns = (readOnly: boolean): JSX.Element[] => {
 
     const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
       return getAllowableAccompanimentColumn(accompanimentType, readOnly);
@@ -487,7 +496,11 @@ const Dishes = (props: DishesProps) => {
 
     const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
 
-    const allowableAccompanimentColumns = getAllowableAccompanimentColumns(false);
+    console.log('renderEditingRow');
+    console.log(row);
+
+    const isReadOnly: boolean = row.dish.type.toLowerCase() !== 'main';
+    const allowableAccompanimentColumns = getReadWriteAllowableAccompanimentColumns(isReadOnly);
 
     const isItemSelected = true;
     return (
@@ -594,7 +607,7 @@ const Dishes = (props: DishesProps) => {
 
   const renderInactiveRow = (row: DishRow) => {
 
-    const allowableAccompanimentColumns = getAllowableAccompanimentColumns(true);
+    const allowableAccompanimentColumns = getReadOnlyAllowableAccompanimentColumns();
 
     const isItemSelected = false;
     return (
