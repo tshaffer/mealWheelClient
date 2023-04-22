@@ -462,21 +462,22 @@ const Dishes = (props: DishesProps) => {
     return accompanimentChoices;
   };
 
-  const getAllowableAccompanimentColumn = (accompanimentType: AccompanimentTypeEntity): JSX.Element => {
+  const getAllowableAccompanimentColumn = (accompanimentType: AccompanimentTypeEntity, isDisabled: boolean): JSX.Element => {
     return (
       <TableCell align='center'>
         <Checkbox
           color="primary"
           onChange={(event) => handleToggleSetAllowableAccompaniment(accompanimentType, event.target.checked)}
+          disabled={isDisabled}
         />
       </TableCell>
     );
   };
 
-  const getAllowableAccompanimentColumns = (): JSX.Element[] => {
+  const getAllowableAccompanimentColumns = (readOnly: boolean): JSX.Element[] => {
 
     const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
-      return getAllowableAccompanimentColumn(accompanimentType);
+      return getAllowableAccompanimentColumn(accompanimentType, readOnly);
     });
 
     return allowableAccompanimentColumns;
@@ -486,7 +487,7 @@ const Dishes = (props: DishesProps) => {
 
     const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
 
-    const allowableAccompanimentColumns = getAllowableAccompanimentColumns();
+    const allowableAccompanimentColumns = getAllowableAccompanimentColumns(false);
 
     const isItemSelected = true;
     return (
@@ -592,6 +593,9 @@ const Dishes = (props: DishesProps) => {
   };
 
   const renderInactiveRow = (row: DishRow) => {
+
+    const allowableAccompanimentColumns = getAllowableAccompanimentColumns(true);
+
     const isItemSelected = false;
     return (
       <TableRow
@@ -654,6 +658,7 @@ const Dishes = (props: DishesProps) => {
             variant='standard'
           />
         </TableCell>
+        {allowableAccompanimentColumns}
         <TableCell align='center'>
           <Tooltip title="Edit">
             <IconButton
