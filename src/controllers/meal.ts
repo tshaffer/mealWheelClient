@@ -249,8 +249,6 @@ const selectMainDishes = (
     // don't add this main dish if it has already been added
     if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
 
-      selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-
       // don't add this main dish if it was last suggested within a number of days < minimum days between assignments
       const mainDish: DishEntity | null = getMainById(mealWheelState, allDishes[allMainDishIndices[mainDishIndex]].id);
 
@@ -281,6 +279,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
   const selectedMainDishIndices = selectMainDishes(mealWheelState, startDate, numMeals, dishIndicesByDishType);
 
   const allDishes: DishEntity[] = getDishes(mealWheelState);
+
   for (const selectedMainDishIndex of selectedMainDishIndices) {
 
     const mainDish: DishEntity = allDishes[selectedMainDishIndex];
