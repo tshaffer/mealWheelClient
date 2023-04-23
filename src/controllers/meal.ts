@@ -270,7 +270,10 @@ const selectMainDishes = (
   return selectedMainDishIndices;
 };
 
+// TEDTODO - avoid infinite loops
 const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number, startDate: Date): MealEntity[] => {
+
+  const mealEntities: MealEntity[] = [];
 
   const dishesByDishType: DishesByDishType = generateDishesByDishType(mealWheelState);
   const dishIndicesByDishType: DishIndicesByDishType = generateDishIndicesByDishType(mealWheelState);
@@ -285,6 +288,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
     const numAccompanimentsRequired: number = mainDish.numAccompanimentsRequired as number;
     const allowableAccompanimentTypes: string[] = cloneDeep(mainDish.allowableAccompanimentTypes as string[]);
     const selectedAccompanimentIds: string[] = [];
+    const accompanimentDishes: DishEntity[] = [];
 
     let accompanimentsAcquired: number = 0;
     while (accompanimentsAcquired < numAccompanimentsRequired) {
@@ -304,160 +308,25 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
       selectedAccompanimentIds.push(accompanimentDishes[accompanimentDishIndex].id);
 
-      debugger;
+      const accompanimentDish: DishEntity | null = getAccompanimentById(mealWheelState, accompanimentDishes[accompanimentDishIndex].id);
+      if (!isNil(accompanimentDish)) {
+        
+        // add accompaniment
+        accompanimentDishes.push(accompanimentDish);
+        
+        // remove this accompaniment type from allowableAccompanimentTypes
+        allowableAccompanimentTypes.splice(accompanimentTypeIndex, 1);
 
-      // remove this accompaniment type from allowableAccompanimentTypes
-      allowableAccompanimentTypes.splice(accompanimentTypeIndex, 1);
-
-      accompanimentsAcquired++;
-    }
-  }
-
-  // generate specified number of meals
-  // let numGeneratedMeals = 0;
-  // while (numGeneratedMeals < numMeals) {
-
-
-
-  //   numGeneratedMeals++;
-  // }
-  debugger;
-
-  const mealEntities: MealEntity[] = [];
-
-  const allMainDishIndices: number[] = [];
-  const allSaladIndices: number[] = [];
-  const allSideIndices: number[] = [];
-  const allVegIndices: number[] = [];
-
-  const old_selectedMainDishIndices: number[] = [];
-
-  const old_allDishes: DishEntity[] = getDishes(mealWheelState);
-  old_allDishes.forEach((dish: DishEntity, index: number) => {
-    switch (dish.type) {
-      case 'main':
-        allMainDishIndices.push(index);
-        break;
-      case 'salad':
-        allSaladIndices.push(index);
-        break;
-      case 'side':
-        allSideIndices.push(index);
-        break;
-      case 'veggie':
-        allVegIndices.push(index);
-        break;
-    }
-  });
-
-  // select random main dish items
-  while (old_selectedMainDishIndices.length < numMeals) {
-    const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
-
-    // don't add this main dish if it has already been added
-    if (!old_selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
-
-      // selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-      // }
-
-      // don't add this main dish if it was last suggested within a number of days < minimum days between assignments
-      const mainDish: DishEntity | null = getMainById(mealWheelState, old_allDishes[allMainDishIndices[mainDishIndex]].id);
-      if (!isNil(mainDish)) {
-        if (!isNil(mainDish.last)) {
-          const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
-          if (earliestTimeToRecommend < startDate.getTime()) {
-            old_selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-          }
-        } else {
-          old_selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-        }
+        accompanimentsAcquired++;
       }
+
     }
-  }
-
-  for (const selectedMainDishIndex of old_selectedMainDishIndices) {
-
-    const mainDish: DishEntity = old_allDishes[selectedMainDishIndex];
-
-    // let saladId: string | null = null;
-    // let veggieId: string | null = null;
-    // let sideId: string | null = null;
-
-    // if accompaniment to main is required, procure it.
-
-    // get list of possible accompaniment types for this main dish
-    // if (!isNil(mainDish.accompanimentRequired) && mainDish.accompanimentRequired !== RequiredAccompanimentFlags.None) {
-    //   const possibleAccompaniments: DishType[] = [];
-    //   if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Salad) {
-    //     possibleAccompaniments.push(DishType.Salad);
-    //   }
-    //   if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Side) {
-    //     possibleAccompaniments.push(DishType.Side);
-    //   }
-    //   if (mainDish.accompanimentRequired & RequiredAccompanimentFlags.Veggie) {
-    //     possibleAccompaniments.push(DishType.Veggie);
-    //   }
-    //   const numPossibleAccompaniments = possibleAccompaniments.length;
-
-    //   // select accompaniment from the possible accompaniments
-    //   // don't select one that has been used within the minimum time between uses
-    //   let accompanimentSelected = false;
-    //   let noPossibleAccompaniments = false;
-    //   // TEDTODO - ensure no infinite loop
-    //   // Infinite loop occurs if
-    //   //    mainDish requires an accompaniment (of only one type) and no accompaniments are available
-    //   while (!accompanimentSelected && !noPossibleAccompaniments) {
-    //     const accompanimentTypeIndex = Math.floor(Math.random() * numPossibleAccompaniments);
-    //     const accompanimentType: DishType = possibleAccompaniments[accompanimentTypeIndex];
-    //     switch (accompanimentType) {
-    //       case DishType.Salad: {
-    //         if (allSaladIndices.length > 0) {
-    //           saladId = getAccompanimentIndex(mealWheelState, allSaladIndices, startDate);
-    //           if (!isNil(saladId)) {
-    //             accompanimentSelected = true;
-    //           }
-    //         } else {
-    //           // TEDTODO temporary - other types might be possible??
-    //           noPossibleAccompaniments = true;
-    //         }
-    //         break;
-    //       }
-    //       case DishType.Side: {
-    //         if (allSideIndices.length > 0) {
-    //           sideId = getAccompanimentIndex(mealWheelState, allSideIndices, startDate);
-    //           if (!isNil(sideId)) {
-    //             accompanimentSelected = true;
-    //           }
-    //         } else {
-    //           // TEDTODO temporary - other types might be possible??
-    //           noPossibleAccompaniments = true;
-    //         }
-    //         break;
-    //       }
-    //       case DishType.Veggie: {
-    //         if (allVegIndices.length > 0) {
-    //           veggieId = getAccompanimentIndex(mealWheelState, allVegIndices, startDate);
-    //           if (!isNil(veggieId)) {
-    //             accompanimentSelected = true;
-    //           }
-    //         } else {
-    //           // TEDTODO temporary - other types might be possible??
-    //           noPossibleAccompaniments = true;
-    //         }
-    //       }
-    //         break;
-    //     }
-    //   }
-    // }
-
 
     const mealId = uuidv4();
     const meal: MealEntity = {
       id: mealId,
       mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
-      // salad: !isNil(saladId) ? getDishById(mealWheelState, saladId) as DishEntity : undefined,
-      // veggie: !isNil(veggieId) ? getDishById(mealWheelState, veggieId) as DishEntity : undefined,
-      // side: !isNil(sideId) ? getDishById(mealWheelState, sideId) as DishEntity : undefined,
+      accompanimentDishes,
     };
 
     mealEntities.push(meal);
@@ -465,7 +334,6 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
   }
 
   return mealEntities;
-
 };
 
 const getAccompanimentIndex = (
