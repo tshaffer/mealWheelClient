@@ -190,7 +190,102 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
 
 };
 
+// TEDTODO - DishesByDishType or DishIdsByDishType??
+interface DishesByDishType {
+  [id: string]: DishEntity[];   // key is dishType (string), value is array of dishIds for this dishType.
+}
+interface DishIndicesByDishType {
+  [id: string]: number[];   // key is dishType (string), value is array of indices into another data structure
+}
+
+const generateDishIdsByDishType = (mealWheelState: MealWheelState): DishesByDishType => {
+
+  const dishIdsByDishType: DishesByDishType = {};
+
+  // populate data structure mapping each dish type to a list of dishes of that type
+  const allDishes: DishEntity[] = getDishes(mealWheelState);
+  allDishes.forEach((dish: DishEntity, index: number) => {
+    if (!Object.prototype.hasOwnProperty.call(dishIdsByDishType, dish.type)) {
+      dishIdsByDishType[dish.type] = [];
+    }
+    dishIdsByDishType[dish.type].push(dish);
+  });
+
+  return dishIdsByDishType;
+};
+
+const generateDishIndicesByDishType = (mealWheelState: MealWheelState): DishIndicesByDishType => {
+
+  const dishIndicesByDishType: DishIndicesByDishType = {};
+
+  // populate data structure mapping each dish type to a list of dishes of that type
+  const allDishes: DishEntity[] = getDishes(mealWheelState);
+  allDishes.forEach((dish: DishEntity, index: number) => {
+    if (!Object.prototype.hasOwnProperty.call(dishIndicesByDishType, dish.type)) {
+      dishIndicesByDishType[dish.type] = [];
+    }
+    dishIndicesByDishType[dish.type].push(index);
+  });
+
+  return dishIndicesByDishType;
+};
+
+const selectMainDishes = (
+  mealWheelState: MealWheelState, 
+  startDate: Date, 
+  numMainDishes: number, 
+  dishIndicesByDishType: DishIndicesByDishType): number[] => {
+
+  const allDishes: DishEntity[] = getDishes(mealWheelState);
+
+  const allMainDishIndices: number[] = dishIndicesByDishType['main'];
+
+  const selectedMainDishIndices: number[] = [];
+
+  while (selectedMainDishIndices.length < numMainDishes) {
+
+    const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
+
+    // don't add this main dish if it has already been added
+    if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
+
+      selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+
+      // don't add this main dish if it was last suggested within a number of days < minimum days between assignments
+      const mainDish: DishEntity | null = getMainById(mealWheelState, allDishes[allMainDishIndices[mainDishIndex]].id);
+
+      if (!isNil(mainDish)) {
+        if (!isNil(mainDish.last)) {
+          const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
+          if (earliestTimeToRecommend < startDate.getTime()) {
+            selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+          }
+        } else {
+          selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+        }
+      }
+    }
+  }
+
+  return selectedMainDishIndices;
+};
+
 const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number, startDate: Date): MealEntity[] => {
+
+  // const dishIdsByDishType: DishesByDishType = generateDishIdsByDishType(mealWheelState);
+  const dishIndicesByDishType: DishIndicesByDishType = generateDishIndicesByDishType(mealWheelState);
+
+  const selectedMainDishIndices = selectMainDishes(mealWheelState, startDate, numMeals, dishIndicesByDishType);
+
+  // generate specified number of meals
+  let numGeneratedMeals = 0;
+  while (numGeneratedMeals < numMeals) {
+
+
+
+    numGeneratedMeals++;
+  }
+  debugger;
 
   const mealEntities: MealEntity[] = [];
 
@@ -199,10 +294,10 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
   const allSideIndices: number[] = [];
   const allVegIndices: number[] = [];
 
-  const selectedMainDishIndices: number[] = [];
+  const old_selectedMainDishIndices: number[] = [];
 
-  const allDishes: DishEntity[] = getDishes(mealWheelState);
-  allDishes.forEach((dish: DishEntity, index: number) => {
+  const old_allDishes: DishEntity[] = getDishes(mealWheelState);
+  old_allDishes.forEach((dish: DishEntity, index: number) => {
     switch (dish.type) {
       case 'main':
         allMainDishIndices.push(index);
@@ -220,33 +315,33 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
   });
 
   // select random main dish items
-  while (selectedMainDishIndices.length < numMeals) {
+  while (old_selectedMainDishIndices.length < numMeals) {
     const mainDishIndex = Math.floor(Math.random() * allMainDishIndices.length);
 
     // don't add this main dish if it has already been added
-    if (!selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
+    if (!old_selectedMainDishIndices.includes(allMainDishIndices[mainDishIndex])) {
 
       // selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
       // }
 
       // don't add this main dish if it was last suggested within a number of days < minimum days between assignments
-      const mainDish: DishEntity | null = getMainById(mealWheelState, allDishes[allMainDishIndices[mainDishIndex]].id);
+      const mainDish: DishEntity | null = getMainById(mealWheelState, old_allDishes[allMainDishIndices[mainDishIndex]].id);
       if (!isNil(mainDish)) {
         if (!isNil(mainDish.last)) {
           const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
           if (earliestTimeToRecommend < startDate.getTime()) {
-            selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+            old_selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
           }
         } else {
-          selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+          old_selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
         }
       }
     }
   }
 
-  for (const selectedMainDishIndex of selectedMainDishIndices) {
+  for (const selectedMainDishIndex of old_selectedMainDishIndices) {
 
-    const mainDish: DishEntity = allDishes[selectedMainDishIndex];
+    const mainDish: DishEntity = old_allDishes[selectedMainDishIndex];
 
     // let saladId: string | null = null;
     // let veggieId: string | null = null;
