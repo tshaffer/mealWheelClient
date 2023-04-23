@@ -198,20 +198,20 @@ interface DishIndicesByDishType {
   [id: string]: number[];   // key is dishType (string), value is array of indices into another data structure
 }
 
-const generateDishIdsByDishType = (mealWheelState: MealWheelState): DishesByDishType => {
+const generateDishesByDishType = (mealWheelState: MealWheelState): DishesByDishType => {
 
-  const dishIdsByDishType: DishesByDishType = {};
+  const dishesByDishType: DishesByDishType = {};
 
   // populate data structure mapping each dish type to a list of dishes of that type
   const allDishes: DishEntity[] = getDishes(mealWheelState);
   allDishes.forEach((dish: DishEntity, index: number) => {
-    if (!Object.prototype.hasOwnProperty.call(dishIdsByDishType, dish.type)) {
-      dishIdsByDishType[dish.type] = [];
+    if (!Object.prototype.hasOwnProperty.call(dishesByDishType, dish.type)) {
+      dishesByDishType[dish.type] = [];
     }
-    dishIdsByDishType[dish.type].push(dish);
+    dishesByDishType[dish.type].push(dish);
   });
 
-  return dishIdsByDishType;
+  return dishesByDishType;
 };
 
 const generateDishIndicesByDishType = (mealWheelState: MealWheelState): DishIndicesByDishType => {
@@ -231,9 +231,9 @@ const generateDishIndicesByDishType = (mealWheelState: MealWheelState): DishIndi
 };
 
 const selectMainDishes = (
-  mealWheelState: MealWheelState, 
-  startDate: Date, 
-  numMainDishes: number, 
+  mealWheelState: MealWheelState,
+  startDate: Date,
+  numMainDishes: number,
   dishIndicesByDishType: DishIndicesByDishType): number[] => {
 
   const allDishes: DishEntity[] = getDishes(mealWheelState);
@@ -272,19 +272,55 @@ const selectMainDishes = (
 
 const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: number, startDate: Date): MealEntity[] => {
 
-  // const dishIdsByDishType: DishesByDishType = generateDishIdsByDishType(mealWheelState);
+  const dishesByDishType: DishesByDishType = generateDishesByDishType(mealWheelState);
   const dishIndicesByDishType: DishIndicesByDishType = generateDishIndicesByDishType(mealWheelState);
 
   const selectedMainDishIndices = selectMainDishes(mealWheelState, startDate, numMeals, dishIndicesByDishType);
 
-  // generate specified number of meals
-  let numGeneratedMeals = 0;
-  while (numGeneratedMeals < numMeals) {
+  const allDishes: DishEntity[] = getDishes(mealWheelState);
+  for (const selectedMainDishIndex of selectedMainDishIndices) {
 
+    const mainDish: DishEntity = allDishes[selectedMainDishIndex];
 
+    const numAccompanimentsRequired: number = mainDish.numAccompanimentsRequired as number;
+    const allowableAccompanimentTypes: string[] = cloneDeep(mainDish.allowableAccompanimentTypes as string[]);
+    const selectedAccompanimentIds: string[] = [];
 
-    numGeneratedMeals++;
+    let accompanimentsAcquired: number = 0;
+    while (accompanimentsAcquired < numAccompanimentsRequired) {
+
+      // select accompaniment type from allowable accompaniment types, ensuring that this accompaniment type has not already been selected for this main
+
+      const accompanimentTypeIndex: number = Math.floor(Math.random() * allowableAccompanimentTypes.length);
+      const accompanimentType: string = allowableAccompanimentTypes[accompanimentTypeIndex];
+
+      // accompaniments of set accompanimentType
+      const accompanimentDishes: DishEntity[] = dishesByDishType[accompanimentType];
+      const accompanimentDishIndicesForThisAccompanimentType: number[] = dishIndicesByDishType[accompanimentType];  // indices into allDishes
+
+      // get one of the accompaniments from this list
+      const numAccompanimentsOfThisType: number = accompanimentDishes.length;
+      const accompanimentDishIndex = Math.floor(Math.random() * numAccompanimentsOfThisType);
+
+      selectedAccompanimentIds.push(accompanimentDishes[accompanimentDishIndex].id);
+
+      debugger;
+
+      // remove this accompaniment type from allowableAccompanimentTypes
+      allowableAccompanimentTypes.splice(accompanimentTypeIndex, 1);
+
+      accompanimentsAcquired++;
+    }
   }
+
+  // generate specified number of meals
+  // let numGeneratedMeals = 0;
+  // while (numGeneratedMeals < numMeals) {
+
+
+
+  //   numGeneratedMeals++;
+  // }
   debugger;
 
   const mealEntities: MealEntity[] = [];
