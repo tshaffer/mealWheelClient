@@ -473,30 +473,33 @@ const Dishes = (props: DishesProps) => {
     return accompanimentChoices;
   };
 
-  const getReadOnlyAllowableAccompanimentColumn = (accompanimentType: AccompanimentTypeEntity): JSX.Element => {
+  const getReadOnlyAllowableAccompanimentColumn = (dishRow: DishRow, accompanimentType: AccompanimentTypeEntity): JSX.Element => {
+
+    const allowableAccompanimentTypesForThisRow = isNil(dishRow.allowableAccompanimentTypes) ? [] : dishRow.allowableAccompanimentTypes;
+    const accompanimentId = accompanimentType.id;
+    const isChecked = allowableAccompanimentTypesForThisRow.indexOf(accompanimentId) >= 0;
+
     return (
       <TableCell align='center'>
         <Checkbox
           color="primary"
+          checked={isChecked}
           disabled={true}
         />
       </TableCell>
     );
   };
 
-  const getReadOnlyAllowableAccompanimentColumns = (): JSX.Element[] => {
+  const getReadOnlyAllowableAccompanimentColumns = (row: DishRow): JSX.Element[] => {
 
     const allowableAccompanimentColumns: JSX.Element[] = props.accompanimentTypes.map((accompanimentType) => {
-      return getReadOnlyAllowableAccompanimentColumn(accompanimentType);
+      return getReadOnlyAllowableAccompanimentColumn(row, accompanimentType);
     });
 
     return allowableAccompanimentColumns;
   };
 
   const getReadWriteAllowableAccompanimentColumn = (dishRow: DishRow, accompanimentType: AccompanimentTypeEntity, isDisabled: boolean): JSX.Element => {
-    console.log('getReadWriteAllowableAccompanimentColumn');
-    console.log(dishRow);
-    console.log(accompanimentType);
 
     const allowableAccompanimentTypesForThisRow = isNil(dishRow.allowableAccompanimentTypes) ? [] : dishRow.allowableAccompanimentTypes;
     const accompanimentId = accompanimentType.id;
@@ -598,7 +601,6 @@ const Dishes = (props: DishesProps) => {
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='number'
-            label='Num'
             defaultValue={row.numAccompanimentsRequired}
             variant='standard'
             onBlur={(event) => handleUpdateNumAccompanimentsRequired(row, event.target.value)}
@@ -635,7 +637,7 @@ const Dishes = (props: DishesProps) => {
 
   const renderInactiveRow = (row: DishRow) => {
 
-    const allowableAccompanimentColumns = getReadOnlyAllowableAccompanimentColumns();
+    const allowableAccompanimentColumns = getReadOnlyAllowableAccompanimentColumns(row);
 
     const isItemSelected = false;
     return (
@@ -666,16 +668,14 @@ const Dishes = (props: DishesProps) => {
           padding='none'
           align='center'
         >
-          <Select
-            placeholder={'Dish Type'}
-            value={row.type}
+          <TextField
+            sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+            type='string'
+            label='Dish type'
+            defaultValue={row.type}
             disabled
-          >
-            <MenuItem value={'main'}>Main</MenuItem>
-            <MenuItem value={'salad'}>Salad</MenuItem>
-            <MenuItem value={'side'}>Side</MenuItem>
-            <MenuItem value={'veggie'}>Veggie</MenuItem>
-          </Select>
+            variant='standard'
+          />
         </TableCell>
 
         <TableCell>
@@ -693,7 +693,6 @@ const Dishes = (props: DishesProps) => {
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='number'
-            label='Num'
             defaultValue={row.numAccompanimentsRequired}
             disabled
             variant='standard'
