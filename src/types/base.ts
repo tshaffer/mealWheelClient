@@ -144,19 +144,13 @@ export interface MealsResolutionState {
   mealsToResolve: VerboseScheduledMeal[];
 }
 
-// ????
 export interface DishRowModel {
   id: string;
   name: string,
   type: string,
-  // requiresAccompaniment: boolean;
-  // side: number;
-  // salad: number;
-  // veggie: number;
   numAccompanimentsRequired: number,
   allowableAccompanimentTypes: string[],
   accompaniments: string[],
-
 }
 
 export interface IngredientInDishRowModel extends GridRowModel {
