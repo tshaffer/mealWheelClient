@@ -78,9 +78,6 @@ export const loadScheduledMeals = (): MealWheelVoidPromiseThunkAction => {
             userId,
             mainDishId,
             accompanimentIds,
-            // saladId,
-            // veggieId,
-            // sideId,
             dateScheduled: new Date(dateScheduled),
             status,
           });
@@ -276,6 +273,8 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
   const dishesByDishType: DishesByDishType = generateDishesByDishType(mealWheelState);
   const dishIndicesByDishType: DishIndicesByDishType = generateDishIndicesByDishType(mealWheelState);
 
+  // TODO - refactor remaining code in this function - multiple functions
+  
   const selectedMainDishIndices = selectMainDishes(mealWheelState, startDate, numMeals, dishIndicesByDishType);
 
   const allDishes: DishEntity[] = getDishes(mealWheelState);

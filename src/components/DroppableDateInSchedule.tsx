@@ -75,14 +75,33 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
+  const getFormattedAccompaniments = (meal: MealEntity): JSX.Element[] => {
+
+    const formattedAccompaniments: JSX.Element[] = [];
+
+    if (!isNil(meal.accompanimentDishes)) {
+      for (const accompanimentDish of meal.accompanimentDishes) {
+        // TEDTODO - convert type to type's label
+        const formattedAccompaniment = getFormattedAccompaniment(accompanimentDish, accompanimentDish.type);
+        if (!isNil(formattedAccompaniment)) {
+          formattedAccompaniments.push(formattedAccompaniment);
+        }
+      }
+    }
+    return formattedAccompaniments;
+  };
+
+
   const getFormattedNonEmptyMeal = (mealOnDate: MealOnDate): JSX.Element => {
+    
     const meal: MealEntity = mealOnDate.meal as unknown as MealEntity;
+
+    const formattedAccompaniments = getFormattedAccompaniments(meal);
+
     return (
       <React.Fragment>
         {'Main: ' + meal.mainDish.name}
-        {/* {getFormattedAccompaniment(meal.salad, 'Salad')}
-        {getFormattedAccompaniment(meal.side, 'Side')}
-        {getFormattedAccompaniment(meal.veggie, 'Veggie')} */}
+        {formattedAccompaniments}
         <br />
         <Button
           onClick={() => handleClearAssignedMealOnDateMongo(mealOnDate)}
