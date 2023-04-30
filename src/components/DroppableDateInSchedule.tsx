@@ -80,9 +80,10 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     const formattedAccompaniments: JSX.Element[] = [];
 
     if (!isNil(meal.accompanimentDishes)) {
+      
       for (const accompanimentDish of meal.accompanimentDishes) {
         // TEDTODO - convert type to type's label
-        const formattedAccompaniment = getFormattedAccompaniment(accompanimentDish, accompanimentDish.type);
+        const formattedAccompaniment = getFormattedAccompaniment(accompanimentDish, accompanimentDish.id);
         if (!isNil(formattedAccompaniment)) {
           formattedAccompaniments.push(formattedAccompaniment);
         }
@@ -142,7 +143,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
         </div>
       );
     }
-
+    
     return (
       <React.Fragment key={props.mealOnDate.date.toString()}>
         {mealOnDate.date.toDateString()}

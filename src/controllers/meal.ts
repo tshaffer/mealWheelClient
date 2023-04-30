@@ -390,14 +390,19 @@ export const assignMealToDate = (
     const mealWheelState: MealWheelState = getState();
 
     const mealId = uuidv4();
+
+    const accompanimentIds: string[] = [];
+    if (!isNil(meal.accompanimentDishes)) {
+      meal.accompanimentDishes.forEach( (accompanimentDish: DishEntity) => {
+        accompanimentIds.push(accompanimentDish.id);
+      });
+    }
+
     const scheduledMeal: ScheduledMealEntity = {
       id: mealId,
       userId: getCurrentUser(mealWheelState) as string,
       mainDishId: meal.mainDish.id,
-      accompanimentIds: [],
-      // saladId: isNil(meal.salad) ? '' : meal.salad.id,
-      // veggieId: isNil(meal.veggie) ? '' : meal.veggie.id,
-      // sideId: isNil(meal.side) ? '' : meal.side.id,
+      accompanimentIds,
       dateScheduled: date,
       status: MealStatus.pending
     };
@@ -418,11 +423,19 @@ export const updateMealAssignedToDate = (
     const mealWheelState: MealWheelState = getState();
 
     const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(mealWheelState, date);
+    
+    const accompanimentIds: string[] = [];
+    if (!isNil(scheduledMeal)) {
+      scheduledMeal.accompanimentIds
+      scheduledMeal.accompanimentIds.forEach( (accompanimentDishId: string) => {
+        accompanimentIds.push(accompanimentDishId);
+      });
+    }
+
+
     if (!isNil(scheduledMeal)) {
       scheduledMeal.mainDishId = meal.mainDish.id;
-      // scheduledMeal.saladId = isNil(meal.salad) ? '' : meal.salad.id;
-      // scheduledMeal.sideId = isNil(meal.side) ? '' : meal.side.id;
-      // scheduledMeal.veggieId = isNil(meal.veggie) ? '' : meal.veggie.id;
+      scheduledMeal.accompanimentIds = accompanimentIds;
       dispatch(updateScheduledMeal(scheduledMeal.id, scheduledMeal));
     }
   };
