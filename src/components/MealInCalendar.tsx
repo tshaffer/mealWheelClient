@@ -6,13 +6,11 @@ import { isNil, isString } from 'lodash';
 
 import { DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
-import { 
-  getMainById, 
-  // getSaladById, 
-  getScheduledMeal, 
-  // getSideById, 
-  // getVeggieById
- } from '../selectors';
+import {
+  getAccompanimentById,
+  getMainById,
+  getScheduledMeal,
+} from '../selectors';
 import { MealWheelDispatch } from '../models';
 
 export interface MealInCalendarPropsFromParent {
@@ -21,24 +19,14 @@ export interface MealInCalendarPropsFromParent {
 
 export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
   main: DishEntity | null;
-  // salad: DishEntity | null;
-  // side: DishEntity | null;
-  // veggie: DishEntity | null;
+  accompaniments: DishEntity[] | null;
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
 
   const getAccompanimentLabel = (accompanimentType: string): string => {
-    // switch (accompanimentType) {
-    //   case DishType.Salad:
-    //     return 'Salad';
-    //   case DishType.Side:
-    //   default:
-    //     return 'Side';
-    //   case DishType.Veggie:
-    //     return 'Vegetable';
-    // }
-    return 'pizza';
+    // TEDTODO
+    return accompanimentType;
   };
 
   const renderMainDish = () => {
@@ -50,7 +38,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
     );
   };
 
-  const renderAccompaniment = (accompanimentDish: DishEntity | null) => {
+  const renderAccompaniment = (accompanimentDish: DishEntity | null): JSX.Element | null => {
 
     if (isNil(accompanimentDish)) {
       return null;
@@ -66,37 +54,35 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   const renderAccompaniments = () => {
 
-    // if (isNil(props.salad) && isNil(props.side) && isNil(props.veggie)) {
-    //   return (
-    //     <p className='shortParagraph'>{''}</p>
-    //   );
-    // }
+    if (isNil(props.accompaniments) || props.accompaniments.length === 0) {
+      return (
+        <p className='shortParagraph'>{''}</p>
+      );
+    }
 
-    const renderedAccompaniments: any[] = [];
+    const renderedAccompaniments: JSX.Element[] = [];
 
-    // let jsx = renderAccompaniment(props.salad);
-    // if (!isNil(jsx)) {
-    //   renderedAccompaniments.push(jsx);
-    // }
-    // jsx = renderAccompaniment(props.veggie);
-    // if (!isNil(jsx)) {
-    //   renderedAccompaniments.push(jsx);
-    // }
-    // jsx = renderAccompaniment(props.side);
-    // if (!isNil(jsx)) {
-    //   renderedAccompaniments.push(jsx);
-    // }
-
+    if (!isNil(props.accompaniments)) {
+      props.accompaniments.forEach((accompaniment: DishEntity) => {
+        const a = renderAccompaniment(accompaniment);
+        if (!isNil(a)) {
+          const renderedAccompanimentJsx = renderAccompaniment(accompaniment);
+          if (!isNil(renderedAccompanimentJsx)) {
+            renderedAccompaniments.push(renderedAccompanimentJsx);
+          }
+        }
+      });
+    }
     return renderedAccompaniments;
   };
 
   const mainDish = renderMainDish();
-  const accompaniment = renderAccompaniments();
+  const accompaniments = renderAccompaniments();
 
   return (
     <div>
       {mainDish}
-      {accompaniment}
+      {accompaniments}
     </div>
   );
 };
@@ -108,23 +94,34 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
     (isString(calendarEvent.scheduledMealId)) ? calendarEvent.scheduledMealId : '';
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
 
+  if (!isNil(scheduledMeal) && !isNil(scheduledMeal.accompanimentIds)) {
+    debugger;
+  }
+
+
   let main: DishEntity | null = null;
-  // let salad: DishEntity | null = null;
-  // let side: DishEntity | null = null;
-  // let veggie: DishEntity | null = null;
+  let accompanimentDishes: DishEntity[] | null = null;
+
   if (!isNil(scheduledMeal)) {
+
     main = getMainById(state, scheduledMeal.mainDishId) as DishEntity;
-    // salad = getSaladById(state, scheduledMeal.saladId);
-    // side = getSideById(state, scheduledMeal.sideId);
-    // veggie = getVeggieById(state, scheduledMeal.veggieId);
+
+    if (!isNil(scheduledMeal.accompanimentIds) && scheduledMeal.accompanimentIds.length > 0) {
+      accompanimentDishes = [];
+      scheduledMeal.accompanimentIds.forEach((accompanimentDishId: string) => {
+        const accompanimentDish: DishEntity | null = getAccompanimentById(state, accompanimentDishId);
+        if (!isNil(accompanimentDish)) {
+          accompanimentDishes!.push(accompanimentDish);
+        }
+      });
+    }
+
   } else {
-    // anything
+    // anything?
   }
   return {
     main,
-    // salad,
-    // side,
-    // veggie
+    accompanimentDishes,
   };
 }
 
