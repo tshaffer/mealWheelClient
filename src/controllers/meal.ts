@@ -154,12 +154,11 @@ export const generateGroceryList = (startDate: Date, numberOfMealsToGenerate: nu
     // get the list of dish ids for the scheduled meals for this date range - dish ids are unique
     const uniqueDishes: any = {};
     scheduledMeals.forEach((scheduledMeal: ScheduledMealEntity) => {
-      // const { mainDishId, saladId, veggieId, sideId } = scheduledMeal;
-      const { mainDishId } = scheduledMeal;
+      const { mainDishId, accompanimentIds } = scheduledMeal;
       addToUniqueDishes(uniqueDishes, mainDishId);
-      // addToUniqueDishes(uniqueDishes, saladId);
-      // addToUniqueDishes(uniqueDishes, veggieId);
-      // addToUniqueDishes(uniqueDishes, sideId);
+      accompanimentIds.forEach((accompanimentId: string) => {
+        addToUniqueDishes(uniqueDishes, accompanimentId);
+      });
     });
 
     // get list of ingredients ids given dish ids.
@@ -276,7 +275,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
   const dishIndicesByDishType: DishIndicesByDishType = generateDishIndicesByDishType(mealWheelState);
 
   // TODO - refactor remaining code in this function - multiple functions
-  
+
   const selectedMainDishIndices = selectMainDishes(mealWheelState, startDate, numMeals, dishIndicesByDishType);
 
   const allDishes: DishEntity[] = getDishes(mealWheelState);
@@ -309,10 +308,10 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
       const selectedAccompanimentDish: DishEntity | null = accompanimentDishes[accompanimentDishIndex];
 
       if (!isNil(selectedAccompanimentDish)) {
-        
+
         // add accompaniment
         selectedAccompanimentDishes.push(selectedAccompanimentDish);
-        
+
         // remove this accompaniment type from allowableAccompanimentTypes
         allowableAccompanimentTypes.splice(accompanimentTypeIndex, 1);
 
@@ -391,7 +390,7 @@ export const assignMealToDate = (
 
     const accompanimentIds: string[] = [];
     if (!isNil(meal.accompanimentDishes)) {
-      meal.accompanimentDishes.forEach( (accompanimentDish: DishEntity) => {
+      meal.accompanimentDishes.forEach((accompanimentDish: DishEntity) => {
         accompanimentIds.push(accompanimentDish.id);
       });
     }
@@ -421,11 +420,11 @@ export const updateMealAssignedToDate = (
     const mealWheelState: MealWheelState = getState();
 
     const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(mealWheelState, date);
-    
+
     const accompanimentIds: string[] = [];
     if (!isNil(scheduledMeal)) {
       scheduledMeal.accompanimentIds
-      scheduledMeal.accompanimentIds.forEach( (accompanimentDishId: string) => {
+      scheduledMeal.accompanimentIds.forEach((accompanimentDishId: string) => {
         accompanimentIds.push(accompanimentDishId);
       });
     }
