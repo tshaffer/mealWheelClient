@@ -127,16 +127,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     if (mealOnDate.meal.mainDish.id !== mealEntity.mainDish.id) {
       return false;
     }
-    // TEDTODO
-    // if (!areAccompanimentsIdentical(mealOnDateMeal.salad, mealEntity.salad)) {
-    //   return false;
-    // }
-    // if (!areAccompanimentsIdentical(mealOnDateMeal.side, mealEntity.side)) {
-    //   return false;
-    // }
-    // if (!areAccompanimentsIdentical(mealOnDateMeal.veggie, mealEntity.veggie)) {
-    //   return false;
-    // }
+    // TEDTODO - see git
     return true;
   };
 

@@ -368,15 +368,11 @@ const updateMealDishesLastProperty = (
 ): any => {
   return (dispatch: MealWheelDispatch,) => {
     dispatch(updateDishLastProperty(meal.mainDish, date));
-    // if (!isNil(meal.salad)) {
-    //   dispatch(updateDishLastProperty(meal.salad, date));
-    // }
-    // if (!isNil(meal.veggie)) {
-    //   dispatch(updateDishLastProperty(meal.veggie, date));
-    // }
-    // if (!isNil(meal.side)) {
-    //   dispatch(updateDishLastProperty(meal.side, date));
-    // }
+    if (!isNil(meal.accompanimentDishes)) {
+      meal.accompanimentDishes.forEach((accompanimentDish: DishEntity) => {
+        dispatch(updateDishLastProperty(accompanimentDish, date));
+      });
+    }
   };
 };
 

@@ -173,35 +173,7 @@ const sortDishesByProperty = (dishes: DishEntityRedux[], order: Order, orderBy: 
       case 'minimumInterval': {
         return compareValues(a[orderBy], b[orderBy], order);
       }
-      // case 'requiresAccompaniment': {
-      //   const aValue = a.accompanimentRequired !== RequiredAccompanimentFlags.None;
-      //   const bValue = b.accompanimentRequired !== RequiredAccompanimentFlags.None;
-      //   return compareValues(aValue, bValue, order);
-      // }
-      // case 'requiresSalad': {
-      //   if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
-      //     const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-      //     const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Salad) !== 0;
-      //     return compareValues(aValue, bValue, order);
-      //   }
-      //   return 0;
-      // }
-      // case 'requiresSide': {
-      //   if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
-      //     const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-      //     const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Side) !== 0;
-      //     return compareValues(aValue, bValue, order);
-      //   }
-      //   return 0;
-      // }
-      // case 'requiresVeggie': {
-      //   if (!isNil(a.accompanimentRequired) && !isNil(b.accompanimentRequired)) {
-      //     const aValue = (a.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
-      //     const bValue = (b.accompanimentRequired & RequiredAccompanimentFlags.Veggie) !== 0;
-      //     return compareValues(aValue, bValue, order);
-      //   }
-      //   return 0;
-      // }
+      // TEDTODO - restore functionality - see git
       default:
         // debugger;
         return 0;

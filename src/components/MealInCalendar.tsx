@@ -64,12 +64,9 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
     if (!isNil(props.accompaniments)) {
       props.accompaniments.forEach((accompaniment: DishEntity) => {
-        const a = renderAccompaniment(accompaniment);
-        if (!isNil(a)) {
-          const renderedAccompanimentJsx = renderAccompaniment(accompaniment);
-          if (!isNil(renderedAccompanimentJsx)) {
-            renderedAccompaniments.push(renderedAccompanimentJsx);
-          }
+        const renderedAccompanimentJsx = renderAccompaniment(accompaniment);
+        if (!isNil(renderedAccompanimentJsx)) {
+          renderedAccompaniments.push(renderedAccompanimentJsx);
         }
       });
     }
@@ -95,18 +92,17 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
 
   let main: DishEntity | null = null;
-  let accompanimentDishes: DishEntity[] | null = null;
+  const accompaniments: DishEntity[] = [];
 
   if (!isNil(scheduledMeal)) {
 
     main = getMainById(state, scheduledMeal.mainDishId) as DishEntity;
 
-    if (!isNil(scheduledMeal.accompanimentIds) && scheduledMeal.accompanimentIds.length > 0) {
-      accompanimentDishes = [];
+    if (scheduledMeal.accompanimentIds.length > 0) {
       scheduledMeal.accompanimentIds.forEach((accompanimentDishId: string) => {
         const accompanimentDish: DishEntity | null = getAccompanimentById(state, accompanimentDishId);
         if (!isNil(accompanimentDish)) {
-          accompanimentDishes!.push(accompanimentDish);
+          accompaniments!.push(accompanimentDish);
         }
       });
     }
@@ -114,9 +110,10 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   } else {
     // anything?
   }
+
   return {
     main,
-    accompanimentDishes,
+    accompaniments,
   };
 }
 
