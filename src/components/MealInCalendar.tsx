@@ -94,11 +94,6 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
     (isString(calendarEvent.scheduledMealId)) ? calendarEvent.scheduledMealId : '';
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
 
-  if (!isNil(scheduledMeal) && !isNil(scheduledMeal.accompanimentIds)) {
-    debugger;
-  }
-
-
   let main: DishEntity | null = null;
   let accompanimentDishes: DishEntity[] | null = null;
 
