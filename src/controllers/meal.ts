@@ -285,8 +285,8 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
     const numAccompanimentsRequired: number = mainDish.numAccompanimentsRequired as number;
     const allowableAccompanimentTypes: string[] = cloneDeep(mainDish.allowableAccompanimentTypes as string[]);
-    const selectedAccompanimentIds: string[] = [];
-    const accompanimentDishes: DishEntity[] = [];
+    // const selectedAccompanimentIds: string[] = [];
+    const selectedAccompanimentDishes: DishEntity[] = [];
 
     let accompanimentsAcquired: number = 0;
     while (accompanimentsAcquired < numAccompanimentsRequired) {
@@ -298,19 +298,18 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
       // accompaniments of set accompanimentType
       const accompanimentDishes: DishEntity[] = dishesByDishType[accompanimentType];
-      const accompanimentDishIndicesForThisAccompanimentType: number[] = dishIndicesByDishType[accompanimentType];  // indices into allDishes
+      // const accompanimentDishIndicesForThisAccompanimentType: number[] = dishIndicesByDishType[accompanimentType];  // indices into allDishes
 
       // get one of the accompaniments from this list
       const numAccompanimentsOfThisType: number = accompanimentDishes.length;
       const accompanimentDishIndex = Math.floor(Math.random() * numAccompanimentsOfThisType);
 
-      selectedAccompanimentIds.push(accompanimentDishes[accompanimentDishIndex].id);
+      const selectedAccompanimentDish: DishEntity | null = accompanimentDishes[accompanimentDishIndex];
 
-      const accompanimentDish: DishEntity | null = getAccompanimentById(mealWheelState, accompanimentDishes[accompanimentDishIndex].id);
-      if (!isNil(accompanimentDish)) {
+      if (!isNil(selectedAccompanimentDish)) {
         
         // add accompaniment
-        accompanimentDishes.push(accompanimentDish);
+        selectedAccompanimentDishes.push(selectedAccompanimentDish);
         
         // remove this accompaniment type from allowableAccompanimentTypes
         allowableAccompanimentTypes.splice(accompanimentTypeIndex, 1);
@@ -324,7 +323,7 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
     const meal: MealEntity = {
       id: mealId,
       mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
-      accompanimentDishes,
+      accompanimentDishes: selectedAccompanimentDishes,
     };
 
     mealEntities.push(meal);
