@@ -58,8 +58,7 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   onAddDish: (dish: DishEntity) => any;
   onUpdateAccompanimentInMeal: (
     mealId: string,
-    accompanimentTypeId: string,
-    accompanimentId: string,  
+    accompanimentId: string,
   ) => any;
   state: any;
 }
@@ -70,7 +69,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const [comments, setComments] = React.useState('');
 
   const [showNewDishDialog, setShowNewDishDialog] = React.useState(false);
-  // const [dishType, setDishType] = React.useState(DishType.Main);
+  const [dishType, setDishType] = React.useState('main');
 
   const getScheduledMealId = (): string => {
     if (!isNil(props.scheduledMeal)) {
@@ -90,7 +89,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const handleUpdateMain = (event: any) => {
     if (event.target.value === 'new') {
-      // setDishType(DishType.Main);
+      setDishType('main');
       setShowNewDishDialog(true);
     } else {
       props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
@@ -99,14 +98,17 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const handleUpdateAccompaniment = (accompanimentTypeId: string, event: any) => {
     console.log('handleUpdateAccompaniment');
-    console.log(accompanimentTypeId);
     console.log(event);
     const selectedAccompanimentId: string = event.target.value;
-    props.onUpdateAccompanimentInMeal(
-      getScheduledMealId(),
-      accompanimentTypeId,
-      selectedAccompanimentId,
-    );  
+    if (event.target.value === 'new') {
+      setDishType(accompanimentTypeId);
+      setShowNewDishDialog(true);
+    } else {
+      props.onUpdateAccompanimentInMeal(
+        getScheduledMealId(),
+        selectedAccompanimentId,
+      );
+    }
   };
 
   const handleDelete = () => {
@@ -148,15 +150,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           case 'main':
             props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
             break;
-          // case DishType.Salad:
-          //   props.onUpdateSaladInMeal(scheduledMealId, updatedDishId);
-          //   break;
-          // case DishType.Side:
-          //   props.onUpdateSideInMeal(scheduledMealId, updatedDishId);
-          //   break;
-          // case DishType.Veggie:
-          //   props.onUpdateVeggieInMeal(scheduledMealId, updatedDishId);
-          //   break;
         }
         setShowNewDishDialog(false);
       });
@@ -167,9 +160,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderNewMenuItem = (): JSX.Element => {
-    // return (
-    //   <Button color='inherit' onClick={handleNew}>New</Button>
-    // );
     return (
       <MenuItem value={'new'} key={'new'}>New</MenuItem>
     );
@@ -222,13 +212,13 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeId: string): JSX.Element => {
-    
+
     // how to get the current accompaniment - that translates to the item in the select to highlight?
     //    currentAccompaniments is the list of accompaniments associated with the scheduled meal
     //    need to pull out the accompanimentId whose associated accompaniment(dish) is of the type specified here
 
     let currentAccompanimentId: string = '';
-    props.currentAccompaniments.forEach( (accompaniment: DishEntity) => {
+    props.currentAccompaniments.forEach((accompaniment: DishEntity) => {
       if (accompaniment.type === accompanimentTypeId) {
         currentAccompanimentId = accompaniment.id;
       }
@@ -288,7 +278,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
 
     const renderedAccompanimentsSelects: JSX.Element[] = [];
-    props.currentMain?.allowableAccompanimentTypes.forEach( (allowableAccompanimentTypeId: string) => {
+    props.currentMain?.allowableAccompanimentTypes.forEach((allowableAccompanimentTypeId: string) => {
       const renderedAccompanimentSelect = renderAccompanimentsForSpecificAccompanimentType(allowableAccompanimentTypeId);
       renderedAccompanimentsSelects.push(renderedAccompanimentSelect);
     });
@@ -339,10 +329,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const mainDishElement = renderMains();
   const accompanimentElements = renderAccompanimentSelects();
 
-  // const sideDishElement = renderSides();
-  // const saladsDishElement = renderSalads();
-  // const veggiesDishElement = renderVeggies();
-
   const linkToRecipeElement = renderLinkToRecipe();
   const commentsElement = renderComments();
 
@@ -357,7 +343,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           open={showNewDishDialog}
           onAddDish={handleAddDish}
           onClose={handleCloseNewDishDialog}
-          dishType='pizza'
+          dishType={dishType}
         />
       </div>
       <div className='mealPropertySheet'>

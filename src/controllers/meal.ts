@@ -545,7 +545,6 @@ export const updateMainInMeal = (
 
 export const updateAccompanimentInMeal = (
   mealId: string,
-  accompanimentTypeId: string,
   accompanimentId: string
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {

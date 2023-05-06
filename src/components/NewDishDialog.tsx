@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
+import { getAccompaniments, getAccompanimentTypesByUser } from '../selectors';
+import { AccompanimentTypeEntity, DishEntity } from '../types';
+import { cloneDeep } from 'lodash';
 // import {
 //   DishType,
 //   RequiredAccompanimentFlags
@@ -23,7 +26,7 @@ export interface NewDishDialogPropsFromParent {
 }
 
 export interface NewDishDialogProps extends NewDishDialogPropsFromParent {
-  pizza: string;
+  allAccompanimentTypes: AccompanimentTypeEntity[];
 }
 
 function NewDishDialog(props: NewDishDialogProps) {
@@ -33,33 +36,22 @@ function NewDishDialog(props: NewDishDialogProps) {
   const [dishName, setDishName] = React.useState('');
   const [minimumInterval, setMinimumInterval] = React.useState(5);
   // const [requiredAccompanimentFlags, setRequiredAccompanimentFlags] = React.useState(RequiredAccompanimentFlags.None);
+  const [requiredAccompanimentTypes, setRequiredAccompanimentTypes] = React.useState<string[]>([]);
 
   const getTypeLabelFromType = (): string => {
-  //   switch (props.dishType) {
-  //     case DishType.Main:
-  //       return 'Main';
-  //     case DishType.Salad:
-  //       return 'Salad';
-  //     case DishType.Side:
-  //       return 'Side';
-  //     case DishType.Veggie:
-  //     default:
-  //       return 'Veggie';
-  //   }
-    return'pizza';
+    //   switch (props.dishType) {
+    //     case DishType.Main:
+    //       return 'Main';
+    //     case DishType.Salad:
+    //       return 'Salad';
+    //     case DishType.Side:
+    //       return 'Side';
+    //     case DishType.Veggie:
+    //     default:
+    //       return 'Veggie';
+    //   }
+    return 'pizza';
   };
-
-  // const sideRequired = (): boolean => {
-  //   return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Side) !== 0;
-  // };
-
-  // const saladRequired = (): boolean => {
-  //   return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Salad) !== 0;
-  // };
-
-  // const veggieRequired = (): boolean => {
-  //   return (requiredAccompanimentFlags & RequiredAccompanimentFlags.Veggie) !== 0;
-  // };
 
   const handleAddNewDish = () => {
     // if (props.dishType === DishType.Main) {
@@ -74,68 +66,73 @@ function NewDishDialog(props: NewDishDialogProps) {
     onClose();
   };
 
-  const renderRequiresAccompaniment = () => {
+  const isAccompanimentRequired = (accompanimentTypeId: string): boolean => {
+    return requiredAccompanimentTypes.indexOf(accompanimentTypeId) >= 0;
+  };
+
+  const setRequiredAccompanimentType = (accompanimentTypeId: string, checked: boolean) => {
+    console.log('setRequiredAccompanimentType');
+    console.log(accompanimentTypeId);
+    console.log(checked);
+
+    const localRequiredAccompanimentTypes = cloneDeep(requiredAccompanimentTypes);
+
+    const indexOfAccompanimentType = requiredAccompanimentTypes.indexOf(accompanimentTypeId);
+    if (indexOfAccompanimentType >= 0) {
+      localRequiredAccompanimentTypes.splice(indexOfAccompanimentType, 1);
+    } else {
+      localRequiredAccompanimentTypes.push(accompanimentTypeId);
+    }
+    setRequiredAccompanimentTypes(localRequiredAccompanimentTypes);
+  };
+
+  const renderRequiresAccompaniment = (accompanimentTypeId: string): JSX.Element => {
+    return (
+      <React.Fragment>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isAccompanimentRequired(accompanimentTypeId)}
+              onChange={(event) => setRequiredAccompanimentType(accompanimentTypeId, event.target.checked)}
+            />
+          }
+          label={accompanimentTypeId}
+        />
+        <br/>
+      </React.Fragment>
+    );
+  };
+
+  const renderRequiresAccompaniments = () => {
     if (props.dishType !== 'main') {
       return null;
     }
 
+    const requiresAccompanimentsElements: JSX.Element[] = [];
+
+    props.allAccompanimentTypes.forEach((accompanimentType: AccompanimentTypeEntity) => {
+      const jsx = renderRequiresAccompaniment(accompanimentType.id);
+      requiresAccompanimentsElements.push(jsx);
+    });
+
     return (
-      <div>pizza</div>
+      <div>
+        {requiresAccompanimentsElements}
+      </div>
     );
-    // return (
-    //   <div>
-    //     <FormGroup
-    //       sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
-    //     >
-    //       <FormLabel
-    //         style={{ marginRight: '20px', marginTop: '10px' }}
-    //       >
-    //         <label>Requires Accompaniment:</label>
-    //       </FormLabel>
-    //       <FormControlLabel
-    //         control={
-    //           <Checkbox
-    //             checked={sideRequired()}
-    //             onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Side + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Side)))}
-    //           />
-    //         }
-    //         label="Side"
-    //       />
-    //       <FormControlLabel
-    //         control={
-    //           <Checkbox
-    //             checked={saladRequired()}
-    //             onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Salad + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Salad)))}
-    //           />
-    //         }
-    //         label="Salad"
-    //       />
-    //       <FormControlLabel
-    //         control={
-    //           <Checkbox
-    //             checked={veggieRequired()}
-    //             onChange={(event) => setRequiredAccompanimentFlags(event.target.checked ? (RequiredAccompanimentFlags.Veggie + requiredAccompanimentFlags) : (requiredAccompanimentFlags & (~RequiredAccompanimentFlags.Veggie)))}
-    //           />
-    //         }
-    //         label="Veggie"
-    //       />
-    //     </FormGroup>
-    //   </div>
-    // );
   };
 
   /*
     Form
       Text field for
         Name
-      If main, checkbox for
-        Requires accompaniment
+      If main, checkboxes for each accompaniment, indicating whether it's required or not.
     Validation
       Name - not empty
       Name - unique within type
   */
 
-  const requiresAccompanimentJsx = renderRequiresAccompaniment();
+  const requiresAccompanimentsJsx = renderRequiresAccompaniments();
 
   return (
     <Dialog
@@ -174,7 +171,7 @@ function NewDishDialog(props: NewDishDialogProps) {
               }
             }}
           />
-          {requiresAccompanimentJsx}
+          {requiresAccompanimentsJsx}
         </div>
       </DialogContent>
       <DialogActions
@@ -192,7 +189,7 @@ function NewDishDialog(props: NewDishDialogProps) {
 
 function mapStateToProps(state: any) {
   return {
-    pizza: 'sausage',
+    allAccompanimentTypes: getAccompanimentTypesByUser(state),
   };
 }
 
