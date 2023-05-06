@@ -18,29 +18,21 @@ import '../styles/MealWheel.css';
 
 import {
   DishEntity,
-  // DishType,
-  // RequiredAccompanimentFlags,
   ScheduledMealEntity
 } from '../types';
 import {
   getMains,
-  // getSalads,
-  // getSaladById,
   getScheduledMeal,
-  // getSides,
-  // getSideById,
-  // getVeggieById,
-  // getVeggies,
-  getMainById
+  getMainById,
+  getAccompanimentById,
+  getAccompaniments
 } from '../selectors';
 import {
   addDish,
   deleteScheduledMeal,
   generateMeal,
   updateMainInMeal,
-  updateSaladInMeal,
-  updateSideInMeal,
-  updateVeggieInMeal
+  // updateAccompanimentInMeal,
 } from '../controllers';
 
 import NewDishDialog from './NewDishDialog';
@@ -56,17 +48,17 @@ export interface MealPropertySheetPropsFromParent {
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
   scheduledMeal: ScheduledMealEntity | null,
   mainValue: DishEntity | null;
-  veggieValue: DishEntity | null;
-  sideValue: DishEntity | null;
-  saladValue: DishEntity | null;
+  accompanimentValues: DishEntity[],
+  // veggieValue: DishEntity | null;
+  // sideValue: DishEntity | null;
+  // saladValue: DishEntity | null;
   mains: DishEntity[];
-  sides: DishEntity[];
-  salads: DishEntity[];
-  veggies: DishEntity[];
+  accompaniments: DishEntity[];
+  // sides: DishEntity[];
+  // salads: DishEntity[];
+  // veggies: DishEntity[];
   onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
-  onUpdateSideInMeal: (mealId: string, newSideId: string) => any;
-  onUpdateSaladInMeal: (mealId: string, newSaladId: string) => any;
-  onUpdateVeggieInMeal: (mealId: string, newVeggieId: string) => any;
+  onUpdateAccompanimentInMeal: (mealId: string, accompanimentId: string) => any;
   onGenerateMeal: (mealId: string, date: Date) => any;
   onDeleteMeal: (mealId: string) => any;
   onAddDish: (dish: DishEntity) => any;
@@ -106,32 +98,17 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  // const handleUpdateSide = (event: any) => {
-  //   if (event.target.value === 'new') {
-  //     setDishType(DishType.Side);
-  //     setShowNewDishDialog(true);
-  //   } else {
-  //     props.onUpdateSideInMeal(getScheduledMealId(), event.target.value);
-  //   }
-  // };
-
-  // const handleUpdateSalad = (event: any) => {
-  //   if (event.target.value === 'new') {
-  //     setDishType(DishType.Salad);
-  //     setShowNewDishDialog(true);
-  //   } else {
-  //     props.onUpdateSaladInMeal(getScheduledMealId(), event.target.value);
-  //   }
-  // };
-
-  // const handleUpdateVeggie = (event: any) => {
-  //   if (event.target.value === 'new') {
-  //     setDishType(DishType.Veggie);
-  //     setShowNewDishDialog(true);
-  //   } else {
-  //     props.onUpdateVeggieInMeal(getScheduledMealId(), event.target.value);
-  //   }
-  // };
+  const handleUpdateAccompaniment = (accompanimentId: string, event: any) => {
+    console.log('handleUpdateAccompaniment');
+    console.log(accompanimentId);
+    console.log(event);
+    // if (event.target.value === 'new') {
+    //   // setDishType(DishType.Main);
+    //   setShowNewDishDialog(true);
+    // } else {
+    //   props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
+    // }
+  };
 
   const handleDelete = () => {
     console.log('handleDelete');
@@ -244,6 +221,36 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       </div>
     );
   };
+
+  // const renderAccompaniments = (accompaniment: DishEntity): JSX.Element | null | any => {
+  //   const accompanimentId = accompaniment.id;
+  //   const accompanimentsMenuItems: JSX.Element[] = renderDishMenuItems(props.accompaniments, false);
+  //   return (
+  //     <div>
+  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+  //         <InputLabel id="mainLabel">Main</InputLabel>
+  //         <Select
+  //           labelId="mainLabel"
+  //           id="demo-simple-select-filled"
+  //           value={accompanimentId}
+  //           onChange={(event) => handleUpdateAccompaniment(accompanimentId, event)}
+  //         >
+  //           {accompanimentsMenuItems}
+  //         </Select>
+  //       </FormControl>
+  //     </div>
+  //   );
+  // };
+
+  // const renderEachAccompaniment = () => {
+  //   const accompanimentsJsx: JSX.Element[] = [];
+  //   props.accompanimentValues.forEach((accompaniment: DishEntity) => {
+  //     const dishJsx: JSX.Element | null = renderAccompaniment(accompaniment);
+  //     if (!isNil(dishJsx)) {
+  //       accompanimentsJsx.push(dishJsx);
+  //     }
+  //   });
+  // };
 
   // const renderSides = () => {
   //   let sideId = 'none';
@@ -392,29 +399,29 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent) {
   let scheduledMeal: ScheduledMealEntity | null = null;
   let mainValue: DishEntity | null = null;
-  // let saladValue: DishEntity | null = null;
-  // let sideValue: DishEntity | null = null;
-  // let veggieValue: DishEntity | null = null;
+  const accompanimentValues: DishEntity[] = [];
+
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.scheduledMealId) && ownProps.selectedMealInCalendar.scheduledMealId !== '') {
     scheduledMeal = getScheduledMeal(state, ownProps.scheduledMealId);
     if (!isNil(scheduledMeal)) {
       mainValue = getMainById(state, scheduledMeal.mainDishId);
-      // saladValue = getSaladById(state, scheduledMeal.saladId);
-      // sideValue = getSideById(state, scheduledMeal.sideId);
-      // veggieValue = getVeggieById(state, scheduledMeal.veggieId);
+      if (!isNil(scheduledMeal.accompanimentIds)) {
+        scheduledMeal.accompanimentIds.forEach((accompanimentId: string) => {
+          const accompanimentValue = getAccompanimentById(state, accompanimentId);
+          if (!isNil(accompanimentValue)) {
+            accompanimentValues.push(accompanimentValue);
+          }
+        });
+      }
     }
   }
 
   return {
     scheduledMeal,
     mainValue,
-    // saladValue,
-    // sideValue,
-    // veggieValue,
+    accompanimentValues,
     mains: getMains(state),
-    // sides: getSides(state),
-    // salads: getSalads(state),
-    // veggies: getVeggies(state),
+    accompaniments: getAccompaniments(state),
     state,
   };
 }
@@ -422,9 +429,6 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
 const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
   return bindActionCreators({
     onUpdateMainInMeal: updateMainInMeal,
-    onUpdateSideInMeal: updateSideInMeal,
-    onUpdateSaladInMeal: updateSaladInMeal,
-    onUpdateVeggieInMeal: updateVeggieInMeal,
     onGenerateMeal: generateMeal,
     onDeleteMeal: deleteScheduledMeal,
     onAddDish: addDish,
