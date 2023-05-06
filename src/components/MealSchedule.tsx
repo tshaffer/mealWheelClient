@@ -249,15 +249,12 @@ const MealSchedule = (props: MealScheduleProps) => {
           variant="persistent"
           anchor="right"
         >
-          <div>
-            pizza
-          </div>
-          {/* <MealPropertySheet
+          <MealPropertySheet
             scheduledMealId={isNil(selectedMealInCalendar) ? '' : (isNil(selectedMealInCalendar.scheduledMealId) ? '' : selectedMealInCalendar.scheduledMealId)}
             selectedMealInCalendar={selectedMealInCalendar}
             handleClose={handleClosePropertySheet}
             onUpdateCalendarEvent={handleUpdateCalendarEvent}
-          /> */}
+          />
         </Drawer>
       </div>
     </div>

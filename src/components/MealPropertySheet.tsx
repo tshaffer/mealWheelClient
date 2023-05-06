@@ -47,18 +47,18 @@ export interface MealPropertySheetPropsFromParent {
 
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
   scheduledMeal: ScheduledMealEntity | null,
-  mainValue: DishEntity | null;
-  accompanimentValues: DishEntity[],
+  currentMain: DishEntity | null;
+  currentAccompaniments: DishEntity[],
   // veggieValue: DishEntity | null;
   // sideValue: DishEntity | null;
   // saladValue: DishEntity | null;
-  mains: DishEntity[];
-  accompaniments: DishEntity[];
+  allMains: DishEntity[];
+  allAccompaniments: DishEntity[];
   // sides: DishEntity[];
   // salads: DishEntity[];
   // veggies: DishEntity[];
   onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
-  onUpdateAccompanimentInMeal: (mealId: string, accompanimentId: string) => any;
+  // onUpdateAccompanimentInMeal: (mealId: string, accompanimentId: string) => any;
   onGenerateMeal: (mealId: string, date: Date) => any;
   onDeleteMeal: (mealId: string) => any;
   onAddDish: (dish: DishEntity) => any;
@@ -201,10 +201,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const renderMains = () => {
     let mainId = 'none';
-    if (!isNil(props.mainValue)) {
-      mainId = props.mainValue.id;
+    if (!isNil(props.currentMain)) {
+      mainId = props.currentMain.id;
     }
-    const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
+    const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.allMains, false);
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
@@ -222,102 +222,68 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  // const renderAccompaniments = (accompaniment: DishEntity): JSX.Element | null | any => {
-  //   const accompanimentId = accompaniment.id;
-  //   const accompanimentsMenuItems: JSX.Element[] = renderDishMenuItems(props.accompaniments, false);
-  //   return (
-  //     <div>
-  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-  //         <InputLabel id="mainLabel">Main</InputLabel>
-  //         <Select
-  //           labelId="mainLabel"
-  //           id="demo-simple-select-filled"
-  //           value={accompanimentId}
-  //           onChange={(event) => handleUpdateAccompaniment(accompanimentId, event)}
-  //         >
-  //           {accompanimentsMenuItems}
-  //         </Select>
-  //       </FormControl>
-  //     </div>
-  //   );
-  // };
+  const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeId: string): JSX.Element => {
+    
+    const dishEntitiesForThisAccompanimentType: DishEntity[] = [];
+    props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
+      if (accompanimentDish.type === accompanimentTypeId) {
+        dishEntitiesForThisAccompanimentType.push(accompanimentDish);
+      }
+    });
+    const accompanimentMenuItems: JSX.Element[] = renderDishMenuItems(dishEntitiesForThisAccompanimentType, false);
+    return (
+      <div>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="mainLabel">{accompanimentTypeId}</InputLabel>
+          <Select
+            labelId="mainLabel"
+            id="demo-simple-select-filled"
+            value={dishEntitiesForThisAccompanimentType[0].id}
+            onChange={(event) => handleUpdateAccompaniment(accompanimentTypeId, event)}
+          >
+            {accompanimentMenuItems}
+          </Select>
+        </FormControl>
+      </div>
+    );
 
-  // const renderEachAccompaniment = () => {
-  //   const accompanimentsJsx: JSX.Element[] = [];
-  //   props.accompanimentValues.forEach((accompaniment: DishEntity) => {
-  //     const dishJsx: JSX.Element | null = renderAccompaniment(accompaniment);
-  //     if (!isNil(dishJsx)) {
-  //       accompanimentsJsx.push(dishJsx);
-  //     }
-  //   });
-  // };
+  };
 
-  // const renderSides = () => {
-  //   let sideId = 'none';
-  //   if (!isNil(props.sideValue)) {
-  //     sideId = props.sideValue.id;
-  //   }
-  //   const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
-  //   return (
-  //     <div>
-  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-  //         <InputLabel id="sidesLabel">Side</InputLabel>
-  //         <Select
-  //           labelId="sidesLabel"
-  //           value={sideId}
-  //           onChange={(event) => handleUpdateSide(event)}
-  //         >
-  //           {sidesMenuItems}
-  //         </Select>
-  //       </FormControl>
-  //     </div>
-  //   );
-  // };
+  const renderAccompanimentsForSpecificAccompanimentType = (accompanimentTypeId: string): JSX.Element => {
+    // like renderMains, but for the specified accompanimentTypeId
+    console.log('renderAccompanimentsForSpecificAccompanimentType');
+    console.log(accompanimentTypeId);
 
-  // const renderSalads = () => {
-  //   let saladId = 'none';
-  //   if (!isNil(props.saladValue)) {
-  //     saladId = props.saladValue.id;
-  //   }
-  //   const menuItems: JSX.Element[] = renderDishMenuItems(props.salads, true);
-  //   return (
-  //     <div>
-  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-  //         <InputLabel id="saladsLabel">Salad</InputLabel>
-  //         <Select
-  //           labelId="saladsLabel"
-  //           value={saladId}
-  //           onChange={(event) => handleUpdateSalad(event)}
-  //         >
-  //           {menuItems}
-  //         </Select>
-  //       </FormControl>
-  //     </div>
-  //   );
-  // };
+    // const renderedSelects: JSX.Element [] = [];
 
-  // const renderVeggies = (): JSX.Element => {
+    // // get list of accompaniments for this type of accompaniment
+    // props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
+    //   if (accompanimentDish.type === accompanimentTypeId) {
+    //     const renderedSelect: JSX.Element = renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeId);
+    //     renderedSelects.push(renderedSelect);
+    //   }
+    // });
 
-  //   let veggieId = 'none';
-  //   if (!isNil(props.veggieValue)) {
-  //     veggieId = props.veggieValue.id;
-  //   }
-  //   const menuItems: JSX.Element[] = renderDishMenuItems(props.veggies, true);
-  //   return (
-  //     <div>
-  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-  //         <InputLabel id="veggiesLabel">Veggie</InputLabel>
-  //         <Select
-  //           labelId="veggiesLabel"
-  //           value={veggieId}
-  //           onChange={(event) => handleUpdateVeggie(event)}
-  //         >
-  //           {menuItems}
-  //         </Select>
-  //       </FormControl>
-  //     </div>
-  //   );
-  // };
+    // return renderedSelects;
+    return renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeId);
+  };
+
+  const renderAccompanimentSelects = (): JSX.Element[] | null => {
+    // invoke renderAccompaniments for each required allowableAccompanimentType for the main
+    // const scheduledMeal: ScheduledMealEntity = props.scheduledMeal!;
+    if (isNil(props.currentMain?.allowableAccompanimentTypes)) {
+      return null;
+    }
+
+    const renderedAccompanimentsSelects: JSX.Element[] = [];
+    props.currentMain?.allowableAccompanimentTypes.forEach( (allowableAccompanimentTypeId: string) => {
+      const renderedAccompanimentSelect = renderAccompanimentsForSpecificAccompanimentType(allowableAccompanimentTypeId);
+      renderedAccompanimentsSelects.push(renderedAccompanimentSelect);
+    });
+    return renderedAccompanimentsSelects;
+
+  };
+
 
   const renderLinkToRecipe = (): JSX.Element => {
     return (
@@ -359,6 +325,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const mainDishElement = renderMains();
+  const accompanimentElements = renderAccompanimentSelects();
+
   // const sideDishElement = renderSides();
   // const saladsDishElement = renderSalads();
   // const veggiesDishElement = renderVeggies();
@@ -381,11 +349,9 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         />
       </div>
       <div className='mealPropertySheet'>
-        <p className='shortParagraph'>{'Main: ' + (props.mainValue as DishEntity).name}</p>
+        <p className='shortParagraph'>{'Main: ' + (props.currentMain as DishEntity).name}</p>
         {mainDishElement}
-        {/* {sideDishElement}
-        {saladsDishElement}
-        {veggiesDishElement} */}
+        {accompanimentElements}
         {linkToRecipeElement}
         {commentsElement}
         {actionButtons}
@@ -398,18 +364,18 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
 function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent) {
   let scheduledMeal: ScheduledMealEntity | null = null;
-  let mainValue: DishEntity | null = null;
-  const accompanimentValues: DishEntity[] = [];
+  let currentMain: DishEntity | null = null;
+  const currentAccompaniments: DishEntity[] = [];
 
   if (!isNil(ownProps.selectedMealInCalendar) && !isNil(ownProps.selectedMealInCalendar.scheduledMealId) && ownProps.selectedMealInCalendar.scheduledMealId !== '') {
     scheduledMeal = getScheduledMeal(state, ownProps.scheduledMealId);
     if (!isNil(scheduledMeal)) {
-      mainValue = getMainById(state, scheduledMeal.mainDishId);
+      currentMain = getMainById(state, scheduledMeal.mainDishId);
       if (!isNil(scheduledMeal.accompanimentIds)) {
         scheduledMeal.accompanimentIds.forEach((accompanimentId: string) => {
           const accompanimentValue = getAccompanimentById(state, accompanimentId);
           if (!isNil(accompanimentValue)) {
-            accompanimentValues.push(accompanimentValue);
+            currentAccompaniments.push(accompanimentValue);
           }
         });
       }
@@ -418,10 +384,10 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
 
   return {
     scheduledMeal,
-    mainValue,
-    accompanimentValues,
-    mains: getMains(state),
-    accompaniments: getAccompaniments(state),
+    currentMain,
+    currentAccompaniments,
+    allMains: getMains(state),
+    allAccompaniments: getAccompaniments(state),
     state,
   };
 }
