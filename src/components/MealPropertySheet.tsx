@@ -102,6 +102,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     console.log('handleUpdateAccompaniment');
     console.log(accompanimentId);
     console.log(event);
+    const selectedAccompanimentId: string = event.target.value;
     // if (event.target.value === 'new') {
     //   // setDishType(DishType.Main);
     //   setShowNewDishDialog(true);
@@ -224,6 +225,19 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeId: string): JSX.Element => {
     
+    // how to get the current accompaniment - that translates to the item in the select to highlight?
+    //    currentAccompaniments is the list of accompaniments associated with the scheduled meal
+    //    need to pull out the accompanimentId whose associated accompaniment(dish) is of the type specified here
+
+    let currentAccompanimentId: string = '';
+    props.currentAccompaniments.forEach( (accompaniment: DishEntity) => {
+      if (accompaniment.type === accompanimentTypeId) {
+        currentAccompanimentId = accompaniment.id;
+      }
+    });
+    console.log('currentAccompanimentId');
+    console.log(currentAccompanimentId);
+
     const dishEntitiesForThisAccompanimentType: DishEntity[] = [];
     props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
       if (accompanimentDish.type === accompanimentTypeId) {
@@ -238,7 +252,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Select
             labelId="mainLabel"
             id="demo-simple-select-filled"
-            value={dishEntitiesForThisAccompanimentType[0].id}
+            value={currentAccompanimentId}
             onChange={(event) => handleUpdateAccompaniment(accompanimentTypeId, event)}
           >
             {accompanimentMenuItems}
