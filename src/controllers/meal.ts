@@ -543,6 +543,35 @@ export const updateMainInMeal = (
   };
 };
 
+export const updateAccompanimentInMeal = (
+  mealId: string,
+  accompanimentTypeId: string,
+  accompanimentId: string
+): MealWheelVoidThunkAction => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+
+    const accompaniment: BaseDishEntity | null = getDishById(mealWheelState, accompanimentId) as BaseDishEntity;
+    if (!isNil(meal)) {
+      const newMeal: ScheduledMealEntity = cloneDeep(meal);
+      if (!isNil(accompaniment)) {
+        for (let accompanimentIndex = 0; accompanimentIndex < meal.accompanimentIds.length; accompanimentIndex++) {
+          const mealAccompanimentId = meal.accompanimentIds[accompanimentIndex];
+          const existingAccompaniment = getDishById(mealWheelState, mealAccompanimentId);
+          if (!isNil(existingAccompaniment) && existingAccompaniment.type === accompaniment.type) {
+            // replace
+            newMeal.accompanimentIds[accompanimentIndex] = accompanimentId;
+            dispatch(updateScheduledMeal(meal.id, newMeal));
+            return;
+          }
+        }
+      }
+    }
+  };
+};
+
+
 export const updateSideInMeal = (
   mealId: string,
   newSideId: string,

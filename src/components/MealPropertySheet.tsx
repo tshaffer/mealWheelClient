@@ -31,6 +31,7 @@ import {
   addDish,
   deleteScheduledMeal,
   generateMeal,
+  updateAccompanimentInMeal,
   updateMainInMeal,
   // updateAccompanimentInMeal,
 } from '../controllers';
@@ -49,19 +50,17 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   scheduledMeal: ScheduledMealEntity | null,
   currentMain: DishEntity | null;
   currentAccompaniments: DishEntity[],
-  // veggieValue: DishEntity | null;
-  // sideValue: DishEntity | null;
-  // saladValue: DishEntity | null;
   allMains: DishEntity[];
   allAccompaniments: DishEntity[];
-  // sides: DishEntity[];
-  // salads: DishEntity[];
-  // veggies: DishEntity[];
   onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
-  // onUpdateAccompanimentInMeal: (mealId: string, accompanimentId: string) => any;
   onGenerateMeal: (mealId: string, date: Date) => any;
   onDeleteMeal: (mealId: string) => any;
   onAddDish: (dish: DishEntity) => any;
+  onUpdateAccompanimentInMeal: (
+    mealId: string,
+    accompanimentTypeId: string,
+    accompanimentId: string,  
+  ) => any;
   state: any;
 }
 
@@ -98,17 +97,16 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  const handleUpdateAccompaniment = (accompanimentId: string, event: any) => {
+  const handleUpdateAccompaniment = (accompanimentTypeId: string, event: any) => {
     console.log('handleUpdateAccompaniment');
-    console.log(accompanimentId);
+    console.log(accompanimentTypeId);
     console.log(event);
     const selectedAccompanimentId: string = event.target.value;
-    // if (event.target.value === 'new') {
-    //   // setDishType(DishType.Main);
-    //   setShowNewDishDialog(true);
-    // } else {
-    //   props.onUpdateMainInMeal(getScheduledMealId(), event.target.value);
-    // }
+    props.onUpdateAccompanimentInMeal(
+      getScheduledMealId(),
+      accompanimentTypeId,
+      selectedAccompanimentId,
+    );  
   };
 
   const handleDelete = () => {
@@ -412,6 +410,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onGenerateMeal: generateMeal,
     onDeleteMeal: deleteScheduledMeal,
     onAddDish: addDish,
+    onUpdateAccompanimentInMeal: updateAccompanimentInMeal,
   }, dispatch);
 };
 

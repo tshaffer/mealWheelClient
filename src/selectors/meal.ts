@@ -16,9 +16,9 @@ export const getScheduledMealsToResolve = (state: MealWheelState): ScheduledMeal
 
 export const getScheduledMeal = (state: MealWheelState, mealId: string): ScheduledMealEntity | null => {
   const mealEntities: ScheduledMealEntity[] = state.scheduledMealsState.scheduledMeals;
-  for (const ScheduledMealEntity of mealEntities) {
-    if (ScheduledMealEntity.id === mealId) {
-      return ScheduledMealEntity;
+  for (const scheduledMealEntity of mealEntities) {
+    if (scheduledMealEntity.id === mealId) {
+      return scheduledMealEntity;
     }
   }
   return null;
