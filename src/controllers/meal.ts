@@ -25,13 +25,10 @@ import {
   getIngredientById,
   getIngredientIdsByDish,
   getMainById,
-  // getSaladById,
   getScheduledMeal,
   getScheduledMealByDate,
   getScheduledMealsForDays,
-  // getSideById,
   getUnassignedMeals,
-  // getVeggieById
   getAccompanimentById,
 } from '../selectors';
 
@@ -571,63 +568,6 @@ export const updateAccompanimentInMeal = (
 };
 
 
-export const updateSideInMeal = (
-  mealId: string,
-  newSideId: string,
-): MealWheelVoidThunkAction => {
-  return (dispatch: MealWheelDispatch, getState: any) => {
-    const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const newSide: BaseDishEntity | null = getDishById(mealWheelState, newSideId) as BaseDishEntity;
-    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
-    if (!isNil(meal)) {
-      // if (!isNil(newSide)) {
-      //   meal.sideId = newSideId;
-      // } else {
-      //   meal.sideId = '';
-      // }
-      dispatch(updateScheduledMeal(meal.id, meal));
-    }
-  };
-};
-
-export const updateSaladInMeal = (
-  mealId: string,
-  newSaladId: string,
-): MealWheelVoidThunkAction => {
-  return (dispatch: MealWheelDispatch, getState: any) => {
-    const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const newSalad: BaseDishEntity | null = getDishById(mealWheelState, newSaladId) as BaseDishEntity;
-    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
-    if (!isNil(meal)) {
-      // if (!isNil(newSalad)) {
-      //   meal.saladId = newSaladId;
-      // } else {
-      //   meal.saladId = '';
-      // }
-      dispatch(updateScheduledMeal(meal.id, meal));
-    }
-  };
-};
-
-export const updateVeggieInMeal = (
-  mealId: string,
-  newVeggieId: string,
-): MealWheelVoidThunkAction => {
-  return (dispatch: MealWheelDispatch, getState: any) => {
-    const mealWheelState: MealWheelState = getState() as MealWheelState;
-    const newVeggie: BaseDishEntity | null = getDishById(mealWheelState, newVeggieId) as BaseDishEntity;
-    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
-    if (!isNil(meal)) {
-      // if (!isNil(newVeggie)) {
-      //   meal.veggieId = newVeggieId;
-      // } else {
-      //   meal.veggieId = '';
-      // }
-      dispatch(updateScheduledMeal(meal.id, meal));
-    }
-  };
-};
-
 export const updateMealStatus = (
   mealId: string,
   mealStatus: MealStatus,
@@ -660,30 +600,12 @@ const generateMealsToResolve = (state: MealWheelState, scheduledMeals: Scheduled
         const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
           isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
 
-        // const veggie: DishEntity | null = isNil(scheduledMeal.veggieId) ? null : getVeggieById(state, scheduledMeal.veggieId);
-        // const veggieName: string = isNil(scheduledMeal.veggieId) ? '' :
-        //   isNil(getVeggieById(state, scheduledMeal.veggieId)) ? '' : (getVeggieById(state, scheduledMeal.veggieId) as DishEntity).name;
-
-        // const side: DishEntity | null = isNil(scheduledMeal.sideId) ? null : getSideById(state, scheduledMeal.sideId);
-        // const sideName: string = isNil(scheduledMeal.sideId) ? '' :
-        //   isNil(getSideById(state, scheduledMeal.sideId)) ? '' : (getSideById(state, scheduledMeal.sideId) as DishEntity).name;
-
-        // const salad: DishEntity | null = isNil(scheduledMeal.saladId) ? null : getSaladById(state, scheduledMeal.saladId);
-        // const saladName: string = isNil(scheduledMeal.saladId) ? '' :
-        //   isNil(getSaladById(state, scheduledMeal.saladId)) ? '' : (getSaladById(state, scheduledMeal.saladId) as DishEntity).name;
-
         const verboseScheduledMeal: VerboseScheduledMeal = {
           ...scheduledMeal,
           main,
           mainName: mainDishName,
           accompaniments: [],
           accompanimentNames: [],
-          // salad,
-          // saladName,
-          // veggie,
-          // veggieName,
-          // side,
-          // sideName,
         };
 
         verboseScheduledMealsToResolve.push(verboseScheduledMeal);
