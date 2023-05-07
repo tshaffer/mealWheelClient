@@ -124,9 +124,23 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  // const handleAddDish = (dishName: string, dishTypeFromDialog: string, minimumInterval: number, requiredAccompanimentFlags?: RequiredAccompanimentFlags) => {
-  const handleAddDish = (dishName: string, dishTypeFromDialog: string, minimumInterval: number) => {
-    console.log('handleAddDish: ', dishTypeFromDialog);
+  /*
+  onAddDish: (
+    dishName: string,
+    dishType: string,
+    minimumInterval: number,
+    numAccompanimentsRequired?: number,
+    allowableAccompanimentTypes?: string[],
+  ) => void;
+  */
+  const handleAddDish = (
+    dishName: string,
+    dishType: string,
+    minimumInterval: number,
+    numAccompanimentsRequired?: number,
+    allowableAccompanimentTypes?: string[],
+  ) => {
+    console.log('handleAddDish: ', dishType);
     console.log(dishName);
     // console.log(requiredAccompanimentFlags);
     // TODO - I don't think the 'addedDish' is necessary.
@@ -134,19 +148,22 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     const dishEntity: DishEntity = {
       id: dishId,
       name: dishName,
-      type: dishTypeFromDialog,
+      type: dishType,
       minimumInterval,
-      // accompanimentRequired: requiredAccompanimentFlags,
       last: null,
       prepEffort: 5,
       prepTime: 15,
       cleanupEffort: 5,
     };
+    if (!isNil(numAccompanimentsRequired)) {
+      dishEntity.numAccompanimentsRequired = numAccompanimentsRequired;
+      dishEntity.allowableAccompanimentTypes = allowableAccompanimentTypes;
+    }
     const addDishPromise = props.onAddDish(dishEntity);
     addDishPromise
       .then((updatedDishId: string) => {
         const scheduledMealId = getScheduledMealId();
-        switch (dishTypeFromDialog) {
+        switch (dishType) {
           case 'main':
             props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
             break;

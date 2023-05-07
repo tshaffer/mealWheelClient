@@ -54,12 +54,12 @@ function NewDishDialog(props: NewDishDialogProps) {
   };
 
   const handleAddNewDish = () => {
-    // if (props.dishType === DishType.Main) {
-    //   props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentFlags);
-    // }
-    // else {
-    //   props.onAddDish(dishName, props.dishType, minimumInterval);
-    // }
+    if (props.dishType === 'main') {
+      props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentTypes.length, requiredAccompanimentTypes);
+    }
+    else {
+      props.onAddDish(dishName, props.dishType, minimumInterval);
+    }
   };
 
   const handleClose = () => {
