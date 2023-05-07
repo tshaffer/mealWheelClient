@@ -334,6 +334,11 @@ const Dishes = (props: DishesProps) => {
           prepTime: 15,
           cleanupEffort: 5,
         };
+        if (props.currentEditDish.type === 'main') {
+          newDish.numAccompanimentsRequired = props.currentEditDish.numAccompanimentsRequired;
+          newDish.allowableAccompanimentTypes = props.currentEditDish.allowableAccompanimentTypes;
+        }
+
         props.onAddDish(newDish)
           .then((newDishId: string) => {
             const selectedDishRowIndex = dishIdToDishRowIndex[''];
