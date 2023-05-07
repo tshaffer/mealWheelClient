@@ -397,6 +397,12 @@ const Dishes = (props: DishesProps) => {
         selectedDishRow.type = unmodifiedDishEntity.type;
         selectedDishRow.minimumInterval = unmodifiedDishEntity.minimumInterval;
         selectedDishRow.last = unmodifiedDishEntity.last;
+
+        if (selectedDishRow.type === 'main') {
+          selectedDishRow.numAccompanimentsRequired = isNil(unmodifiedDishEntity.numAccompanimentsRequired) ? 0 : unmodifiedDishEntity.numAccompanimentsRequired;
+          selectedDishRow.allowableAccompanimentTypes = isNil(unmodifiedDishEntity.allowableAccompanimentTypes) ? [] : unmodifiedDishEntity.allowableAccompanimentTypes;
+        }
+
         // }
         // debugger;
         /* old code that I don't understand. understand, then convert....
