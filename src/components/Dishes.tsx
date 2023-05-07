@@ -169,7 +169,7 @@ const Dishes = (props: DishesProps) => {
         id: 'name',
         numeric: false,
         disablePadding: true,
-        label: 'Main',
+        label: 'Name',
       },
       {
         id: 'type',
