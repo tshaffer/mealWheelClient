@@ -23,11 +23,6 @@ export interface BaseDishEntityRedux {
   cleanupEffort: number;
 }
 
-export interface MainDishEntity extends BaseDishEntityRedux {
-  numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: string[],// accompanimentTypeId[]
-}
-
 export interface BaseDishEntity {
   id: string;
   userId: string;
@@ -42,7 +37,7 @@ export interface BaseDishEntity {
 
 export interface MainDishEntity extends BaseDishEntity {
   numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: string[],  // accompanimentTypeId[]
+  allowableAccompanimentTypeEntityIds: string[],
 }
 
 export interface DishEntityFromServer {
@@ -52,7 +47,7 @@ export interface DishEntityFromServer {
   minimumInterval: number;
   last: string | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: string[],// accompanimentTypeId[]
+  allowableAccompanimentTypeEntityIds?: string[],
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -62,11 +57,11 @@ export interface DishEntityFromServer {
 export interface DishEntity {
   id: string;
   name: string;
-  type: string;
+  type: string;                                     // 'main' or AccompanimentTypeEntity.id
   minimumInterval: number;
   last: Date | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: string[],// accompanimentTypeId[]
+  allowableAccompanimentTypeEntityIds?: string[],   // AccompanimentTypeEntity.id[]
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -81,7 +76,7 @@ export interface DishEntityRedux {
   // last: Date | null;
   lastAsStr: string | null;
   numAccompanimentsRequired?: number,
-  allowableAccompanimentTypes?: string[],// accompanimentTypeId[]
+  allowableAccompanimentTypeEntityIds?: string[],// accompanimentTypeId[]
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -97,7 +92,7 @@ export interface ScheduledMealEntity {
   id: string;
   userId: string;
   mainDishId: string;
-  accompanimentIds: string[];
+  accompanimentDishIds: string[];
   dateScheduled: Date;
   status: MealStatus;
 }
@@ -140,7 +135,7 @@ export interface DishRow {
   minimumInterval: number;
   last: Date | null;
   numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: string[],// accompanimentTypeId[]
+  allowableAccompanimentTypeEntityIds: string[],// accompanimentTypeId[]
 }
 
 export interface IngredientRow {

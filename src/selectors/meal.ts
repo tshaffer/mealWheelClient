@@ -76,8 +76,8 @@ export const getMealsOnDatesForDays = (state: MealWheelState, mealDate: Date, nu
       const mainDish: DishEntity | null = getMainById(state, scheduledMeal.mainDishId);
 
       const accompanimentDishes: DishEntity[] = [];
-      if (!isNil(scheduledMeal.accompanimentIds)) {
-        scheduledMeal.accompanimentIds.forEach((accomplishmentDishId: string) => {
+      if (!isNil(scheduledMeal.accompanimentDishIds)) {
+        scheduledMeal.accompanimentDishIds.forEach((accomplishmentDishId: string) => {
           const dish: DishEntity | null = getAccompanimentById(state, accomplishmentDishId);
           if (!isNil(dish)) {
             accompanimentDishes.push(dish);

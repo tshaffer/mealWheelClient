@@ -4,10 +4,11 @@ import { bindActionCreators } from 'redux';
 
 import { isNil, isString } from 'lodash';
 
-import { DishEntity, ScheduledMealEntity } from '../types';
+import { AccompanimentTypeEntity, DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import {
   getAccompanimentById,
+  getAccompanimentTypesByUser,
   getMainById,
   getScheduledMeal,
 } from '../selectors';
@@ -19,14 +20,19 @@ export interface MealInCalendarPropsFromParent {
 
 export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
   main: DishEntity | null;
-  accompaniments: DishEntity[] | null;
+  accompanimentDishes: DishEntity[] | null;
+  accompanimentTypeEntities: AccompanimentTypeEntity[];
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
 
-  const getAccompanimentLabel = (accompanimentType: string): string => {
-    // TEDTODO
-    return accompanimentType;
+  const getAccompanimentLabel = (accompanimentTypeEntityId: string): string => {
+    for (const accompanimentTypeEntity of props.accompanimentTypeEntities) {
+      if (accompanimentTypeEntity.id ===  accompanimentTypeEntityId) {
+        return accompanimentTypeEntity.name;
+      }
+    }
+    return '';
   };
 
   const renderMainDish = () => {
@@ -54,7 +60,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   const renderAccompaniments = () => {
 
-    if (isNil(props.accompaniments) || props.accompaniments.length === 0) {
+    if (isNil(props.accompanimentDishes) || props.accompanimentDishes.length === 0) {
       return (
         <p className='shortParagraph'>{''}</p>
       );
@@ -62,8 +68,8 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
     const renderedAccompaniments: JSX.Element[] = [];
 
-    if (!isNil(props.accompaniments)) {
-      props.accompaniments.forEach((accompaniment: DishEntity) => {
+    if (!isNil(props.accompanimentDishes)) {
+      props.accompanimentDishes.forEach((accompaniment: DishEntity) => {
         const renderedAccompanimentJsx = renderAccompaniment(accompaniment);
         if (!isNil(renderedAccompanimentJsx)) {
           renderedAccompaniments.push(renderedAccompanimentJsx);
@@ -92,17 +98,17 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   const scheduledMeal: ScheduledMealEntity | null = getScheduledMeal(state, scheduledMealId);
 
   let main: DishEntity | null = null;
-  const accompaniments: DishEntity[] = [];
+  const accompanimentDishes: DishEntity[] = [];
 
   if (!isNil(scheduledMeal)) {
 
     main = getMainById(state, scheduledMeal.mainDishId) as DishEntity;
 
-    if (scheduledMeal.accompanimentIds.length > 0) {
-      scheduledMeal.accompanimentIds.forEach((accompanimentDishId: string) => {
+    if (scheduledMeal.accompanimentDishIds.length > 0) {
+      scheduledMeal.accompanimentDishIds.forEach((accompanimentDishId: string) => {
         const accompanimentDish: DishEntity | null = getAccompanimentById(state, accompanimentDishId);
         if (!isNil(accompanimentDish)) {
-          accompaniments!.push(accompanimentDish);
+          accompanimentDishes!.push(accompanimentDish);
         }
       });
     }
@@ -113,7 +119,8 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
 
   return {
     main,
-    accompaniments,
+    accompanimentDishes,
+    accompanimentTypeEntities: getAccompanimentTypesByUser(state),
   };
 }
 

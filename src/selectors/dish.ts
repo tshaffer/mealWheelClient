@@ -14,7 +14,7 @@ const mongoDishFromReduxDish = (dish: DishEntityRedux): DishEntity => {
     minimumInterval: dish.minimumInterval,
     last: !isString(dish.lastAsStr) ? null : new Date(dish.lastAsStr),
     numAccompanimentsRequired: dish.numAccompanimentsRequired,
-    allowableAccompanimentTypes: dish.allowableAccompanimentTypes,
+    allowableAccompanimentTypeEntityIds: dish.allowableAccompanimentTypeEntityIds,
     // accompanimentRequired: dish.accompanimentRequired,
     prepEffort: dish.prepEffort,
     prepTime: dish.prepTime,

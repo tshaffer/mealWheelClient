@@ -37,7 +37,7 @@ export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
             minimumInterval: dishEntityFromServer.minimumInterval,
             last: isNil(dishEntityFromServer.last) ? null : new Date(dishEntityFromServer.last),
             numAccompanimentsRequired: !isNil(dishEntityFromServer.numAccompanimentsRequired) ? dishEntityFromServer.numAccompanimentsRequired : 0,
-            allowableAccompanimentTypes: !isNil(dishEntityFromServer.allowableAccompanimentTypes) ? dishEntityFromServer.allowableAccompanimentTypes : [],
+            allowableAccompanimentTypeEntityIds: !isNil(dishEntityFromServer.allowableAccompanimentTypeEntityIds) ? dishEntityFromServer.allowableAccompanimentTypeEntityIds : [],
             // accompanimentRequired: isNil(mongoDish.accompanimentRequired) ? RequiredAccompanimentFlags.None : mongoDish.accompanimentRequired,
             prepEffort: dishEntityFromServer.prepEffort,
             prepTime: dishEntityFromServer.prepTime,
@@ -160,7 +160,7 @@ const getRows = (dishes: DishEntity[]): DishRow[] => {
       last: dish.last,
       minimumInterval: dish.minimumInterval,
       numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired) ? dish.numAccompanimentsRequired : 0,
-      allowableAccompanimentTypes: !isNil(dish.allowableAccompanimentTypes) ? dish.allowableAccompanimentTypes : [],
+      allowableAccompanimentTypeEntityIds: !isNil(dish.allowableAccompanimentTypeEntityIds) ? dish.allowableAccompanimentTypeEntityIds : [],
     };
     return row;
   });

@@ -19,7 +19,7 @@ export interface NewDishDialogPropsFromParent {
     dishType: string,
     minimumInterval: number,
     numAccompanimentsRequired?: number,
-    allowableAccompanimentTypes?: string[],
+    allowableAccompanimentTypeEntityIds?: string[],
   ) => void;
   onClose: () => void;
   dishType: string;

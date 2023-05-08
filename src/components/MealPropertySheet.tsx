@@ -124,21 +124,12 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  /*
-  onAddDish: (
-    dishName: string,
-    dishType: string,
-    minimumInterval: number,
-    numAccompanimentsRequired?: number,
-    allowableAccompanimentTypes?: string[],
-  ) => void;
-  */
   const handleAddDish = (
     dishName: string,
     dishType: string,
     minimumInterval: number,
     numAccompanimentsRequired?: number,
-    allowableAccompanimentTypes?: string[],
+    allowableAccompanimentTypeEntityIds?: string[],
   ) => {
     console.log('handleAddDish: ', dishType);
     console.log(dishName);
@@ -157,7 +148,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     };
     if (!isNil(numAccompanimentsRequired)) {
       dishEntity.numAccompanimentsRequired = numAccompanimentsRequired;
-      dishEntity.allowableAccompanimentTypes = allowableAccompanimentTypes;
+      dishEntity.allowableAccompanimentTypeEntityIds = allowableAccompanimentTypeEntityIds;
     }
     const addDishPromise = props.onAddDish(dishEntity);
     addDishPromise
@@ -278,12 +269,12 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const renderAccompanimentSelects = (): JSX.Element[] | null => {
     // invoke renderAccompaniments for each required allowableAccompanimentType for the main
 
-    if (isNil(props.currentMain?.allowableAccompanimentTypes)) {
+    if (isNil(props.currentMain?.allowableAccompanimentTypeEntityIds)) {
       return null;
     }
 
     const renderedAccompanimentsSelects: JSX.Element[] = [];
-    props.currentMain?.allowableAccompanimentTypes.forEach((allowableAccompanimentTypeId: string) => {
+    props.currentMain?.allowableAccompanimentTypeEntityIds.forEach((allowableAccompanimentTypeId: string) => {
       const renderedAccompanimentSelect = renderAccompanimentsForSpecificAccompanimentType(allowableAccompanimentTypeId);
       renderedAccompanimentsSelects.push(renderedAccompanimentSelect);
     });
@@ -374,8 +365,8 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
     scheduledMeal = getScheduledMeal(state, ownProps.scheduledMealId);
     if (!isNil(scheduledMeal)) {
       currentMain = getMainById(state, scheduledMeal.mainDishId);
-      if (!isNil(scheduledMeal.accompanimentIds)) {
-        scheduledMeal.accompanimentIds.forEach((accompanimentId: string) => {
+      if (!isNil(scheduledMeal.accompanimentDishIds)) {
+        scheduledMeal.accompanimentDishIds.forEach((accompanimentId: string) => {
           const accompanimentValue = getAccompanimentById(state, accompanimentId);
           if (!isNil(accompanimentValue)) {
             currentAccompaniments.push(accompanimentValue);

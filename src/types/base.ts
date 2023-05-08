@@ -149,7 +149,7 @@ export interface DishRowModel {
   name: string,
   type: string,
   numAccompanimentsRequired: number,
-  allowableAccompanimentTypes: string[],
+  allowableAccompanimentTypeEntityIds: string[],
   accompaniments: string[],
 }
 
