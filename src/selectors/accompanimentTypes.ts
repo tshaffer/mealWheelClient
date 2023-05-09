@@ -3,6 +3,7 @@ import {
   MealWheelState,
   AccompanimentTypesMap,
   AccompanimentTypeEntity,
+  AccompanimentTypeNameById,
 } from '../types';
 import { getCurrentUser } from './appState';
 
@@ -22,4 +23,13 @@ export const getAccompanimentTypesByUser = (state: MealWheelState): Accompanimen
   }
 
   return [];
+};
+
+export const getAccompanimentTypeNamesById = (state: MealWheelState): AccompanimentTypeNameById => {
+  const accompanimentTypeNameById: AccompanimentTypeNameById = {};
+  const accompanimentTypeEntities: AccompanimentTypeEntity[] = getAccompanimentTypesByUser(state);
+  accompanimentTypeEntities.forEach((accompanimentTypeEntity: AccompanimentTypeEntity) => {
+    accompanimentTypeNameById[accompanimentTypeEntity.id] = accompanimentTypeEntity.name;
+  });
+  return accompanimentTypeNameById;
 };

@@ -17,6 +17,7 @@ import TextField from '@mui/material/TextField';
 import '../styles/MealWheel.css';
 
 import {
+  AccompanimentTypeNameById,
   DishEntity,
   ScheduledMealEntity
 } from '../types';
@@ -25,7 +26,8 @@ import {
   getScheduledMeal,
   getMainById,
   getAccompanimentById,
-  getAccompaniments
+  getAccompaniments,
+  getAccompanimentTypeNamesById
 } from '../selectors';
 import {
   addDish,
@@ -52,6 +54,7 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   currentAccompaniments: DishEntity[],
   allMains: DishEntity[];
   allAccompaniments: DishEntity[];
+  accompanimentTypeNameById: AccompanimentTypeNameById;
   onUpdateMainInMeal: (mealId: string, newMainId: string) => any;
   onGenerateMeal: (mealId: string, date: Date) => any;
   onDeleteMeal: (mealId: string) => any;
@@ -219,7 +222,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeId: string): JSX.Element => {
+  const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string): JSX.Element => {
 
     // how to get the current accompaniment - that translates to the item in the select to highlight?
     //    currentAccompaniments is the list of accompaniments associated with the scheduled meal
@@ -227,7 +230,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
     let currentAccompanimentId: string = '';
     props.currentAccompaniments.forEach((accompaniment: DishEntity) => {
-      if (accompaniment.type === accompanimentTypeId) {
+      if (accompaniment.type === accompanimentTypeEntityId) {
         currentAccompanimentId = accompaniment.id;
       }
     });
@@ -236,7 +239,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
     const dishEntitiesForThisAccompanimentType: DishEntity[] = [];
     props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
-      if (accompanimentDish.type === accompanimentTypeId) {
+      if (accompanimentDish.type === accompanimentTypeEntityId) {
         dishEntitiesForThisAccompanimentType.push(accompanimentDish);
       }
     });
@@ -244,12 +247,12 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     return (
       <div>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="mainLabel">{accompanimentTypeId}</InputLabel>
+          <InputLabel id="mainLabel">{props.accompanimentTypeNameById[accompanimentTypeEntityId]}</InputLabel>
           <Select
             labelId="mainLabel"
             id="demo-simple-select-filled"
             value={currentAccompanimentId}
-            onChange={(event) => handleUpdateAccompaniment(accompanimentTypeId, event)}
+            onChange={(event) => handleUpdateAccompaniment(accompanimentTypeEntityId, event)}
           >
             {accompanimentMenuItems}
           </Select>
@@ -383,6 +386,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
     allMains: getMains(state),
     allAccompaniments: getAccompaniments(state),
     state,
+    accompanimentTypeNameById: getAccompanimentTypeNamesById(state),
   };
 }
 

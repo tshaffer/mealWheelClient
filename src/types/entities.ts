@@ -111,6 +111,10 @@ export interface AccompanimentTypeEntity {
   uiIndex: number;
 }
 
+export interface AccompanimentTypeNameById {
+  [id: string]: string;   // key is AccompanimentTypeEntity id
+}
+
 export interface IngredientEntity {
   id: string;
   userId: string;
@@ -121,8 +125,8 @@ export interface IngredientEntity {
 
 export interface IngredientsById {
   [id: string]: IngredientEntity;   // key is ingredientId
-
 }
+
 export interface IngredientsByDish {
   [dishId: string]: string[];   // string array is list of ingredient ids
 }

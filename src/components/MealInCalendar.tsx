@@ -4,11 +4,11 @@ import { bindActionCreators } from 'redux';
 
 import { isNil, isString } from 'lodash';
 
-import { AccompanimentTypeEntity, DishEntity, ScheduledMealEntity } from '../types';
+import { AccompanimentTypeNameById, DishEntity, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import {
   getAccompanimentById,
-  getAccompanimentTypesByUser,
+  getAccompanimentTypeNamesById,
   getMainById,
   getScheduledMeal,
 } from '../selectors';
@@ -21,18 +21,13 @@ export interface MealInCalendarPropsFromParent {
 export interface MealInCalendarProps extends MealInCalendarPropsFromParent {
   main: DishEntity | null;
   accompanimentDishes: DishEntity[] | null;
-  accompanimentTypeEntities: AccompanimentTypeEntity[];
+  accompanimentTypeNameById: AccompanimentTypeNameById;
 }
 
 const MealInCalendar = (props: MealInCalendarProps) => {
 
   const getAccompanimentLabel = (accompanimentTypeEntityId: string): string => {
-    for (const accompanimentTypeEntity of props.accompanimentTypeEntities) {
-      if (accompanimentTypeEntity.id ===  accompanimentTypeEntityId) {
-        return accompanimentTypeEntity.name;
-      }
-    }
-    return '';
+    return props.accompanimentTypeNameById[accompanimentTypeEntityId];
   };
 
   const renderMainDish = () => {
@@ -116,11 +111,11 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   } else {
     // anything?
   }
-
+  
   return {
     main,
     accompanimentDishes,
-    accompanimentTypeEntities: getAccompanimentTypesByUser(state),
+    accompanimentTypeNameById: getAccompanimentTypeNamesById(state),
   };
 }
 
