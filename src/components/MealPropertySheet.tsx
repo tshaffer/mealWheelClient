@@ -14,6 +14,8 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+
 import '../styles/MealWheel.css';
 
 import {
@@ -40,6 +42,7 @@ import {
 
 import NewDishDialog from './NewDishDialog';
 import { MealWheelDispatch } from '../models';
+import { IconButton, Tooltip } from '@mui/material';
 
 export interface MealPropertySheetPropsFromParent {
   scheduledMealId: string;
@@ -222,6 +225,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
+  const handleDeleteClick = (id: any) => {
+    console.log('Delete accompaniment type ' + id);
+  };
+
   const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string): JSX.Element => {
 
     // how to get the current accompaniment - that translates to the item in the select to highlight?
@@ -244,17 +251,27 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     const accompanimentMenuItems: JSX.Element[] = renderDishMenuItems(dishEntitiesForThisAccompanimentType, false);
     return (
       <div>
-        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="mainLabel">{props.accompanimentTypeNameById[accompanimentTypeEntityId]}</InputLabel>
-          <Select
-            labelId="mainLabel"
-            id="demo-simple-select-filled"
-            value={currentAccompanimentId}
-            onChange={(event) => handleUpdateAccompaniment(accompanimentTypeEntityId, event)}
-          >
-            {accompanimentMenuItems}
-          </Select>
-        </FormControl>
+        <div>
+          <Tooltip title="Delete">
+            <IconButton
+              id={accompanimentTypeEntityId}
+              onClick={() => handleDeleteClick(accompanimentTypeEntityId)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="mainLabel">{props.accompanimentTypeNameById[accompanimentTypeEntityId]}</InputLabel>
+            <Select
+              labelId="mainLabel"
+              id="demo-simple-select-filled"
+              value={currentAccompanimentId}
+              onChange={(event) => handleUpdateAccompaniment(accompanimentTypeEntityId, event)}
+            >
+              {accompanimentMenuItems}
+            </Select>
+          </FormControl>
+        </div>
       </div>
     );
 
