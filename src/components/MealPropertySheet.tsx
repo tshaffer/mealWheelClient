@@ -35,12 +35,12 @@ import {
   getAccompanimentTypeEntitiessByUser
 } from '../selectors';
 import {
+  addAccompanimentToMeal,
   addDish,
   deleteScheduledMeal,
   generateMeal,
   updateAccompanimentInMeal,
   updateMainInMeal,
-  // updateAccompanimentInMeal,
 } from '../controllers';
 
 import NewDishDialog from './NewDishDialog';
@@ -67,6 +67,10 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   onDeleteMeal: (mealId: string) => any;
   onAddDish: (dish: DishEntity) => any;
   onUpdateAccompanimentInMeal: (
+    mealId: string,
+    accompanimentId: string,
+  ) => any;
+  onAddAccompanimentToMeal: (
     mealId: string,
     accompanimentId: string,
   ) => any;
@@ -236,16 +240,46 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  const handleAddAccompanimentClick = (id: any) => {
-    console.log('Add accompaniment type ' + id);
-  };
-
   const handleDeleteAccompanimentClick = (id: any) => {
     console.log('Delete accompaniment type ' + id);
   };
 
   const handleAddAccompanimentTypeEntityClick = () => {
     console.log('Add accompaniment type entity');
+
+    // get accompanimentTypeEntity for selectedAccompanimentTypeEntityId
+    // TEDTODOUSELUT
+    let selectedAccompanimentTypeEntity: AccompanimentTypeEntity | null = null;
+    for (const accompanimentTypeEntity of props.allAccompanimentTypeEntities) {
+      if (accompanimentTypeEntity.id === selectedAccompanimentTypeEntityId) {
+        selectedAccompanimentTypeEntity = accompanimentTypeEntity;
+        break;
+      }
+    }
+
+    if (isNil(selectedAccompanimentTypeEntity)) {
+      return;
+    }
+
+    // get list of accompaniments for this accompanimentTypeEntity
+    // TEDTODOUSELUT
+    const accompanimentDishes: DishEntity[] = [];
+    for (const dishEntity of props.allAccompaniments) {
+      if (dishEntity.type === selectedAccompanimentTypeEntity.id) {
+        accompanimentDishes.push(dishEntity);
+      }
+    }
+
+    if (accompanimentDishes.length === 0) {
+      return;
+    }
+
+    // add accompaniment of this type to meal.
+    const accompanimentDishToAdd: DishEntity = accompanimentDishes[0];
+    props.onAddAccompanimentToMeal(
+      getScheduledMealId(),
+      accompanimentDishToAdd.id
+    );
   };
 
   const handleUpdateAccompanimentTypeEntityToAddToMeal = (accompanimentTypeEntityId: string) => {
@@ -407,8 +441,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const actionButtons = renderActionButtons();
 
-  console.log('MealPropertySheet props: ', props);
-
   return (
     <div>
       <div>
@@ -472,6 +504,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onGenerateMeal: generateMeal,
     onDeleteMeal: deleteScheduledMeal,
     onAddDish: addDish,
+    onAddAccompanimentToMeal: addAccompanimentToMeal,
     onUpdateAccompanimentInMeal: updateAccompanimentInMeal,
   }, dispatch);
 };

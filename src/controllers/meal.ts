@@ -540,6 +540,21 @@ export const updateMainInMeal = (
   };
 };
 
+export const addAccompanimentToMeal = (
+  mealId: string,
+  accompanimentId: string
+): MealWheelVoidThunkAction => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (!isNil(meal)) {
+      const newMeal: ScheduledMealEntity = cloneDeep(meal);
+      newMeal.accompanimentDishIds.push(accompanimentId);
+      dispatch(updateScheduledMeal(meal.id, newMeal));
+    }
+  };
+};
+
 export const updateAccompanimentInMeal = (
   mealId: string,
   accompanimentId: string
