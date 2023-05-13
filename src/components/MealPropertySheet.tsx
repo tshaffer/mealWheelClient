@@ -79,7 +79,9 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const [comments, setComments] = React.useState('');
 
   const [showNewDishDialog, setShowNewDishDialog] = React.useState(false);
-  const [selectedAccompanimentTypeEntity, setSelectedAccompanimentTypeEntity] = React.useState<AccompanimentTypeEntity | null>(null);
+  // const [selectedAccompanimentTypeEntity, setSelectedAccompanimentTypeEntity] = React.useState<AccompanimentTypeEntity | null>(null);
+
+  let selectedAccompanimentTypeEntityId: string = '';
 
   const [dishType, setDishType] = React.useState('main');
 
@@ -243,9 +245,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     console.log('Add accompaniment type entity');
   };
 
-  const handleUpdateAccompanimentTypeEntityToMeal = (accompanimentTypeEntityId: string) => {
-    console.log('Add accompaniment type entity to meal');
+  const handleUpdateAccompanimentTypeEntityToAddToMeal = (accompanimentTypeEntityId: string) => {
+    console.log('handleUpdateAccompanimentTypeEntityToAddToMeal');
     console.log(accompanimentTypeEntityId);
+    selectedAccompanimentTypeEntityId = accompanimentTypeEntityId;
   };
 
   const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string): JSX.Element => {
@@ -327,8 +330,11 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const renderAddAccompanimentTypeEntity = (): JSX.Element => {
 
     // setSelectedAccompanimentTypeEntity(props.allAccompanimentTypeEntities[0]);
+    if (selectedAccompanimentTypeEntityId === '') {
+      selectedAccompanimentTypeEntityId = props.allAccompanimentTypeEntities[0].id;
+    }
     // temporary
-    const sate: AccompanimentTypeEntity = props.allAccompanimentTypeEntities[0];
+    // const sate: AccompanimentTypeEntity = props.allAccompanimentTypeEntities[0];
 
     const accompanimentTypeEntityMenuItems: any[] = renderAccompanimentTypeEntityMenuItems();
     return (
@@ -342,12 +348,12 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           </IconButton>
         </Tooltip>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="accompanimentTypeEntityLabel">Accompaniment Type</InputLabel>
+          <InputLabel id="accompanimentTypeEntityLabel">Type</InputLabel>
           <Select
             labelId="accompanimentTypeEntityLabel"
             id="demo-simple-select-filled"
-            value={sate.id}
-            onChange={(event) => handleUpdateAccompanimentTypeEntityToMeal(event.target.value)}
+            value={selectedAccompanimentTypeEntityId}
+            onChange={(event) => handleUpdateAccompanimentTypeEntityToAddToMeal(event.target.value)}
           >
             {accompanimentTypeEntityMenuItems}
           </Select>
