@@ -47,6 +47,7 @@ import {
 import NewDishDialog from './NewDishDialog';
 import { MealWheelDispatch } from '../models';
 import { IconButton, Tooltip } from '@mui/material';
+import { MapsHomeWork } from '@mui/icons-material';
 
 export interface MealPropertySheetPropsFromParent {
   scheduledMealId: string;
@@ -349,12 +350,30 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
 
     const renderedAccompanimentsSelects: JSX.Element[] = [];
-    props.currentMain?.allowableAccompanimentTypeEntityIds.forEach((allowableAccompanimentTypeId: string) => {
-      const renderedAccompanimentSelect = renderAccompanimentsSelectForSpecificAccompanimentType(allowableAccompanimentTypeId);
-      renderedAccompanimentsSelects.push(renderedAccompanimentSelect);
-    });
-    return renderedAccompanimentsSelects;
 
+    for (const accompanimentDishId of props.scheduledMeal!.accompanimentDishIds) {
+      
+      // get AccompanimentDish given id.
+      // TEDTODO refactor
+      let foundAccompaniment: DishEntity | null = null;
+      for (const accompaniment of props.allAccompaniments) {
+        if (accompaniment.id === accompanimentDishId) {
+          foundAccompaniment = accompaniment;
+          break;
+        }
+      }
+      if (isNil(foundAccompaniment)) {
+        return null;
+      }
+
+      const accompanimentTypeEntityId = (foundAccompaniment as DishEntity).type;
+
+      // render select that includes all the accompaniments of this type
+      const renderedAccompanimentSelect = renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeEntityId);
+      renderedAccompanimentsSelects.push(renderedAccompanimentSelect);
+    }
+
+    return renderedAccompanimentsSelects;
   };
 
   const renderAccompanimentTypeEntityMenuItem = (accompanimentTypeEntity: AccompanimentTypeEntity): JSX.Element => {
