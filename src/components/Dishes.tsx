@@ -37,7 +37,7 @@ import {
 } from '../types';
 import AssignIngredientsToDishDialog from './AssignIngredientsToDishDialog';
 import { addDish, deleteDish, sortDishesAndSetRows, updateDish } from '../controllers';
-import { getAccompanimentTypesByUser, getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
+import { getAccompanimentTypeEntitiessByUser, getCurrentEditDish, getDishes, getDishRows, getSortBy, getSortOrder, getUiState } from '../selectors';
 import { MealWheelDispatch, sortDishes } from '../models';
 import { setCurrentEditDish, setRows, setSortBy, setSortOrder } from '../models/dishesUI';
 
@@ -835,7 +835,7 @@ const Dishes = (props: DishesProps) => {
 
 function mapStateToProps(state: any) {
   return {
-    accompanimentTypes: getAccompanimentTypesByUser(state),
+    accompanimentTypes: getAccompanimentTypeEntitiessByUser(state),
     dishes: getDishes(state),
     rows: getDishRows(state),
     currentEditDish: getCurrentEditDish(state),

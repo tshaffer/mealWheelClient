@@ -20,6 +20,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import '../styles/MealWheel.css';
 
 import {
+  AccompanimentTypeEntity,
   AccompanimentTypeNameById,
   DishEntity,
   ScheduledMealEntity
@@ -30,7 +31,8 @@ import {
   getMainById,
   getAccompanimentById,
   getAccompaniments,
-  getAccompanimentTypeNamesById
+  getAccompanimentTypeNamesById,
+  getAccompanimentTypeEntitiessByUser
 } from '../selectors';
 import {
   addDish,
@@ -55,6 +57,7 @@ export interface MealPropertySheetPropsFromParent {
 export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent {
   scheduledMeal: ScheduledMealEntity | null,
   currentMain: DishEntity | null;
+  allAccompanimentTypeEntities: AccompanimentTypeEntity[];
   currentAccompaniments: DishEntity[],
   allMains: DishEntity[];
   allAccompaniments: DishEntity[];
@@ -76,6 +79,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const [comments, setComments] = React.useState('');
 
   const [showNewDishDialog, setShowNewDishDialog] = React.useState(false);
+  const [selectedAccompanimentTypeEntity, setSelectedAccompanimentTypeEntity] = React.useState<AccompanimentTypeEntity | null>(null);
+
   const [dishType, setDishType] = React.useState('main');
 
   const getScheduledMealId = (): string => {
@@ -238,6 +243,11 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     console.log('Add accompaniment type entity');
   };
 
+  const handleUpdateAccompanimentTypeEntityToMeal = (accompanimentTypeEntityId: string) => {
+    console.log('Add accompaniment type entity to meal');
+    console.log(accompanimentTypeEntityId);
+  };
+
   const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string): JSX.Element => {
 
     // how to get the current accompaniment - that translates to the item in the select to highlight?
@@ -301,8 +311,26 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   };
 
+  const renderAccompanimentTypeEntityMenuItem = (accompanimentTypeEntity: AccompanimentTypeEntity): JSX.Element => {
+    return (
+      <MenuItem value={accompanimentTypeEntity.id} key={accompanimentTypeEntity.id}>{accompanimentTypeEntity.name}</MenuItem>
+    );
+  };
+
+  const renderAccompanimentTypeEntityMenuItems = (): JSX.Element[] => {
+    const accompanimentTypeEntityMenuItems: any[] = props.allAccompanimentTypeEntities.map((accompanimentTypeEntityMenuItem: AccompanimentTypeEntity) => {
+      return renderAccompanimentTypeEntityMenuItem(accompanimentTypeEntityMenuItem);
+    });
+    return accompanimentTypeEntityMenuItems;
+  };
+
   const renderAddAccompanimentTypeEntity = (): JSX.Element => {
 
+    // setSelectedAccompanimentTypeEntity(props.allAccompanimentTypeEntities[0]);
+    // temporary
+    const sate: AccompanimentTypeEntity = props.allAccompanimentTypeEntities[0];
+
+    const accompanimentTypeEntityMenuItems: any[] = renderAccompanimentTypeEntityMenuItems();
     return (
       <div>
         <Tooltip title="Add">
@@ -313,6 +341,17 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
             <AddIcon />
           </IconButton>
         </Tooltip>
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="accompanimentTypeEntityLabel">Accompaniment Type</InputLabel>
+          <Select
+            labelId="accompanimentTypeEntityLabel"
+            id="demo-simple-select-filled"
+            value={sate.id}
+            onChange={(event) => handleUpdateAccompanimentTypeEntityToMeal(event.target.value)}
+          >
+            {accompanimentTypeEntityMenuItems}
+          </Select>
+        </FormControl>
       </div>
     );
   };
@@ -418,6 +457,7 @@ function mapStateToProps(state: any, ownProps: MealPropertySheetPropsFromParent)
     currentMain,
     currentAccompaniments,
     allMains: getMains(state),
+    allAccompanimentTypeEntities: getAccompanimentTypeEntitiessByUser(state),
     allAccompaniments: getAccompaniments(state),
     state,
     accompanimentTypeNameById: getAccompanimentTypeNamesById(state),

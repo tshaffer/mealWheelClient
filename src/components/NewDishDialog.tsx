@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
-import { getAccompaniments, getAccompanimentTypeNamesById, getAccompanimentTypesByUser } from '../selectors';
+import { getAccompaniments, getAccompanimentTypeNamesById, getAccompanimentTypeEntitiessByUser } from '../selectors';
 import { AccompanimentTypeEntity, AccompanimentTypeNameById, DishEntity } from '../types';
 import { cloneDeep } from 'lodash';
 // import {
@@ -91,7 +91,7 @@ function NewDishDialog(props: NewDishDialogProps) {
           }
           label={getTypeLabelFromType(accompanimentTypeId)}
         />
-        <br/>
+        <br />
       </React.Fragment>
     );
   };
@@ -182,7 +182,7 @@ function NewDishDialog(props: NewDishDialogProps) {
 
 function mapStateToProps(state: any) {
   return {
-    allAccompanimentTypes: getAccompanimentTypesByUser(state),
+    allAccompanimentTypes: getAccompanimentTypeEntitiessByUser(state),
     accompanimentTypeNameById: getAccompanimentTypeNamesById(state),
   };
 }

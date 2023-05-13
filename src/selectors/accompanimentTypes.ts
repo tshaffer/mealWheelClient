@@ -11,8 +11,8 @@ const getAccompanimentTypes = (state: MealWheelState): AccompanimentTypesMap => 
   return state.accompanimentTypes;
 };
 
-export const getAccompanimentTypesByUser = (state: MealWheelState): AccompanimentTypeEntity[] => {
-  
+export const getAccompanimentTypeEntitiessByUser = (state: MealWheelState): AccompanimentTypeEntity[] => {
+
   const currentUserId: string | null = getCurrentUser(state);
   if (!isNil(currentUserId)) {
     const accompanimentTypesMap = getAccompanimentTypes(state);
@@ -27,7 +27,7 @@ export const getAccompanimentTypesByUser = (state: MealWheelState): Accompanimen
 
 export const getAccompanimentTypeNamesById = (state: MealWheelState): AccompanimentTypeNameById => {
   const accompanimentTypeNameById: AccompanimentTypeNameById = {};
-  const accompanimentTypeEntities: AccompanimentTypeEntity[] = getAccompanimentTypesByUser(state);
+  const accompanimentTypeEntities: AccompanimentTypeEntity[] = getAccompanimentTypeEntitiessByUser(state);
   accompanimentTypeEntities.forEach((accompanimentTypeEntity: AccompanimentTypeEntity) => {
     accompanimentTypeNameById[accompanimentTypeEntity.id] = accompanimentTypeEntity.name;
   });
