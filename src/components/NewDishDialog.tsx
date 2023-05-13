@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
-import { getAccompaniments, getAccompanimentTypesByUser } from '../selectors';
-import { AccompanimentTypeEntity, DishEntity } from '../types';
+import { getAccompaniments, getAccompanimentTypeNamesById, getAccompanimentTypesByUser } from '../selectors';
+import { AccompanimentTypeEntity, AccompanimentTypeNameById, DishEntity } from '../types';
 import { cloneDeep } from 'lodash';
 // import {
 //   DishType,
@@ -14,6 +14,7 @@ import { cloneDeep } from 'lodash';
 
 export interface NewDishDialogPropsFromParent {
   open: boolean;
+  accompanimentTypeNameById: AccompanimentTypeNameById;
   onAddDish: (
     dishName: string,
     dishType: string,
@@ -38,19 +39,11 @@ function NewDishDialog(props: NewDishDialogProps) {
   // const [requiredAccompanimentFlags, setRequiredAccompanimentFlags] = React.useState(RequiredAccompanimentFlags.None);
   const [requiredAccompanimentTypes, setRequiredAccompanimentTypes] = React.useState<string[]>([]);
 
-  const getTypeLabelFromType = (): string => {
-    //   switch (props.dishType) {
-    //     case DishType.Main:
-    //       return 'Main';
-    //     case DishType.Salad:
-    //       return 'Salad';
-    //     case DishType.Side:
-    //       return 'Side';
-    //     case DishType.Veggie:
-    //     default:
-    //       return 'Veggie';
-    //   }
-    return 'pizza';
+  const getTypeLabelFromType = (id: string): string => {
+    if (id === 'main') {
+      return 'Main';
+    }
+    return props.accompanimentTypeNameById[id];
   };
 
   const handleAddNewDish = () => {
@@ -96,7 +89,7 @@ function NewDishDialog(props: NewDishDialogProps) {
               onChange={(event) => setRequiredAccompanimentType(accompanimentTypeId, event.target.checked)}
             />
           }
-          label={accompanimentTypeId}
+          label={getTypeLabelFromType(accompanimentTypeId)}
         />
         <br/>
       </React.Fragment>
@@ -143,7 +136,7 @@ function NewDishDialog(props: NewDishDialogProps) {
       // PaperProps={{ sx: { width: '30%', height: '40%' } }}
       PaperProps={{ sx: { width: '518px', height: '220px' } }}
     >
-      <DialogTitle>New {getTypeLabelFromType()}</DialogTitle>
+      <DialogTitle>New {getTypeLabelFromType(props.dishType)}</DialogTitle>
       <DialogContent
       >
         <div
@@ -190,6 +183,7 @@ function NewDishDialog(props: NewDishDialogProps) {
 function mapStateToProps(state: any) {
   return {
     allAccompanimentTypes: getAccompanimentTypesByUser(state),
+    accompanimentTypeNameById: getAccompanimentTypeNamesById(state),
   };
 }
 

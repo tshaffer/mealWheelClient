@@ -234,8 +234,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         currentAccompanimentId = accompaniment.id;
       }
     });
-    console.log('currentAccompanimentId');
-    console.log(currentAccompanimentId);
 
     const dishEntitiesForThisAccompanimentType: DishEntity[] = [];
     props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
@@ -262,15 +260,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   };
 
-  const renderAccompanimentsForSpecificAccompanimentType = (accompanimentTypeId: string): JSX.Element => {
-    // like renderMains, but for the specified accompanimentTypeId
-    console.log('renderAccompanimentsForSpecificAccompanimentType');
-    console.log(accompanimentTypeId);
-    return renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeId);
-  };
-
   const renderAccompanimentSelects = (): JSX.Element[] | null => {
-    // invoke renderAccompaniments for each required allowableAccompanimentType for the main
 
     if (isNil(props.currentMain?.allowableAccompanimentTypeEntityIds)) {
       return null;
@@ -278,7 +268,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
     const renderedAccompanimentsSelects: JSX.Element[] = [];
     props.currentMain?.allowableAccompanimentTypeEntityIds.forEach((allowableAccompanimentTypeId: string) => {
-      const renderedAccompanimentSelect = renderAccompanimentsForSpecificAccompanimentType(allowableAccompanimentTypeId);
+      const renderedAccompanimentSelect = renderAccompanimentsSelectForSpecificAccompanimentType(allowableAccompanimentTypeId);
       renderedAccompanimentsSelects.push(renderedAccompanimentSelect);
     });
     return renderedAccompanimentsSelects;
