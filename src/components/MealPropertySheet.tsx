@@ -79,9 +79,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const [comments, setComments] = React.useState('');
 
   const [showNewDishDialog, setShowNewDishDialog] = React.useState(false);
-  const [theSelectedAccompanimentTypeEntityId, setTheSelectedAccompanimentTypeEntityId] = React.useState('');
-
-  // let selectedAccompanimentTypeEntityId: string = '';
+  const [selectedAccompanimentTypeEntityId, setSelectedAccompanimentTypeEntityId] = React.useState('');
 
   const [dishType, setDishType] = React.useState('main');
 
@@ -99,6 +97,11 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   if (isNil(props.selectedMealInCalendar) || isNil(props.selectedMealInCalendar.scheduledMealId) || props.selectedMealInCalendar.scheduledMealId === '') {
     return null;
+  }
+
+  if (!isNil(props.allAccompanimentTypeEntities) && props.allAccompanimentTypeEntities.length > 0 && selectedAccompanimentTypeEntityId === '') {
+    console.log('initialize setSelectedAccompanimentTypeEntityId');
+    setSelectedAccompanimentTypeEntityId(props.allAccompanimentTypeEntities[0].id);
   }
 
   const handleUpdateMain = (event: any) => {
@@ -248,8 +251,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const handleUpdateAccompanimentTypeEntityToAddToMeal = (accompanimentTypeEntityId: string) => {
     console.log('handleUpdateAccompanimentTypeEntityToAddToMeal');
     console.log(accompanimentTypeEntityId);
-    // selectedAccompanimentTypeEntityId = accompanimentTypeEntityId;
-    setTheSelectedAccompanimentTypeEntityId(accompanimentTypeEntityId);
+    setSelectedAccompanimentTypeEntityId(accompanimentTypeEntityId);
   };
 
   const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string): JSX.Element => {
@@ -330,13 +332,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const renderAddAccompanimentTypeEntity = (): JSX.Element => {
 
-    // setSelectedAccompanimentTypeEntity(props.allAccompanimentTypeEntities[0]);
-    // if (selectedAccompanimentTypeEntityId === '') {
-    //   selectedAccompanimentTypeEntityId = props.allAccompanimentTypeEntities[0].id;
-    // }
-    // temporary
-    // const sate: AccompanimentTypeEntity = props.allAccompanimentTypeEntities[0];
-
     const accompanimentTypeEntityMenuItems: any[] = renderAccompanimentTypeEntityMenuItems();
     return (
       <div>
@@ -353,7 +348,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Select
             labelId="accompanimentTypeEntityLabel"
             id="demo-simple-select-filled"
-            value={theSelectedAccompanimentTypeEntityId}
+            value={selectedAccompanimentTypeEntityId}
             onChange={(event) => handleUpdateAccompanimentTypeEntityToAddToMeal(event.target.value)}
           >
             {accompanimentTypeEntityMenuItems}
