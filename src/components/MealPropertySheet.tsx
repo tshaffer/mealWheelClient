@@ -14,6 +14,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 import '../styles/MealWheel.css';
@@ -225,8 +226,16 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  const handleDeleteClick = (id: any) => {
+  const handleAddAccompanimentClick = (id: any) => {
+    console.log('Add accompaniment type ' + id);
+  };
+
+  const handleDeleteAccompanimentClick = (id: any) => {
     console.log('Delete accompaniment type ' + id);
+  };
+
+  const handleAddAccompanimentTypeEntityClick = () => {
+    console.log('Add accompaniment type entity');
   };
 
   const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string): JSX.Element => {
@@ -255,7 +264,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           <Tooltip title="Delete">
             <IconButton
               id={accompanimentTypeEntityId}
-              onClick={() => handleDeleteClick(accompanimentTypeEntityId)}
+              onClick={() => handleDeleteAccompanimentClick(accompanimentTypeEntityId)}
             >
               <DeleteIcon />
             </IconButton>
@@ -292,6 +301,21 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   };
 
+  const renderAddAccompanimentTypeEntity = (): JSX.Element => {
+
+    return (
+      <div>
+        <Tooltip title="Add">
+          <IconButton
+            id={'fred'}
+            onClick={() => handleAddAccompanimentTypeEntityClick()}
+          >
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    );
+  };
 
   const renderLinkToRecipe = (): JSX.Element => {
     return (
@@ -335,6 +359,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const mainDishElement = renderMains();
   const accompanimentElements = renderAccompanimentSelects();
 
+  const addAccompanimentTypeEntityElement = renderAddAccompanimentTypeEntity();
+
   const linkToRecipeElement = renderLinkToRecipe();
   const commentsElement = renderComments();
 
@@ -356,6 +382,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         <p className='shortParagraph'>{'Main: ' + (props.currentMain as DishEntity).name}</p>
         {mainDishElement}
         {accompanimentElements}
+        {addAccompanimentTypeEntityElement}
         {linkToRecipeElement}
         {commentsElement}
         {actionButtons}
