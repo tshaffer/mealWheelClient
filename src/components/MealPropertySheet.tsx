@@ -37,6 +37,7 @@ import {
 import {
   addAccompanimentToMeal,
   addDish,
+  deleteAccompanimentFromMeal,
   deleteScheduledMeal,
   generateMeal,
   updateAccompanimentInMeal,
@@ -71,6 +72,10 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
     accompanimentId: string,
   ) => any;
   onAddAccompanimentToMeal: (
+    mealId: string,
+    accompanimentId: string,
+  ) => any;
+  onDeleteAccompanimentFromMeal: (
     mealId: string,
     accompanimentId: string,
   ) => any;
@@ -240,8 +245,9 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     );
   };
 
-  const handleDeleteAccompanimentClick = (id: any) => {
-    console.log('Delete accompaniment type ' + id);
+  const handleDeleteAccompanimentClick = (accompanimentId: any) => {
+    console.log('Delete accompaniment ' + accompanimentId);
+    props.onDeleteAccompanimentFromMeal(getScheduledMealId(), accompanimentId);
   };
 
   const handleAddAccompanimentTypeEntityClick = () => {
@@ -313,8 +319,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         <div>
           <Tooltip title="Delete">
             <IconButton
-              id={accompanimentTypeEntityId}
-              onClick={() => handleDeleteAccompanimentClick(accompanimentTypeEntityId)}
+              id={currentAccompanimentId}
+              onClick={() => handleDeleteAccompanimentClick(currentAccompanimentId)}
             >
               <DeleteIcon />
             </IconButton>
@@ -505,6 +511,7 @@ const mapDispatchToProps = (dispatch: MealWheelDispatch) => {
     onDeleteMeal: deleteScheduledMeal,
     onAddDish: addDish,
     onAddAccompanimentToMeal: addAccompanimentToMeal,
+    onDeleteAccompanimentFromMeal: deleteAccompanimentFromMeal,
     onUpdateAccompanimentInMeal: updateAccompanimentInMeal,
   }, dispatch);
 };

@@ -555,6 +555,24 @@ export const addAccompanimentToMeal = (
   };
 };
 
+export const deleteAccompanimentFromMeal = (
+  mealId: string,
+  accompanimentId: string
+): MealWheelVoidThunkAction => {
+  return (dispatch: MealWheelDispatch, getState: any) => {
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (!isNil(meal)) {
+      const newMeal: ScheduledMealEntity = cloneDeep(meal);
+      const indexOfAccompanimentToDelete: number = newMeal.accompanimentDishIds.indexOf(accompanimentId);
+      if (indexOfAccompanimentToDelete >= 0) {
+        newMeal.accompanimentDishIds.splice(indexOfAccompanimentToDelete, 1);
+        dispatch(updateScheduledMeal(meal.id, newMeal));
+      }
+    }
+  };
+};
+
 export const updateAccompanimentInMeal = (
   mealId: string,
   accompanimentId: string
