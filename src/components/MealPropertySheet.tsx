@@ -70,7 +70,8 @@ export interface MealPropertySheetProps extends MealPropertySheetPropsFromParent
   onAddDish: (dish: DishEntity) => any;
   onUpdateAccompanimentInMeal: (
     mealId: string,
-    accompanimentId: string,
+    existingAccompanimentDishId: string,
+    selectedAccompanimentDishId: string,
   ) => any;
   onAddAccompanimentToMeal: (
     mealId: string,
@@ -123,17 +124,16 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  const handleUpdateAccompaniment = (accompanimentTypeId: string, event: any) => {
+  const handleUpdateAccompaniment = (accompanimentTypeId: string, existingAccompanimentDishId: string, selectedAccompanimentDishId: string) => {
     console.log('handleUpdateAccompaniment');
-    console.log(event);
-    const selectedAccompanimentId: string = event.target.value;
-    if (event.target.value === 'new') {
+    if (selectedAccompanimentDishId === 'new') {
       setDishType(accompanimentTypeId);
       setShowNewDishDialog(true);
     } else {
       props.onUpdateAccompanimentInMeal(
         getScheduledMealId(),
-        selectedAccompanimentId,
+        existingAccompanimentDishId,
+        selectedAccompanimentDishId,
       );
     }
   };
@@ -252,6 +252,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   };
 
   const handleAddAccompanimentTypeEntityClick = () => {
+
     console.log('Add accompaniment type entity');
 
     // get accompanimentTypeEntity for selectedAccompanimentTypeEntityId
@@ -295,18 +296,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     setSelectedAccompanimentTypeEntityId(accompanimentTypeEntityId);
   };
 
-  const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string): JSX.Element => {
-
-    // how to get the current accompaniment - that translates to the item in the select to highlight?
-    //    currentAccompaniments is the list of accompaniments associated with the scheduled meal
-    //    need to pull out the accompanimentId whose associated accompaniment(dish) is of the type specified here
-
-    let currentAccompanimentId: string = '';
-    props.currentAccompaniments.forEach((accompaniment: DishEntity) => {
-      if (accompaniment.type === accompanimentTypeEntityId) {
-        currentAccompanimentId = accompaniment.id;
-      }
-    });
+  const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string, currentAccompanimentId: string): JSX.Element => {
 
     const dishEntitiesForThisAccompanimentType: DishEntity[] = [];
     props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
@@ -314,6 +304,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         dishEntitiesForThisAccompanimentType.push(accompanimentDish);
       }
     });
+
     const accompanimentMenuItems: JSX.Element[] = renderDishMenuItems(dishEntitiesForThisAccompanimentType, false);
     return (
       <div>
@@ -332,7 +323,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
               labelId="mainLabel"
               id="demo-simple-select-filled"
               value={currentAccompanimentId}
-              onChange={(event) => handleUpdateAccompaniment(accompanimentTypeEntityId, event)}
+              onChange={(event) => handleUpdateAccompaniment(accompanimentTypeEntityId, currentAccompanimentId, event.target.value)}
             >
               {accompanimentMenuItems}
             </Select>
@@ -352,7 +343,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     const renderedAccompanimentsSelects: JSX.Element[] = [];
 
     for (const accompanimentDishId of props.scheduledMeal!.accompanimentDishIds) {
-      
+
       // get AccompanimentDish given id.
       // TEDTODO refactor
       let foundAccompaniment: DishEntity | null = null;
@@ -369,7 +360,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       const accompanimentTypeEntityId = (foundAccompaniment as DishEntity).type;
 
       // render select that includes all the accompaniments of this type
-      const renderedAccompanimentSelect = renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeEntityId);
+      const renderedAccompanimentSelect = renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeEntityId, accompanimentDishId);
       renderedAccompanimentsSelects.push(renderedAccompanimentSelect);
     }
 

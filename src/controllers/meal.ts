@@ -542,14 +542,14 @@ export const updateMainInMeal = (
 
 export const addAccompanimentToMeal = (
   mealId: string,
-  accompanimentId: string
+  accompanimentDishId: string
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
       const newMeal: ScheduledMealEntity = cloneDeep(meal);
-      newMeal.accompanimentDishIds.push(accompanimentId);
+      newMeal.accompanimentDishIds.push(accompanimentDishId);
       dispatch(updateScheduledMeal(meal.id, newMeal));
     }
   };
@@ -557,14 +557,14 @@ export const addAccompanimentToMeal = (
 
 export const deleteAccompanimentFromMeal = (
   mealId: string,
-  accompanimentId: string
+  accompanimentDishId: string
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
     if (!isNil(meal)) {
       const newMeal: ScheduledMealEntity = cloneDeep(meal);
-      const indexOfAccompanimentToDelete: number = newMeal.accompanimentDishIds.indexOf(accompanimentId);
+      const indexOfAccompanimentToDelete: number = newMeal.accompanimentDishIds.indexOf(accompanimentDishId);
       if (indexOfAccompanimentToDelete >= 0) {
         newMeal.accompanimentDishIds.splice(indexOfAccompanimentToDelete, 1);
         dispatch(updateScheduledMeal(meal.id, newMeal));
@@ -575,27 +575,21 @@ export const deleteAccompanimentFromMeal = (
 
 export const updateAccompanimentInMeal = (
   mealId: string,
-  accompanimentId: string
+  existingAccompanimentDishId: string,
+  selectedAccompanimentDishId: string,
 ): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const meal: ScheduledMealEntity | null = getScheduledMeal(mealWheelState, mealId);
+    if (isNil(meal)) {
+      return;
+    }
 
-    const accompaniment: BaseDishEntity | null = getDishById(mealWheelState, accompanimentId) as BaseDishEntity;
-    if (!isNil(meal)) {
-      const newMeal: ScheduledMealEntity = cloneDeep(meal);
-      if (!isNil(accompaniment)) {
-        for (let accompanimentIndex = 0; accompanimentIndex < meal.accompanimentDishIds.length; accompanimentIndex++) {
-          const mealAccompanimentId = meal.accompanimentDishIds[accompanimentIndex];
-          const existingAccompaniment = getDishById(mealWheelState, mealAccompanimentId);
-          if (!isNil(existingAccompaniment) && existingAccompaniment.type === accompaniment.type) {
-            // replace
-            newMeal.accompanimentDishIds[accompanimentIndex] = accompanimentId;
-            dispatch(updateScheduledMeal(meal.id, newMeal));
-            return;
-          }
-        }
-      }
+    const newMeal: ScheduledMealEntity = cloneDeep(meal);
+    const indexOfMatchingAccompanimentDish = newMeal.accompanimentDishIds.indexOf(existingAccompanimentDishId);
+    if (indexOfMatchingAccompanimentDish >= 0) {
+      newMeal.accompanimentDishIds[indexOfMatchingAccompanimentDish] = selectedAccompanimentDishId;
+      dispatch(updateScheduledMeal(meal.id, newMeal));
     }
   };
 };

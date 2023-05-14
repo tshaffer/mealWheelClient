@@ -53,17 +53,21 @@ const MealInCalendar = (props: MealInCalendarProps) => {
   };
 
 
-  const renderAccompaniments = () => {
+  const renderAccompaniments = (): JSX.Element[] => {
+
+    const renderedAccompaniments: JSX.Element[] = [];
 
     if (isNil(props.accompanimentDishes) || props.accompanimentDishes.length === 0) {
-      return (
+      renderedAccompaniments.push(
         <p className='shortParagraph'>{''}</p>
       );
     }
 
-    const renderedAccompaniments: JSX.Element[] = [];
 
     if (!isNil(props.accompanimentDishes)) {
+
+      console.log('renderedAccompaniments: number of accompaniments = ' + props.accompanimentDishes.length);
+
       props.accompanimentDishes.forEach((accompaniment: DishEntity) => {
         const renderedAccompanimentJsx = renderAccompaniment(accompaniment);
         if (!isNil(renderedAccompanimentJsx)) {
@@ -71,12 +75,16 @@ const MealInCalendar = (props: MealInCalendarProps) => {
         }
       });
     }
+
+    console.log('renderedAccompaniments: number of JSX elements = ' + renderedAccompaniments.length);
+
     return renderedAccompaniments;
   };
 
   const mainDish = renderMainDish();
   const accompaniments = renderAccompaniments();
 
+  console.log('render() number of accompaniments: ' + accompaniments.length);
   return (
     <div>
       {mainDish}
@@ -111,7 +119,7 @@ function mapStateToProps(state: any, ownProps: MealInCalendarPropsFromParent) {
   } else {
     // anything?
   }
-  
+
   return {
     main,
     accompanimentDishes,
