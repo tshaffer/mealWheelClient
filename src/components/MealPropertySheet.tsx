@@ -230,7 +230,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
     const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.allMains, false);
     return (
-      <div>
+      <div key={mainId}>
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="mainLabel">Main</InputLabel>
           <Select
@@ -305,9 +305,10 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       }
     });
 
+    // TEDTODO - key might not be unique??
     const accompanimentMenuItems: JSX.Element[] = renderDishMenuItems(dishEntitiesForThisAccompanimentType, false);
     return (
-      <div>
+      <div key={accompanimentTypeEntityId}>
         <div>
           <Tooltip title="Delete">
             <IconButton
@@ -384,7 +385,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
     const accompanimentTypeEntityMenuItems: any[] = renderAccompanimentTypeEntityMenuItems();
     return (
-      <div>
+      <div key={'add'}>
         <Tooltip title="Add">
           <IconButton
             id={'fred'}

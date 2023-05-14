@@ -81,7 +81,7 @@ function NewDishDialog(props: NewDishDialogProps) {
 
   const renderRequiresAccompaniment = (accompanimentTypeId: string): JSX.Element => {
     return (
-      <React.Fragment>
+      <React.Fragment key={accompanimentTypeId}>
         <FormControlLabel
           control={
             <Checkbox

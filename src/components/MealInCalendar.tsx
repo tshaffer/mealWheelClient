@@ -35,7 +35,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
       return null;
     }
     return (
-      <p className='shortParagraph'>{props.main.name}</p>
+      <p className='shortParagraph' key={props.main.id}>{props.main.name}</p>
     );
   };
 
@@ -59,7 +59,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
     if (isNil(props.accompanimentDishes) || props.accompanimentDishes.length === 0) {
       renderedAccompaniments.push(
-        <p className='shortParagraph'>{''}</p>
+        <p className='shortParagraph' key='0'>{''}</p>
       );
     }
 
@@ -86,7 +86,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
 
   console.log('render() number of accompaniments: ' + accompaniments.length);
   return (
-    <div>
+    <div key={props.event.scheduledMealId}>
       {mainDish}
       {accompaniments}
     </div>
