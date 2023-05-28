@@ -433,7 +433,7 @@ const Dishes = (props: DishesProps) => {
   const handleUpdateSuggestedAccompanimentCount = (
     selectedDishRow: DishRow,
     accompanimentTypeEntity: AccompanimentTypeEntity,
-    suggestedAccompanimentCount: number
+    suggestedAccompanimentCount: number,
   ) => {
     console.log('handleUpdateSuggestedAccompanimentCount');
     console.log(selectedDishRow);
@@ -533,6 +533,7 @@ const Dishes = (props: DishesProps) => {
       }
     });
 
+    // TEDTODO - onChange or onBlur?
     return (
       <TableCell>
         <TextField
@@ -540,27 +541,17 @@ const Dishes = (props: DishesProps) => {
           type='number'
           label={accompanimentTypeEntity.name}
           defaultValue={suggestedAccompanimentCount}
-          onChange={(event) => handleUpdateSuggestedAccompanimentCount(dishRow, accompanimentTypeEntity, suggestedAccompanimentCount)}
-          disabled={isDisabled}
           variant='standard'
+          onChange={(event) => handleUpdateSuggestedAccompanimentCount(dishRow, accompanimentTypeEntity, event.target.value)}
+          disabled={isDisabled}
+          InputProps={{
+            inputProps: {
+              min: 0
+            }
+          }}
         />
       </TableCell>
     );
-
-    // const allowableAccompanimentTypeEntityIdsForThisRow = isNil(dishRow.allowableAccompanimentTypeEntityIds) ? [] : dishRow.allowableAccompanimentTypeEntityIds;
-    // const accompanimentEntityId = accompanimentTypeEntity.id;
-    // const isChecked = allowableAccompanimentTypeEntityIdsForThisRow.indexOf(accompanimentEntityId) >= 0;
-
-    // return (
-    //   <TableCell align='center'>
-    //     <Checkbox
-    //       color="primary"
-    //       checked={isChecked}
-    //       onChange={(event) => handleToggleSetAllowableAccompaniment(dishRow, accompanimentTypeEntity, event.target.checked)}
-    //       disabled={isDisabled}
-    //     />
-    //   </TableCell>
-    // );
   };
 
   const getReadWriteSuggestedAccompanimentColumns = (dishRow: DishRow, readOnly: boolean): JSX.Element[] => {
