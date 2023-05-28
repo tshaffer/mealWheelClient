@@ -45,7 +45,8 @@ import {
   BaseDishEntity,
   VerboseScheduledMeal,
   IngredientEntity,
-  MealEntity
+  MealEntity,
+  SuggestedAccompanimentTypeForMainSpec
 } from '../types';
 import { updateDishLastProperty } from './dish';
 
@@ -268,64 +269,64 @@ const generateRandomDishBasedMeals = (mealWheelState: MealWheelState, numMeals: 
 
   const mealEntities: MealEntity[] = [];
 
-  // const dishesByDishType: DishesByDishType = generateDishesByDishType(mealWheelState);
-  // const dishIndicesByDishType: DishIndicesByDishType = generateDishIndicesByDishType(mealWheelState);
+  const dishesByDishType: DishesByDishType = generateDishesByDishType(mealWheelState);
+  const dishIndicesByDishType: DishIndicesByDishType = generateDishIndicesByDishType(mealWheelState);
 
-  // // TODO - refactor remaining code in this function - multiple functions
+  // TODO - refactor remaining code in this function - multiple functions
 
-  // const selectedMainDishIndices = selectMainDishes(mealWheelState, startDate, numMeals, dishIndicesByDishType);
+  const selectedMainDishIndices = selectMainDishes(mealWheelState, startDate, numMeals, dishIndicesByDishType);
 
-  // const allDishes: DishEntity[] = getDishes(mealWheelState);
+  const allDishes: DishEntity[] = getDishes(mealWheelState);
 
-  // for (const selectedMainDishIndex of selectedMainDishIndices) {
+  for (const selectedMainDishIndex of selectedMainDishIndices) {
 
-  //   const mainDish: DishEntity = allDishes[selectedMainDishIndex];
+    const mainDish: DishEntity = allDishes[selectedMainDishIndex];
 
-  //   const numAccompanimentsRequired: number = mainDish.numAccompanimentsRequired as number;
-  //   const allowableAccompanimentTypeEntityIds: string[] = cloneDeep(mainDish.allowableAccompanimentTypeEntityIds as string[]);
-  //   const selectedAccompanimentDishes: DishEntity[] = [];
+    const suggestedAccompanimentTypeEntityIds: string[] = [];
 
-  //   let accompanimentsAcquired: number = 0;
-  //   while (accompanimentsAcquired < numAccompanimentsRequired) {
+    const suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[] = mainDish.suggestedAccompanimentTypeSpecs;
+    suggestedAccompanimentTypeSpecs.forEach((suggestedAccompanimentTypeSpec: SuggestedAccompanimentTypeForMainSpec) => {
+      for (let i = 0; i < suggestedAccompanimentTypeSpec.count; i++) {
+        suggestedAccompanimentTypeEntityIds.push(suggestedAccompanimentTypeSpec.suggestedAccompanimentTypeEntityId);
+      }
+    });
 
-  //     // select accompaniment type from allowable accompaniment types, ensuring that this accompaniment type has not already been selected for this main
+    const selectedAccompanimentDishes: DishEntity[] = [];
 
-  //     const accompanimentTypeIndex: number = Math.floor(Math.random() * allowableAccompanimentTypeEntityIds.length);
-  //     const accompanimentType: string = allowableAccompanimentTypeEntityIds[accompanimentTypeIndex];
+    while (suggestedAccompanimentTypeEntityIds.length > 0) {
 
-  //     // accompaniments of set accompanimentType
-  //     const accompanimentDishes: DishEntity[] = dishesByDishType[accompanimentType];
-  //     // const accompanimentDishIndicesForThisAccompanimentType: number[] = dishIndicesByDishType[accompanimentType];  // indices into allDishes
+      // select accompaniment type from suggested accompaniment types, ensuring that this accompaniment type has not already been selected for this main
 
-  //     // get one of the accompaniments from this list
-  //     const numAccompanimentsOfThisType: number = accompanimentDishes.length;
-  //     const accompanimentDishIndex = Math.floor(Math.random() * numAccompanimentsOfThisType);
+      const accompanimentTypeEntityId: string = suggestedAccompanimentTypeEntityIds[0];
 
-  //     const selectedAccompanimentDish: DishEntity | null = accompanimentDishes[accompanimentDishIndex];
+      // accompaniments of set accompanimentType
+      const accompanimentDishes: DishEntity[] = dishesByDishType[accompanimentTypeEntityId];
 
-  //     if (!isNil(selectedAccompanimentDish)) {
+      // get one of the accompaniments from this list
+      const numAccompanimentsOfThisType: number = accompanimentDishes.length;
+      const accompanimentDishIndex = Math.floor(Math.random() * numAccompanimentsOfThisType);
 
-  //       // add accompaniment
-  //       selectedAccompanimentDishes.push(selectedAccompanimentDish);
+      const selectedAccompanimentDish: DishEntity | null = accompanimentDishes[accompanimentDishIndex];
 
-  //       // remove this accompaniment type from allowableAccompanimentTypeEntityIds
-  //       allowableAccompanimentTypeEntityIds.splice(accompanimentTypeIndex, 1);
+      if (!isNil(selectedAccompanimentDish)) {
+        selectedAccompanimentDishes.push(selectedAccompanimentDish);
+        suggestedAccompanimentTypeEntityIds.shift();
+      } else {
+        debugger;
+      }
 
-  //       accompanimentsAcquired++;
-  //     }
+    }
 
-  //   }
+    const mealId = uuidv4();
+    const meal: MealEntity = {
+      id: mealId,
+      mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
+      accompanimentDishes: selectedAccompanimentDishes,
+    };
 
-  //   const mealId = uuidv4();
-  //   const meal: MealEntity = {
-  //     id: mealId,
-  //     mainDish: getDishById(mealWheelState, mainDish.id) as DishEntity,
-  //     accompanimentDishes: selectedAccompanimentDishes,
-  //   };
+    mealEntities.push(meal);
 
-  //   mealEntities.push(meal);
-
-  // }
+  }
 
   return mealEntities;
 };

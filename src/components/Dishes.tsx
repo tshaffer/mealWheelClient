@@ -441,6 +441,7 @@ const Dishes = (props: DishesProps) => {
     let matchFound = false;
     // TEDTODO - lodash or some other way to find a match?
     suggestedAccompanimentTypesForMainSpec.forEach((suggestedAccompanimentTypeForMainSpec: SuggestedAccompanimentTypeForMainSpec) => {
+      // TEDTODO - if newCount === 0, delete this from array?
       if (suggestedAccompanimentTypeForMainSpec.suggestedAccompanimentTypeEntityId === accompanimentTypeEntity.id) {
         matchFound = true;
         suggestedAccompanimentTypeForMainSpec.count = newCount;
