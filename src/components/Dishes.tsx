@@ -433,37 +433,29 @@ const Dishes = (props: DishesProps) => {
   const handleUpdateSuggestedAccompanimentCount = (
     selectedDishRow: DishRow,
     accompanimentTypeEntity: AccompanimentTypeEntity,
-    suggestedAccompanimentCount: number,
+    suggestedAccompanimentCountStr: string,
   ) => {
-    console.log('handleUpdateSuggestedAccompanimentCount');
-    console.log(selectedDishRow);
-    console.log(accompanimentTypeEntity);
-    console.log(suggestedAccompanimentCount);
+    const newCount = parseInt(suggestedAccompanimentCountStr, 10);
+
+    const suggestedAccompanimentTypesForMainSpec: SuggestedAccompanimentTypeForMainSpec[] = cloneDeep(selectedDishRow.suggestedAccompanimentTypeSpecs);
+    let matchFound = false;
+    // TEDTODO - lodash or some other way to find a match?
+    suggestedAccompanimentTypesForMainSpec.forEach((suggestedAccompanimentTypeForMainSpec: SuggestedAccompanimentTypeForMainSpec) => {
+      if (suggestedAccompanimentTypeForMainSpec.suggestedAccompanimentTypeEntityId === accompanimentTypeEntity.id) {
+        matchFound = true;
+        suggestedAccompanimentTypeForMainSpec.count = newCount;
+      }
+    });
+    if (!matchFound) {
+      const newSuggestedAccompanimentTypeForMainSpec: SuggestedAccompanimentTypeForMainSpec = {
+        suggestedAccompanimentTypeEntityId: accompanimentTypeEntity.id,
+        count: newCount, // should always be 1, right?
+      };
+      suggestedAccompanimentTypesForMainSpec.push(newSuggestedAccompanimentTypeForMainSpec);
+    }
+    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'suggestedAccompanimentTypeSpecs', suggestedAccompanimentTypesForMainSpec);
+    props.onSetCurrentEditDish(selectedRow);
   };
-
-  // const handleUpdateNumAccompanimentsRequired = (selectedDishRow: DishRow, numAccompanimentsRequiredInput: string) => {
-  //   const numAccompanimentsRequired = parseInt(numAccompanimentsRequiredInput, 10);
-  //   const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'numAccompanimentsRequired', numAccompanimentsRequired);
-  //   props.onSetCurrentEditDish(selectedRow);
-  // };
-
-  // const handleToggleSetAllowableAccompaniment = (selectedDishRow: DishRow, accompanimentType: AccompanimentTypeEntity, checked: boolean) => {
-  //   console.log('handleToggleSetAllowableAccompaniment');
-  //   console.log(selectedDishRow);
-  //   // const dish = selectedDishRow.dish;
-  //   console.log(accompanimentType);
-  //   console.log(checked);
-
-  //   const allowableAccompanimentTypeEntityIds: string[] = cloneDeep(selectedDishRow.allowableAccompanimentTypeEntityIds);
-  //   const indexOfAccompanimentType = allowableAccompanimentTypeEntityIds.indexOf(accompanimentType.id);
-  //   if (indexOfAccompanimentType >= 0) {
-  //     allowableAccompanimentTypeEntityIds.splice(indexOfAccompanimentType, 1);
-  //   } else {
-  //     allowableAccompanimentTypeEntityIds.splice(0, 0, accompanimentType.id);
-  //   }
-  //   const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'allowableAccompanimentTypeEntityIds', allowableAccompanimentTypeEntityIds);
-  //   props.onSetCurrentEditDish(selectedRow);
-  // };
 
   const getAccompanimentTypeOptions = (): any[] => {
 
