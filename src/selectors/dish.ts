@@ -2,7 +2,6 @@ import { isString } from 'lodash';
 import {
   DishEntity,
   DishEntityRedux,
-  // string,
   MealWheelState
 } from '../types';
 
@@ -13,9 +12,7 @@ const mongoDishFromReduxDish = (dish: DishEntityRedux): DishEntity => {
     type: dish.type,
     minimumInterval: dish.minimumInterval,
     last: !isString(dish.lastAsStr) ? null : new Date(dish.lastAsStr),
-    numAccompanimentsRequired: dish.numAccompanimentsRequired,
-    allowableAccompanimentTypeEntityIds: dish.allowableAccompanimentTypeEntityIds,
-    // accompanimentRequired: dish.accompanimentRequired,
+    suggestedAccompanimentTypeSpecs: dish.suggestedAccompanimentTypeSpecs,
     prepEffort: dish.prepEffort,
     prepTime: dish.prepTime,
     cleanupEffort: dish.cleanupEffort,

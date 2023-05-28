@@ -9,6 +9,7 @@ import {
   IngredientsById,
   MealEntity,
   ScheduledMealEntity,
+  SuggestedAccompanimentTypeForMainSpec,
   UserEntity,
   VerboseScheduledMeal,
 }
@@ -148,8 +149,7 @@ export interface DishRowModel {
   id: string;
   name: string,
   type: string,
-  numAccompanimentsRequired: number,
-  allowableAccompanimentTypeEntityIds: string[],
+  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
   accompaniments: string[],
 }
 

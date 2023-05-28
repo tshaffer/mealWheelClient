@@ -158,36 +158,36 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     numAccompanimentsRequired?: number,
     allowableAccompanimentTypeEntityIds?: string[],
   ) => {
-    console.log('handleAddDish: ', dishType);
-    console.log(dishName);
-    // console.log(requiredAccompanimentFlags);
-    // TODO - I don't think the 'addedDish' is necessary.
-    const dishId: string = 'addedDish' + uuidv4();
-    const dishEntity: DishEntity = {
-      id: dishId,
-      name: dishName,
-      type: dishType,
-      minimumInterval,
-      last: null,
-      prepEffort: 5,
-      prepTime: 15,
-      cleanupEffort: 5,
-    };
-    if (!isNil(numAccompanimentsRequired)) {
-      dishEntity.numAccompanimentsRequired = numAccompanimentsRequired;
-      dishEntity.allowableAccompanimentTypeEntityIds = allowableAccompanimentTypeEntityIds;
-    }
-    const addDishPromise = props.onAddDish(dishEntity);
-    addDishPromise
-      .then((updatedDishId: string) => {
-        const scheduledMealId = getScheduledMealId();
-        switch (dishType) {
-          case 'main':
-            props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
-            break;
-        }
-        setShowNewDishDialog(false);
-      });
+    // console.log('handleAddDish: ', dishType);
+    // console.log(dishName);
+    // // console.log(requiredAccompanimentFlags);
+    // // TODO - I don't think the 'addedDish' is necessary.
+    // const dishId: string = 'addedDish' + uuidv4();
+    // const dishEntity: DishEntity = {
+    //   id: dishId,
+    //   name: dishName,
+    //   type: dishType,
+    //   minimumInterval,
+    //   last: null,
+    //   prepEffort: 5,
+    //   prepTime: 15,
+    //   cleanupEffort: 5,
+    // };
+    // if (!isNil(numAccompanimentsRequired)) {
+    //   dishEntity.numAccompanimentsRequired = numAccompanimentsRequired;
+    //   dishEntity.allowableAccompanimentTypeEntityIds = allowableAccompanimentTypeEntityIds;
+    // }
+    // const addDishPromise = props.onAddDish(dishEntity);
+    // addDishPromise
+    //   .then((updatedDishId: string) => {
+    //     const scheduledMealId = getScheduledMealId();
+    //     switch (dishType) {
+    //       case 'main':
+    //         props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
+    //         break;
+    //     }
+    //     setShowNewDishDialog(false);
+    //   });
   };
 
   const handleCloseNewDishDialog = () => {
@@ -337,7 +337,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const renderAccompanimentSelects = (): JSX.Element[] | null => {
 
-    if (isNil(props.currentMain?.allowableAccompanimentTypeEntityIds)) {
+    if (isNil(props.currentMain?.suggestedAccompanimentTypeSpecs)) {
       return null;
     }
 
@@ -460,7 +460,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   return (
     <div>
-      <div>
+      {/* <div>
         <NewDishDialog
           open={showNewDishDialog}
           onAddDish={handleAddDish}
@@ -477,7 +477,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         {commentsElement}
         {actionButtons}
         <Button color='inherit' onClick={props.handleClose}>Close</Button>
-      </div>
+      </div> */}
 
     </div>
   );

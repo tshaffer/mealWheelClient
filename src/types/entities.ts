@@ -35,9 +35,13 @@ export interface BaseDishEntity {
   cleanupEffort: number;
 }
 
+export interface SuggestedAccompanimentTypeForMainSpec {
+  suggestedAccompanimentTypeEntityId: string,
+  count: number,
+}
+
 export interface MainDishEntity extends BaseDishEntity {
-  numAccompanimentsRequired: number,
-  allowableAccompanimentTypeEntityIds: string[],
+  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
 }
 
 export interface DishEntityFromServer {
@@ -46,8 +50,7 @@ export interface DishEntityFromServer {
   type: string;
   minimumInterval: number;
   last: string | null;
-  numAccompanimentsRequired?: number,
-  allowableAccompanimentTypeEntityIds?: string[],
+  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -60,8 +63,7 @@ export interface DishEntity {
   type: string;                                     // 'main' or AccompanimentTypeEntity.id
   minimumInterval: number;
   last: Date | null;
-  numAccompanimentsRequired?: number,
-  allowableAccompanimentTypeEntityIds?: string[],   // AccompanimentTypeEntity.id[]
+  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -75,8 +77,7 @@ export interface DishEntityRedux {
   minimumInterval: number;
   // last: Date | null;
   lastAsStr: string | null;
-  numAccompanimentsRequired?: number,
-  allowableAccompanimentTypeEntityIds?: string[],// accompanimentTypeId[]
+  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
@@ -138,8 +139,7 @@ export interface DishRow {
   type: string;
   minimumInterval: number;
   last: Date | null;
-  numAccompanimentsRequired: number,
-  allowableAccompanimentTypeEntityIds: string[],// accompanimentTypeId[]
+  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
 }
 
 export interface IngredientRow {

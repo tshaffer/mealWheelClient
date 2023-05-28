@@ -210,8 +210,7 @@ const Dishes = (props: DishesProps) => {
         type: dish.type,
         last: dish.last,
         minimumInterval: dish.minimumInterval,
-        numAccompanimentsRequired: !isNil(dish.numAccompanimentsRequired) ? dish.numAccompanimentsRequired : 0,
-        allowableAccompanimentTypeEntityIds: !isNil(dish.allowableAccompanimentTypeEntityIds) ? dish.allowableAccompanimentTypeEntityIds : [],
+        suggestedAccompanimentTypeSpecs: !isNil(dish.suggestedAccompanimentTypeSpecs) ? dish.suggestedAccompanimentTypeSpecs : [],
       };
       return row;
     });
@@ -250,6 +249,7 @@ const Dishes = (props: DishesProps) => {
       prepEffort: 5,
       prepTime: 15,
       cleanupEffort: 5,
+      suggestedAccompanimentTypeSpecs: [],
     };
     return dish;
   };
@@ -262,8 +262,7 @@ const Dishes = (props: DishesProps) => {
       type: 'main',
       minimumInterval: 5,
       last: null,
-      numAccompanimentsRequired: 0,
-      allowableAccompanimentTypeEntityIds: [],
+      suggestedAccompanimentTypeSpecs: [],
     };
 
     return dishRow;
@@ -331,10 +330,10 @@ const Dishes = (props: DishesProps) => {
           prepEffort: 5,
           prepTime: 15,
           cleanupEffort: 5,
+          suggestedAccompanimentTypeSpecs: [],
         };
         if (props.currentEditDish.type === 'main') {
-          newDish.numAccompanimentsRequired = props.currentEditDish.numAccompanimentsRequired;
-          newDish.allowableAccompanimentTypeEntityIds = props.currentEditDish.allowableAccompanimentTypeEntityIds;
+          newDish.suggestedAccompanimentTypeSpecs = props.currentEditDish.suggestedAccompanimentTypeSpecs;
         }
 
         props.onAddDish(newDish)
@@ -361,8 +360,7 @@ const Dishes = (props: DishesProps) => {
         updatedDish.name = props.currentEditDish.name;
         updatedDish.type = props.currentEditDish.type;
         updatedDish.minimumInterval = props.currentEditDish.minimumInterval;
-        updatedDish.numAccompanimentsRequired = props.currentEditDish.numAccompanimentsRequired;
-        updatedDish.allowableAccompanimentTypeEntityIds = props.currentEditDish.allowableAccompanimentTypeEntityIds;
+        updatedDish.suggestedAccompanimentTypeSpecs = props.currentEditDish.suggestedAccompanimentTypeSpecs;
         props.onUpdateDish(props.currentEditDish.dish.id, updatedDish);
       }
       props.onSetCurrentEditDish(null);
@@ -397,8 +395,7 @@ const Dishes = (props: DishesProps) => {
         selectedDishRow.last = unmodifiedDishEntity.last;
 
         if (selectedDishRow.type === 'main') {
-          selectedDishRow.numAccompanimentsRequired = isNil(unmodifiedDishEntity.numAccompanimentsRequired) ? 0 : unmodifiedDishEntity.numAccompanimentsRequired;
-          selectedDishRow.allowableAccompanimentTypeEntityIds = isNil(unmodifiedDishEntity.allowableAccompanimentTypeEntityIds) ? [] : unmodifiedDishEntity.allowableAccompanimentTypeEntityIds;
+          selectedDishRow.suggestedAccompanimentTypeSpecs = isNil(unmodifiedDishEntity.suggestedAccompanimentTypeSpecs) ? [] : unmodifiedDishEntity.suggestedAccompanimentTypeSpecs;
         }
 
         // }
@@ -440,9 +437,9 @@ const Dishes = (props: DishesProps) => {
   };
 
   const handleUpdateNumAccompanimentsRequired = (selectedDishRow: DishRow, numAccompanimentsRequiredInput: string) => {
-    const numAccompanimentsRequired = parseInt(numAccompanimentsRequiredInput, 10);
-    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'numAccompanimentsRequired', numAccompanimentsRequired);
-    props.onSetCurrentEditDish(selectedRow);
+    // const numAccompanimentsRequired = parseInt(numAccompanimentsRequiredInput, 10);
+    // const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'numAccompanimentsRequired', numAccompanimentsRequired);
+    // props.onSetCurrentEditDish(selectedRow);
   };
 
   const handleToggleSetAllowableAccompaniment = (selectedDishRow: DishRow, accompanimentType: AccompanimentTypeEntity, checked: boolean) => {
@@ -452,15 +449,15 @@ const Dishes = (props: DishesProps) => {
     console.log(accompanimentType);
     console.log(checked);
 
-    const allowableAccompanimentTypeEntityIds: string[] = cloneDeep(selectedDishRow.allowableAccompanimentTypeEntityIds);
-    const indexOfAccompanimentType = allowableAccompanimentTypeEntityIds.indexOf(accompanimentType.id);
-    if (indexOfAccompanimentType >= 0) {
-      allowableAccompanimentTypeEntityIds.splice(indexOfAccompanimentType, 1);
-    } else {
-      allowableAccompanimentTypeEntityIds.splice(0, 0, accompanimentType.id);
-    }
-    const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'allowableAccompanimentTypeEntityIds', allowableAccompanimentTypeEntityIds);
-    props.onSetCurrentEditDish(selectedRow);
+    // const allowableAccompanimentTypeEntityIds: string[] = cloneDeep(selectedDishRow.allowableAccompanimentTypeEntityIds);
+    // const indexOfAccompanimentType = allowableAccompanimentTypeEntityIds.indexOf(accompanimentType.id);
+    // if (indexOfAccompanimentType >= 0) {
+    //   allowableAccompanimentTypeEntityIds.splice(indexOfAccompanimentType, 1);
+    // } else {
+    //   allowableAccompanimentTypeEntityIds.splice(0, 0, accompanimentType.id);
+    // }
+    // const selectedRow: DishRow = updateSelectedRowProperty(selectedDishRow, 'allowableAccompanimentTypeEntityIds', allowableAccompanimentTypeEntityIds);
+    // props.onSetCurrentEditDish(selectedRow);
   };
 
   const getAccompanimentTypeOptions = (): any[] => {
@@ -484,9 +481,10 @@ const Dishes = (props: DishesProps) => {
 
   const getReadOnlyAllowableAccompanimentColumn = (dishRow: DishRow, accompanimentTypeEntity: AccompanimentTypeEntity): JSX.Element => {
 
-    const allowableAccompanimentTypeEntityIdsForThisRow = isNil(dishRow.allowableAccompanimentTypeEntityIds) ? [] : dishRow.allowableAccompanimentTypeEntityIds;
-    const accompanimentTypeEntityId = accompanimentTypeEntity.id;
-    const isChecked = allowableAccompanimentTypeEntityIdsForThisRow.indexOf(accompanimentTypeEntityId) >= 0;
+    const suggestedAccompanimentTypeSpecs = isNil(dishRow.suggestedAccompanimentTypeSpecs) ? [] : dishRow.suggestedAccompanimentTypeSpecs;
+    // const accompanimentTypeEntityId = accompanimentTypeEntity.id;
+    // const isChecked = allowableAccompanimentTypeEntityIdsForThisRow.indexOf(accompanimentTypeEntityId) >= 0;
+    const isChecked = false;
 
     return (
       <TableCell align='center'>
@@ -510,20 +508,21 @@ const Dishes = (props: DishesProps) => {
 
   const getReadWriteAllowableAccompanimentColumn = (dishRow: DishRow, accompanimentTypeEntity: AccompanimentTypeEntity, isDisabled: boolean): JSX.Element => {
 
-    const allowableAccompanimentTypeEntityIdsForThisRow = isNil(dishRow.allowableAccompanimentTypeEntityIds) ? [] : dishRow.allowableAccompanimentTypeEntityIds;
-    const accompanimentEntityId = accompanimentTypeEntity.id;
-    const isChecked = allowableAccompanimentTypeEntityIdsForThisRow.indexOf(accompanimentEntityId) >= 0;
+    // const allowableAccompanimentTypeEntityIdsForThisRow = isNil(dishRow.allowableAccompanimentTypeEntityIds) ? [] : dishRow.allowableAccompanimentTypeEntityIds;
+    // const accompanimentEntityId = accompanimentTypeEntity.id;
+    // const isChecked = allowableAccompanimentTypeEntityIdsForThisRow.indexOf(accompanimentEntityId) >= 0;
 
-    return (
-      <TableCell align='center'>
-        <Checkbox
-          color="primary"
-          checked={isChecked}
-          onChange={(event) => handleToggleSetAllowableAccompaniment(dishRow, accompanimentTypeEntity, event.target.checked)}
-          disabled={isDisabled}
-        />
-      </TableCell>
-    );
+    // return (
+    //   <TableCell align='center'>
+    //     <Checkbox
+    //       color="primary"
+    //       checked={isChecked}
+    //       onChange={(event) => handleToggleSetAllowableAccompaniment(dishRow, accompanimentTypeEntity, event.target.checked)}
+    //       disabled={isDisabled}
+    //     />
+    //   </TableCell>
+    // );
+    return (<div></div>);
   };
 
   const getReadWriteAllowableAccompanimentColumns = (dishRow: DishRow, readOnly: boolean): JSX.Element[] => {
@@ -606,7 +605,7 @@ const Dishes = (props: DishesProps) => {
           />
 
         </TableCell>
-        <TableCell align='center'>
+        {/* <TableCell align='center'>
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='number'
@@ -621,7 +620,7 @@ const Dishes = (props: DishesProps) => {
             }}
           />
         </TableCell>
-        {allowableAccompanimentColumns}
+        {allowableAccompanimentColumns} */}
         <TableCell align='center'>
           <Tooltip title="Save">
             <IconButton
@@ -698,7 +697,7 @@ const Dishes = (props: DishesProps) => {
           />
         </TableCell>
 
-        <TableCell align='center'>
+        {/* <TableCell align='center'>
           <TextField
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='number'
@@ -707,7 +706,7 @@ const Dishes = (props: DishesProps) => {
             variant='standard'
           />
         </TableCell>
-        {allowableAccompanimentColumns}
+        {allowableAccompanimentColumns} */}
         <TableCell align='center'>
           <Tooltip title="Edit">
             <IconButton

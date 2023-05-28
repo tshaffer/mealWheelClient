@@ -5,7 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
 import { getAccompaniments, getAccompanimentTypeNamesById, getAccompanimentTypeEntitiessByUser } from '../selectors';
-import { AccompanimentTypeEntity, AccompanimentTypeNameById, DishEntity } from '../types';
+import { AccompanimentTypeEntity, AccompanimentTypeNameById, DishEntity, SuggestedAccompanimentTypeForMainSpec } from '../types';
 import { cloneDeep } from 'lodash';
 // import {
 //   DishType,
@@ -19,8 +19,7 @@ export interface NewDishDialogPropsFromParent {
     dishName: string,
     dishType: string,
     minimumInterval: number,
-    numAccompanimentsRequired?: number,
-    allowableAccompanimentTypeEntityIds?: string[],
+    suggestedAccompanimentTypeSpecs:  SuggestedAccompanimentTypeForMainSpec[]
   ) => void;
   onClose: () => void;
   dishType: string;
@@ -47,12 +46,12 @@ function NewDishDialog(props: NewDishDialogProps) {
   };
 
   const handleAddNewDish = () => {
-    if (props.dishType === 'main') {
-      props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentTypes.length, requiredAccompanimentTypes);
-    }
-    else {
-      props.onAddDish(dishName, props.dishType, minimumInterval);
-    }
+    // if (props.dishType === 'main') {
+    //   props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentTypes.length, requiredAccompanimentTypes);
+    // }
+    // else {
+    //   props.onAddDish(dishName, props.dishType, minimumInterval);
+    // }
   };
 
   const handleClose = () => {
