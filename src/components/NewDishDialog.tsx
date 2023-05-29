@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
 import { getAccompaniments, getAccompanimentTypeNamesById, getAccompanimentTypeEntitiessByUser } from '../selectors';
 import { AccompanimentTypeEntity, AccompanimentTypeNameById, DishEntity, SuggestedAccompanimentTypeForMainSpec } from '../types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 // import {
 //   DishType,
 //   RequiredAccompanimentFlags
@@ -19,7 +19,7 @@ export interface NewDishDialogPropsFromParent {
     dishName: string,
     dishType: string,
     minimumInterval: number,
-    suggestedAccompanimentTypeSpecs:  SuggestedAccompanimentTypeForMainSpec[]
+    suggestedAccompanimentTypeSpecs?: SuggestedAccompanimentTypeForMainSpec[]
   ) => void;
   onClose: () => void;
   dishType: string;
@@ -35,8 +35,7 @@ function NewDishDialog(props: NewDishDialogProps) {
 
   const [dishName, setDishName] = React.useState('');
   const [minimumInterval, setMinimumInterval] = React.useState(5);
-  // const [requiredAccompanimentFlags, setRequiredAccompanimentFlags] = React.useState(RequiredAccompanimentFlags.None);
-  const [requiredAccompanimentTypes, setRequiredAccompanimentTypes] = React.useState<string[]>([]);
+  const [suggestedAccompanimentTypes, setSuggestedAccompanimentTypes] = React.useState<SuggestedAccompanimentTypeForMainSpec[]>([]);
 
   const getTypeLabelFromType = (id: string): string => {
     if (id === 'main') {
@@ -46,70 +45,99 @@ function NewDishDialog(props: NewDishDialogProps) {
   };
 
   const handleAddNewDish = () => {
-    // if (props.dishType === 'main') {
-    //   props.onAddDish(dishName, props.dishType, minimumInterval, requiredAccompanimentTypes.length, requiredAccompanimentTypes);
-    // }
-    // else {
-    //   props.onAddDish(dishName, props.dishType, minimumInterval);
-    // }
+    if (props.dishType === 'main') {
+      props.onAddDish(dishName, props.dishType, minimumInterval, suggestedAccompanimentTypes);
+    }
+    else {
+      props.onAddDish(dishName, props.dishType, minimumInterval);
+    }
   };
 
   const handleClose = () => {
     onClose();
   };
 
-  const isAccompanimentRequired = (accompanimentTypeId: string): boolean => {
-    return requiredAccompanimentTypes.indexOf(accompanimentTypeId) >= 0;
-  };
+  const handleUpdateSuggestedAccompanimentCount = (
+    accompanimentTypeEntity: AccompanimentTypeEntity,
+    suggestedAccompanimentCountStr: string,
+  ) => {
+    console.log('handleUpdateSuggestedAccompanimentCount');
+    console.log(accompanimentTypeEntity);
+    console.log(suggestedAccompanimentCountStr);
 
-  const setRequiredAccompanimentType = (accompanimentTypeId: string, checked: boolean) => {
-    console.log('setRequiredAccompanimentType');
-    console.log(accompanimentTypeId);
-    console.log(checked);
+    const suggestedAccompanimentTypeEntityCount = parseInt(suggestedAccompanimentCountStr, 10);
+    const localSuggestedAccompanimentTypes = cloneDeep(suggestedAccompanimentTypes);
 
-    const localRequiredAccompanimentTypes = cloneDeep(requiredAccompanimentTypes);
+    let matchedSuggestedAccompanimentType: SuggestedAccompanimentTypeForMainSpec | null = null;
+    localSuggestedAccompanimentTypes.forEach((suggestedAccompanimentType: SuggestedAccompanimentTypeForMainSpec, index: number) => {
+      if (suggestedAccompanimentType.suggestedAccompanimentTypeEntityId === accompanimentTypeEntity.id) {
+        matchedSuggestedAccompanimentType = suggestedAccompanimentType;
+      }
+    });
 
-    const indexOfAccompanimentType = requiredAccompanimentTypes.indexOf(accompanimentTypeId);
-    if (indexOfAccompanimentType >= 0) {
-      localRequiredAccompanimentTypes.splice(indexOfAccompanimentType, 1);
+    if (isNil(matchedSuggestedAccompanimentType)) {
+      const suggestedAccompanimentType: SuggestedAccompanimentTypeForMainSpec = {
+        suggestedAccompanimentTypeEntityId: accompanimentTypeEntity.id,
+        count: suggestedAccompanimentTypeEntityCount,
+      };
+      localSuggestedAccompanimentTypes.push(suggestedAccompanimentType);
     } else {
-      localRequiredAccompanimentTypes.push(accompanimentTypeId);
+      (matchedSuggestedAccompanimentType as SuggestedAccompanimentTypeForMainSpec).count = suggestedAccompanimentTypeEntityCount;
     }
-    setRequiredAccompanimentTypes(localRequiredAccompanimentTypes);
+    setSuggestedAccompanimentTypes(localSuggestedAccompanimentTypes);
+
+    console.log(localSuggestedAccompanimentTypes);
   };
 
-  const renderRequiresAccompaniment = (accompanimentTypeId: string): JSX.Element => {
+  const renderSuggestedAccompaniment = (accompanimentTypeEntity: AccompanimentTypeEntity): JSX.Element => {
     return (
-      <React.Fragment key={accompanimentTypeId}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={isAccompanimentRequired(accompanimentTypeId)}
-              onChange={(event) => setRequiredAccompanimentType(accompanimentTypeId, event.target.checked)}
-            />
-          }
-          label={getTypeLabelFromType(accompanimentTypeId)}
+      <React.Fragment key={accompanimentTypeEntity.id}>
+        <TextField
+          sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
+          type='number'
+          label={accompanimentTypeEntity.name}
+          defaultValue={0}
+          variant='standard'
+          onChange={(event) => handleUpdateSuggestedAccompanimentCount(accompanimentTypeEntity, event.target.value)}
+          InputProps={{
+            inputProps: {
+              min: 0
+            }
+          }}
         />
-        <br />
       </React.Fragment>
     );
+    // return (
+    //   <React.Fragment key={accompanimentTypeId}>
+    //     <FormControlLabel
+    //       control={
+    //         <Checkbox
+    //           checked={isAccompanimentRequired(accompanimentTypeId)}
+    //           onChange={(event) => setRequiredAccompanimentType(accompanimentTypeId, event.target.checked)}
+    //         />
+    //       }
+    //       label={getTypeLabelFromType(accompanimentTypeId)}
+    //     />
+    //     <br />
+    //   </React.Fragment>
+    // );
   };
 
-  const renderRequiresAccompaniments = () => {
+  const renderSuggestedAccompaniments = () => {
     if (props.dishType !== 'main') {
       return null;
     }
 
-    const requiresAccompanimentsElements: JSX.Element[] = [];
+    const suggestedAccompanimentsElements: JSX.Element[] = [];
 
     props.allAccompanimentTypes.forEach((accompanimentType: AccompanimentTypeEntity) => {
-      const jsx = renderRequiresAccompaniment(accompanimentType.id);
-      requiresAccompanimentsElements.push(jsx);
+      const jsx = renderSuggestedAccompaniment(accompanimentType);
+      suggestedAccompanimentsElements.push(jsx);
     });
 
     return (
       <div>
-        {requiresAccompanimentsElements}
+        {suggestedAccompanimentsElements}
       </div>
     );
   };
@@ -124,7 +152,7 @@ function NewDishDialog(props: NewDishDialogProps) {
       Name - unique within type
   */
 
-  const requiresAccompanimentsJsx = renderRequiresAccompaniments();
+  const suggestedAccompanimentsJsx = renderSuggestedAccompaniments();
 
   return (
     <Dialog
@@ -163,7 +191,7 @@ function NewDishDialog(props: NewDishDialogProps) {
               }
             }}
           />
-          {requiresAccompanimentsJsx}
+          {suggestedAccompanimentsJsx}
         </div>
       </DialogContent>
       <DialogActions

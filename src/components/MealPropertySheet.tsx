@@ -23,7 +23,8 @@ import {
   AccompanimentTypeEntity,
   AccompanimentTypeNameById,
   DishEntity,
-  ScheduledMealEntity
+  ScheduledMealEntity,
+  SuggestedAccompanimentTypeForMainSpec
 } from '../types';
 import {
   getMains,
@@ -154,39 +155,36 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     dishName: string,
     dishType: string,
     minimumInterval: number,
-    numAccompanimentsRequired?: number,
-    allowableAccompanimentTypeEntityIds?: string[],
+    suggestedAccompanimentTypeSpecs?: SuggestedAccompanimentTypeForMainSpec[]
   ) => {
-    // console.log('handleAddDish: ', dishType);
-    // console.log(dishName);
+    console.log('handleAddDish: ', dishType);
+    console.log(dishName);
     // // console.log(requiredAccompanimentFlags);
     // // TODO - I don't think the 'addedDish' is necessary.
-    // const dishId: string = 'addedDish' + uuidv4();
-    // const dishEntity: DishEntity = {
-    //   id: dishId,
-    //   name: dishName,
-    //   type: dishType,
-    //   minimumInterval,
-    //   last: null,
-    //   prepEffort: 5,
-    //   prepTime: 15,
-    //   cleanupEffort: 5,
-    // };
-    // if (!isNil(numAccompanimentsRequired)) {
-    //   dishEntity.numAccompanimentsRequired = numAccompanimentsRequired;
-    //   dishEntity.allowableAccompanimentTypeEntityIds = allowableAccompanimentTypeEntityIds;
-    // }
-    // const addDishPromise = props.onAddDish(dishEntity);
-    // addDishPromise
-    //   .then((updatedDishId: string) => {
-    //     const scheduledMealId = getScheduledMealId();
-    //     switch (dishType) {
-    //       case 'main':
-    //         props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
-    //         break;
-    //     }
-    //     setShowNewDishDialog(false);
-    //   });
+    const dishId: string = 'addedDish' + uuidv4();
+    const dishEntity: DishEntity = {
+      id: dishId,
+      name: dishName,
+      type: dishType,
+      minimumInterval,
+      last: null,
+      suggestedAccompanimentTypeSpecs: isNil(suggestedAccompanimentTypeSpecs) ? [] : suggestedAccompanimentTypeSpecs,
+      prepEffort: 5,
+      prepTime: 15,
+      cleanupEffort: 5,
+    };
+    debugger;
+    const addDishPromise = props.onAddDish(dishEntity);
+    addDishPromise
+      .then((updatedDishId: string) => {
+        const scheduledMealId = getScheduledMealId();
+        switch (dishType) {
+          case 'main':
+            props.onUpdateMainInMeal(scheduledMealId, updatedDishId);
+            break;
+        }
+        setShowNewDishDialog(false);
+      });
   };
 
   const handleCloseNewDishDialog = () => {
@@ -459,14 +457,14 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   return (
     <div>
-      {/* <div>
+      <div>
         <NewDishDialog
           open={showNewDishDialog}
           onAddDish={handleAddDish}
           onClose={handleCloseNewDishDialog}
           dishType={dishType}
         />
-      </div> */}
+      </div>
       <div className='mealPropertySheet'>
         <p className='shortParagraph'>{'Main: ' + (props.currentMain as DishEntity).name}</p>
         {mainDishElement}
