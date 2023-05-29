@@ -47,7 +47,6 @@ import {
 import NewDishDialog from './NewDishDialog';
 import { MealWheelDispatch } from '../models';
 import { IconButton, Tooltip } from '@mui/material';
-import { MapsHomeWork } from '@mui/icons-material';
 
 export interface MealPropertySheetPropsFromParent {
   scheduledMealId: string;
@@ -467,7 +466,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
           onClose={handleCloseNewDishDialog}
           dishType={dishType}
         />
-      </div>
+      </div> */}
       <div className='mealPropertySheet'>
         <p className='shortParagraph'>{'Main: ' + (props.currentMain as DishEntity).name}</p>
         {mainDishElement}
@@ -477,7 +476,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         {commentsElement}
         {actionButtons}
         <Button color='inherit' onClick={props.handleClose}>Close</Button>
-      </div> */}
+      </div>
 
     </div>
   );
