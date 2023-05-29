@@ -173,7 +173,6 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
       prepTime: 15,
       cleanupEffort: 5,
     };
-    debugger;
     const addDishPromise = props.onAddDish(dishEntity);
     addDishPromise
       .then((updatedDishId: string) => {
