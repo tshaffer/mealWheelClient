@@ -102,16 +102,30 @@ export const loadUserData = (): MealWheelAnyPromiseThunkAction => {
     dispatch(clearIngredientsByDish());
     return dispatch(loadAccompanimentTypes())
       .then(() => {
-        dispatch(loadDishes());
-      }).then(() => {
-        dispatch(loadScheduledMeals());
-      }).then(() => {
-        dispatch(loadIngredients());
-      }).then(() => {
-        dispatch(loadIngredientsByDish());
+        const promise = dispatch(loadDishes());
+        promise.then(() => {
+          const promise = dispatch(loadScheduledMeals());
+          promise.then(() => {
+            const promise = dispatch(loadIngredients());
+            promise.then(() => {
+              dispatch(loadIngredientsByDish());
+            });
+          });
+        });
       });
   };
 };
+// });
+//   dispatch(loadDishes());
+// }).then(() => {
+//   dispatch(loadScheduledMeals());
+// }).then(() => {
+//   dispatch(loadIngredients());
+// }).then(() => {
+//   dispatch(loadIngredientsByDish());
+// });
+// };
+// };
 
 export const setStartupAppState = (): MealWheelVoidThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any) => {
