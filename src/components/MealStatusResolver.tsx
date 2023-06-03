@@ -114,72 +114,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   const handleUpdateAccompaniment = (accompanimentTypeId: string, existingAccompanimentDishId: string, selectedAccompanimentDishId: string) => {
     console.log('handleUpdateAccompaniment');
-    // if (selectedAccompanimentDishId === 'new') {
-    //   setDishType(accompanimentTypeId);
-    //   setShowNewDishDialog(true);
-    // } else {
-    //   props.onUpdateAccompanimentInMeal(
-    //     getScheduledMealId(),
-    //     existingAccompanimentDishId,
-    //     selectedAccompanimentDishId,
-    //   );
-    // }
   };
-
-
-  // const handleUpdateSide = (event: any) => {
-  //   const sideId = event.target.value;
-  //   let selectedSide: DishEntity | null = null;
-  //   for (const side of sides) {
-  //     if (sideId === side.id) {
-  //       selectedSide = side;
-  //       break;
-  //     }
-  //   }
-
-  //   const sideName: string = isNil(selectedSide) ? '' : selectedSide.name;
-
-  //   const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
-  //   // updatedMeal.side = selectedSide;
-  //   // updatedMeal.sideId = isNil(selectedSide) ? '' : selectedSide.id;
-  //   // updatedMeal.sideName = sideName;
-  //   onSetPendingMeal(updatedMeal);
-  // };
-
-  // const handleUpdateSalad = (event: any) => {
-  //   const saladId = event.target.value;
-  //   let selectedSalad: DishEntity | null = null;
-  //   for (const salad of salads) {
-  //     if (saladId === salad.id) {
-  //       selectedSalad = salad;
-  //       break;
-  //     }
-  //   }
-  //   const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
-  //   // updatedMeal.salad = selectedSalad;
-  //   // updatedMeal.saladId = isNil(selectedSalad) ? '' : selectedSalad.id;
-  //   // updatedMeal.saladName = isNil(selectedSalad) ? '' : selectedSalad.name;
-  //   onSetPendingMeal(updatedMeal);
-  // };
-
-  // const handleUpdateVeggie = (event: any) => {
-  //   const veggieId = event.target.value;
-  //   let selectedVeggie: DishEntity | null = null;
-  //   for (const veggie of veggies) {
-  //     if (veggieId === veggie.id) {
-  //       selectedVeggie = veggie;
-  //       break;
-  //     }
-  //   }
-
-  //   const veggieName: string = isNil(selectedVeggie) ? '' : selectedVeggie.name;
-
-  //   const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
-  //   // updatedMeal.veggie = selectedVeggie;
-  //   // updatedMeal.veggieId = isNil(selectedVeggie) ? '' : selectedVeggie.id;
-  //   // updatedMeal.veggieName = veggieName;
-  //   onSetPendingMeal(updatedMeal);
-  // };
 
   const renderNewMenuItem = (): JSX.Element => {
     return (
@@ -240,14 +175,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     );
   };
 
-  // let first = true;
-
   const renderMains = (): JSX.Element => {
-
-    // if (first) {
-    //   first = false;
-    //   debugger;
-    // }
 
     let mainId = 'none';
     if (!isNil(meal) && !isNil(meal.main)) {
@@ -385,89 +313,16 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
 
-  // const renderSides = (): JSX.Element => {
-  //   const sideId = 'none';
-  //   // if (!isNil(meal) && !isNil(meal.side)) {
-  //   //   sideId = meal.side.id;
-  //   // }
-  //   const sidesMenuItems: JSX.Element[] = renderDishMenuItems(props.sides, true);
-  //   return (
-  //     <div>
-  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-  //         <InputLabel id="sideLabel">Side</InputLabel>
-  //         <Select
-  //           labelId="sideLabel"
-  //           id="demo-simple-select-filled"
-  //           value={sideId}
-  //           onChange={(event) => handleUpdateSide(event)}
-  //         >
-  //           {sidesMenuItems}
-  //         </Select>
-  //       </FormControl>
-  //     </div>
-  //   );
-  // };
-
-  // const renderSalads = (): JSX.Element => {
-  //   const saladId = 'none';
-  //   // if (!isNil(meal) && !isNil(meal.salad)) {
-  //   //   saladId = meal.salad.id;
-  //   // }
-  //   const saladsMenuItems: JSX.Element[] = renderDishMenuItems(salads, true);
-  //   return (
-  //     <div>
-  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-  //         <InputLabel id="saladLabel">Salad</InputLabel>
-  //         <Select
-  //           labelId="saladLabel"
-  //           id="demo-simple-select-filled"
-  //           value={saladId}
-  //           onChange={(event) => handleUpdateSalad(event)}
-  //         >
-  //           {saladsMenuItems}
-  //         </Select>
-  //       </FormControl>
-  //     </div>
-  //   );
-  // };
-
-  // const renderVeggies = (): JSX.Element => {
-  //   const veggieId = 'none';
-  //   // if (!isNil(meal) && !isNil(meal.veggie)) {
-  //   //   veggieId = meal.veggie.id;
-  //   // }
-  //   const veggiesMenuItems: JSX.Element[] = renderDishMenuItems(veggies, true);
-  //   return (
-  //     <div>
-  //       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-  //         <InputLabel id="veggieLabel">Veggie</InputLabel>
-  //         <Select
-  //           labelId="veggieLabel"
-  //           id="demo-simple-select-filled"
-  //           value={veggieId}
-  //           onChange={(event) => handleUpdateVeggie(event)}
-  //         >
-  //           {veggiesMenuItems}
-  //         </Select>
-  //       </FormControl>
-  //     </div>
-  //   );
-  // };
-
-
-  // console.log('MealStatusResolve: check isNil(meal)');
   if (isNil(meal)) {
     return null;
   }
-  // console.log('MealStatusResolver: meal is non null');
 
   const mealStatusElement = renderMealStatus();
 
   const mainDishElement = renderMains();
   const accompanimentElements = renderAccompanimentSelects();
-  // const sideDishElement = renderSides();
-  // const saladDishElement = renderSalads();
-  // const veggieDishElement = renderVeggies();
+
+  const addAccompanimentTypeEntityElement = renderAddAccompanimentTypeEntity();
 
   return (
     <Dialog onClose={handleClose} open={true} maxWidth='xl'>
@@ -487,9 +342,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
         {mealStatusElement}
         {mainDishElement}
         {accompanimentElements}
-        {/* {sideDishElement}
-        {saladDishElement}
-        {veggieDishElement} */}
+        {addAccompanimentTypeEntityElement}
         <div>
           <button
             type="button"
@@ -524,17 +377,12 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
 function mapStateToProps(state: any, ownProps: MealStatusResolverPropsFromParent) {
 
-  // console.log('MealStatusResolver mapStateToProps invoked');
-
   return {
     meal: getPendingMeal(state) as VerboseScheduledMeal,
     mains: getMains(state),
     allAccompanimentTypeEntities: getAccompanimentTypeEntitiessByUser(state),
     allAccompaniments: getAccompaniments(state),
     accompanimentTypeNameById: getAccompanimentTypeNamesById(state),
-    // sides: getSides(state),
-    // salads: getSalads(state),
-    // veggies: getVeggies(state),
   };
 }
 
