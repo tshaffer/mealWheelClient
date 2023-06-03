@@ -29,6 +29,7 @@ import {
 } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, AccompanimentTypeEntity, AccompanimentTypeNameById } from '../types';
 import { MealWheelDispatch, setPendingMeal } from '../models';
+import { updateMealAssignedToDate } from '../controllers';
 
 export interface MealStatusResolverPropsFromParent {
   previousDayEnabled: boolean;
@@ -106,7 +107,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     onSetPendingMeal(updatedMeal);
   };
 
-  const handleUpdateAccompaniment = (accompanimentTypeId: string, existingAccompanimentDishId: string, selectedAccompanimentDishId: string) => {
+  const handleUpdateAccompaniment = (existingAccompanimentDishId: string, selectedAccompanimentDishId: string) => {
 
     let matchingExistingAccompaniment: DishEntity | null = null;
     let matchingExistingAccompanimentIndexIntoAllAccompaniments = -1;
@@ -144,6 +145,35 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     updatedMeal.accompanimentNames![matchingExistingAccompanimentIndexIntoMealAccompaniments] = matchingSelectedAccompaniment!.name;
 
     onSetPendingMeal(updatedMeal);
+  };
+
+  const handleDeleteAccompanimentClick = (accompanimentId: string) => {
+
+    // TEDTODO - copied code from handleUpdateAccompaniment
+    let matchingExistingAccompaniment: DishEntity | null = null;
+    let matchingExistingAccompanimentIndexIntoAllAccompaniments = -1;
+    props.allAccompaniments.forEach((accompanimentDishEntity: DishEntity, index: number) => {
+      if (accompanimentDishEntity.id === accompanimentId) {
+        matchingExistingAccompaniment = accompanimentDishEntity;
+        matchingExistingAccompanimentIndexIntoAllAccompaniments = index;
+      }
+    });
+
+    let matchingExistingAccompanimentIndexIntoMealAccompaniments = -1;
+    props.meal?.accompanimentDishIds.forEach((mealAccompanimentDishId: string, index: number) => {
+      if (mealAccompanimentDishId === accompanimentId) {
+        matchingExistingAccompanimentIndexIntoMealAccompaniments = index;
+      }
+    });
+
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
+
+    updatedMeal.accompanimentDishIds.splice(matchingExistingAccompanimentIndexIntoMealAccompaniments, 1);
+    updatedMeal.accompaniments!.splice(matchingExistingAccompanimentIndexIntoMealAccompaniments, 1);
+    updatedMeal.accompanimentNames!.splice(matchingExistingAccompanimentIndexIntoMealAccompaniments, 1);
+
+    onSetPendingMeal(updatedMeal);
+
   };
 
   const renderNewMenuItem = (): JSX.Element => {
@@ -246,7 +276,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
           <Tooltip title="Delete">
             <IconButton
               id={currentAccompanimentId}
-            // onClick={() => handleDeleteAccompanimentClick(currentAccompanimentId)}
+              onClick={() => handleDeleteAccompanimentClick(currentAccompanimentId)}
             >
               <DeleteIcon />
             </IconButton>
@@ -257,7 +287,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
               labelId="mainLabel"
               id="demo-simple-select-filled"
               value={currentAccompanimentId}
-              onChange={(event) => handleUpdateAccompaniment(accompanimentTypeEntityId, currentAccompanimentId, event.target.value)}
+              onChange={(event) => handleUpdateAccompaniment(currentAccompanimentId, event.target.value)}
             >
               {accompanimentMenuItems}
             </Select>
