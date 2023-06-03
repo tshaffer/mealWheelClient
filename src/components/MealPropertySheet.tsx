@@ -144,8 +144,8 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     props.handleClose();
   };
 
-  const handleRegenerate = () => {
-    console.log('handleRegenerate');
+  const handleSuggestAnother = () => {
+    console.log('handleSuggestAnother');
     if (!isNil(props.scheduledMeal)) {
       props.onGenerateMeal(props.scheduledMeal.id, new Date(props.scheduledMeal.dateScheduled));
     }
@@ -439,7 +439,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     return (
       <div>
         <Button className='buttonMarginLeft' color='inherit' variant='contained' onClick={handleDelete}>Delete</Button>
-        <Button className='buttonMarginLeft buttonMarginRight' color='inherit' variant='contained' onClick={handleRegenerate}>Suggest another</Button>
+        <Button className='buttonMarginLeft buttonMarginRight' color='inherit' variant='contained' onClick={handleSuggestAnother}>Suggest another</Button>
       </div>
     );
   };

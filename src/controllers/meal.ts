@@ -98,11 +98,10 @@ export const loadScheduledMeals = (): MealWheelVoidPromiseThunkAction => {
 
 export const generateMeal = (mealId: string, mealDate: Date) => {
   return (dispatch: MealWheelDispatch, getState: any) => {
-    // const mealWheelState: MealWheelState = getState() as MealWheelState;
-    // const meals: ScheduledMealEntity[] = generateRandomDishBasedMeals(mealWheelState, mealDate, 1, true);
-    // const meal: ScheduledMealEntity = meals[0];
-    // meal.id = mealId;
-    // dispatch(updateScheduledMeal(mealId, meal));
+    const mealWheelState: MealWheelState = getState() as MealWheelState;
+    const newUnassignedMeals: MealEntity[] =
+      generateRandomDishBasedMeals(mealWheelState, 1, mealDate);
+    dispatch(updateMealAssignedToDate(newUnassignedMeals[0], mealDate));
   };
 };
 
@@ -125,9 +124,6 @@ export const addRandomMeals = (numberOfMealsToGenerate: number, startDate: Date)
 
   return (dispatch: MealWheelDispatch, getState: any) => {
     const mealWheelState: MealWheelState = getState() as MealWheelState;
-
-    // const currentUnnassignedMeals: MealEntity[] = getUnassignedMeals(mealWheelState);
-
     const newUnassignedMeals: MealEntity[] =
       generateRandomDishBasedMeals(mealWheelState, numberOfMealsToGenerate, startDate);
     dispatch(addMeals(newUnassignedMeals));
