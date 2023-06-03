@@ -57,10 +57,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
       id: (meal as VerboseScheduledMeal).id,
       userId: (meal as VerboseScheduledMeal).userId,
       mainDishId: (meal as VerboseScheduledMeal).mainDishId,
-      accompanimentDishIds: [],
-      // saladId: (meal as VerboseScheduledMeal).saladId,
-      // veggieId: (meal as VerboseScheduledMeal).veggieId,
-      // sideId: (meal as VerboseScheduledMeal).sideId,
+      accompanimentDishIds: (meal as VerboseScheduledMeal).accompanimentDishIds,
       dateScheduled: (meal as VerboseScheduledMeal).dateScheduled,
       status: MealStatus.prepared,
     };

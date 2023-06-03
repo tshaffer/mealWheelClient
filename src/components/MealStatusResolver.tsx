@@ -25,9 +25,6 @@ import {
   getAccompanimentTypeEntitiessByUser,
   getAccompanimentTypeNamesById,
   getMains,
-  // getSides,
-  // getSalads,
-  // getVeggies,
   getPendingMeal
 } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, AccompanimentTypeEntity, AccompanimentTypeNameById } from '../types';
@@ -50,9 +47,6 @@ export interface MealStatusResolverProps extends MealStatusResolverPropsFromPare
   allAccompanimentTypeEntities: AccompanimentTypeEntity[];
   allAccompaniments: DishEntity[];
   accompanimentTypeNameById: AccompanimentTypeNameById;
-  // sides: DishEntity[];
-  // salads: DishEntity[];
-  // veggies: DishEntity[];
   onSetPendingMeal: (meal: VerboseScheduledMeal) => any;
 }
 
@@ -113,7 +107,43 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   };
 
   const handleUpdateAccompaniment = (accompanimentTypeId: string, existingAccompanimentDishId: string, selectedAccompanimentDishId: string) => {
-    console.log('handleUpdateAccompaniment');
+
+    let matchingExistingAccompaniment: DishEntity | null = null;
+    let matchingExistingAccompanimentIndexIntoAllAccompaniments = -1;
+    props.allAccompaniments.forEach((accompanimentDishEntity: DishEntity, index: number) => {
+      if (accompanimentDishEntity.id === existingAccompanimentDishId) {
+        matchingExistingAccompaniment = accompanimentDishEntity;
+        matchingExistingAccompanimentIndexIntoAllAccompaniments = index;
+      }
+    });
+
+    let matchingExistingAccompanimentIndexIntoMealAccompaniments = -1;
+    props.meal?.accompanimentDishIds.forEach((mealAccompanimentDishId: string, index: number) => {
+      if (mealAccompanimentDishId === existingAccompanimentDishId) {
+        matchingExistingAccompanimentIndexIntoMealAccompaniments = index;
+      }
+    });
+
+    let matchingSelectedAccompaniment: DishEntity | null = null;
+    let matchingSelectedAccompanimentIndexIntoAllAccompaniments = -1;
+    props.allAccompaniments.forEach((accompanimentDishEntity: DishEntity, index: number) => {
+      if (accompanimentDishEntity.id === selectedAccompanimentDishId) {
+        matchingSelectedAccompaniment = accompanimentDishEntity;
+        matchingSelectedAccompanimentIndexIntoAllAccompaniments = index;
+      }
+    });
+
+    if (isNil(matchingExistingAccompaniment)) {
+      return;
+    }
+
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
+
+    updatedMeal.accompanimentDishIds[matchingExistingAccompanimentIndexIntoMealAccompaniments] = selectedAccompanimentDishId;
+    updatedMeal.accompaniments![matchingExistingAccompanimentIndexIntoMealAccompaniments] = matchingSelectedAccompaniment!;
+    updatedMeal.accompanimentNames![matchingExistingAccompanimentIndexIntoMealAccompaniments] = matchingSelectedAccompaniment!.name;
+
+    onSetPendingMeal(updatedMeal);
   };
 
   const renderNewMenuItem = (): JSX.Element => {
@@ -216,7 +246,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
           <Tooltip title="Delete">
             <IconButton
               id={currentAccompanimentId}
-              // onClick={() => handleDeleteAccompanimentClick(currentAccompanimentId)}
+            // onClick={() => handleDeleteAccompanimentClick(currentAccompanimentId)}
             >
               <DeleteIcon />
             </IconButton>
@@ -292,7 +322,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
         <Tooltip title="Add">
           <IconButton
             id={'fred'}
-            // onClick={() => handleAddAccompanimentTypeEntityClick()}
+          // onClick={() => handleAddAccompanimentTypeEntityClick()}
           >
             <AddIcon />
           </IconButton>
@@ -303,7 +333,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             labelId="accompanimentTypeEntityLabel"
             id="demo-simple-select-filled"
             value={selectedAccompanimentTypeEntityId}
-            // onChange={(event) => handleUpdateAccompanimentTypeEntityToAddToMeal(event.target.value)}
+          // onChange={(event) => handleUpdateAccompanimentTypeEntityToAddToMeal(event.target.value)}
           >
             {accompanimentTypeEntityMenuItems}
           </Select>

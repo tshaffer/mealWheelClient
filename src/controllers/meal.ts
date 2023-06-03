@@ -627,12 +627,23 @@ const generateMealsToResolve = (state: MealWheelState, scheduledMeals: Scheduled
         const mainDishName: string = isNil(scheduledMeal.mainDishId) ? '' :
           isNil(getMainById(state, scheduledMeal.mainDishId)) ? '' : (getMainById(state, scheduledMeal.mainDishId) as DishEntity).name;
 
+        const accompanimentDishIds: string[] = scheduledMeal.accompanimentDishIds;
+        const accompaniments: DishEntity[] = [];
+        const accompanimentNames: string[] = [];
+        accompanimentDishIds.forEach((accompanimentDishId: string) => {
+          const accompaniment: DishEntity | null = getAccompanimentById(state, accompanimentDishId);
+          if (!isNil(accompaniment)) {
+            accompaniments.push(accompaniment);
+            accompanimentNames.push(accompaniment.name);
+          }
+        });
+
         const verboseScheduledMeal: VerboseScheduledMeal = {
           ...scheduledMeal,
           main,
           mainName: mainDishName,
-          accompaniments: [],
-          accompanimentNames: [],
+          accompaniments,
+          accompanimentNames,
         };
 
         verboseScheduledMealsToResolve.push(verboseScheduledMeal);
