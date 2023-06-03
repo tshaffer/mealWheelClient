@@ -98,6 +98,7 @@ export const loadScheduledMeals = (): MealWheelVoidPromiseThunkAction => {
 
 export const generateMeal = (mealId: string, mealDate: Date) => {
   return (dispatch: MealWheelDispatch, getState: any) => {
+    debugger;
     const mealWheelState: MealWheelState = getState() as MealWheelState;
     const newUnassignedMeals: MealEntity[] =
       generateRandomDishBasedMeals(mealWheelState, 1, mealDate);
@@ -414,18 +415,14 @@ export const updateMealAssignedToDate = (
 
     const scheduledMeal: ScheduledMealEntity | null = getScheduledMealByDate(mealWheelState, date);
 
-    const accompanimentDishIds: string[] = [];
-    if (!isNil(scheduledMeal)) {
-      scheduledMeal.accompanimentDishIds
-      scheduledMeal.accompanimentDishIds.forEach((accompanimentDishId: string) => {
-        accompanimentDishIds.push(accompanimentDishId);
-      });
-    }
-
-
     if (!isNil(scheduledMeal)) {
       scheduledMeal.mainDishId = meal.mainDish.id;
-      scheduledMeal.accompanimentDishIds = accompanimentDishIds;
+      scheduledMeal.accompanimentDishIds = [];
+      if (!isNil(meal.accompanimentDishes)) {
+        scheduledMeal.accompanimentDishIds = meal.accompanimentDishes.map((accompanimentDish) => {
+          return accompanimentDish.id;
+        });
+      }
       dispatch(updateScheduledMeal(scheduledMeal.id, scheduledMeal));
     }
   };
