@@ -29,7 +29,6 @@ import {
 } from '../selectors';
 import { VerboseScheduledMeal, DishEntity, AccompanimentTypeEntity, AccompanimentTypeNameById } from '../types';
 import { MealWheelDispatch, setPendingMeal } from '../models';
-import { updateMealAssignedToDate } from '../controllers';
 
 export interface MealStatusResolverPropsFromParent {
   previousDayEnabled: boolean;
@@ -43,7 +42,7 @@ export interface MealStatusResolverPropsFromParent {
 }
 
 export interface MealStatusResolverProps extends MealStatusResolverPropsFromParent {
-  meal: VerboseScheduledMeal | null;
+  meal: VerboseScheduledMeal;
   mains: DishEntity[];
   allAccompanimentTypeEntities: AccompanimentTypeEntity[];
   allAccompaniments: DishEntity[];
@@ -58,6 +57,12 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
   const { previousDayEnabled, nextDayEnabled, onPreviousDay, onNextDay, onClose, onDelete, onSave, onSkip, onSetPendingMeal,
     mains, allAccompanimentTypeEntities, allAccompaniments } = props;
   const meal = props.meal;
+
+  if (!isNil(allAccompanimentTypeEntities) && allAccompanimentTypeEntities.length > 0 && selectedAccompanimentTypeEntityId === '') {
+    console.log('initialize setSelectedAccompanimentTypeEntityId');
+    setSelectedAccompanimentTypeEntityId(allAccompanimentTypeEntities[0].id);
+  }
+
 
   const getDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -176,6 +181,53 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
   };
 
+  const handleAddAccompanimentTypeEntityClick = () => {
+
+    console.log('Add accompaniment type entity');
+
+    // get accompanimentTypeEntity for selectedAccompanimentTypeEntityId
+    // TEDTODOUSELUT
+    let selectedAccompanimentTypeEntity: AccompanimentTypeEntity | null = null;
+    for (const accompanimentTypeEntity of props.allAccompanimentTypeEntities) {
+      if (accompanimentTypeEntity.id === selectedAccompanimentTypeEntityId) {
+        selectedAccompanimentTypeEntity = accompanimentTypeEntity;
+        break;
+      }
+    }
+
+    if (isNil(selectedAccompanimentTypeEntity)) {
+      return;
+    }
+
+    // get list of accompaniments for this accompanimentTypeEntity
+    // TEDTODOUSELUT
+    const accompanimentDishes: DishEntity[] = [];
+    for (const dishEntity of props.allAccompaniments) {
+      if (dishEntity.type === selectedAccompanimentTypeEntity.id) {
+        accompanimentDishes.push(dishEntity);
+      }
+    }
+
+    if (accompanimentDishes.length === 0) {
+      return;
+    }
+
+    // add accompaniment of this type to meal.
+    const accompanimentDishToAdd: DishEntity = accompanimentDishes[0];
+
+    const updatedMeal: VerboseScheduledMeal = cloneDeep(meal) as VerboseScheduledMeal;
+
+    updatedMeal.accompanimentDishIds.push(accompanimentDishToAdd.id);
+    updatedMeal.accompaniments!.push(accompanimentDishToAdd);
+    updatedMeal.accompanimentNames!.push(accompanimentDishToAdd.name);
+
+    onSetPendingMeal(updatedMeal);
+  };
+
+  const handleUpdateAccompanimentTypeEntityToAddToMeal = (accompanimentTypeEntityId: string) => {
+    setSelectedAccompanimentTypeEntityId(accompanimentTypeEntityId);
+  };
+
   const renderNewMenuItem = (): JSX.Element => {
     return (
       <Button color='inherit' onClick={handleNew} key={'new'}>New</Button>
@@ -241,6 +293,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     if (!isNil(meal) && !isNil(meal.main)) {
       mainId = meal.main.id;
     }
+    
     const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
     return (
       <div>
@@ -352,7 +405,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
         <Tooltip title="Add">
           <IconButton
             id={'fred'}
-          // onClick={() => handleAddAccompanimentTypeEntityClick()}
+            onClick={() => handleAddAccompanimentTypeEntityClick()}
           >
             <AddIcon />
           </IconButton>
@@ -363,7 +416,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
             labelId="accompanimentTypeEntityLabel"
             id="demo-simple-select-filled"
             value={selectedAccompanimentTypeEntityId}
-          // onChange={(event) => handleUpdateAccompanimentTypeEntityToAddToMeal(event.target.value)}
+            onChange={(event) => handleUpdateAccompanimentTypeEntityToAddToMeal(event.target.value)}
           >
             {accompanimentTypeEntityMenuItems}
           </Select>
