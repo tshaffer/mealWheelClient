@@ -244,16 +244,14 @@ const selectMainDishes = (
       const mainDish: DishEntity | null = getMainById(mealWheelState, allDishes[allMainDishIndices[mainDishIndex]].id);
 
       if (!isNil(mainDish)) {
-        selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-        // TEDTODO
-        // if (!isNil(mainDish.last)) {
-        //   const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
-        //   if (earliestTimeToRecommend < startDate.getTime()) {
-        //     selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-        //   }
-        // } else {
-        //   selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
-        // }
+        if (!isNil(mainDish.last)) {
+          const earliestTimeToRecommend: number = mainDish.last.getTime() + (mainDish.minimumInterval * (1000 * 3600 * 24));
+          if (earliestTimeToRecommend < startDate.getTime()) {
+            selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+          }
+        } else {
+          selectedMainDishIndices.push(allMainDishIndices[mainDishIndex]);
+        }
       }
     }
   }
