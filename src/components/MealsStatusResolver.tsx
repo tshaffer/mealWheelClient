@@ -84,8 +84,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
 
   return (
     <div>
-      pizza
-      {/* <MealStatusResolver
+      <MealStatusResolver
         previousDayEnabled={mealIndex > 0}
         onPreviousDay={handlePreviousDay}
         nextDayEnabled={mealIndex < (mealsToResolve.length - 1)}
@@ -94,7 +93,7 @@ const MealsStatusResolver = (props: MealsStatusResolverProps) => {
         onDelete={handleDeleteMealStatusResolver}
         onSave={handleSaveMealStatusResolver}
         onSkip={handleSkipMealStatusResolver}
-      /> */}
+      />
     </div>
   );
 };
