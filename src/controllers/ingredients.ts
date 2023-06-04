@@ -41,27 +41,6 @@ export const loadIngredientsByDish = (): MealWheelVoidPromiseThunkAction => {
 };
 
 
-// onGenerateMenu: (startDate: Date, numberOfMealsToGenerate: number) => any;
-// type loadIngredientsByDishType = (dispatch: MealWheelDispatch, getState: any) => void;
-// type foo = (path: string) => Promise<void>;
-
-// export const loadIngredientsByDish = (): loadIngredientsByDishType  => {
-
-//   return (dispatch: MealWheelDispatch, getState: any): foo => {
-
-//     const state: MealWheelState = getState();
-//     const id = getCurrentUser(state);
-
-//     const path = serverUrl + apiUrlFragment + 'ingredientsByDish?id=' + id;
-
-//     return axios.get(path)
-//       .then((ingredientsByDishResponse: any) => {
-//         const ingredientsByDish: IngredientsByDish = (ingredientsByDishResponse as any).data;
-//         dispatch(setIngredientsByDishRedux(ingredientsByDish));
-//       });
-//   };
-// };
-
 export const addIngredient = (
   ingredient: IngredientEntity
 ): MealWheelStringOrNullPromiseThunkAction => {
