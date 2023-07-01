@@ -650,6 +650,16 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
+  const getAccompanimentTypeLabelFromAccompanimentTypeIndex = (type: string): string => {
+    const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
+    for (const accompanimentTypeOption of accompanimentTypeOptions) {
+      if (accompanimentTypeOption.value === type) {
+        return accompanimentTypeOption.label;
+      }
+    }
+    return '';
+  };
+
   const renderInactiveRow = (row: DishRow) => {
 
     const suggestedAccompanimentColumns = getReadOnlySuggestedAccompanimentColumns(row);
@@ -687,7 +697,7 @@ const Dishes = (props: DishesProps) => {
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
             label='Dish type'
-            defaultValue={row.type}
+            defaultValue={getAccompanimentTypeLabelFromAccompanimentTypeIndex(row.type)}
             disabled
             variant='standard'
           />
