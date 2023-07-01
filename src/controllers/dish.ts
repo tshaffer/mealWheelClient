@@ -54,12 +54,7 @@ export const addDish = (
 ): MealWheelStringPromiseThunkAction => {
   return (dispatch: MealWheelDispatch, getState: any): Promise<string> => {
 
-    let path = serverUrl + apiUrlFragment;
-    if (dish.type === 'main') {
-      path += 'addMain';
-    } else {
-      path += 'addAccompaniment';
-    }
+    const path = serverUrl + apiUrlFragment + 'addDish';
 
     dish.id = uuidv4();
 
