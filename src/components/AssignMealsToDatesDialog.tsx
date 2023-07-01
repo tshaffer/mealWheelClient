@@ -10,7 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
-import { DishEntity, MealEntity, MealOnDate, ScheduledMealEntity } from '../types';
+import { DishEntity, MealEntity, MealOnDate, ScheduledMealEntity, SuggestedAccompanimentTypeForMainSpec } from '../types';
 import { addRandomMeals, assignMealToDate, deleteScheduledMeal, updateMealAssignedToDate } from '../controllers';
 import { getNumberOfMealsToGenerate, getStartDate, getUnassignedMeals, getScheduledMealsForDays, getMealsOnDatesForDays } from '../selectors';
 import { MealWheelDispatch } from '../models';
@@ -104,19 +104,27 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     return renderedListOfMealOnDateMongos;
   };
 
-  const areAccompanimentsIdentical = (accompaniment0: DishEntity | undefined, accompaniment1: DishEntity | undefined): boolean => {
-    if (isNil(accompaniment0) && isNil(accompaniment1)) {
-      return true;
-    }
-    if (isNil(accompaniment0) && !isNil(accompaniment1)) {
-      return false;
-    }
-    if (!isNil(accompaniment0) && isNil(accompaniment1)) {
-      return false;
-    }
-    return (accompaniment0!.id === accompaniment1!.id);
-  };
+  const areSuggestedAccompanimentTypeSpecsIdentical = (
+    suggestedAccompanimentTypeSpecs0: SuggestedAccompanimentTypeForMainSpec[],
+    suggestedAccompanimentTypeSpecs1: SuggestedAccompanimentTypeForMainSpec[]
+  ): boolean => {
 
+    if (suggestedAccompanimentTypeSpecs0.length !== suggestedAccompanimentTypeSpecs1.length) {
+      return false;
+    }
+
+    for (const suggestedAccompanimentTypeSpec0 of suggestedAccompanimentTypeSpecs0) {
+      const identical = suggestedAccompanimentTypeSpecs1.find(
+        (suggestedAccompanimentTypeSpec1 => (suggestedAccompanimentTypeSpec1.suggestedAccompanimentTypeEntityId === suggestedAccompanimentTypeSpec0.suggestedAccompanimentTypeEntityId) &&
+        (suggestedAccompanimentTypeSpec1.count === suggestedAccompanimentTypeSpec0.count)));
+      if (!identical) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+  
   const areMealsIdentical = (mealOnDate: MealOnDate, mealEntity: MealEntity): boolean => {
 
     if (isNil(mealOnDate.meal)) {
@@ -124,11 +132,11 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     }
     const mealOnDateMeal: MealEntity = mealOnDate.meal;
 
-    if (mealOnDate.meal.mainDish.id !== mealEntity.mainDish.id) {
+    if (mealOnDateMeal.mainDish.id !== mealEntity.mainDish.id) {
       return false;
     }
-    // TEDTODO - see git
-    return true;
+
+    return areSuggestedAccompanimentTypeSpecsIdentical(mealOnDateMeal.mainDish.suggestedAccompanimentTypeSpecs, mealEntity.mainDish.suggestedAccompanimentTypeSpecs);
   };
 
   const getDraggableMeal = (mealEntity: MealEntity): JSX.Element => {

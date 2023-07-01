@@ -63,7 +63,7 @@ export interface DishEntity {
   type: string;                                     // 'main' or AccompanimentTypeEntity.id
   minimumInterval: number;
   last: Date | null;
-  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
+  suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],   // empty unless main (my tentative assertion)
   prepEffort: number;
   prepTime: number;
   cleanupEffort: number;
