@@ -80,7 +80,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     const formattedAccompaniments: JSX.Element[] = [];
 
     if (!isNil(meal.accompanimentDishes)) {
-      
+
       for (const accompanimentDish of meal.accompanimentDishes) {
         // TEDTODO - convert type to type's label
         const formattedAccompaniment = getFormattedAccompaniment(accompanimentDish, accompanimentDish.id);
@@ -94,7 +94,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
 
 
   const getFormattedNonEmptyMeal = (mealOnDate: MealOnDate): JSX.Element => {
-    
+
     const meal: MealEntity = mealOnDate.meal as unknown as MealEntity;
 
     const formattedAccompaniments = getFormattedAccompaniments(meal);
@@ -114,24 +114,6 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
     );
   };
 
-  const getFormattedMealOnDateMongo = (mealOnDate: MealOnDate): JSX.Element => {
-
-    let formattedMeal: JSX.Element;
-
-    if (isNil(mealOnDate.meal)) {
-      formattedMeal = getFormattedEmptyMeal();
-    } else {
-      formattedMeal = getFormattedNonEmptyMeal(mealOnDate);
-    }
-    return (
-      <div key={props.mealOnDate.date.toString()}>
-        {mealOnDate.date.toDateString()}
-        <br />
-        {formattedMeal}
-      </div>
-    );
-  };
-
   const renderMealOnDateMongo = (mealOnDate: MealOnDate): JSX.Element => {
     if (isNil(mealOnDate.meal)) {
       const formattedMeal = getFormattedEmptyMeal();
@@ -143,7 +125,7 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
         </div>
       );
     }
-    
+
     return (
       <React.Fragment key={props.mealOnDate.date.toString()}>
         {mealOnDate.date.toDateString()}
@@ -158,7 +140,15 @@ function DroppableDateInSchedule(props: DroppableDateInScheduleProps) {
   const renderedMealOnDateMongo = renderMealOnDateMongo(props.mealOnDate);
 
   return (
-    <div ref={drop} style={{ ...style, backgroundColor }}>
+    <div
+      ref={drop}
+      style={{
+        ...style,
+        backgroundColor,
+        width: '185px',
+        height: '115px',
+      }}
+    >
       {renderedMealOnDateMongo}
     </div>
   );

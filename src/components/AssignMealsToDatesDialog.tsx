@@ -91,13 +91,21 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
     const renderedListOfMealOnDateMongos = mealOnDates.map((mealOnDate: MealOnDate, mealOnDateIndex: number) => {
       return (
-        <DroppableDateInSchedule
+        <div
           key={mealOnDateIndex}
-          mealOnDate={mealOnDate}
-          accept={['draggableMeal']}
-          onDrop={(item) => { handleDrop(item, mealOnDate); }}
-          onClearAssignedMealOnDateMongo={(mealOnDate) => { handleClearAssignedMealOnDateMongo(mealOnDate); }}
-        />
+          style={{
+            display: 'inline-block',
+            // width: '190px',
+          }}
+        >
+          <DroppableDateInSchedule
+            key={mealOnDateIndex}
+            mealOnDate={mealOnDate}
+            accept={['draggableMeal']}
+            onDrop={(item) => { handleDrop(item, mealOnDate); }}
+            onClearAssignedMealOnDateMongo={(mealOnDate) => { handleClearAssignedMealOnDateMongo(mealOnDate); }}
+          />
+        </div>
       );
     });
 
