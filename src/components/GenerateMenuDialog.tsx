@@ -60,6 +60,7 @@ function GenerateMenuDialog(props: GenerateMenuDialogProps) {
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Generate Menu</DialogTitle>
       <DialogContent>
+        <div style={{ marginBottom: '6px' }}></div>
         <LocalizationProvider
           dateAdapter={AdapterDayjs}
         >

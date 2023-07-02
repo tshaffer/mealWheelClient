@@ -70,6 +70,7 @@ function GenerateGroceryListDialog(props: GenerateGroceryListDialogProps) {
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Generate Grocery List</DialogTitle>
       <DialogContent>
+        <div style={{ marginBottom: '6px' }}></div>
         <LocalizationProvider
           dateAdapter={AdapterDayjs}
         >
