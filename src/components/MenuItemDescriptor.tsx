@@ -35,8 +35,8 @@ const MenuItemDescriptor = (props: MenuItemProps) => {
 
   const renderAccompaniments = (): JSX.Element[] => {
     if (!isNil(meal.accompanimentDishes)) {
-      const accompaniments = meal.accompanimentDishes.map( (accompanimentDish: DishEntity) => {
-        const accompanimentLabel = getAccompanimentLabel(accompanimentDish.type);
+      const accompaniments = meal.accompanimentDishes.map((accompanimentDish: DishEntity) => {
+        const accompanimentLabel = getAccompanimentLabel(accompanimentDish.dishType);
         return renderDish(accompanimentDish, accompanimentLabel, true);
       });
       return accompaniments;
@@ -45,7 +45,7 @@ const MenuItemDescriptor = (props: MenuItemProps) => {
   };
 
   const accompaniments: JSX.Element[] = renderAccompaniments();
-  
+
   return (
     <div key={meal.id}>
       {renderDish(meal.mainDish, 'Main', false)}

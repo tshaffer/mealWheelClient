@@ -32,6 +32,7 @@ import {
   AccompanimentTypeEntity,
   DishEntity,
   DishRow,
+  DishType,
   Order,
   SuggestedAccompanimentTypeForMainSpec,
   UiState
@@ -201,7 +202,7 @@ const Dishes = (props: DishesProps) => {
       const row: DishRow = {
         dish,
         name: dish.name,
-        type: dish.type,
+        dishType: dish.dishType,
         last: dish.last,
         minimumInterval: dish.minimumInterval,
         suggestedAccompanimentTypeSpecs: !isNil(dish.suggestedAccompanimentTypeSpecs) ? dish.suggestedAccompanimentTypeSpecs : [],
@@ -237,7 +238,7 @@ const Dishes = (props: DishesProps) => {
     const dish: DishEntity = {
       id: '',
       name: '',
-      type: 'main',
+      dishType: 'main',
       minimumInterval: 5,
       last: null,
       prepEffort: 5,
@@ -253,7 +254,7 @@ const Dishes = (props: DishesProps) => {
     const dishRow: DishRow = {
       dish,
       name: '',
-      type: 'main',
+      dishType: 'main',
       minimumInterval: 5,
       last: null,
       suggestedAccompanimentTypeSpecs: [],
@@ -318,7 +319,7 @@ const Dishes = (props: DishesProps) => {
         const newDish: DishEntity = {
           id: '',
           name: props.currentEditDish.name,
-          type: props.currentEditDish.type,
+          dishType: props.currentEditDish.dishType,
           minimumInterval: props.currentEditDish.minimumInterval,
           last: null,
           prepEffort: 5,
@@ -326,7 +327,7 @@ const Dishes = (props: DishesProps) => {
           cleanupEffort: 5,
           suggestedAccompanimentTypeSpecs: [],
         };
-        if (props.currentEditDish.type === 'main') {
+        if (props.currentEditDish.dishType === 'main') {
           newDish.suggestedAccompanimentTypeSpecs = props.currentEditDish.suggestedAccompanimentTypeSpecs;
         }
 
@@ -352,7 +353,7 @@ const Dishes = (props: DishesProps) => {
       } else {
         const updatedDish: DishEntity = cloneDeep(props.currentEditDish.dish);
         updatedDish.name = props.currentEditDish.name;
-        updatedDish.type = props.currentEditDish.type;
+        updatedDish.dishType = props.currentEditDish.dishType;
         updatedDish.minimumInterval = props.currentEditDish.minimumInterval;
         updatedDish.suggestedAccompanimentTypeSpecs = props.currentEditDish.suggestedAccompanimentTypeSpecs;
         props.onUpdateDish(props.currentEditDish.dish.id, updatedDish);
@@ -384,11 +385,11 @@ const Dishes = (props: DishesProps) => {
         const selectedDishRow: DishRow = props.rows[selectedDishRowIndex];
         const unmodifiedDishEntity: DishEntity = selectedDishRow.dish;
         selectedDishRow.name = unmodifiedDishEntity.name;
-        selectedDishRow.type = unmodifiedDishEntity.type;
+        selectedDishRow.dishType = unmodifiedDishEntity.dishType;
         selectedDishRow.minimumInterval = unmodifiedDishEntity.minimumInterval;
         selectedDishRow.last = unmodifiedDishEntity.last;
 
-        if (selectedDishRow.type === 'main') {
+        if (selectedDishRow.dishType === 'main') {
           selectedDishRow.suggestedAccompanimentTypeSpecs = isNil(unmodifiedDishEntity.suggestedAccompanimentTypeSpecs) ? [] : unmodifiedDishEntity.suggestedAccompanimentTypeSpecs;
         }
 
@@ -560,7 +561,7 @@ const Dishes = (props: DishesProps) => {
 
     const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
 
-    const isReadOnly: boolean = row.dish.type.toLowerCase() !== 'main';
+    const isReadOnly: boolean = row.dish.dishType.toLowerCase() !== 'main';
     const suggestedAccompanimentColumns = getReadWriteSuggestedAccompanimentColumns(row, isReadOnly);
 
     const isItemSelected = true;
@@ -602,7 +603,7 @@ const Dishes = (props: DishesProps) => {
             helperText="Please select your dish type"
             onChange={(event) => handleUpdateDishType(row, event.target.value as string)}
             placeholder={'Dish Type'}
-            value={row.type}
+            value={row.dishType}
           >
             {accompanimentTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -650,7 +651,7 @@ const Dishes = (props: DishesProps) => {
     );
   };
 
-  const getAccompanimentTypeLabelFromAccompanimentTypeIndex = (type: string): string => {
+  const getAccompanimentTypeLabelFromAccompanimentTypeIndex = (type: DishType): string => {
     const accompanimentTypeOptions: any[] = getAccompanimentTypeOptions();
     for (const accompanimentTypeOption of accompanimentTypeOptions) {
       if (accompanimentTypeOption.value === type) {
@@ -697,7 +698,7 @@ const Dishes = (props: DishesProps) => {
             sx={{ m: 1, maxHeight: '40px', marginTop: '12px' }}
             type='string'
             label='Dish type'
-            defaultValue={getAccompanimentTypeLabelFromAccompanimentTypeIndex(row.type)}
+            defaultValue={getAccompanimentTypeLabelFromAccompanimentTypeIndex(row.dishType)}
             disabled
             variant='standard'
           />

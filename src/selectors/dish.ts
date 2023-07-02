@@ -2,6 +2,7 @@ import { isString } from 'lodash';
 import {
   DishEntity,
   DishEntityRedux,
+  DishType,
   MealWheelState
 } from '../types';
 
@@ -9,7 +10,7 @@ const mongoDishFromReduxDish = (dish: DishEntityRedux): DishEntity => {
   return {
     id: dish.id,
     name: dish.name,
-    type: dish.type,
+    dishType: dish.dishType,
     minimumInterval: dish.minimumInterval,
     last: !isString(dish.lastAsStr) ? null : new Date(dish.lastAsStr),
     suggestedAccompanimentTypeSpecs: dish.suggestedAccompanimentTypeSpecs,
@@ -43,22 +44,22 @@ export const getDishById = (state: MealWheelState, dishId: string): DishEntity |
   return null;
 };
 
-const getDishesOfType = (state: MealWheelState, dishType: string): DishEntity[] => {
+const getDishesOfType = (state: MealWheelState, dishType: DishType): DishEntity[] => {
 
   const dishes: DishEntity[] = [];
   for (const dish of getReduxDishes(state)) {
-    if (dish.type === dishType) {
+    if (dish.dishType === dishType) {
       dishes.push(mongoDishFromReduxDish(dish));
     }
   }
   return dishes;
 };
 
-const getDishesNotOfType = (state: MealWheelState, dishType: string): DishEntity[] => {
+const getDishesNotOfType = (state: MealWheelState, dishType: DishType): DishEntity[] => {
 
   const dishes: DishEntity[] = [];
   for (const dish of getReduxDishes(state)) {
-    if (dish.type !== dishType) {
+    if (dish.dishType !== dishType) {
       dishes.push(mongoDishFromReduxDish(dish));
     }
   }

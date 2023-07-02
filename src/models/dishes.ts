@@ -57,10 +57,10 @@ export const addDishRedux = (
   const reduxDish: DishEntityRedux = {
     id: mongoDish.id,
     name: mongoDish.name,
-    type: mongoDish.type,
+    dishType: mongoDish.dishType,
     minimumInterval: mongoDish.minimumInterval,
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
-    suggestedAccompanimentTypeSpecs:  !isNil(mongoDish.suggestedAccompanimentTypeSpecs) ? mongoDish.suggestedAccompanimentTypeSpecs : [],
+    suggestedAccompanimentTypeSpecs: !isNil(mongoDish.suggestedAccompanimentTypeSpecs) ? mongoDish.suggestedAccompanimentTypeSpecs : [],
     prepEffort: mongoDish.prepEffort,
     prepTime: mongoDish.prepTime,
     cleanupEffort: mongoDish.cleanupEffort,
@@ -85,10 +85,10 @@ export const addDishesRedux = (
     return {
       id: mongoDish.id,
       name: mongoDish.name,
-      type: mongoDish.type,
+      dishType: mongoDish.dishType,
       minimumInterval: mongoDish.minimumInterval,
       lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
-      suggestedAccompanimentTypeSpecs:  !isNil(mongoDish.suggestedAccompanimentTypeSpecs) ? mongoDish.suggestedAccompanimentTypeSpecs : [],
+      suggestedAccompanimentTypeSpecs: !isNil(mongoDish.suggestedAccompanimentTypeSpecs) ? mongoDish.suggestedAccompanimentTypeSpecs : [],
       prepEffort: mongoDish.prepEffort,
       prepTime: mongoDish.prepTime,
       cleanupEffort: mongoDish.cleanupEffort,
@@ -127,10 +127,10 @@ export const updateDishRedux = (
   const reduxDish: DishEntityRedux = {
     id: mongoDish.id,
     name: mongoDish.name,
-    type: mongoDish.type,
+    dishType: mongoDish.dishType,
     minimumInterval: mongoDish.minimumInterval,
     lastAsStr: isNil(mongoDish.last) ? null : mongoDish.last.toDateString(),
-    suggestedAccompanimentTypeSpecs:  !isNil(mongoDish.suggestedAccompanimentTypeSpecs) ? mongoDish.suggestedAccompanimentTypeSpecs : [],
+    suggestedAccompanimentTypeSpecs: !isNil(mongoDish.suggestedAccompanimentTypeSpecs) ? mongoDish.suggestedAccompanimentTypeSpecs : [],
     prepEffort: mongoDish.prepEffort,
     prepTime: mongoDish.prepTime,
     cleanupEffort: mongoDish.cleanupEffort,
@@ -166,7 +166,7 @@ const sortDishesByProperty = (dishes: DishEntityRedux[], order: Order, orderBy: 
   dishes.sort((a, b) => {
     switch (orderBy) {
       case 'name':
-      case 'type':
+      case 'dishType':
       case 'minimumInterval': {
         return compareValues(a[orderBy], b[orderBy], order);
       }

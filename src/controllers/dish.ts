@@ -11,6 +11,7 @@ import {
   DishEntityRedux,
   DishesState,
   DishRow,
+  DishType,
   MealWheelState,
   Order,
   // RequiredAccompanimentFlags,
@@ -33,10 +34,10 @@ export const loadDishes = (): MealWheelVoidPromiseThunkAction => {
           const dishEntity: DishEntity = {
             id: dishEntityFromServer.id,
             name: dishEntityFromServer.name,
-            type: dishEntityFromServer.type,
+            dishType: dishEntityFromServer.type as unknown as DishType,
             minimumInterval: dishEntityFromServer.minimumInterval,
             last: isNil(dishEntityFromServer.last) ? null : new Date(dishEntityFromServer.last),
-            suggestedAccompanimentTypeSpecs:  !isNil(dishEntityFromServer.suggestedAccompanimentTypeSpecs) ? dishEntityFromServer.suggestedAccompanimentTypeSpecs : [],
+            suggestedAccompanimentTypeSpecs: !isNil(dishEntityFromServer.suggestedAccompanimentTypeSpecs) ? dishEntityFromServer.suggestedAccompanimentTypeSpecs : [],
             prepEffort: dishEntityFromServer.prepEffort,
             prepTime: dishEntityFromServer.prepTime,
             cleanupEffort: dishEntityFromServer.cleanupEffort,
@@ -149,10 +150,10 @@ const getRows = (dishes: DishEntity[]): DishRow[] => {
     const row: DishRow = {
       dish,
       name: dish.name,
-      type: dish.type,
+      dishType: dish.dishType,
       last: dish.last,
       minimumInterval: dish.minimumInterval,
-      suggestedAccompanimentTypeSpecs:  !isNil(dish.suggestedAccompanimentTypeSpecs) ? dish.suggestedAccompanimentTypeSpecs : [],
+      suggestedAccompanimentTypeSpecs: !isNil(dish.suggestedAccompanimentTypeSpecs) ? dish.suggestedAccompanimentTypeSpecs : [],
     };
     return row;
   });

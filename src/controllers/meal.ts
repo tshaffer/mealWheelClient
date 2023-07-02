@@ -196,10 +196,10 @@ const generateDishesByDishType = (mealWheelState: MealWheelState): DishesByDishT
   // populate data structure mapping each dish type to a list of dishes of that type
   const allDishes: DishEntity[] = getDishes(mealWheelState);
   allDishes.forEach((dish: DishEntity, index: number) => {
-    if (!Object.prototype.hasOwnProperty.call(dishesByDishType, dish.type)) {
-      dishesByDishType[dish.type] = [];
+    if (!Object.prototype.hasOwnProperty.call(dishesByDishType, dish.dishType)) {
+      dishesByDishType[dish.dishType] = [];
     }
-    dishesByDishType[dish.type].push(dish);
+    dishesByDishType[dish.dishType].push(dish);
   });
 
   return dishesByDishType;
@@ -212,10 +212,10 @@ const generateDishIndicesByDishType = (mealWheelState: MealWheelState): DishIndi
   // populate data structure mapping each dish type to a list of dishes of that type
   const allDishes: DishEntity[] = getDishes(mealWheelState);
   allDishes.forEach((dish: DishEntity, index: number) => {
-    if (!Object.prototype.hasOwnProperty.call(dishIndicesByDishType, dish.type)) {
-      dishIndicesByDishType[dish.type] = [];
+    if (!Object.prototype.hasOwnProperty.call(dishIndicesByDishType, dish.dishType)) {
+      dishIndicesByDishType[dish.dishType] = [];
     }
-    dishIndicesByDishType[dish.type].push(index);
+    dishIndicesByDishType[dish.dishType].push(index);
   });
 
   return dishIndicesByDishType;

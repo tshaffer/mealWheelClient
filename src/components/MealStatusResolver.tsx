@@ -27,7 +27,7 @@ import {
   getMains,
   getPendingMeal
 } from '../selectors';
-import { VerboseScheduledMeal, DishEntity, AccompanimentTypeEntity, AccompanimentTypeNameById } from '../types';
+import { VerboseScheduledMeal, DishEntity, AccompanimentTypeEntity, AccompanimentTypeNameById, DishType } from '../types';
 import { MealWheelDispatch, setPendingMeal } from '../models';
 
 export interface MealStatusResolverPropsFromParent {
@@ -203,7 +203,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     // TEDTODOUSELUT
     const accompanimentDishes: DishEntity[] = [];
     for (const dishEntity of props.allAccompaniments) {
-      if (dishEntity.type === selectedAccompanimentTypeEntity.id) {
+      if (dishEntity.dishType === selectedAccompanimentTypeEntity.id) {
         accompanimentDishes.push(dishEntity);
       }
     }
@@ -293,7 +293,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
     if (!isNil(meal) && !isNil(meal.main)) {
       mainId = meal.main.id;
     }
-    
+
     const mainsMenuItems: JSX.Element[] = renderDishMenuItems(props.mains, false);
     return (
       <div>
@@ -316,7 +316,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
 
     const dishEntitiesForThisAccompanimentType: DishEntity[] = [];
     props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
-      if (accompanimentDish.type === accompanimentTypeEntityId) {
+      if (accompanimentDish.dishType === accompanimentTypeEntityId) {
         dishEntitiesForThisAccompanimentType.push(accompanimentDish);
       }
     });
@@ -374,7 +374,7 @@ const MealStatusResolver = (props: MealStatusResolverProps) => {
         return null;
       }
 
-      const accompanimentTypeEntityId = (foundAccompaniment as DishEntity).type;
+      const accompanimentTypeEntityId = (foundAccompaniment as DishEntity).dishType;
 
       // render select that includes all the accompaniments of this type
       const renderedAccompanimentSelect = renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeEntityId, accompanimentDishId);

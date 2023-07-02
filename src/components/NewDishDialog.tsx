@@ -5,7 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, Checkbox, DialogActions, DialogContent, FormControlLabel, FormGroup, FormLabel, TextField } from '@mui/material';
 import { getAccompaniments, getAccompanimentTypeNamesById, getAccompanimentTypeEntitiessByUser } from '../selectors';
-import { AccompanimentTypeEntity, AccompanimentTypeNameById, DishEntity, SuggestedAccompanimentTypeForMainSpec } from '../types';
+import { AccompanimentTypeEntity, AccompanimentTypeNameById, DishEntity, DishType, SuggestedAccompanimentTypeForMainSpec } from '../types';
 import { cloneDeep, isNil } from 'lodash';
 // import {
 //   DishType,
@@ -17,12 +17,12 @@ export interface NewDishDialogPropsFromParent {
   accompanimentTypeNameById: AccompanimentTypeNameById;
   onAddDish: (
     dishName: string,
-    dishType: string,
+    dishType: DishType,
     minimumInterval: number,
     suggestedAccompanimentTypeSpecs?: SuggestedAccompanimentTypeForMainSpec[]
   ) => void;
   onClose: () => void;
-  dishType: string;
+  dishType: DishType;
 }
 
 export interface NewDishDialogProps extends NewDishDialogPropsFromParent {

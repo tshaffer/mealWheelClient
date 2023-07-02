@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { isNil, isString } from 'lodash';
 
-import { AccompanimentTypeNameById, DishEntity, ScheduledMealEntity } from '../types';
+import { AccompanimentTypeNameById, DishEntity, DishType, ScheduledMealEntity } from '../types';
 import { CalendarEvent } from './MealSchedule';
 import {
   getAccompanimentById,
@@ -45,7 +45,7 @@ const MealInCalendar = (props: MealInCalendarProps) => {
       return null;
     }
 
-    const accompanimentType = getAccompanimentLabel(accompanimentDish.type);
+    const accompanimentType = getAccompanimentLabel(accompanimentDish.dishType);
     const accompanimentLabel = accompanimentType + ': ' + accompanimentDish.name;
     return (
       <p className='shortParagraph' key={accompanimentDish.id}>{accompanimentLabel}</p>

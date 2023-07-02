@@ -23,6 +23,7 @@ import {
   AccompanimentTypeEntity,
   AccompanimentTypeNameById,
   DishEntity,
+  DishType,
   ScheduledMealEntity,
   SuggestedAccompanimentTypeForMainSpec
 } from '../types';
@@ -92,7 +93,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
   const [showNewDishDialog, setShowNewDishDialog] = React.useState(false);
   const [selectedAccompanimentTypeEntityId, setSelectedAccompanimentTypeEntityId] = React.useState('');
 
-  const [dishType, setDishType] = React.useState('main');
+  const [dishType, setDishType] = React.useState<DishType>('main');
 
   const getScheduledMealId = (): string => {
     if (!isNil(props.scheduledMeal)) {
@@ -124,7 +125,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     }
   };
 
-  const handleUpdateAccompaniment = (accompanimentTypeId: string, existingAccompanimentDishId: string, selectedAccompanimentDishId: string) => {
+  const handleUpdateAccompaniment = (accompanimentTypeId: DishType, existingAccompanimentDishId: string, selectedAccompanimentDishId: string) => {
     console.log('handleUpdateAccompaniment');
     if (selectedAccompanimentDishId === 'new') {
       setDishType(accompanimentTypeId);
@@ -153,7 +154,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
 
   const handleAddDish = (
     dishName: string,
-    dishType: string,
+    dishType: DishType,
     minimumInterval: number,
     suggestedAccompanimentTypeSpecs?: SuggestedAccompanimentTypeForMainSpec[]
   ) => {
@@ -165,7 +166,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     const dishEntity: DishEntity = {
       id: dishId,
       name: dishName,
-      type: dishType,
+      dishType: dishType,
       minimumInterval,
       last: null,
       suggestedAccompanimentTypeSpecs: isNil(suggestedAccompanimentTypeSpecs) ? [] : suggestedAccompanimentTypeSpecs,
@@ -269,7 +270,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     // TEDTODOUSELUT
     const accompanimentDishes: DishEntity[] = [];
     for (const dishEntity of props.allAccompaniments) {
-      if (dishEntity.type === selectedAccompanimentTypeEntity.id) {
+      if (dishEntity.dishType === selectedAccompanimentTypeEntity.id) {
         accompanimentDishes.push(dishEntity);
       }
     }
@@ -292,11 +293,11 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
     setSelectedAccompanimentTypeEntityId(accompanimentTypeEntityId);
   };
 
-  const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: string, currentAccompanimentId: string): JSX.Element => {
+  const renderAccompanimentsSelectForSpecificAccompanimentType = (accompanimentTypeEntityId: DishType, currentAccompanimentId: string): JSX.Element => {
 
     const dishEntitiesForThisAccompanimentType: DishEntity[] = [];
     props.allAccompaniments.forEach((accompanimentDish: DishEntity) => {
-      if (accompanimentDish.type === accompanimentTypeEntityId) {
+      if (accompanimentDish.dishType === accompanimentTypeEntityId) {
         dishEntitiesForThisAccompanimentType.push(accompanimentDish);
       }
     });
@@ -354,7 +355,7 @@ const MealPropertySheet = (props: MealPropertySheetProps) => {
         return null;
       }
 
-      const accompanimentTypeEntityId = (foundAccompaniment as DishEntity).type;
+      const accompanimentTypeEntityId = (foundAccompaniment as DishEntity).dishType;
 
       // render select that includes all the accompaniments of this type
       const renderedAccompanimentSelect = renderAccompanimentsSelectForSpecificAccompanimentType(accompanimentTypeEntityId, accompanimentDishId);

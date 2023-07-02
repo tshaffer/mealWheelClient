@@ -10,11 +10,15 @@ export interface UserEntity {
   email: string;
 }
 
+export type AccompanimentTypeEntityIndex = 'string';
+
+export type DishType = AccompanimentTypeEntityIndex | 'main';
+
 export interface BaseDishEntityRedux {
   id: string;
   userId: string;
   name: string;
-  type: string;
+  dishType: DishType;
   minimumInterval: number;
   // last: Date | null;
   lastAsStr: string | null;
@@ -27,7 +31,7 @@ export interface BaseDishEntity {
   id: string;
   userId: string;
   name: string;
-  type: string;
+  dishType: DishType;
   minimumInterval: number;
   last: Date | null;
   prepEffort: number;
@@ -60,7 +64,7 @@ export interface DishEntityFromServer {
 export interface DishEntity {
   id: string;
   name: string;
-  type: string;                                     // 'main' or AccompanimentTypeEntity.id
+  dishType: DishType;                                     // 'main' or AccompanimentTypeEntity.id
   minimumInterval: number;
   last: Date | null;
   suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],   // empty unless main (my tentative assertion)
@@ -73,7 +77,7 @@ export interface DishEntity {
 export interface DishEntityRedux {
   id: string;
   name: string;
-  type: string;
+  dishType: DishType;
   minimumInterval: number;
   // last: Date | null;
   lastAsStr: string | null;
@@ -136,7 +140,7 @@ export interface IngredientsByDish {
 export interface DishRow {
   dish: DishEntity;
   name: string
-  type: string;
+  dishType: DishType;
   minimumInterval: number;
   last: Date | null;
   suggestedAccompanimentTypeSpecs: SuggestedAccompanimentTypeForMainSpec[],
