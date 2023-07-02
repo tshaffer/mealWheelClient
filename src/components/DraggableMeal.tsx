@@ -33,10 +33,21 @@ function DraggableMeal(props: DraggableMealProps) {
     }),
   );
 
-  const backgroundColor = props.isAlreadyAssigned ? 'limegreen': 'white';
+  const backgroundColor = props.isAlreadyAssigned ? 'limegreen' : 'white';
 
   return (
-    <div key={props.meal.id} ref={drag} style={{ ...style, backgroundColor, opacity }}>
+    <div
+      key={props.meal.id}
+      ref={drag}
+      style={{
+        ...style,
+        display: 'inline-block',
+        backgroundColor,
+        opacity,
+        width: '185px',
+        height: '115px',
+      }}
+    >
       <MenuItemDescriptor
         meal={props.meal}
       />

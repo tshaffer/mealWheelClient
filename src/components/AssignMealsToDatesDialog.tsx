@@ -95,7 +95,6 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
           key={mealOnDateIndex}
           style={{
             display: 'inline-block',
-            // width: '190px',
           }}
         >
           <DroppableDateInSchedule
@@ -194,7 +193,12 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
               }}>
               {droppableDatesInSchedule}
             </div>
-            <div style={{ overflow: 'hidden', clear: 'both' }}>
+            <div
+              style={{
+                display: 'inline-block',
+                overflow: 'hidden',
+                clear: 'both'
+              }}>
               {draggableMeals}
             </div>
           </DndProvider>
