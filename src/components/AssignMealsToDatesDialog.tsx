@@ -116,7 +116,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     for (const suggestedAccompanimentTypeSpec0 of suggestedAccompanimentTypeSpecs0) {
       const identical = suggestedAccompanimentTypeSpecs1.find(
         (suggestedAccompanimentTypeSpec1 => (suggestedAccompanimentTypeSpec1.suggestedAccompanimentTypeEntityId === suggestedAccompanimentTypeSpec0.suggestedAccompanimentTypeEntityId) &&
-        (suggestedAccompanimentTypeSpec1.count === suggestedAccompanimentTypeSpec0.count)));
+          (suggestedAccompanimentTypeSpec1.count === suggestedAccompanimentTypeSpec0.count)));
       if (!identical) {
         return false;
       }
@@ -124,7 +124,7 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
 
     return true;
   };
-  
+
   const areMealsIdentical = (mealOnDate: MealOnDate, mealEntity: MealEntity): boolean => {
 
     if (isNil(mealOnDate.meal)) {
@@ -171,14 +171,19 @@ function AssignMealsToDatesDialog(props: AssignMealsToDatesDialogProps) {
     <Dialog
       open={props.open}
       onClose={handleClose}
-      PaperProps={{ sx: { width: '1200px', height: '750px' } }}
+      PaperProps={{ sx: { width: '1800px', height: '750px' } }}
       fullScreen={true}
     >
       <DialogTitle>Assign Meals to Dates</DialogTitle>
       <DialogContent>
         <div>
           <DndProvider backend={HTML5Backend}>
-            <div style={{ overflow: 'hidden', clear: 'both' }}>
+            <div
+              style={{
+                display: 'inline-block',
+                overflow: 'hidden',
+                clear: 'both'
+              }}>
               {droppableDatesInSchedule}
             </div>
             <div style={{ overflow: 'hidden', clear: 'both' }}>
